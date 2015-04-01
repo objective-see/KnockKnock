@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="VTInfoWindowController">
+            <connections>
+                <outlet property="analysisURL" destination="Wbv-SK-w53" id="vRG-LY-sA2"/>
+                <outlet property="analysisURLLabel" destination="tM6-Nq-1Rh" id="tVS-Z8-QoN"/>
+                <outlet property="closeButton" destination="uJq-Bw-lDQ" id="RWs-cM-R4U"/>
+                <outlet property="detectionRatio" destination="hLU-fi-qXH" id="HMI-2q-F37"/>
+                <outlet property="detectionRatioLabel" destination="DFa-vc-wFY" id="KeB-h4-vI3"/>
+                <outlet property="fileName" destination="hcM-hb-3Lz" id="uSy-od-y3n"/>
+                <outlet property="fileNameLabel" destination="Plg-lF-OEE" id="KeM-nK-KQA"/>
+                <outlet property="overlayView" destination="S16-Le-yTU" id="8Ye-PE-A3D"/>
+                <outlet property="progressIndicator" destination="egv-M2-RqY" id="zgU-Hu-k7Z"/>
+                <outlet property="statusMsg" destination="Hew-Ee-HGX" id="BFR-Pr-u6h"/>
+                <outlet property="submitButton" destination="Sxd-Ob-1Af" id="jB1-QN-Af2"/>
+                <outlet property="unknownFile" destination="eEi-hA-pdx" id="tY3-qL-05e"/>
+                <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="VirusTotal Information" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="F0z-JX-Cv5">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="240" width="534" height="144"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <view key="contentView" id="se5-gp-TjO">
+                <rect key="frame" x="0.0" y="0.0" width="534" height="144"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uJq-Bw-lDQ">
+                        <rect key="frame" x="430" y="13" width="90" height="32"/>
+                        <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="RwO-yA-Xwk">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="closeButtonHandler:" target="-2" id="h73-fH-gDU"/>
+                        </connections>
+                    </button>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hLU-fi-qXH">
+                        <rect key="frame" x="189" y="81" width="495" height="19"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="ratio" id="XJ7-Go-bkG">
+                            <font key="font" size="13" name="Menlo-Regular"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wbv-SK-w53" customClass="HyperlinkTextField">
+                        <rect key="frame" x="189" y="53" width="495" height="19"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="report url" id="hR8-Wz-esN">
+                            <font key="font" size="13" name="Menlo-Regular"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DFa-vc-wFY">
+                        <rect key="frame" x="99" y="81" width="83" height="19"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="detection:" id="iBS-9J-ok9">
+                            <font key="font" size="13" name="Menlo-Bold"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tM6-Nq-1Rh">
+                        <rect key="frame" x="57" y="53" width="125" height="19"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="more info:" id="U3V-A7-jO8">
+                            <font key="font" size="13" name="Menlo-Bold"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hcM-hb-3Lz" customClass="HyperlinkTextField">
+                        <rect key="frame" x="189" y="106" width="495" height="19"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" alignment="left" title="file name" id="3TS-NZ-XYE">
+                            <font key="font" size="13" name="Menlo-Regular"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Plg-lF-OEE">
+                        <rect key="frame" x="99" y="107" width="83" height="19"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="file name:" id="HO9-t1-yCi">
+                            <font key="font" size="13" name="Menlo-Bold"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vO5-mf-hOM">
+                        <rect key="frame" x="20" y="56" width="68" height="68"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="vtLogo" id="qFc-P8-Wm8"/>
+                    </imageView>
+                    <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eEi-hA-pdx">
+                        <rect key="frame" x="111" y="81" width="405" height="21"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="unknown file" id="2nj-QY-6ot">
+                            <font key="font" size="13" name="Menlo-Regular"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sxd-Ob-1Af">
+                        <rect key="frame" x="340" y="13" width="90" height="32"/>
+                        <buttonCell key="cell" type="push" title="submit?" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="JAW-nH-eRf">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="vtButtonHandler:" target="-2" id="YtT-aa-xM1"/>
+                        </connections>
+                    </button>
+                    <customView hidden="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S16-Le-yTU">
+                        <rect key="frame" x="0.0" y="0.0" width="534" height="144"/>
+                        <subviews>
+                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hew-Ee-HGX">
+                                <rect key="frame" x="18" y="34" width="498" height="20"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="status msg" id="lxM-ES-i7K">
+                                    <font key="font" size="13" name="Menlo-Regular"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                    </customView>
+                    <progressIndicator hidden="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="egv-M2-RqY">
+                        <rect key="frame" x="251" y="56" width="32" height="32"/>
+                    </progressIndicator>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
+            </connections>
+            <point key="canvasLocation" x="374" y="212"/>
+        </window>
+        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="TBi-5r-ypB">
+            <rect key="frame" x="0.0" y="0.0" width="59" height="17"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="size:" id="38n-hn-A8F">
+                <font key="font" size="13" name="Consolas"/>
+                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+            </textFieldCell>
+        </textField>
+        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="6t0-R2-vQC">
+            <rect key="frame" x="0.0" y="0.0" width="38" height="17"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="MkZ-UE-asN">
+                <font key="font" metaFont="system"/>
+                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+            </textFieldCell>
+        </textField>
+    </objects>
+    <resources>
+        <image name="vtLogo" width="300" height="300"/>
+    </resources>
+</document>

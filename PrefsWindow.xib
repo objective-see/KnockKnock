@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="PrefsWindowController">
+            <connections>
+                <outlet property="disableVTQueries" destination="d54-mZ-jqy" id="gCe-BP-bct"/>
+                <outlet property="disableVTQueriesBtn" destination="d54-mZ-jqy" id="Xx6-E1-yv0"/>
+                <outlet property="saveOutput" destination="6la-v6-zBD" id="iif-cF-w6y"/>
+                <outlet property="saveOutputBtn" destination="6la-v6-zBD" id="m3d-J9-MZg"/>
+                <outlet property="showTrustedItems" destination="4xV-kQ-iaT" id="3wm-5q-ib3"/>
+                <outlet property="showTrustedItemsBtn" destination="4xV-kQ-iaT" id="aEg-d4-Orl"/>
+                <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="F0z-JX-Cv5">
+            <windowStyleMask key="styleMask" titled="YES" texturedBackground="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="240" width="422" height="123"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <view key="contentView" id="se5-gp-TjO">
+                <rect key="frame" x="0.0" y="0.0" width="422" height="123"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lEv-Wj-6S5">
+                        <rect key="frame" x="25" y="37" width="48" height="48"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="settings" id="xKf-GK-m0k"/>
+                    </imageView>
+                    <button focusRingType="none" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4xV-kQ-iaT">
+                        <rect key="frame" x="101" y="85" width="189" height="18"/>
+                        <buttonCell key="cell" type="check" title="show os/known items" bezelStyle="regularSquare" imagePosition="left" focusRingType="none" inset="2" id="WN8-cQ-8xh">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                    <button focusRingType="none" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="d54-mZ-jqy">
+                        <rect key="frame" x="101" y="52" width="223" height="18"/>
+                        <buttonCell key="cell" type="check" title="disable virus total integration" bezelStyle="regularSquare" imagePosition="left" focusRingType="none" inset="2" id="gXW-vY-Aj1">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                    <button focusRingType="none" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6la-v6-zBD">
+                        <rect key="frame" x="101" y="19" width="160" height="18"/>
+                        <buttonCell key="cell" type="check" title="save results" bezelStyle="regularSquare" imagePosition="left" focusRingType="none" inset="2" id="8A7-6z-flS">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HZZ-Es-mpy">
+                        <rect key="frame" x="326" y="10" width="82" height="32"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="J9x-sM-h9S">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="closeWindow:" target="-2" id="eFa-k0-zTM"/>
+                        </connections>
+                    </button>
+                    <box verticalHuggingPriority="750" fixedFrame="YES" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="M2D-Yu-7uc">
+                        <rect key="frame" x="25" y="119" width="377" height="5"/>
+                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
+            </connections>
+            <point key="canvasLocation" x="318" y="246.5"/>
+        </window>
+    </objects>
+    <resources>
+        <image name="settings" width="256" height="256"/>
+    </resources>
+</document>
