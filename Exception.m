@@ -52,7 +52,7 @@ void showAlert()
     if(0 == response)
     {
         //open page in browser
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://objective-see.com/errors.html"]];
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://objective-see.com/errors.html"]];
     }
     
     //kill app

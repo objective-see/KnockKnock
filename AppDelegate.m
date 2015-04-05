@@ -1031,7 +1031,7 @@ bail:
 {
     //open URL
     // ->invokes user's default browser
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://objective-see.com/products/knockknock.html"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://objective-see.com/products/knockknock.html"]];
     
     return;
 }

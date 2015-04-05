@@ -143,7 +143,7 @@
 #define VT_RESCAN_URL @"https://www.virustotal.com/vtapi/v2/file/rescan"
 
 //submit url
-#define VT_SUBMIT_URL @"http://www.virustotal.com/vtapi/v2/file/scan"
+#define VT_SUBMIT_URL @"https://www.virustotal.com/vtapi/v2/file/scan"
 
 //api key
 #define VT_API_KEY @"233f22e200ca5822bd91103043ccac138b910db79f29af5616a9afe8b6f215ad"
