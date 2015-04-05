@@ -3,7 +3,7 @@
 //  DHS
 //
 //  Created by Patrick Wardle on 2/4/15.
-//  Copyright (c) 2015 Lucas Derraugh. All rights reserved.
+//  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
 #ifndef KK_Consts_h
@@ -31,6 +31,15 @@
 #define KEY_SIGNATURE_STATUS @"signatureStatus"
 #define KEY_SIGNING_AUTHORITIES @"signingAuthorities"
 
+//OS version x
+#define OS_MAJOR_VERSION_X 10
+
+//OS version lion
+#define OS_MINOR_VERSION_LION 8
+
+//OS version yosemite
+#define OS_MINOR_VERSION_YOSEMITE 10
+
 
 //executable path
 #define EXECUTABLE_PATH @"@executable_path"
@@ -50,6 +59,7 @@
 //hash key, MD5
 #define KEY_HASH_MD5 @"md5"
 
+
 //main window
 
 //space for File's button in time table (w/ VT info)
@@ -58,6 +68,9 @@
 //space for Extension's button in time table
 #define TABLE_BUTTONS_EXTENTION 135
 
+
+//scan button
+#define SCAN_BUTTON_TAG 1000
 
 //pref button
 #define PREF_BUTTON_TAG 1001

@@ -3,7 +3,7 @@
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 3/29/15.
-//  Copyright (c) 2015 Lucas Derraugh. All rights reserved.
+//  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
 #import "File.h"
@@ -94,10 +94,10 @@
         //make analyis url a hyperlink
         makeTextViewHyperlink(self.analysisURL, [NSURL URLWithString:self.fileObj.vtInfo[VT_RESULTS_URL]]);
         
-        //set 'submit' button text to 'reanalyze'
-        //TODO: change back to rescan?
-        self.submitButton.title = @"submit?";
+        //set 'submit' button text to 'rescan'
+        self.submitButton.title = @"rescan?";
     }
+    //unknown file
     else
     {
         //hide file name label
@@ -162,8 +162,8 @@
     //result(s) from VT
     __block NSDictionary* result = nil;
     
-    //filter to make spinner white
-    __block CIFilter *lighten = nil;
+    //analyis URL
+    NSMutableAttributedString* hyperlinkString = nil;
     
     //alloc/init VT obj
     vtObj = [[VirusTotal alloc] init];
@@ -173,37 +173,41 @@
     
     //disable close button
     self.closeButton.enabled = NO;
+
+    //get current string
+    hyperlinkString = [self.analysisURL.attributedStringValue mutableCopy];
+    
+    //start editing
+    [hyperlinkString beginEditing];
+    
+    //remove url/link
+    [hyperlinkString removeAttribute:NSLinkAttributeName range:NSMakeRange(0, [hyperlinkString length])];
+    
+    //done editing
+    [hyperlinkString endEditing];
+    
+    //set text
+    // ->will look the same, but the URL will be disabled!
+    [self.analysisURL setAttributedStringValue:hyperlinkString];
     
     //pre-req
     [self.overlayView setWantsLayer:YES];
     
     //set overlay's view color to black
-    self.overlayView.layer.backgroundColor = [NSColor blackColor].CGColor;
+    self.overlayView.layer.backgroundColor = [NSColor whiteColor].CGColor;
 
     //make it semi-transparent
-    self.overlayView.alphaValue = 0.75;
+    self.overlayView.alphaValue = 0.85;
     
     //show it
     self.overlayView.hidden = NO;
-
-    //init filter
-    lighten = [CIFilter filterWithName:@"CIColorControls"];
-    
-    //set defaults
-    [lighten setDefaults];
-    
-    //make it white
-    [lighten setValue:@1 forKey:@"inputBrightness"];
-    
-    //set filter
-    [self.progressIndicator setContentFilters:[NSArray arrayWithObjects:lighten, nil]];
     
     //show spinner
     self.progressIndicator.hidden = NO;
     
     //animate it
     [self.progressIndicator startAnimation:nil];
-        
+
     //rescan file?
     if(YES == [((NSButton*)sender).title isEqualToString:@"rescan?"])
     {
@@ -226,8 +230,8 @@
                 //remove file's VT info (since it'd now output of date)
                 self.fileObj.vtInfo = nil;
                 
-                /*
-                //kick off task to re-query
+                /*TODO: re-enable...maybe
+                //kick off task to re-query VT
                 // ->will reload table
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     [vtObj getInfoForItem:self.fileObj rowIndex:self.rowIndex];
@@ -238,6 +242,9 @@
                 // ->will change the item's VT status to ... (pending)
                 [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj rowIndex:self.rowIndex];
                 
+                //nap so user can see msg 'submitting' msg
+                [NSThread sleepForTimeInterval:0.5];
+                
                 //update status msg
                 dispatch_sync(dispatch_get_main_queue(), ^{
 
@@ -247,14 +254,10 @@
                 });
                     
                 //nap so user can see msg
-                [NSThread sleepForTimeInterval:1.0];
+                [NSThread sleepForTimeInterval:0.5];
                 
-                //update status msg
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                
-                    //launch browser to show rew report
-                    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:result[@"permalink"]]];
-                });
+                //launch browser to show rew report
+                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:result[@"permalink"]]];
                 
                 //wait to browser is up and happy
                 [NSThread sleepForTimeInterval:0.5];
@@ -277,16 +280,12 @@
                     
                     //update status msg
                     [self.statusMsg setStringValue:@"failed to submit request :("];
+                    
+                    //stop activity indicator
+                    [self.progressIndicator stopAnimation:nil];
 
                 });
             }
-            
-            //enable close button
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                
-                //enable
-                self.closeButton.enabled = YES;
-            });
             
         });
     }
@@ -309,6 +308,14 @@
             //reset file's VT info
             self.fileObj.vtInfo = nil;
             
+            /*TODO: re-enable...maybe
+             //kick off task to re-query VT
+             // ->will reload table
+             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+             [vtObj getInfoForItem:self.fileObj rowIndex:self.rowIndex];
+             });
+             */
+            
             //got response
             // ->update UI and launch browswer to show report
             if(nil != result)
@@ -326,15 +333,10 @@
                 });
                 
                 //nap so user can see msg
-                [NSThread sleepForTimeInterval:1.0];
-                
-                //
-                dispatch_sync(dispatch_get_main_queue(), ^{
+                [NSThread sleepForTimeInterval:0.5];
                 
                 //launch browser to show rew report
                 [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:result[@"permalink"]]];
-                    
-                });
                 
                 //wait to browser is up and happy
                 [NSThread sleepForTimeInterval:0.5];
@@ -358,18 +360,15 @@
                     //update status msg
                     [self.statusMsg setStringValue:@"failed to submit request :("];
                     
+                    //stop activity indicator
+                    [self.progressIndicator stopAnimation:nil];
+                    
                 });
             }
-            
-            //enable close button
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                
-                //enable
-                self.closeButton.enabled = YES;
-            });
             
         });
     }
 
+    return;
 }
 @end

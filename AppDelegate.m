@@ -12,8 +12,8 @@
 #import "AppDelegate.h"
 
 //supported plugins
-NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"LaunchItems", @"Kexts", @"SpotlightImporters"};
-//NSString * const SUPPORTED_PLUGINS[] = {@"SpotlightImporters"};
+NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"LaunchItems", @"LoginItems", @"SpotlightImporters"};
+//NSString * const SUPPORTED_PLUGINS[] = {@"LaunchItems"};
 
 @implementation AppDelegate
 
@@ -37,19 +37,23 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
 @synthesize progressIndicator;
 @synthesize vulnerableAppHeaderIndex;
 
+//TODO: testing (older OS, w/ malware!! (and take screen shots))
+//TODO: kext plugin - check for ones that won't be loaded? parse plist or something?
 
 
+//center window
+-(void)awakeFromNib
+{
+    //center
+    [self.window center];
+}
 //automatically invoked by OS
 // ->main entry point
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
-    //tracking area for buttons
-    NSTrackingArea* trackingArea = nil;
-    
-    //TODO: re-enable
     //first thing...
     // ->install exception handlers!
-    //installExceptionHandlers();
+    installExceptionHandlers();
     
     //init filter object
     filterObj = [[Filter alloc] init];
@@ -60,14 +64,27 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
     //init array for virus total threads
     vtThreads = [NSMutableArray array];
     
+    //check that OS is supported
+    if(YES != isSupportedOS())
+    {
+        //show alert
+        [self showUnsupportedAlert];
+        
+        //exit
+        exit(0);
+    }
+
     //instantiate all plugins objects
     self.plugins = [self instantiatePlugins];
     
     //dbg msg
-    NSLog(@"registered plugins: %@", self.plugins);
+    //NSLog(@"KNOCKKNOCK: registered plugins: %@", self.plugins);
     
     //pre-populate category table w/ each plugin title
     [self.categoryTableController initTable:self.plugins];
+    
+    //make category table active/selected
+    [[self.categoryTableController.categoryTableView window] makeFirstResponder:self.categoryTableController.categoryTableView];
     
     //hide status msg
     // ->when user clicks scan, will show up..
@@ -83,11 +100,54 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
     //set version info
     [self.versionString setStringValue:[NSString stringWithFormat:@"version: %@", getAppVersion()]];
     
+    //init tracking areas
+    [self initTrackingAreas];
+    
+    //set delegate
+    // ->ensures our 'windowWillClose' method, which has logic to fully exit app
+    self.window.delegate = self;
+
+    return;
+}
+
+//display alert about OS not being supported
+-(void)showUnsupportedAlert
+{
+    //response
+    // ->index of button click
+    NSModalResponse response = 0;
+    
+    //alert box
+    NSAlert* fullScanAlert = nil;
+    
+    //alloc/init alert
+    fullScanAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"OS X %@ is not supported", [[NSProcessInfo processInfo] operatingSystemVersionString]] defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"sorry for the inconvenience!"];
+    
+    //and show it
+    response = [fullScanAlert runModal];
+    
+    return;
+}
+
+//init tracking areas for buttons
+// ->provide mouse over effects
+-(void)initTrackingAreas
+{
+    //tracking area for buttons
+    NSTrackingArea* trackingArea = nil;
+    
+    //init tracking area
+    // ->for scan button
+    trackingArea = [[NSTrackingArea alloc] initWithRect:[self.scanButton bounds] options:(NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways) owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:self.scanButton.tag]}];
+    
+    //add tracking area to scan button
+    [self.scanButton addTrackingArea:trackingArea];
+
     //init tracking area
     // ->for preference button
     trackingArea = [[NSTrackingArea alloc] initWithRect:[self.showPreferencesButton bounds] options:(NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways) owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:self.showPreferencesButton.tag]}];
     
-    //add tracking area to logo button
+    //add tracking area to pref button
     [self.showPreferencesButton addTrackingArea:trackingArea];
     
     //init tracking area
@@ -96,13 +156,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
     
     //add tracking area to logo button
     [self.logoButton addTrackingArea:trackingArea];
-    
-    //set delegate
-    // ->ensures our 'windowWillClose' method, which has logic to fully exit app
-    self.window.delegate = self;
-    
-    //center window
-    [[self window] center];
     
     return;
 }
@@ -116,6 +169,9 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
     // ->and then restart spinner
     if(YES == [self.scannerThread isExecuting])
     {
+        //show
+        [self.progressIndicator setHidden:NO];
+        
         //start spinner
         [self.progressIndicator startAnimation:nil];
     }
@@ -227,9 +283,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
 {
     //reset active plugin index
     self.activePluginIndex = 0;
-    
-    //dbg
-    NSLog(@"in scanner thread...");
     
     //iterate over all plugins
     // ->invoke's each scan message
@@ -383,12 +436,22 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
 // ->reload table if plugin matches active plugin
 -(void)itemsProcessed:(PluginBase*)plugin
 {
+    //if there are any flagged items
+    // ->reload category table (to trigger title turning red)
+    if(0 != plugin.flaggedItems.count)
+    {
+        //execute on main (UI) thread
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            
+            //reload category table
+            [self.categoryTableController customReload];
+            
+        });
+    }
+
     //check if active plugin matches
     if(plugin == self.selectedPlugin)
     {
-        //dbg msg
-        NSLog(@"KNOCKKNOCK: reported plugin results are active, so will reload");
-        
         //execute on main (UI) thread
         dispatch_sync(dispatch_get_main_queue(), ^{
         
@@ -407,12 +470,21 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
 //update a single row
 -(void)itemProcessed:(File*)fileObj rowIndex:(NSUInteger)rowIndex
 {
+    //if item it flagged
+    // ->reload category table (to trigger title turning red)
+    if(0 != [fileObj.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue])
+    {
+        //execute on main (UI) thread
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            
+            //reload category table
+            [self.categoryTableController customReload];
+            
+        });
+    }    
     //check if active plugin matches
     if(fileObj.plugin == self.selectedPlugin)
     {
-        //dbg msg
-        NSLog(@"KNOCKKNOCK: reported plugin results are active, so will reload item");
-        
         //execute on main (UI) thread
         dispatch_sync(dispatch_get_main_queue(), ^{
             
@@ -606,17 +678,17 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
 //shows alert stating that that scan is complete (w/ stats)
 -(void)displayScanStats
 {
-    //TODO: re-enable
-    return;
-    
     //alert from scan completed
     NSAlert* completedAlert = nil;
     
     //detailed scan msg
     NSMutableString* details = nil;
     
-    //issue count
+    //item count
     NSUInteger itemCount = 0;
+    
+    //flagged item count
+    //NSUInteger flaggedItemCount =  0;
     
     //iterate over all plugins
     // ->sum up their item counts
@@ -635,11 +707,25 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
             //add up
             itemCount += plugin.unknownItems.count;
         }
+        
+        //add plugin's flagged items
+        //flaggedItemCount += plugin.flaggedItems.count;
     }
     
     //init detailed msg
     details = [NSMutableString stringWithFormat:@"■ found %lu items", (unsigned long)itemCount];
     
+    /*
+    //when VT integration is enabled
+    // ->add flagged items
+    if(YES != self.prefsWindowController.disableVTQueries)
+    {
+        //add flagged items
+        [details appendFormat:@" \r\n■ %lu flagged by virus total", flaggedItemCount];
+    }
+    */
+    
+    //display 'saved' msg
     if(YES == self.prefsWindowController.saveOutput)
     {
         //add save msg
@@ -647,7 +733,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
     }
     
     //alloc/init alert
-    completedAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"knockknock scan completed"] defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", details];
+    completedAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"scan complete"] defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", details];
     
     //show it
     [completedAlert runModal];
@@ -716,14 +802,35 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
     //image name
     NSString* imageName =  nil;
     
+    //button
+    NSButton* button = nil;
+    
     //extract tag
     tag = [((NSDictionary*)theEvent.userData)[@"tag"] unsignedIntegerValue];
     
     //restore button back to default (visual) state
     if(YES == shouldReset)
     {
+        //set original scan image
+        if(SCAN_BUTTON_TAG == tag)
+        {
+            //scan running?
+            if(YES == [self.scanButtonLabel.stringValue isEqualToString:@"Stop Scan"])
+            {
+                //set
+                imageName = @"stopScan";
+
+            }
+            //scan not running
+            else
+            {
+                //set
+                imageName = @"startScan";
+            }
+            
+        }
         //set original preferences image
-        if(PREF_BUTTON_TAG == tag)
+        else if(PREF_BUTTON_TAG == tag)
         {
             //set
             imageName = @"settings";
@@ -738,8 +845,26 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
     //highlight button
     else
     {
+        //set original scan image
+        if(SCAN_BUTTON_TAG == tag)
+        {
+            //scan running
+            if(YES == [self.scanButtonLabel.stringValue isEqualToString:@"Stop Scan"])
+            {
+                //set
+                imageName = @"stopScanOver";
+                
+            }
+            //scan not running
+            else
+            {
+                //set
+                imageName = @"startScanOver";
+            }
+            
+        }
         //set mouse over preferences image
-        if(PREF_BUTTON_TAG == tag)
+        else if(PREF_BUTTON_TAG == tag)
         {
             //set
             imageName = @"settingsOver";
@@ -751,6 +876,19 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
             imageName = @"logoAppleOver";
         }
     }
+    
+    //set image
+    
+    //grab button
+    button = [[[self window] contentView] viewWithTag:tag];
+    
+    if(YES == [button isEnabled])
+    {
+        //set
+        [button setImage:[NSImage imageNamed:imageName]];
+    }
+    
+    /*
     
     //set image for preferences button
     if(tag == PREF_BUTTON_TAG)
@@ -769,7 +907,8 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
         //set
         [self.logoButton setImage:[NSImage imageNamed:imageName]];
     }
-
+    */
+     
     return;    
 }
 
@@ -796,7 +935,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
     output = [NSMutableString string];
     
     //dbg msg
-    NSLog(@"KK: saving results to %@", OUTPUT_FILE);
+    //NSLog(@"KNOCKKNOCK: saving results to %@", OUTPUT_FILE);
     
     //start JSON
     [output appendString:@"{"];
@@ -823,6 +962,11 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
         //add plugin name
         [output appendString:[NSString stringWithFormat:@"\"%@\":[", plugin.name]];
     
+        //sync
+        // ->since array will be reset if user clicks 'stop' scan
+        @synchronized(items)
+        {
+        
         //iterate over all items
         // ->convert to JSON/append to output
         for(ItemBase* item in items)
@@ -831,6 +975,8 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
             [output appendFormat:@"{%@},", [item toJSON]];
             
         }//all plugin items
+            
+        }//sync
         
         //remove last ','
         if(YES == [output hasSuffix:@","])
@@ -870,7 +1016,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"LoginItems", @"BrowserExtensions", @"L
         //bail
         goto bail;
     }
-
     
 //bail
 bail:

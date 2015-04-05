@@ -32,7 +32,7 @@
 //reload due to toggle of filter options
 -(void)customReload;
 
-//reset a row that was modified (manually) when selected
--(void)resetRow:(NSTableCellView*)row;
+//set the color of all labels in a specified row
+-(void)setRowColor:(NSTableCellView*)row color:(NSColor*)textColor;
 
 @end

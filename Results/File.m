@@ -3,7 +3,7 @@
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 2/19/15.
-//  Copyright (c) 2015 Lucas Derraugh. All rights reserved.
+//  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
 
@@ -41,7 +41,7 @@
         if(YES != [[NSFileManager defaultManager] fileExistsAtPath:params[KEY_RESULT_PATH] isDirectory:&isDirectory])
         {
             //err msg
-            NSLog(@"KNOCKKNOCK ERROR: %@ not found", params[KEY_RESULT_PATH]);
+            NSLog(@"OBJECTIVE-SEE ERROR: %@ not found", params[KEY_RESULT_PATH]);
             
             //set self to nil
             self = nil;
@@ -59,7 +59,7 @@
             if(nil == (bundle = [NSBundle bundleWithPath:params[KEY_RESULT_PATH]]))
             {
                 //err msg
-                NSLog(@"KNOCKKNOCK ERROR: couldn't create bundle for %@", params[KEY_RESULT_PATH]);
+                NSLog(@"OBJECTIVE-SEE ERROR: couldn't create bundle for %@", params[KEY_RESULT_PATH]);
                 
                 //set self to nil
                 self = nil;
@@ -73,7 +73,7 @@
             if(nil == (self.path = self.bundle.executablePath))
             {
                 //err msg
-                //NSLog(@"KNOCKKNOCK ERROR: couldn't find executable in bundle %@", itemPath);
+                //NSLog(@"OBJECTIVE-SEE ERROR: couldn't find executable in bundle %@", itemPath);
                 
                 //set self to nil
                 self = nil;

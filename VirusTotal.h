@@ -3,7 +3,7 @@
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 3/8/15.
-//  Copyright (c) 2015 Lucas Derraugh. All rights reserved.
+//  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
 #import "PluginBase.h"
@@ -31,7 +31,7 @@
 
 //process results
 // ->updates items (found, detection ratio, etc)
--(void)processResults:(PluginBase*)plugin items:(NSArray*)items results:(NSDictionary*)results;
+-(void)processResults:(NSArray*)items results:(NSDictionary*)results;
 
 //get info for a single item
 // ->will callback into AppDelegate to reload plugin

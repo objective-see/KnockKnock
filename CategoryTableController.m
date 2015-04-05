@@ -9,6 +9,7 @@
 #import "Consts.h"
 #import "PluginBase.h"
 #import "AppDelegate.h"
+#import "CategoryRow.h"
 #import "CategoryTableController.h"
 
 @implementation CategoryTableController
@@ -99,11 +100,26 @@
     //set (main) text
     [categoryCell.textField setStringValue:plugin.name];
     
+    //when VT scanning enable & plugin has flagged objects
+    // ->set the title's color to red
+    if( (YES != ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries) &&
+        (0 != plugin.flaggedItems.count) )
+    {
+        //red
+        [categoryCell.textField setTextColor:[NSColor redColor]];
+    }
+    //otherwise set it to black
+    else
+    {
+        //black
+        [categoryCell.textField setTextColor:[NSColor blackColor]];
+    }
+    
     //set detailed text
     [[categoryCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG] setStringValue:plugin.description];
     
     //set item count
-    [[categoryCell viewWithTag:TABLE_ROW_TOTAL_TAG] setStringValue:[NSString stringWithFormat:@"total: %lu", itemsInCategory]];
+    [[categoryCell viewWithTag:TABLE_ROW_TOTAL_TAG] setStringValue:[NSString stringWithFormat:@"%lu", itemsInCategory]];
     
 //bail
 bail:
@@ -124,12 +140,6 @@ bail:
     
     //previously selected row
     NSTableCellView* previousRow = nil;
-    
-    //detailed text
-    NSTextField* detailedTextField = nil;
-    
-    //category count
-    NSTextField* countTextField = nil;
     
     //sanity check
     if(-1 == rowIndex)
@@ -153,24 +163,15 @@ bail:
             //get previous row
             previousRow = [self.categoryTableView viewAtColumn:0 row:self.selectedRow makeIfNecessary:NO];
             
-            //reset row
-            [self resetRow:previousRow];
+            //reset row to gray
+            [self setRowColor:previousRow color:[NSColor grayColor]];
         }
         
         //save selected row index
         self.selectedRow = rowIndex;
         
-        //get detailed text of current row
-        detailedTextField = [currentRow viewWithTag:TABLE_ROW_SUB_TEXT_TAG];
-        
-        //set text color to white
-        detailedTextField.textColor = [NSColor whiteColor];
-        
-        //get category count
-        countTextField = [currentRow viewWithTag:TABLE_ROW_TOTAL_TAG];
-        
-        //set text color to white
-        countTextField.textColor = [NSColor whiteColor];
+        //set row to white
+        [self setRowColor:currentRow color:[NSColor whiteColor]];
         
         //callback up into app delegate
         // ->lets it know that row selection changed
@@ -184,6 +185,34 @@ bail:
 bail:
     
     return YES;
+}
+
+
+//automatically invoked
+// ->create custom (sub-classed) NSTableRowView
+-(NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row
+{
+    //row view
+    CategoryRow* rowView = nil;
+    
+    //row ID
+    static NSString* const kRowIdentifier = @"RowView";
+    
+    //try grab existing row view
+    rowView = [tableView makeViewWithIdentifier:kRowIdentifier owner:self];
+    
+    //make new if needed
+    if(nil == rowView)
+    {
+        //create new
+        // ->size doesn't matter
+        rowView = [[CategoryRow alloc] initWithFrame:NSZeroRect];
+        
+        //set row ID
+        rowView.identifier = kRowIdentifier;
+    }
+    
+    return rowView;
 }
 
 //reload due to toggle of filter options
@@ -213,27 +242,15 @@ bail:
     return;
 }
 
-//reset a row that was modified (manually) when selected
--(void)resetRow:(NSTableCellView*)row
+//set the color of all labels in a specified row
+-(void)setRowColor:(NSTableCellView*)row color:(NSColor*)textColor
 {
-    //detailed text
-    NSTextField* detailedTextField = nil;
-    
-    //total
-    NSTextField* totalTextField = nil;
-    
-    //get detailed text of previous row
-    detailedTextField = [row viewWithTag:TABLE_ROW_SUB_TEXT_TAG];
-    
-    //reset its color to gray
-    detailedTextField.textColor = [NSColor grayColor];
-    
-    //get detailed text of previous row
-    totalTextField = [row viewWithTag:TABLE_ROW_TOTAL_TAG];
-    
-    //reset its color to gray
-    totalTextField.textColor = [NSColor grayColor];
-    
+    //set detailed text of current row to color
+    ((NSTextField*)[row viewWithTag:TABLE_ROW_SUB_TEXT_TAG]).textColor = textColor;
+   
+    //set category count of current row to color
+    ((NSTextField*)[row viewWithTag:TABLE_ROW_TOTAL_TAG]).textColor = textColor;
+
     return;
 }
 

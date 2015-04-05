@@ -3,9 +3,10 @@
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 3/26/15.
-//  Copyright (c) 2015 Lucas Derraugh. All rights reserved.
+//  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
+#import "File.h"
 #import <Cocoa/Cocoa.h>
 
 //#import "ItemTableController.h"
@@ -21,6 +22,9 @@
 
 //parent object
 @property(assign)ItemTableController *delegate;
+
+//File object
+@property(nonatomic, retain)File* fileObj;
 
 //button's row index
 

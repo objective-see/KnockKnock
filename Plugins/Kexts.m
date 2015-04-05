@@ -58,7 +58,7 @@ NSString * const KEXT_SEARCH_DIRECTORIES[] = {@"/System/Library/Extensions/", @"
     File* fileObj = nil;
     
     //dbg msg
-    NSLog(@"%@: scanning", PLUGIN_NAME);
+    //NSLog(@"%@: scanning", PLUGIN_NAME);
 
     //get number of search directories
     directoryCount = sizeof(KEXT_SEARCH_DIRECTORIES)/sizeof(KEXT_SEARCH_DIRECTORIES[0]);

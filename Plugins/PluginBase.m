@@ -16,7 +16,9 @@
 @synthesize name;
 @synthesize allItems;
 @synthesize description;
+@synthesize flaggedItems;
 @synthesize unknownItems;
+
 
 //init method
 -(id)init
@@ -25,11 +27,14 @@
     self = [super init];
     if(nil != self)
     {
-        //alloc item array
+        //alloc items array
         allItems = [NSMutableArray array];
         
-        //alloc unknown item array
+        //alloc unknown items array
         unknownItems = [NSMutableArray array];
+        
+        //alloc flagged items array
+        flaggedItems = [NSMutableArray array];
     }
     
     return self;
@@ -39,11 +44,37 @@
 // ->remove all items
 -(void)reset
 {
+    //sync
+    // ->VT threads might still be accessing
+    @synchronized(self.allItems)
+    {
+        
     //remove all items
     [self.allItems removeAllObjects];
+        
+    }//sync
+    
+    //sync
+    // ->VT threads might still be accessing
+    @synchronized(self.unknownItems)
+    {
     
     //remove unknown items
     [self.unknownItems removeAllObjects];
+        
+    }//sync
+    
+    //sync
+    // ->VT threads might still be accessing
+    @synchronized(self.flaggedItems)
+    {
+
+    //remove flagged items
+    [self.flaggedItems removeAllObjects];
+        
+    }
+    
+    return;
 }
 
 
@@ -59,15 +90,25 @@
         [NSThread exit];
     }
     
-    //save item into 'allItems'
-    [self.allItems addObject:item];
+    //sync
+    // ->just to be safe
+    @synchronized(self.allItems)
+    {
+        //save item into 'allItems'
+        [self.allItems addObject:item];
+    }
     
     //for unknown items
     // ->save seperately as well
     if(YES != item.isTrusted)
     {
-        //save
-        [self.unknownItems addObject:item];
+        //sync
+        // ->just to be safe
+        @synchronized(self.unknownItems)
+        {
+            //save
+            [self.unknownItems addObject:item];
+        }
     }
     
     //report it to the UI

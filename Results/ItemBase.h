@@ -31,6 +31,7 @@
 // ->signed by apple and/or whitelisted
 @property BOOL isTrusted;
 
+
 /* METHODS */
 
 //init method

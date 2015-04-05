@@ -3,7 +3,7 @@
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 2/18/15.
-//  Copyright (c) 2015 Lucas Derraugh. All rights reserved.
+//  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
 
@@ -39,15 +39,26 @@
     return self;
 }
 
-
-
 //table delegate
 // ->return number of rows, which is just number of items in the currently selected plugin
 -(NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
+    //rows
+    NSUInteger rows = 0;
+    
     //invoke helper function to get array
     // ->then just return its count
-    return [[self getTableItems] count];
+    rows =  [[self getTableItems] count];
+    
+    //if there are no items
+    // ->say there is 1, for 'no items found' row
+    if(0 == rows)
+    {
+        //add extra
+        rows++;
+    }
+    
+    return rows;
 }
 
 -(NSIndexSet *)tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes
@@ -95,8 +106,21 @@
     //get array backing table
     tableItems = [self getTableItems];
     
-    //extract plugin item for row
-    item = tableItems[row];
+    //if not items have been found
+    // ->display 'not found' msg
+    if( (0 == row) &&
+        (0 == [tableItems count]) )
+    {
+        //cell is of type 'NoResultsCell'
+        itemCell = [tableView makeViewWithIdentifier:@"NoResultsCell" owner:self];
+        
+        //set text to not found msg
+        [itemCell.textField setStringValue:[NSString stringWithFormat:@"no %@ found", [selectedPluginObj.name lowercaseString]]];
+        
+        //exit early
+        goto bail;
+    }
+
     
     //make table cell
     itemCell = [tableView makeViewWithIdentifier:@"ImageCell" owner:self];
@@ -106,24 +130,28 @@
         goto bail;
     }
     
+    
+    //extract plugin item for row
+    item = tableItems[row];
+
     //set main text
     // ->name
     [itemCell.textField setStringValue:item.name];
     
-    
     //init tracking area
     // ->for 'show' button
     trackingArea = [[NSTrackingArea alloc] initWithRect:[[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON] bounds]
-                                                options:(NSTrackingInVisibleRect  | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways)
-                                                  owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:TABLE_ROW_SHOW_BUTTON]}];
+                    options:(NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways)
+                    owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:TABLE_ROW_SHOW_BUTTON]}];
     //add tracking area to 'show' button
     [[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON] addTrackingArea:trackingArea];
     
     //init tracking area
     // ->for 'info' button
     trackingArea = [[NSTrackingArea alloc] initWithRect:[[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON] bounds]
-                                                options:(NSTrackingInVisibleRect  | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways)
-                                                  owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:TABLE_ROW_INFO_BUTTON]}];
+                    options:(NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways)
+                    owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:TABLE_ROW_INFO_BUTTON]}];
+    
     //add tracking area to 'info' button
     [[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON] addTrackingArea:trackingArea];
     
@@ -151,6 +179,9 @@
         {
             //set button delegate
             vtButton.delegate = self;
+            
+            //save file obj
+            vtButton.fileObj = ((File*)item);
             
             //check if have vt results
             if(nil != ((File*)item).vtInfo)
@@ -207,7 +238,7 @@
                         [vtButton setAttributedTitle:[[NSAttributedString alloc] initWithString:((File*)item).vtInfo[VT_RESULTS_RATIO] attributes:stringAttributes]];
                         
                         //set color (light red)
-                        stringAttributes[NSForegroundColorAttributeName] = [NSColor colorWithCalibratedRed:(255/255.0f) green:(1.0/255.0f) blue:(1.0/255.0f) alpha:0.5];
+                        //stringAttributes[NSForegroundColorAttributeName] = [NSColor colorWithCalibratedRed:(255/255.0f) green:(1.0/255.0f) blue:(1.0/255.0f) alpha:0.5];
                         
                         //set selected text color
                         [vtButton setAttributedAlternateTitle:[[NSAttributedString alloc] initWithString:((File*)item).vtInfo[VT_RESULTS_RATIO] attributes:stringAttributes]];
@@ -299,9 +330,6 @@ bail:
 //automaticall invoked when mouse exits
 -(void)mouseExited:(NSEvent*)theEvent
 {
-    //dbg msg
-    //NSLog(@"mouse exited");
-    
     //mouse exited
     // ->so reset button to original (visual) state
     [self buttonAppearance:theEvent shouldReset:YES];
@@ -555,6 +583,16 @@ bail:
         
         //show it
         [self.vtWindowController.windowController showWindow:self];
+      
+        /*
+        //make it modal
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
+            //modal!
+            [[NSApplication sharedApplication] runModalForWindow:vtWindowController.windowController.window];
+            
+        });
+        */
     }
     
     return;

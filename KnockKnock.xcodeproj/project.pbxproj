@@ -16,9 +16,10 @@
 		CD7B9F501ACB9A8400DF3C71 /* Exception.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9F4F1ACB9A8400DF3C71 /* Exception.m */; };
 		CD7B9F531ACBAE2900DF3C71 /* SpotlightImporters.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */; };
 		CD7B9FA41ACBCFAD00DF3C71 /* spotlightIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9FA31ACBCFAD00DF3C71 /* spotlightIcon.png */; };
+		CD7B9FA71ACCAE5E00DF3C71 /* startScanOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9FA51ACCAE5E00DF3C71 /* startScanOver.png */; };
+		CD7B9FA81ACCAE5E00DF3C71 /* stopScanOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9FA61ACCAE5E00DF3C71 /* stopScanOver.png */; };
+		CD7B9FAB1AD08FA100DF3C71 /* CategoryRow.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9FAA1AD08FA100DF3C71 /* CategoryRow.m */; };
 		CD83887F1AACCEDF000EB098 /* VirusTotal.m in Sources */ = {isa = PBXBuildFile; fileRef = CD83887E1AACCEDF000EB098 /* VirusTotal.m */; };
-		CD8388821AACFE82000EB098 /* virusTotalGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = CD8388801AACFE82000EB098 /* virusTotalGreen.png */; };
-		CD8388831AACFE82000EB098 /* virusTotalRed.png in Resources */ = {isa = PBXBuildFile; fileRef = CD8388811AACFE82000EB098 /* virusTotalRed.png */; };
 		CDA81D4F1A95B492009790E2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D451A95B492009790E2 /* AppDelegate.m */; };
 		CDA81D501A95B492009790E2 /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D471A95B492009790E2 /* Binary.m */; };
 		CDA81D531A95B492009790E2 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D4E1A95B492009790E2 /* Utilities.m */; };
@@ -46,8 +47,6 @@
 		CDA81DCC1A9960A3009790E2 /* virusTotalBG.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA81DC81A9960A3009790E2 /* virusTotalBG.png */; };
 		CDA81DD31A9970A0009790E2 /* signed.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA81DD11A9970A0009790E2 /* signed.png */; };
 		CDA81DD41A9970A0009790E2 /* unsigned.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA81DD21A9970A0009790E2 /* unsigned.png */; };
-		CDA81DD61A99710E009790E2 /* ruler.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA81DD51A99710E009790E2 /* ruler.png */; };
-		CDA81DDC1A99724D009790E2 /* ruler3.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA81DDB1A99724D009790E2 /* ruler3.png */; };
 		CDA81DEA1A997BF1009790E2 /* InfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81DE81A997BF1009790E2 /* InfoWindowController.m */; };
 		CDA81DEE1A99B5F8009790E2 /* Filter.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81DED1A99B5F8009790E2 /* Filter.m */; };
 		CDA81DF31A99B8C2009790E2 /* whitelistedCommands.json in Resources */ = {isa = PBXBuildFile; fileRef = CDA81DF01A99B8C2009790E2 /* whitelistedCommands.json */; };
@@ -99,10 +98,12 @@
 		CD7B9F511ACBAE2900DF3C71 /* SpotlightImporters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpotlightImporters.h; path = Plugins/SpotlightImporters.h; sourceTree = "<group>"; };
 		CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SpotlightImporters.m; path = Plugins/SpotlightImporters.m; sourceTree = "<group>"; };
 		CD7B9FA31ACBCFAD00DF3C71 /* spotlightIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spotlightIcon.png; path = images/spotlightIcon.png; sourceTree = SOURCE_ROOT; };
+		CD7B9FA51ACCAE5E00DF3C71 /* startScanOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = startScanOver.png; path = images/startScanOver.png; sourceTree = SOURCE_ROOT; };
+		CD7B9FA61ACCAE5E00DF3C71 /* stopScanOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stopScanOver.png; path = images/stopScanOver.png; sourceTree = SOURCE_ROOT; };
+		CD7B9FA91AD08FA100DF3C71 /* CategoryRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryRow.h; sourceTree = "<group>"; };
+		CD7B9FAA1AD08FA100DF3C71 /* CategoryRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryRow.m; sourceTree = "<group>"; };
 		CD83887D1AACCEDF000EB098 /* VirusTotal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VirusTotal.h; sourceTree = "<group>"; };
 		CD83887E1AACCEDF000EB098 /* VirusTotal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VirusTotal.m; sourceTree = "<group>"; };
-		CD8388801AACFE82000EB098 /* virusTotalGreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = virusTotalGreen.png; path = images/virusTotalGreen.png; sourceTree = SOURCE_ROOT; };
-		CD8388811AACFE82000EB098 /* virusTotalRed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = virusTotalRed.png; path = images/virusTotalRed.png; sourceTree = SOURCE_ROOT; };
 		CDA81D441A95B492009790E2 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		CDA81D451A95B492009790E2 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = SOURCE_ROOT; };
 		CDA81D461A95B492009790E2 /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = SOURCE_ROOT; };
@@ -140,8 +141,6 @@
 		CDA81DC81A9960A3009790E2 /* virusTotalBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = virusTotalBG.png; path = images/virusTotalBG.png; sourceTree = SOURCE_ROOT; };
 		CDA81DD11A9970A0009790E2 /* signed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = signed.png; path = images/signed.png; sourceTree = SOURCE_ROOT; };
 		CDA81DD21A9970A0009790E2 /* unsigned.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unsigned.png; path = images/unsigned.png; sourceTree = SOURCE_ROOT; };
-		CDA81DD51A99710E009790E2 /* ruler.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ruler.png; path = images/ruler.png; sourceTree = SOURCE_ROOT; };
-		CDA81DDB1A99724D009790E2 /* ruler3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ruler3.png; path = images/ruler3.png; sourceTree = SOURCE_ROOT; };
 		CDA81DE71A997BF1009790E2 /* InfoWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoWindowController.h; sourceTree = "<group>"; };
 		CDA81DE81A997BF1009790E2 /* InfoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoWindowController.m; sourceTree = "<group>"; };
 		CDA81DEC1A99B5F8009790E2 /* Filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Filter.h; sourceTree = "<group>"; };
@@ -208,6 +207,8 @@
 		1D21BC42172AF43D009D1CFD = {
 			isa = PBXGroup;
 			children = (
+				CD7B9FA91AD08FA100DF3C71 /* CategoryRow.h */,
+				CD7B9FAA1AD08FA100DF3C71 /* CategoryRow.m */,
 				CDF08CE31AC89FD4009B3423 /* 3rdParty */,
 				CDF08CD81AC881F9009B3423 /* MachOParser */,
 				CD83887D1AACCEDF000EB098 /* VirusTotal.h */,
@@ -293,6 +294,8 @@
 		CD6095501A8329FA00E091CD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				CD7B9FA51ACCAE5E00DF3C71 /* startScanOver.png */,
+				CD7B9FA61ACCAE5E00DF3C71 /* stopScanOver.png */,
 				CD7B9FA31ACBCFAD00DF3C71 /* spotlightIcon.png */,
 				CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */,
 				CDF08CF11ACA6864009B3423 /* browserIcon.png */,
@@ -309,10 +312,6 @@
 				CD001B341AB903040089014A /* kkText.png */,
 				CD001B351AB903040089014A /* logo.png */,
 				CD001B361AB903040089014A /* logoApple.png */,
-				CD8388801AACFE82000EB098 /* virusTotalGreen.png */,
-				CD8388811AACFE82000EB098 /* virusTotalRed.png */,
-				CDA81DDB1A99724D009790E2 /* ruler3.png */,
-				CDA81DD51A99710E009790E2 /* ruler.png */,
 				CDA81DD11A9970A0009790E2 /* signed.png */,
 				CDA81DD21A9970A0009790E2 /* unsigned.png */,
 				CDA81DC51A9960A3009790E2 /* info.png */,
@@ -481,18 +480,17 @@
 				CDF08CEF1ACA677B009B3423 /* launchIcon.png in Resources */,
 				CD7B9FA41ACBCFAD00DF3C71 /* spotlightIcon.png in Resources */,
 				CDA81E651AA020FD009790E2 /* ExtensionInfoWindow.xib in Resources */,
-				CD8388821AACFE82000EB098 /* virusTotalGreen.png in Resources */,
+				CD7B9FA81ACCAE5E00DF3C71 /* stopScanOver.png in Resources */,
 				CDA81D701A95B4E9009790E2 /* stopScan.png in Resources */,
-				CDA81DD61A99710E009790E2 /* ruler.png in Resources */,
 				CDA81DF51A99B8C2009790E2 /* whitelistedFiles.json in Resources */,
 				CDF08CF01ACA677B009B3423 /* kernelIcon.png in Resources */,
-				CD8388831AACFE82000EB098 /* virusTotalRed.png in Resources */,
 				CDF08CD01AC4C6E8009B3423 /* settingsBG.png in Resources */,
 				CDA81D5C1A95B4B4009790E2 /* MainMenu.xib in Resources */,
 				CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */,
 				CDA81DCB1A9960A3009790E2 /* virusTotal.png in Resources */,
 				CDA81DF41A99B8C2009790E2 /* whitelistedExtensions.json in Resources */,
 				CDA81DD41A9970A0009790E2 /* unsigned.png in Resources */,
+				CD7B9FA71ACCAE5E00DF3C71 /* startScanOver.png in Resources */,
 				CD001B371AB903040089014A /* kkText.png in Resources */,
 				CDF08CC11AC3E8B0009B3423 /* showOver.png in Resources */,
 				CDA81DCC1A9960A3009790E2 /* virusTotalBG.png in Resources */,
@@ -514,7 +512,6 @@
 				CDA81D741A95B4FB009790E2 /* icon.iconset in Resources */,
 				CDA81D6E1A95B4E9009790E2 /* startScan.png in Resources */,
 				CDA81DCA1A9960A3009790E2 /* infoBG.png in Resources */,
-				CDA81DDC1A99724D009790E2 /* ruler3.png in Resources */,
 				CDF08CD11AC4C6E8009B3423 /* settings.png in Resources */,
 				CDA81DD31A9970A0009790E2 /* signed.png in Resources */,
 				CDA81E661AA020FD009790E2 /* FileInfoWindow.xib in Resources */,
@@ -552,6 +549,7 @@
 				CDA81D771A95B7C1009790E2 /* CategoryTableController.m in Sources */,
 				CD7B9F531ACBAE2900DF3C71 /* SpotlightImporters.m in Sources */,
 				CDA81D531A95B492009790E2 /* Utilities.m in Sources */,
+				CD7B9FAB1AD08FA100DF3C71 /* CategoryRow.m in Sources */,
 				CDA81D8E1A96F557009790E2 /* Kexts.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -601,6 +599,7 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -627,6 +626,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;

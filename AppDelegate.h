@@ -2,8 +2,8 @@
 //  AppDelegate.h
 //  KnockKnock
 //
-//  Created by Lucas Derraugh on 4/26/13.
-//  Copyright (c) 2013 Lucas Derraugh. All rights reserved.
+//  Created by Patrick Wardle
+//  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
 #import "Binary.h"
@@ -76,6 +76,10 @@
 
 
 /* METHODS */
+
+//init tracking areas for buttons
+// ->provide mouse over effects
+-(void)initTrackingAreas;
 
 //create instances of all registered plugins
 -(NSMutableArray*)instantiatePlugins;

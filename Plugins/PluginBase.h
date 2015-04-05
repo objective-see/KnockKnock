@@ -27,6 +27,9 @@
 //unknown items
 @property(retain, nonatomic)NSMutableArray* unknownItems;
 
+//flagged items
+@property(retain, nonatomic)NSMutableArray* flaggedItems;
+
 //icon
 @property(retain, nonatomic)NSString* icon;
 

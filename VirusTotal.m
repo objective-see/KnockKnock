@@ -3,7 +3,7 @@
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 3/8/15.
-//  Copyright (c) 2015 Lucas Derraugh. All rights reserved.
+//  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
 #import "File.h"
@@ -46,6 +46,11 @@
     //init query URL
     queryURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", VT_QUERY_URL, VT_API_KEY]];
     
+    //sync
+    // ->since array will be reset if user clicks 'stop' scan
+    @synchronized(plugin.allItems)
+    {
+    
     //place all plugin file items into dictionary
     // ->key: hash, filter's out dups for queries
     for(ItemBase* item in plugin.allItems)
@@ -68,16 +73,26 @@
         //add item
         uniqueItems[((File*)item).hashes[KEY_HASH_SHA1]] = item;
     }
+        
+    }//sync
     
     //iterate over all hashes
     // ->create item dictionary (JSON), and add it to list
     for(NSString* itemKey in uniqueItems)
     {
-        //extract item
-        item = uniqueItems[itemKey];
-        
         //alloc item data
         itemData = [NSMutableDictionary dictionary];
+        
+        //exit if thread was cancelled
+        // ->i.e. user pressed 'stop' scan
+        if(YES == [[NSThread currentThread] isCancelled])
+        {
+            //exit
+            [NSThread exit];
+        }
+        
+        //extract item
+        item = uniqueItems[itemKey];
         
         //auto start location
         itemData[@"autostart_location"] = plugin.name;
@@ -110,7 +125,7 @@
         if(nil != results)
         {
             //process results
-            [self processResults:plugin items:plugin.allItems results:results];
+            [self processResults:plugin.allItems results:results];
         }
         
         //remove all items
@@ -126,7 +141,7 @@
         if(nil != results)
         {
             //process results
-            [self processResults:plugin items:plugin.allItems results:results];
+            [self processResults:plugin.allItems results:results];
         }
     }
     
@@ -138,7 +153,9 @@
         [NSThread exit];
     }
     
-    //tell UI plugin items have all be processed
+    
+    
+    //tell UI all plugin's items have all be processed
     [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemsProcessed:plugin];
 
     return;
@@ -214,10 +231,10 @@
     NSError* error = nil;
     
     //data from VT
-    NSData *vtData = nil;
+    NSData* vtData = nil;
     
     //response (HTTP) from VT
-    NSURLResponse *httpResponse = nil;
+    NSURLResponse* httpResponse = nil;
 
     //alloc/init request
     request = [[NSMutableURLRequest alloc] initWithURL:url];
@@ -293,96 +310,107 @@ bail:
     //results
     NSDictionary* results = nil;
     
+    //submit URL
+    NSURL* submitURL = nil;
+    
     //request
     NSMutableURLRequest *request = nil;
     
+    //body of request
+    NSMutableData* body = nil;
+    
+    //file data
+    NSData* fileContents = nil;
     
     //error var
     NSError* error = nil;
     
-    //response
-    NSData *response = nil;
+    //data from Vt
+    NSData* vtData = nil;
     
-    NSURLResponse *blah = nil;
+    //response (HTTP) from VT
+    NSURLResponse* httpResponse = nil;
 
+    //init submit URL
+    submitURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?apikey=%@&resource=%@", VT_SUBMIT_URL, VT_API_KEY, fileObj.hashes[KEY_HASH_MD5]]];
     
-    NSURL* submitURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?apikey=%@&resource=%@", VT_SUBMIT_URL, VT_API_KEY, fileObj.hashes[KEY_HASH_MD5]]];
-    
-    
-    
+    //init request
     request = [[NSMutableURLRequest alloc] initWithURL:submitURL];
     
-    // the boundary string. Can be whatever we want, as long as it doesn't appear as part of "proper" fields
+    //set boundary string
     NSString *boundary = @"qqqq___knockknock___qqqq";
     
-    // setting the HTTP method
+    //set HTTP method (POST)
     [request setHTTPMethod:@"POST"];
     
-    // setting the Content-type and the boundary
+    //set the HTTP header 'Content-type' to the boundary
     [request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary] forHTTPHeaderField: @"Content-Type"];
     
-    //set user agent
+    //set HTTP header, 'User-Agent'
     [request setValue:VT_USER_AGENT forHTTPHeaderField:@"User-Agent"];
 
+    //init body
+    body = [NSMutableData data];
     
+    //load file into memory
+    fileContents = [NSData dataWithContentsOfFile:fileObj.pathForFinder];
     
-    
-    
-    
-    // we need a buffer of mutable data where we will write the body of the request
-    NSMutableData *body = [NSMutableData data];
-    
-    
-    // creating a NSData representation of the image
-    NSData *fileData = [NSData dataWithContentsOfFile:fileObj.pathForFinder];
-    
-    NSString *fileNameStr = [NSString stringWithFormat:@"%@", fileObj.name];
-    
-    // if we have successfully obtained a NSData representation of the image
-    if (fileData) {
-        [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file\"; filename=\"%@\"\r\n", fileNameStr] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:fileData];
-        [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    //sanity check
+    if(nil == fileContents)
+    {
+        //err msg
+        NSLog(@"OBJECTIVE-SEE ERROR: failed to load %@ into memory for submission", fileObj.path);
+        
+        //bail
+        goto bail;
     }
-    else
-        NSLog(@"no image data!!!");
+        
+    //append boundary
+    [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
     
+    //append 'Content-Disposition' file name, etc
+    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file\"; filename=\"%@\"\r\n", fileObj.name] dataUsingEncoding:NSUTF8StringEncoding]];
     
-    // we close the body with one last boundary
+    //append 'Content-Type'
+    [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    //append file's contents
+    [body appendData:fileContents];
+    
+    //append '\r\n'
+    [body appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    //append final boundary
     [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
     
-    
-    // assigning the completed NSMutableData buffer as the body of the HTTP POST request
+    //set body
     [request setHTTPBody:body];
-    
     
     //set content length
     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[body length]] forHTTPHeaderField:@"Content-length"];
 
-    
-    
     //send request
     // ->synchronous, so will block
-    response = [NSURLConnection sendSynchronousRequest:request returningResponse:&blah error:&error];
+    vtData = [NSURLConnection sendSynchronousRequest:request returningResponse:&httpResponse error:&error];
     
-    //sanity check
-    if(nil == response)
+    //sanity check(s)
+    if( (nil == vtData) ||
+        (nil != error) ||
+        (200 != (long)[(NSHTTPURLResponse *)httpResponse statusCode]) )
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: failed to query VirusTotal (%@)", error);
+        NSLog(@"OBJECTIVE-SEE ERROR: failed to query VirusTotal (%@, %@)", error, httpResponse);
         
         //bail
         goto bail;
     }
     
     //convert response (hopefully JSON)
-    results = [NSJSONSerialization JSONObjectWithData:response options:kNilOptions error:nil];
+    results = [NSJSONSerialization JSONObjectWithData:vtData options:kNilOptions error:nil];
     if(nil == results)
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: failed to convert response to JSON");
+        NSLog(@"OBJECTIVE-SEE ERROR: failed to convert response %@ to JSON", vtData);
         
         //bail
         goto bail;
@@ -392,7 +420,6 @@ bail:
 bail:
     
     return results;
-    
 }
 
 //submit a rescan request
@@ -401,7 +428,11 @@ bail:
     //result data
     NSDictionary* result = nil;
     
-    NSURL* reScanURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?apikey=%@&resource=%@", VT_RESCAN_URL, VT_API_KEY, fileObj.hashes[KEY_HASH_MD5]]];
+    //scan url
+    NSURL* reScanURL = nil;
+    
+    //init scan url
+    reScanURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?apikey=%@&resource=%@", VT_RESCAN_URL, VT_API_KEY, fileObj.hashes[KEY_HASH_MD5]]];
     
     //make request to VT
     result = [self postRequest:reScanURL parameters:nil];
@@ -421,13 +452,18 @@ bail:
 }
 
 //process results
-// ->save VT info into each File obj
--(void)processResults:(PluginBase*)plugin items:(NSArray*)items results:(NSDictionary*)results
+// ->save VT info into each File obj and all flagged files
+-(void)processResults:(NSArray*)items results:(NSDictionary*)results
 {
     //process all results
     // ->save VT result dictionary into File obj
     for(NSDictionary* result in results[VT_RESULTS])
     {
+        //sync
+        // ->since array will be reset if user clicks 'stop' scan
+        @synchronized(items)
+        {
+
         //find all items that match
         // ->might be dupes, which is fine
         for(File* item in items)
@@ -437,8 +473,22 @@ bail:
             {
                 //save
                 item.vtInfo = result;
+                
+                //if its flagged save in File's plugin
+                if(0 != [result[VT_RESULTS_POSITIVES] unsignedIntegerValue])
+                {
+                    //sync
+                    // ->since array will be reset if user clicks 'stop' scan
+                    @synchronized(item.plugin.flaggedItems)
+                    {
+                        //save
+                        [item.plugin.flaggedItems addObject:item];
+                    }
+                }
             }
         }
+            
+        }//sync
     }
     
     return;

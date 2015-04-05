@@ -14,7 +14,7 @@
 #define PLUGIN_NAME @"Browser Extensions"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"code that is hosted and executed by the browser"
+#define PLUGIN_DESCRIPTION @"plugins/extensions hosted in the browser"
 
 //plugin icon
 #define PLUGIN_ICON @"browserIcon"
@@ -67,7 +67,7 @@
     NSArray* installedBrowsers = nil;
     
     //dbg msg
-    NSLog(@"%@: scanning", PLUGIN_NAME);
+    //NSLog(@"%@: scanning", PLUGIN_NAME);
     
     //get all installed browsers
     installedBrowsers = [self getInstalledBrowsers];
@@ -136,6 +136,13 @@
         [browsers addObject:[(__bridge NSURL *)browserURL path]];
     }
     
+    //release browser IDs
+    if(nil != browserIDs)
+    {
+        //release
+        CFRelease(browserIDs);
+    }
+    
     return browsers;
 }
 
@@ -175,7 +182,7 @@
     if(STATUS_SUCCESS != status)
     {
         //err msg
-        NSLog(@"KNOCKKNOCK ERROR: querying keychain for Safari extensions failed with %d", status);
+        NSLog(@"OBJECTIVE-SEE ERROR: querying keychain for Safari extensions failed with %d", status);
         
         //bail
         goto bail;
@@ -188,9 +195,6 @@
     // ->save/report enabled ones
     for(NSDictionary* extension in extensions[@"Installed Extensions"])
     {
-        //dbg msg
-        //NSLog(@"Safari ext: %@", extension);
-        
         //alloc extension info
         extensionInfo = [NSMutableDictionary dictionary];
             
@@ -250,6 +254,13 @@
     
 //bail
 bail:
+    
+    //release password data
+    if(NULL != keychainData)
+    {
+        //release
+        SecKeychainItemFreeContent(NULL, keychainData);
+    }
     
     //release keychain item reference
     if(NULL != keychainItemRef)

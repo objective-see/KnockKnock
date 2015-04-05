@@ -65,7 +65,7 @@ NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight",
     File* fileObj = nil;
     
     //dbg msg
-    NSLog(@"%@: scanning", PLUGIN_NAME);
+    //NSLog(@"%@: scanning", PLUGIN_NAME);
     
     //get number of search directories
     directoryCount = sizeof(SPOTLIGHT_SEARCH_DIRECTORIES)/sizeof(SPOTLIGHT_SEARCH_DIRECTORIES[0]);

@@ -73,7 +73,7 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
     File* fileObj = nil;
     
     //dbg msg
-    NSLog(@"%@: scanning", PLUGIN_NAME);
+    //NSLog(@"%@: scanning", PLUGIN_NAME);
     
     //get disabled items
     disabledItems = [self getDisabledItems];
@@ -139,7 +139,8 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
             }
             
             //skip paths that don't exist
-            if(YES != [[NSFileManager defaultManager] fileExistsAtPath:launchItemPath])
+            if( (nil == launchItemPath) ||
+                (YES != [[NSFileManager defaultManager] fileExistsAtPath:launchItemPath]))
             {
                 //skip
                 continue;

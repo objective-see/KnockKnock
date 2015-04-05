@@ -62,7 +62,7 @@
     File* fileObj = nil;
     
     //dbg msg
-    NSLog(@"%@: scanning", PLUGIN_NAME);
+    //NSLog(@"%@: scanning", PLUGIN_NAME);
     
     //create shared file list reference
     sharedListRef = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);

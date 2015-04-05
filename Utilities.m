@@ -3,7 +3,7 @@
 //  DHS
 //
 //  Created by Patrick Wardle on 2/7/15.
-//  Copyright (c) 2015 Lucas Derraugh. All rights reserved.
+//  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
 #import "Consts.h"
@@ -12,6 +12,70 @@
 #import <Security/Security.h>
 #import <Foundation/Foundation.h>
 #import <CommonCrypto/CommonDigest.h>
+
+//check if OS is supported
+BOOL isSupportedOS()
+{
+    //return
+    BOOL isSupported = NO;
+    
+    //major version
+    SInt32 versionMajor = 0;
+    
+    //minor version
+    SInt32 versionMinor = 0;
+    
+    //get major version
+    versionMajor = getVersion(gestaltSystemVersionMajor);
+    
+    //get minor version
+    versionMinor = getVersion(gestaltSystemVersionMinor);
+    
+    //sanity check
+    if( (-1 == versionMajor) ||
+        (-1 == versionMinor) )
+    {
+        //err
+        goto bail;
+    }
+    
+    //check that OS is supported
+    // ->10.8+ ?
+    if( (versionMajor == OS_MAJOR_VERSION_X) &&
+        (versionMinor >= OS_MINOR_VERSION_LION) )
+    {
+        //set flag
+        isSupported = YES;
+    }
+    
+//bail
+bail:
+    
+    return isSupported;
+}
+
+//get OS's major or minor version
+SInt32 getVersion(OSType selector)
+{
+    //version
+    // ->major or minor
+    SInt32 version = -1;
+    
+    //get version info
+    if(noErr != Gestalt(selector, &version))
+    {
+        //reset version
+        version = -1;
+        
+        //err
+        goto bail;
+    }
+    
+//bail
+bail:
+    
+    return version;
+}
 
 
 //get the signing info of a file
@@ -54,7 +118,7 @@ NSDictionary* extractSigningInfo(NSString* path)
     if(STATUS_SUCCESS != status)
     {
         //err msg
-        NSLog(@"DHS ERROR: SecStaticCodeCreateWithPath() failed on %@ with %d", path, status);
+        NSLog(@"OBJECTIVE-SEE ERROR: SecStaticCodeCreateWithPath() failed on %@ with %d", path, status);
         
         //bail
         goto bail;
@@ -77,7 +141,7 @@ NSDictionary* extractSigningInfo(NSString* path)
         if(STATUS_SUCCESS != status)
         {
             //err msg
-            NSLog(@"DHS ERROR: SecCodeCopySigningInformation() failed on %@ with %d", path, status);
+            NSLog(@"OBJECTIVE-SEE ERROR: SecCodeCopySigningInformation() failed on %@ with %d", path, status);
             
             //bail
             goto bail;
@@ -90,28 +154,41 @@ NSDictionary* extractSigningInfo(NSString* path)
     //get cert chain
     certificateChain = [(__bridge NSDictionary*)signingInformation objectForKey:(__bridge NSString*)kSecCodeInfoCertificates];
     
-    //get name of all certs
-    for(index = 0; index < certificateChain.count; index++)
+    //handle case there is no cert chain
+    // ->adhoc? (/Library/Frameworks/OpenVPN.framework/Versions/Current/bin/openvpn-service)
+    if(0 == certificateChain.count)
     {
-        //extract cert
-        certificate = (__bridge SecCertificateRef)([certificateChain objectAtIndex:index]);
-        
-        //get common name
-        status = SecCertificateCopyCommonName(certificate, &commonName);
-        
-        //skip ones that error out
-        if( (STATUS_SUCCESS != status) ||
-            (NULL == commonName))
+        //set
+        [signingStatus[KEY_SIGNING_AUTHORITIES] addObject:@"signed, but no signing authorities (adhoc?)"];
+    }
+    
+    //got cert chain
+    // ->add each to list
+    else
+    {
+        //get name of all certs
+        for(index = 0; index < certificateChain.count; index++)
         {
-            //skip
-            continue;
+            //extract cert
+            certificate = (__bridge SecCertificateRef)([certificateChain objectAtIndex:index]);
+            
+            //get common name
+            status = SecCertificateCopyCommonName(certificate, &commonName);
+            
+            //skip ones that error out
+            if( (STATUS_SUCCESS != status) ||
+                (NULL == commonName))
+            {
+                //skip
+                continue;
+            }
+            
+            //save
+            [signingStatus[KEY_SIGNING_AUTHORITIES] addObject:(__bridge NSString*)commonName];
+            
+            //release name
+            CFRelease(commonName);
         }
-        
-        //save
-        [signingStatus[KEY_SIGNING_AUTHORITIES] addObject:(__bridge NSString*)commonName];
-        
-        //release name
-        CFRelease(commonName);
     }
     
 //bail
@@ -154,7 +231,7 @@ BOOL isApple(NSString* path)
     if(STATUS_SUCCESS != status)
     {
         //err msg
-        NSLog(@"DHS ERROR: SecStaticCodeCreateWithPath() failed on %@ with %d", path, status);
+        NSLog(@"OBJECTIVE-SEE ERROR: SecStaticCodeCreateWithPath() failed on %@ with %d", path, status);
         
         //bail
         goto bail;
@@ -167,7 +244,7 @@ BOOL isApple(NSString* path)
         (requirementRef == NULL) )
     {
         //err msg
-        NSLog(@"DHS ERROR: SecRequirementCreateWithString() failed on %@ with %d", path, status);
+        NSLog(@"OBJECTIVE-SEE ERROR: SecRequirementCreateWithString() failed on %@ with %d", path, status);
         
         //bail
         goto bail;
@@ -178,10 +255,8 @@ BOOL isApple(NSString* path)
     status = SecStaticCodeCheckValidity(staticCode, kSecCSDefaultFlags, requirementRef);
     if(STATUS_SUCCESS != status)
     {
-        //err msg
-        NSLog(@"DHS ERROR: SecStaticCodeCheckValidity() failed on %@ with %d", path, status);
-        
         //bail
+        // ->just means app isn't signed by apple
         goto bail;
     }
     
@@ -436,22 +511,6 @@ NSBundle* findAppBundle(NSString* binaryPath)
     return appBundle;
 }
 
-//covert a time interval to a 'pretty' string
-NSString* getTimeRepresentationFromDate(NSDate* iDate, NSTimeInterval iTimeInterval)
-{
-    NSString *aReturnValue = nil;
-    NSDate *aNewDate = [iDate dateByAddingTimeInterval:iTimeInterval];
-    
-    unsigned int theUnits = NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
-    NSCalendar *aCalender = [NSCalendar currentCalendar];
-    NSDateComponents *aDateComponents = [aCalender components:theUnits fromDate:iDate toDate:aNewDate options:0];
-    
-    aReturnValue = [NSString stringWithFormat:@"%ldh:%ldm:%lds", (long)[aDateComponents hour], (long)[aDateComponents minute], (long)[aDateComponents second]];
-    
-    return aReturnValue;
-}
-
-
 //hash a file
 // ->md5 and sha1
 NSDictionary* hashFile(NSString* filePath)
@@ -487,7 +546,7 @@ NSDictionary* hashFile(NSString* filePath)
     if(nil == (fileContents = [NSData dataWithContentsOfFile:filePath]))
     {
         //err msg
-        NSLog(@"KNOCKKNOCK ERROR: could load %@ to hash", filePath);
+        NSLog(@"OBJECTIVE-SEE ERROR: couldn't load %@ to hash", filePath);
         
         //bail
         goto bail;
@@ -538,13 +597,8 @@ void makeTextViewHyperlink(NSTextField* textField, NSURL* url)
     //hyperlink
     NSMutableAttributedString *hyperlinkString = nil;
     
-    //NSMutableAttributedString *resultString = [[NSMutableAttributedString alloc] initWithString:@"Check out this "];
-    
     //range
     NSRange range = {0};
-    
-    // Create hyperlink
-    //NSString *linkName = @"blog";
     
     //init hyper link
     hyperlinkString = [[NSMutableAttributedString alloc] initWithString:textField.stringValue];
@@ -568,16 +622,24 @@ void makeTextViewHyperlink(NSTextField* textField, NSURL* url)
     //done editing
     [hyperlinkString endEditing];
     
-    //[resultString appendAttributedString:hyperlinkString];
-    
-    //NSString *plainString = @". Some pretty interesting posts.";
-    
-    //[resultString appendAttributedString:[[NSAttributedString alloc] initWithString:plainString]];
-    
+    //set text
     [textField setAttributedStringValue:hyperlinkString];
-
     
     return;
+}
 
+//set the color of an attributed string
+NSMutableAttributedString* setStringColor(NSAttributedString* string, NSColor* color)
+{
+    //colored string
+    NSMutableAttributedString *coloredString = nil;
+
+    //alloc/init colored string from existing one
+    coloredString = [[NSMutableAttributedString alloc] initWithAttributedString:string];
+    
+    //set color
+    [coloredString addAttribute:NSForegroundColorAttributeName value:color range:NSMakeRange(0, [coloredString length])];
+    
+    return coloredString;
 }
 

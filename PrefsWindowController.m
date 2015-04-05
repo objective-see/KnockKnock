@@ -19,8 +19,17 @@
 @synthesize showTrustedItems;
 
 
+//automatically called when nib is loaded
+// ->center window
+-(void)awakeFromNib
+{
+    //center
+    [self.window center];
+}
+
+
 //automatically invoked when window is loaded
-// ->center it
+// ->set to white
 -(void)windowDidLoad
 {
     //super

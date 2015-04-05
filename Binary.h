@@ -3,7 +3,7 @@
 //  DHS
 //
 //  Created by Patrick Wardle on 2/6/15.
-//  Copyright (c) 2015 Lucas Derraugh. All rights reserved.
+//  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
 #import "MachO.h"
