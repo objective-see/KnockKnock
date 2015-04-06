@@ -61,11 +61,6 @@
     return rows;
 }
 
--(NSIndexSet *)tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes
-{
-    return nil;
-}
-
 //table delegate method
 // ->return cell for row
 -(NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
@@ -102,7 +97,7 @@
     
     //set selected plugin
     selectedPluginObj =  ((AppDelegate*)[[NSApplication sharedApplication] delegate]).selectedPlugin;
-    
+  
     //get array backing table
     tableItems = [self getTableItems];
     
@@ -114,9 +109,20 @@
         //cell is of type 'NoResultsCell'
         itemCell = [tableView makeViewWithIdentifier:@"NoResultsCell" owner:self];
         
-        //set text to not found msg
-        [itemCell.textField setStringValue:[NSString stringWithFormat:@"no %@ found", [selectedPluginObj.name lowercaseString]]];
-        
+        //only set msg if plugin isn't nil
+        if(nil != selectedPluginObj)
+        {
+            //set text to not found msg
+            [itemCell.textField setStringValue:[NSString stringWithFormat:@"no %@ found", [selectedPluginObj.name lowercaseString]]];
+        }
+        //plugin nil
+        // ->just set string to blank
+        else
+        {
+            //set text to not found msg
+            [itemCell.textField setStringValue:@""];
+        }
+      
         //exit early
         goto bail;
     }

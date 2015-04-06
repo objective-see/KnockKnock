@@ -95,7 +95,7 @@
         else
         {
             //set
-            [self.plist setStringValue:@"n/a"];
+            [self.plist setStringValue:@"no plist for item"];
         }
         
         //set signing info

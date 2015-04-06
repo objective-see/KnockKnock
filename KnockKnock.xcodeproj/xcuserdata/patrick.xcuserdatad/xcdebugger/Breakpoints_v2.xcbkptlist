@@ -30,11 +30,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ItemTableController.m"
-            timestampString = "449884348.899167"
+            timestampString = "449973581.094202"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "563"
-            endingLineNumber = "563"
+            startingLineNumber = "569"
+            endingLineNumber = "569"
             landmarkName = "-showVTInfo:"
             landmarkType = "5">
          </BreakpointContent>
@@ -84,22 +84,6 @@
             startingLineNumber = "133"
             endingLineNumber = "133"
             landmarkName = "-tableView:shouldSelectRow:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ItemTableController.m"
-            timestampString = "449865967.812375"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
-            landmarkName = "-tableView:viewForTableColumn:row:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

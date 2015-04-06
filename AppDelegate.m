@@ -77,6 +77,9 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     //instantiate all plugins objects
     self.plugins = [self instantiatePlugins];
     
+    //set selected plugin to first
+    self.selectedPlugin = [self.plugins firstObject];
+    
     //dbg msg
     //NSLog(@"KNOCKKNOCK: registered plugins: %@", self.plugins);
     
@@ -357,6 +360,17 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     
     //save it into array
     [self.vtThreads addObject:virusTotalThread];
+    
+    return;
+}
+
+//automatically invoked when user clicks logo
+// ->load objective-see's html page
+-(IBAction)logoButtonHandler:(id)sender
+{
+    //open URL
+    // ->invokes user's default browser
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://objective-see.com"]];
     
     return;
 }
@@ -888,27 +902,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
         [button setImage:[NSImage imageNamed:imageName]];
     }
     
-    /*
-    
-    //set image for preferences button
-    if(tag == PREF_BUTTON_TAG)
-    {
-        //this button can be disabled (e.g. during scan)
-        // ->only handle mouse events if button is enabled
-        if(YES == [self.showPreferencesButton isEnabled])
-        {
-            //set
-            [self.showPreferencesButton setImage:[NSImage imageNamed:imageName]];
-        }
-    }
-    //set image for logo button
-    else if(tag == LOGO_BUTTON_TAG)
-    {
-        //set
-        [self.logoButton setImage:[NSImage imageNamed:imageName]];
-    }
-    */
-     
     return;    
 }
 
@@ -1025,8 +1018,8 @@ bail:
 
 #pragma mark Menu Handler(s) #pragma mark -
 
-//action
-// ->invoked when user clicks 'About/Info' or, Objective-See logo in main UI
+//automatically invoked when user clicks 'About/Info'
+// ->load knockknock's html page
 -(IBAction)about:(id)sender
 {
     //open URL
@@ -1035,6 +1028,7 @@ bail:
     
     return;
 }
+
 
 //automatically invoked when user clicks gear icon
 // ->show preferences

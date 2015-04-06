@@ -353,7 +353,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="about:" target="494" id="j6F-6n-eXB"/>
+                            <action selector="logoButtonHandler:" target="494" id="H4C-BT-arE"/>
                         </connections>
                     </button>
                 </subviews>

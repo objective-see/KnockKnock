@@ -115,6 +115,8 @@
 //kickoff a thread to query VT
 -(void)queryVT:(PluginBase*)plugin;
 
+//button handler for logo
+-(IBAction)logoButtonHandler:(id)sender;
 
 //action for 'about' in menu/logo in UI
 -(IBAction)about:(id)sender;
