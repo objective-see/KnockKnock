@@ -24,6 +24,9 @@
 //button for saving output
 @property (weak) IBOutlet NSButton* saveOutputBtn;
 
+//button for ok/close
+@property (weak) IBOutlet NSButton *okButton;
+
 //filter out OS/known items
 @property BOOL showTrustedItems;
 

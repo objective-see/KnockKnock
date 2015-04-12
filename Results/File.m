@@ -157,7 +157,6 @@ bail:
             //brk
             break;
         }
-        
             
         //happily signed
         case STATUS_SUCCESS:
@@ -215,6 +214,9 @@ bail:
     //signing info
     NSString* fileSigs = nil;
     
+    //VT detection ratio
+    NSString* vtDetectionRatio = nil;
+    
     //convert hash dictionary
     jsonData = [NSJSONSerialization dataWithJSONObject:self.hashes options:kNilOptions error:NULL];
     if(nil != jsonData)
@@ -231,8 +233,11 @@ bail:
         fileSigs = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     }
     
+    //init VT detection ratio
+    vtDetectionRatio = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)[self.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[self.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
+    
     //init json
-    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"plist\": \"%@\", \"hashes\": %@, \"signature(s)\": %@", self.name, self.path, self.plist, fileHashes, fileSigs];
+    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"plist\": \"%@\", \"hashes\": %@, \"signature(s)\": %@, \"VT detection\": \"%@\"", self.name, self.path, self.plist, fileHashes, fileSigs, vtDetectionRatio];
     
     return json;
 }

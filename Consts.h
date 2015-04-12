@@ -59,6 +59,10 @@
 //hash key, MD5
 #define KEY_HASH_MD5 @"md5"
 
+//menu
+
+//tag for prefs menu item
+#define PREF_MENU_ITEM_TAG 1
 
 //main window
 
@@ -78,6 +82,12 @@
 //logo button
 #define LOGO_BUTTON_TAG 1002
 
+//category table
+
+
+//id (tag) for detailed text in category table
+#define TABLE_ROW_NAME_TAG 100
+
 //id (tag) for detailed text in category table
 #define TABLE_ROW_SUB_TEXT_TAG 101
 
@@ -85,7 +95,13 @@
 #define TABLE_ROW_TOTAL_TAG 102
 
 
-// item table
+//item table
+
+//id (tag) for signed icon
+#define TABLE_ROW_SIGNATURE_ICON 100
+
+//id (tag) for path
+#define TABLE_ROW_PATH_LABEL 101
 
 //id (tag) for 'virus total' button
 #define TABLE_ROW_VT_BUTTON 102
@@ -139,6 +155,9 @@
 //query url
 #define VT_QUERY_URL @"https://www.virustotal.com/partners/sysinternals/file-reports?apikey="
 
+//requery url
+#define VT_REQUERY_URL @"https://www.virustotal.com/vtapi/v2/file/report"
+
 //rescan url
 #define VT_RESCAN_URL @"https://www.virustotal.com/vtapi/v2/file/rescan"
 
@@ -157,6 +176,9 @@
 //results
 #define VT_RESULTS @"data"
 
+//results response code
+#define VT_RESULTS_RESPONSE @"response_code"
+
 //result url
 #define VT_RESULTS_URL @"permalink"
 
@@ -164,13 +186,19 @@
 #define VT_RESULT_HASH @"hash"
 
 //results known
-#define VT_RESULTS_FOUND @"found"
+//#define VT_RESULTS_FOUND @"found"
 
 //results detection ratio
-#define VT_RESULTS_RATIO @"detection_ratio"
+//#define VT_RESULTS_RATIO @"detection_ratio"
 
 //results positives
 #define VT_RESULTS_POSITIVES @"positives"
+
+//results total
+#define VT_RESULTS_TOTAL @"total"
+
+//results scan id
+#define VT_RESULTS_SCANID @"scan_id"
 
 //output file
 #define OUTPUT_FILE @"kkFindings.txt"

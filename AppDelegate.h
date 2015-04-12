@@ -13,12 +13,14 @@
 #import "PluginBase.h"
 #import "VirusTotal.h"
 #import "ItemTableController.h"
-#import "CategoryTableController.h"
+#import "AboutWindowController.h"
 #import "PrefsWindowController.h"
+#import "CategoryTableController.h"
+#import "ResultsWindowController.h"
 
 #import <Cocoa/Cocoa.h>
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate, NSTableViewDataSource, NSTableViewDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate, NSTableViewDataSource, NSTableViewDelegate, NSMenuDelegate>
 {
    
 
@@ -56,6 +58,8 @@
 
 //spinner
 @property (weak) IBOutlet NSProgressIndicator *progressIndicator;
+
+//status msg
 @property (weak) IBOutlet NSTextField *statusText;
 
 //non-UI thread that performs actual scan
@@ -71,8 +75,13 @@
 @property(nonatomic, retain)NSMutableArray* vtThreads;
 
 //preferences window controller
-@property (nonatomic, retain)PrefsWindowController* prefsWindowController;
+@property(nonatomic, retain)PrefsWindowController* prefsWindowController;
 
+//about window controller
+@property(nonatomic, retain)AboutWindowController* aboutWindowController;
+
+//results window controller
+@property(nonatomic, retain)ResultsWindowController* resultsWindowController;
 
 
 /* METHODS */

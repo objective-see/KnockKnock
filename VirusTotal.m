@@ -153,8 +153,6 @@
         [NSThread exit];
     }
     
-    
-    
     //tell UI all plugin's items have all be processed
     [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemsProcessed:plugin];
 
@@ -162,53 +160,52 @@
 }
 
 //get VT info for a single item
-// ->will callback into AppDelegate to reload item in UI
--(void)getInfoForItem:(File*)fileObj rowIndex:(NSUInteger)rowIndex
+// ->will then callback into AppDelegate to reload item in UI
+-(void)getInfoForItem:(File*)fileObj scanID:(NSString*)scanID rowIndex:(NSUInteger)rowIndex
 {
-    //item data
-    NSMutableDictionary* itemData = nil;
-    
     //VT query URL
     NSURL* queryURL = nil;
     
     //results
     NSDictionary* results = nil;
     
-    //alloc item data
-    itemData = [NSMutableDictionary dictionary];
-    
     //init query URL
-    queryURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", VT_QUERY_URL, VT_API_KEY]];
+    queryURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?apikey=%@&resource=%@", VT_REQUERY_URL, VT_API_KEY, scanID]];
     
-    //auto start location
-    itemData[@"autostart_location"] = fileObj.plugin.name;
-    
-    //set item name
-    itemData[@"autostart_entry"] = fileObj.name;
-    
-    //set item path
-    itemData[@"image_path"] = fileObj.path;
-    
-    //set hash
-    itemData[@"hash"] = fileObj.hashes[KEY_HASH_SHA1];
-    
-    //set creation times
-    itemData[@"creation_datetime"] = [fileObj.attributes.fileCreationDate description];
-    
-    //make query to VT
-    results = [self postRequest:queryURL parameters:@[itemData]];
-    if(nil != results)
+    //make queries until response is recieved
+    while(YES)
     {
-        //process results
-        // ->just first result (should only be one)
-        if(nil != [results[VT_RESULTS] firstObject])
-        {
-            //extract result
-            fileObj.vtInfo = [results[VT_RESULTS] firstObject];
+        //make query to VT
+        results = [self postRequest:queryURL parameters:nil];
         
+        //check if scan is complete
+        if( (nil != results) &&
+            (1 == [results[VT_RESULTS_RESPONSE] integerValue]) )
+        {
+            //save result
+            fileObj.vtInfo = results;
+            
+            //if its flagged save in File's plugin
+            if(0 != [results[VT_RESULTS_POSITIVES] unsignedIntegerValue])
+            {
+                //sync
+                // ->since array will be reset if user clicks 'stop' scan
+                @synchronized(fileObj.plugin.flaggedItems)
+                {
+                    //save
+                    [fileObj.plugin.flaggedItems addObject:fileObj];
+                }
+            }
+            
             //callback up into UI to reload item
             [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:fileObj rowIndex:rowIndex];
+            
+            //exit loop
+            break;
         }
+        
+        //nap
+        [NSThread sleepForTimeInterval:60*1];
     }
     
     return;

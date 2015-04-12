@@ -8,6 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface CategoryRow : NSTableRowView
+@interface KKRow : NSTableRowView
 
 @end

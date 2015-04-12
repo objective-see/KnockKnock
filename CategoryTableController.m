@@ -9,7 +9,7 @@
 #import "Consts.h"
 #import "PluginBase.h"
 #import "AppDelegate.h"
-#import "CategoryRow.h"
+#import "KKRow.h"
 #import "CategoryTableController.h"
 
 @implementation CategoryTableController
@@ -132,6 +132,8 @@ bail:
 //   if its a content row, allow the selection (and handle text highlighting issues)
 -(BOOL)tableView:(NSTableView *)tableView shouldSelectRow:(NSInteger)rowIndex
 {
+    //return YES;
+    
     //ret flag
     BOOL shouldSelect = NO;
     
@@ -193,7 +195,7 @@ bail:
 -(NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row
 {
     //row view
-    CategoryRow* rowView = nil;
+    KKRow* rowView = nil;
     
     //row ID
     static NSString* const kRowIdentifier = @"RowView";
@@ -206,7 +208,7 @@ bail:
     {
         //create new
         // ->size doesn't matter
-        rowView = [[CategoryRow alloc] initWithFrame:NSZeroRect];
+        rowView = [[KKRow alloc] initWithFrame:NSZeroRect];
         
         //set row ID
         rowView.identifier = kRowIdentifier;
@@ -250,7 +252,7 @@ bail:
    
     //set category count of current row to color
     ((NSTextField*)[row viewWithTag:TABLE_ROW_TOTAL_TAG]).textColor = textColor;
-
+    
     return;
 }
 

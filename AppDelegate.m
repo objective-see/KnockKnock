@@ -13,21 +13,22 @@
 
 //supported plugins
 NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"LaunchItems", @"LoginItems", @"SpotlightImporters"};
-//NSString * const SUPPORTED_PLUGINS[] = {@"LaunchItems"};
+
 
 @implementation AppDelegate
 
 @synthesize plugins;
 @synthesize filterObj;
+@synthesize vtThreads;
 @synthesize virusTotalObj;
 @synthesize selectedPlugin;
 @synthesize activePluginIndex;
-@synthesize vtThreads;
 @synthesize itemTableController;
-@synthesize categoryTableController;
+@synthesize aboutWindowController;
 @synthesize prefsWindowController;
 @synthesize showPreferencesButton;
-
+@synthesize categoryTableController;
+@synthesize resultsWindowController;
 
 @synthesize scanButton;
 @synthesize scannerThread;
@@ -39,13 +40,25 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
 
 //TODO: testing (older OS, w/ malware!! (and take screen shots))
 //TODO: kext plugin - check for ones that won't be loaded? parse plist or something?
+//TODO: white buttons!! (copy from BB)
 
+
+//TODO: tools, snapshot between runs? 'what changed app' rootkit revealer? driver view?
 
 //center window
+// ->also make front
 -(void)awakeFromNib
 {
     //center
     [self.window center];
+    
+    //make it key window
+    [self.window makeKeyAndOrderFront:self];
+    
+    //make window front
+    [NSApp activateIgnoringOtherApps:YES];
+    
+    return;
 }
 //automatically invoked by OS
 // ->main entry point
@@ -220,7 +233,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
 {
     //check state
     // ->START scan
-    if(YES == [[self.scanButtonLabel stringValue] isEqualToString:@"Start Scan"])
+    if(YES == [[self.scanButtonLabel stringValue] isEqualToString:START_SCAN])
     {
         //clear out all plugin results
         for(PluginBase* plugin in self.plugins)
@@ -301,6 +314,9 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
         //update scanner msg
         dispatch_sync(dispatch_get_main_queue(), ^{
             
+            //show
+            self.statusText.hidden = NO;
+            
             //update
             [self.statusText setStringValue:[NSString stringWithFormat:@"scanning %@", plugin.name]];
             
@@ -325,6 +341,14 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     //reset active plugin index
     // ->just to be safe...
     self.activePluginIndex = 0;
+    
+    //if VT querying is enabled (default)
+    // ->wait a bit to let the VT results come in
+    if(YES != self.prefsWindowController.disableVTQueries)
+    {
+        //nap
+        [NSThread sleepForTimeInterval:3.0];
+    }
     
     //stop ui & show informational alert
     dispatch_sync(dispatch_get_main_queue(), ^{
@@ -484,18 +508,15 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
 //update a single row
 -(void)itemProcessed:(File*)fileObj rowIndex:(NSUInteger)rowIndex
 {
-    //if item it flagged
-    // ->reload category table (to trigger title turning red)
-    if(0 != [fileObj.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue])
-    {
-        //execute on main (UI) thread
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            
-            //reload category table
-            [self.categoryTableController customReload];
-            
-        });
-    }    
+    //reload category table (on main thread)
+    // ->ensures correct title color (red, or reset)
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        
+        //reload category table
+        [self.categoryTableController customReload];
+        
+    });
+
     //check if active plugin matches
     if(fileObj.plugin == self.selectedPlugin)
     {
@@ -634,7 +655,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     //set label text
     // ->'Stop Scan'
     [self.scanButtonLabel setStringValue:STOP_SCAN];
-    
+
     //disable gear (show prefs) button
     self.showPreferencesButton.enabled = NO;
     
@@ -679,7 +700,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     //re-enable gear (show prefs) button
     self.showPreferencesButton.enabled = YES;
     
-    //only show stats for complete scan
+    //only show scan stats for completed scan
     if(YES == [statusMsg isEqualToString:SCAN_MSG_COMPLETE])
     {
         //display scan stats in UI (popup)
@@ -692,9 +713,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
 //shows alert stating that that scan is complete (w/ stats)
 -(void)displayScanStats
 {
-    //alert from scan completed
-    NSAlert* completedAlert = nil;
-    
     //detailed scan msg
     NSMutableString* details = nil;
     
@@ -746,11 +764,29 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
         [details appendFormat:@" \r\n■ saved findings to '%@'", OUTPUT_FILE];
     }
     
-    //alloc/init alert
-    completedAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"scan complete"] defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", details];
+    //alloc/init settings window
+    if(nil == self.resultsWindowController)
+    {
+        //alloc/init
+        resultsWindowController = [[ResultsWindowController alloc] initWithWindowNibName:@"ResultsWindow"];
+    }
+    
+    //center window
+    [[self.resultsWindowController window] center];
     
     //show it
-    [completedAlert runModal];
+    [self.resultsWindowController showWindow:self];
+    
+    //set details
+    [self.resultsWindowController.detailsLabel setStringValue:details];
+    
+    //make it modal
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        //modal!
+        [[NSApplication sharedApplication] runModalForWindow:resultsWindowController.window];
+        
+    });
     
     return;
 } 
@@ -927,9 +963,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     //init output string
     output = [NSMutableString string];
     
-    //dbg msg
-    //NSLog(@"KNOCKKNOCK: saving results to %@", OUTPUT_FILE);
-    
     //start JSON
     [output appendString:@"{"];
     
@@ -1019,13 +1052,22 @@ bail:
 #pragma mark Menu Handler(s) #pragma mark -
 
 //automatically invoked when user clicks 'About/Info'
-// ->load knockknock's html page
+// ->show about window
 -(IBAction)about:(id)sender
 {
-    //open URL
-    // ->invokes user's default browser
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://objective-see.com/products/knockknock.html"]];
+    //alloc/init settings window
+    if(nil == self.aboutWindowController)
+    {
+        //alloc/init
+        aboutWindowController = [[AboutWindowController alloc] initWithWindowNibName:@"AboutWindow"];
+    }
     
+    //center window
+    [[self.aboutWindowController window] center];
+    
+    //show it
+    [self.aboutWindowController showWindow:self];
+
     return;
 }
 
@@ -1048,7 +1090,7 @@ bail:
     [self.prefsWindowController showWindow:self];
     
     //make it modal
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
         //capture existing prefs
         // ->needed to trigger re-saves
@@ -1061,6 +1103,27 @@ bail:
     
     
     return;
+}
+
+//automatically invoked when menu is clicked
+// ->tell menu to disable 'Preferences' when scan is running
+-(BOOL)validateMenuItem:(NSMenuItem *)item
+{
+    //enable
+    BOOL bEnabled = YES;
+    
+    //check if item is 'Preferences'
+    if(PREF_MENU_ITEM_TAG == item.tag)
+    {
+        //unset enabled flag if scan is running
+        if(YES != [[self.scanButtonLabel stringValue] isEqualToString:START_SCAN])
+        {
+            //disable
+            bEnabled = NO;
+        }
+    }
+
+    return bEnabled;
 }
 
 @end

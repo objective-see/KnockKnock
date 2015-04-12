@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
-#import "CategoryRow.h"
+#import "KKRow.h"
 
-@implementation CategoryRow
+@implementation KKRow
 
 //custom row selection
 -(void)drawSelectionInRect:(NSRect)dirtyRect

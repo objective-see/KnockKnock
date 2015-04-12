@@ -48,6 +48,8 @@
 }
 
 
+//automatically invoked
+// ->make it white
 -(void)windowDidLoad
 {
     [super windowDidLoad];
@@ -55,6 +57,12 @@
     //make it modal
     //[[NSApplication sharedApplication] runModalForWindow:self.window];
     
+    //make white
+    [self.window setBackgroundColor: NSColor.whiteColor];
+    
+    //make close button selected
+    [self.window makeFirstResponder:self.closeButton];
+
     return;
 }
 
@@ -76,17 +84,27 @@
     //flag
     BOOL isKnown = NO;
     
+    //detection ratio
+    NSString* vtDetectionRatio = nil;
+    
     //get status
-    isKnown = [self.fileObj.vtInfo[VT_RESULTS_FOUND] boolValue];
+    if(nil != self.fileObj.vtInfo[VT_RESULTS_URL])
+    {
+        //known
+        isKnown = YES;
+    }
     
     //file status (known/unknown)
     if(YES == isKnown)
     {
+        //generate detection ratio
+        vtDetectionRatio = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)[self.fileObj.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[self.fileObj.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
+        
         //set name
         [self.fileName setStringValue:self.fileObj.name];
         
         //detection ratio
-        [self.detectionRatio setStringValue:self.fileObj.vtInfo[VT_RESULTS_RATIO]];
+        [self.detectionRatio setStringValue:vtDetectionRatio];
         
         //analysis url
         [self.analysisURL setStringValue:@"virus total report"];
@@ -165,6 +183,9 @@
     //analyis URL
     NSMutableAttributedString* hyperlinkString = nil;
     
+    //VT scan ID
+    __block NSString* scanID = nil;
+    
     //alloc/init VT obj
     vtObj = [[VirusTotal alloc] init];
     
@@ -227,16 +248,36 @@
             // ->update UI and launch browswer to show report
             if(nil != result)
             {
-                //remove file's VT info (since it'd now output of date)
+                //grab scan ID
+                // ->need this for (re)queries
+                scanID = result[VT_RESULTS_SCANID];
+                
+                //if file was flagged
+                // ->remove it from list of plugin's flagged
+                if(0 != [self.fileObj.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue])
+                {
+                    //sync
+                    // ->since array will be reset if user clicks 'stop' scan
+                    @synchronized(self.fileObj.plugin.flaggedItems)
+                    {
+                        //remove
+                        [self.fileObj.plugin.flaggedItems removeObject:self.fileObj];
+                    }
+                }
+                
+                //remove file's VT info (since it'd now out of date)
                 self.fileObj.vtInfo = nil;
                 
-                /*TODO: re-enable...maybe
-                //kick off task to re-query VT
-                // ->will reload table
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [vtObj getInfoForItem:self.fileObj rowIndex:self.rowIndex];
-                });
-                 */
+                //with a scan id can re-query VT
+                // ->will update VT button in UI once results are retrieved
+                if(nil != scanID)
+                {
+                    //kick off task to re-query VT
+                    // ->wait 60 seconds though to give VT servers some time to process
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        [vtObj getInfoForItem:self.fileObj scanID:scanID rowIndex:self.rowIndex];
+                    });
+                }
                 
                 //ask app delegate to update item in table
                 // ->will change the item's VT status to ... (pending)
@@ -305,16 +346,21 @@
             //submit file to VT
             result = [vtObj submit:self.fileObj];
             
+            // ->need this for (re)queries
+            scanID = result[VT_RESULTS_SCANID];
+            
             //reset file's VT info
             self.fileObj.vtInfo = nil;
             
-            /*TODO: re-enable...maybe
-             //kick off task to re-query VT
-             // ->will reload table
-             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-             [vtObj getInfoForItem:self.fileObj rowIndex:self.rowIndex];
-             });
-             */
+            //with a scan id can query VT
+            // ->will update VT button in UI once results are retrieved
+            if(nil != scanID)
+            {
+                //kick off task to re-query VT
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [vtObj getInfoForItem:self.fileObj scanID:scanID rowIndex:self.rowIndex];
+                });
+            }
             
             //got response
             // ->update UI and launch browswer to show report

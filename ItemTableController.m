@@ -46,18 +46,34 @@
     //rows
     NSUInteger rows = 0;
     
+    //plugin object
+    PluginBase* selectedPluginObj = nil;
+    
+    //set selected plugin
+    selectedPluginObj =  ((AppDelegate*)[[NSApplication sharedApplication] delegate]).selectedPlugin;
+    
     //invoke helper function to get array
-    // ->then just return its count
-    rows =  [[self getTableItems] count];
+    // ->then grab count
+    rows = [[self getTableItems] count];
     
-    //if there are no items
-    // ->say there is 1, for 'no items found' row
-    if(0 == rows)
+    //if not items have been found
+    // ->display 'not found' msg
+    if( (0 == rows) &&
+        (nil != selectedPluginObj) )
     {
-        //add extra
-        rows++;
+        
+        //set string (to include plugin's name)
+        [self.noItemsLabel setStringValue:[NSString stringWithFormat:@"no %@ found", [selectedPluginObj.name lowercaseString]]];
+        
+        //show label
+        self.noItemsLabel.hidden = NO;
     }
-    
+    else
+    {
+        //hide label
+        self.noItemsLabel.hidden = YES;
+    }
+
     return rows;
 }
 
@@ -79,9 +95,21 @@
     // ->this can be a File, Command, or Extension obj
     ItemBase* item = nil;
     
+    //signature icon
+    NSImageView* signatureImageView = nil;
+    
+    //VT detection ratio
+    NSString* vtDetectionRatio = nil;
+    
     //virus total button
     // ->for File objects only...
     VTButton* vtButton;
+    
+    //(for files) signed/unsigned icon
+    NSImage* signatureStatus = nil;
+    
+    //path frame
+    CGRect pathFrame = {0};
     
     //attribute dictionary
     NSMutableDictionary *stringAttributes = nil;
@@ -100,34 +128,15 @@
   
     //get array backing table
     tableItems = [self getTableItems];
-    
-    //if not items have been found
-    // ->display 'not found' msg
-    if( (0 == row) &&
-        (0 == [tableItems count]) )
+
+    //sanity check
+    // ->make sure there is table item for row
+    if(tableItems.count <= row)
     {
-        //cell is of type 'NoResultsCell'
-        itemCell = [tableView makeViewWithIdentifier:@"NoResultsCell" owner:self];
-        
-        //only set msg if plugin isn't nil
-        if(nil != selectedPluginObj)
-        {
-            //set text to not found msg
-            [itemCell.textField setStringValue:[NSString stringWithFormat:@"no %@ found", [selectedPluginObj.name lowercaseString]]];
-        }
-        //plugin nil
-        // ->just set string to blank
-        else
-        {
-            //set text to not found msg
-            [itemCell.textField setStringValue:@""];
-        }
-      
-        //exit early
+        //bail
         goto bail;
     }
 
-    
     //make table cell
     itemCell = [tableView makeViewWithIdentifier:@"ImageCell" owner:self];
     if(nil == itemCell)
@@ -135,7 +144,6 @@
         //bail
         goto bail;
     }
-    
     
     //extract plugin item for row
     item = tableItems[row];
@@ -149,6 +157,7 @@
     trackingArea = [[NSTrackingArea alloc] initWithRect:[[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON] bounds]
                     options:(NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways)
                     owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:TABLE_ROW_SHOW_BUTTON]}];
+    
     //add tracking area to 'show' button
     [[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON] addTrackingArea:trackingArea];
     
@@ -161,10 +170,45 @@
     //add tracking area to 'info' button
     [[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON] addTrackingArea:trackingArea];
     
+    //get signature image view
+    signatureImageView = [itemCell viewWithTag:TABLE_ROW_SIGNATURE_ICON];
+    
+    //get path's frame
+    pathFrame = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame;
+    
     //set detailed text
     // ->path
     if(YES == [item isKindOfClass:[File class]])
     {
+        //set signature status icon
+        //switch on signing status
+        if( (nil != ((File*)item).signingInfo) &&
+            (STATUS_SUCCESS == [((File*)item).signingInfo[KEY_SIGNATURE_STATUS] integerValue]) )
+        {
+            //signed
+            signatureStatus = [NSImage imageNamed:@"signed"];
+        }
+        //signature not present or invalid
+        // ->
+        else
+        {
+            //signed
+            signatureStatus = [NSImage imageNamed:@"unsigned"];
+        }
+        
+        //set signature icon
+        signatureImageView.image = signatureStatus;
+        
+        //show signature icon
+        signatureImageView.hidden = NO;
+        
+        //set path to be aligned to item name
+        // ->since there isn't a signature icon
+        pathFrame.origin.x = 68;
+        
+        //update frame
+        ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
+        
         //truncate path
         truncatedPath = stringByTruncatingString([itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG], [item path], itemCell.frame.size.width-TABLE_BUTTONS_FILE);
         
@@ -199,11 +243,12 @@
                 vtButton.enabled = YES;
                 
                 //got VT results
-                //...set colored icon for files known by virus total
-                if(YES == [((File*)item).vtInfo[VT_RESULTS_FOUND] boolValue])
+                // ->check 'permalink' to determine if file is known to VT
+                //   then, show ratio and set to red if file is flagged
+                if(nil != ((File*)item).vtInfo[VT_RESULTS_URL])
                 {
                     //alloc paragraph style
-                    paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+                    paragraphStyle = [[NSMutableParagraphStyle alloc] init];
                     
                     //center the text
                     [paragraphStyle setAlignment:NSCenterTextAlignment];
@@ -220,6 +265,9 @@
                     //set font
                     stringAttributes[NSFontAttributeName] = [NSFont fontWithName:@"Menlo-Bold" size:15];
                     
+                    //compute detection ratio
+                    vtDetectionRatio = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)[((File*)item).vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[((File*)item).vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
+                    
                     //known 'good' files (0 positivies)
                     if(0 == [((File*)item).vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue])
                     {
@@ -227,13 +275,13 @@
                         stringAttributes[NSForegroundColorAttributeName] = [NSColor blackColor];
                         
                         //set string (vt ratio), with attributes
-                        [vtButton setAttributedTitle:[[NSAttributedString alloc] initWithString:((File*)item).vtInfo[VT_RESULTS_RATIO] attributes:stringAttributes]];
+                        [vtButton setAttributedTitle:[[NSAttributedString alloc] initWithString:vtDetectionRatio attributes:stringAttributes]];
                         
                         //set color (gray)
                         stringAttributes[NSForegroundColorAttributeName] = [NSColor grayColor];
                         
                         //set selected text color
-                        [vtButton setAttributedAlternateTitle:[[NSAttributedString alloc] initWithString:((File*)item).vtInfo[VT_RESULTS_RATIO] attributes:stringAttributes]];
+                        [vtButton setAttributedAlternateTitle:[[NSAttributedString alloc] initWithString:vtDetectionRatio attributes:stringAttributes]];
                     }
                     else
                     {
@@ -241,13 +289,10 @@
                         stringAttributes[NSForegroundColorAttributeName] = [NSColor redColor];
                         
                         //set string (vt ratio), with attributes
-                        [vtButton setAttributedTitle:[[NSAttributedString alloc] initWithString:((File*)item).vtInfo[VT_RESULTS_RATIO] attributes:stringAttributes]];
-                        
-                        //set color (light red)
-                        //stringAttributes[NSForegroundColorAttributeName] = [NSColor colorWithCalibratedRed:(255/255.0f) green:(1.0/255.0f) blue:(1.0/255.0f) alpha:0.5];
+                        [vtButton setAttributedTitle:[[NSAttributedString alloc] initWithString:vtDetectionRatio attributes:stringAttributes]];
                         
                         //set selected text color
-                        [vtButton setAttributedAlternateTitle:[[NSAttributedString alloc] initWithString:((File*)item).vtInfo[VT_RESULTS_RATIO] attributes:stringAttributes]];
+                        [vtButton setAttributedAlternateTitle:[[NSAttributedString alloc] initWithString:vtDetectionRatio attributes:stringAttributes]];
                     }
                     
                     //enable
@@ -293,11 +338,21 @@
             //hide virus total button label
             [[itemCell viewWithTag:TABLE_ROW_VT_BUTTON+1] setHidden:YES];
         }
-
     }
+    
     //EXTENSIONS
     else if(YES == [item isKindOfClass:[Extension class]])
     {
+        //hide signature status
+        signatureImageView.hidden = YES;
+        
+        //set path to be aligned to item name
+        // ->since there isn't a signature icon
+        pathFrame.origin.x = 50;
+        
+        //update frame
+        ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
+        
         //truncate path
         truncatedPath = stringByTruncatingString([itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG], [item path], itemCell.frame.size.width-TABLE_BUTTONS_EXTENTION);
         
@@ -321,6 +376,12 @@ bail:
     
     return itemCell;
 }
+
+-(NSIndexSet *)tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes
+{
+    return nil;
+}
+
 
 //automatically invoked when mouse entered
 -(void)mouseEntered:(NSEvent*)theEvent
@@ -517,6 +578,9 @@ bail:
 // ->open Finder to show item
 -(IBAction)showInFinder:(id)sender
 {
+    //array backing table
+    NSArray* tableItems = nil;
+    
     //selected item
     // ->will either be a File, Extension, or Command obj
     ItemBase* selectedItem = nil;
@@ -527,12 +591,26 @@ bail:
     //grab selected row
     selectedRow = [self.itemTableView rowForView:sender];
     
+    //grab item table items
+    tableItems = [self getTableItems];
+    
+    //sanity check
+    // ->make sure row has item
+    if(tableItems.count < selectedRow)
+    {
+        //bail
+        goto bail;
+    }
+    
     //extract selected item
-    selectedItem = [self getTableItems][selectedRow];
-        
+    selectedItem = tableItems[selectedRow];
+
     //open Finder
     // ->will reveal binary
     [[NSWorkspace sharedWorkspace] selectFile:[selectedItem pathForFinder] inFileViewerRootedAtPath:nil];
+    
+//bail
+bail:
         
     return;
 }
@@ -541,6 +619,9 @@ bail:
 // ->create/configure/display info window
 - (IBAction)showInfo:(id)sender
 {
+    //array backing table
+    NSArray* tableItems = nil;
+    
     //selected item
     // ->will either be a File, Extension, or Command obj
     ItemBase* selectedItem = nil;
@@ -551,15 +632,29 @@ bail:
     //grab selected row
     selectedRow = [self.itemTableView rowForView:sender];
     
+    //grab item table items
+    tableItems = [self getTableItems];
+    
+    //sanity check
+    // ->make sure row has item
+    if(tableItems.count < selectedRow)
+    {
+        //bail
+        goto bail;
+    }
+    
     //extract selected item
     // ->invoke helper function to get array backing table
-    selectedItem = [self getTableItems][selectedRow];
+    selectedItem = tableItems[selectedRow];
    
     //alloc/init info window
     infoWindowController = [[InfoWindowController alloc] initWithItem:selectedItem];
     
     //show it
     [self.infoWindowController.windowController showWindow:self];
+    
+//bail
+bail:
     
     return;
 }
@@ -568,6 +663,9 @@ bail:
 // ->launch browser and browse to virus total's page
 -(void)showVTInfo:(NSView*)button
 {
+    //array backing table
+    NSArray* tableItems = nil;
+    
     //selected item
     File* selectedItem = nil;
 
@@ -577,12 +675,23 @@ bail:
     //get row index
     rowIndex = [self.itemTableView rowForView:button];
     
+    //grab item table items
+    tableItems = [self getTableItems];
+    
+    //sanity check
+    // ->make sure row has item
+    if(tableItems.count < rowIndex)
+    {
+        //bail
+        goto bail;
+    }
+
     //sanity check
     if(-1 != rowIndex)
     {
         //extract selected item
         // ->invoke helper function to get array backing table
-        selectedItem = [self getTableItems][rowIndex];
+        selectedItem = tableItems[rowIndex];
         
         //alloc/init info window
         vtWindowController = [[VTInfoWindowController alloc] initWithItem:selectedItem rowIndex:rowIndex];
@@ -600,6 +709,9 @@ bail:
         });
         */
     }
+    
+//bail
+bail:
     
     return;
 }

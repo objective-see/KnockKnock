@@ -21,6 +21,19 @@
 
 @synthesize itemObj;
 
+//automatically invoked when window is loaded
+// ->set to white
+-(void)windowDidLoad
+{
+    //super
+    [super windowDidLoad];
+    
+    //make white
+    [self.window setBackgroundColor: NSColor.whiteColor];
+    
+    return;
+}
+
 //init method
 // ->save item and load nib
 -(id)initWithItem:(ItemBase*)selectedItem
