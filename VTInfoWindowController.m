@@ -88,6 +88,9 @@
     //detection ratio
     NSString* vtDetectionRatio = nil;
     
+    //color
+    NSColor* textColor = nil;
+    
     //get status
     if(nil != self.fileObj.vtInfo[VT_RESULTS_URL])
     {
@@ -98,20 +101,30 @@
     //file status (known/unknown)
     if(YES == isKnown)
     {
+        //default color to black
+        textColor = [NSColor blackColor];
+        
+        //set color to red if its flagged
+        if(0 != [self.fileObj.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue])
+        {
+            //red
+            textColor = [NSColor redColor];
+        }
+        
         //generate detection ratio
         vtDetectionRatio = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)[self.fileObj.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[self.fileObj.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
         
         //set name
         [self.fileName setStringValue:self.fileObj.name];
         
-        //make name red
-        self.fileName.textColor = [NSColor redColor];
+        //set color
+        self.fileName.textColor = textColor;
         
         //detection ratio
         [self.detectionRatio setStringValue:vtDetectionRatio];
         
-        //make detection ratio red
-        self.detectionRatio.textColor = [NSColor redColor];
+        //set color
+        self.detectionRatio.textColor = textColor;
         
         //analysis url
         [self.analysisURL setStringValue:@"VirusTotal report"];
