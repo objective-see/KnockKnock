@@ -30,13 +30,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ItemTableController.m"
-            timestampString = "450224774.670694"
+            timestampString = "451452425.766885"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "664"
-            endingLineNumber = "664"
-            landmarkName = "-showVTInfo:"
-            landmarkType = "5">
+            startingLineNumber = "670"
+            endingLineNumber = "670"
+            landmarkName = "@implementation ItemTableController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

@@ -86,6 +86,15 @@
         //set name
         [self.name setStringValue:self.itemObj.name];
         
+        //flagged files
+        // ->make name red!
+        if( (nil != ((File*)self.itemObj).vtInfo) &&
+            (0 != [((File*)self.itemObj).vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue]) )
+        {
+            //set color (light red)
+            self.name.textColor = [NSColor redColor];
+        }
+        
         //set path
         [self.path setStringValue:self.itemObj.path];
         

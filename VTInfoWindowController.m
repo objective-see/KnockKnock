@@ -52,6 +52,7 @@
 // ->make it white
 -(void)windowDidLoad
 {
+    //super
     [super windowDidLoad];
     
     //make it modal
@@ -103,11 +104,17 @@
         //set name
         [self.fileName setStringValue:self.fileObj.name];
         
+        //make name red
+        self.fileName.textColor = [NSColor redColor];
+        
         //detection ratio
         [self.detectionRatio setStringValue:vtDetectionRatio];
         
+        //make detection ratio red
+        self.detectionRatio.textColor = [NSColor redColor];
+        
         //analysis url
-        [self.analysisURL setStringValue:@"virus total report"];
+        [self.analysisURL setStringValue:@"VirusTotal report"];
         
         //make analyis url a hyperlink
         makeTextViewHyperlink(self.analysisURL, [NSURL URLWithString:self.fileObj.vtInfo[VT_RESULTS_URL]]);

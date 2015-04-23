@@ -92,7 +92,6 @@
     //reset flag
     self.mouseDown = NO;
 
-    
     //flagged files
     // ->make em red!
     if( (nil != self.fileObj.vtInfo) &&

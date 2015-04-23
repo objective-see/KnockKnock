@@ -271,6 +271,9 @@
                     //known 'good' files (0 positivies)
                     if(0 == [((File*)item).vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue])
                     {
+                        //(re)set title black
+                        itemCell.textField.textColor = [NSColor blackColor];
+                        
                         //set color (black)
                         stringAttributes[NSForegroundColorAttributeName] = [NSColor blackColor];
                         
@@ -283,8 +286,13 @@
                         //set selected text color
                         [vtButton setAttributedAlternateTitle:[[NSAttributedString alloc] initWithString:vtDetectionRatio attributes:stringAttributes]];
                     }
+                    //files flagged by VT
+                    // ->set name and detection to red
                     else
                     {
+                        //set title red
+                        itemCell.textField.textColor = [NSColor redColor];
+                        
                         //set color (red)
                         stringAttributes[NSForegroundColorAttributeName] = [NSColor redColor];
                         
@@ -293,6 +301,7 @@
                         
                         //set selected text color
                         [vtButton setAttributedAlternateTitle:[[NSAttributedString alloc] initWithString:vtDetectionRatio attributes:stringAttributes]];
+                        
                     }
                     
                     //enable

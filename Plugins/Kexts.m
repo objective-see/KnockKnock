@@ -3,6 +3,8 @@
 //  KnockKnock
 //
 
+//TODO: check for ones that won't be loaded? parse plist or something?
+
 #import "File.h"
 #import "Kexts.h"
 #import "Utilities.h"

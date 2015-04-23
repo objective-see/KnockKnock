@@ -38,12 +38,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
 @synthesize progressIndicator;
 @synthesize vulnerableAppHeaderIndex;
 
-//TODO: testing (older OS, w/ malware!! (and take screen shots))
-//TODO: kext plugin - check for ones that won't be loaded? parse plist or something?
-//TODO: white buttons!! (copy from BB)
-
-
-//TODO: tools, snapshot between runs? 'what changed app' rootkit revealer? driver view?
+//TODO: check if VT can be reached! if not, error? or don't show '0 VT results detected' etc...
 
 //center window
 // ->also make front
@@ -255,14 +250,18 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     // ->STOP scan
     else
     {
-        //tell all VT threads to bail
-        for(NSThread* vtThread in self.vtThreads)
+        //sync
+        @synchronized(self.vtThreads)
         {
-            //cancel running threads
-            if(YES == [vtThread isExecuting])
+            //tell all VT threads to bail
+            for(NSThread* vtThread in self.vtThreads)
             {
-                //cancel
-                [vtThread cancel];
+                //cancel running threads
+                if(YES == [vtThread isExecuting])
+                {
+                    //cancel
+                    [vtThread cancel];
+                }
             }
         }
         
@@ -297,6 +296,9 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
 // ->runs in the background to execute each plugin
 -(void)scan
 {
+    //flag indicating an active VT thread
+    BOOL activeThread = NO;
+    
     //reset active plugin index
     self.activePluginIndex = 0;
     
@@ -343,12 +345,69 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     self.activePluginIndex = 0;
     
     //if VT querying is enabled (default)
-    // ->wait a bit to let the VT results come in
+    // ->wait till all VT threads are done
     if(YES != self.prefsWindowController.disableVTQueries)
     {
+        //update scanner msg
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            
+            //update
+            [self.statusText setStringValue:[NSString stringWithFormat:@"awaiting VirusTotal results"]];
+            
+        });
+        
         //nap
-        [NSThread sleepForTimeInterval:3.0];
-    }
+        // ->VT threads take some time to spawn/process
+        [NSThread sleepForTimeInterval:5*1];
+        
+        //wait for all VT threads to exit
+        while(YES)
+        {
+            //reset flag
+            activeThread = NO;
+            
+            //sync
+            @synchronized(self.vtThreads)
+            {
+                //check all threads
+                for(NSThread* vtThread in self.vtThreads)
+                {
+                    //check if still running
+                    // ->set flag & break out of loop
+                    if(YES == [vtThread isExecuting])
+                    {
+                        //set flag
+                        activeThread = YES;
+                        
+                        //bail
+                        break;
+                    }
+                }
+                
+            }//sync
+            
+            //check flag
+            if(YES != activeThread)
+            {
+                //finally no active threads
+                // ->bail
+                break;
+            }
+            
+            //exit if scanner (self) thread was cancelled
+            if(YES == [[NSThread currentThread] isCancelled])
+            {
+                //exit
+                [NSThread exit];
+            }
+            
+            //nap
+            [NSThread sleepForTimeInterval:0.5];
+            
+        }//active thread
+        
+    }//VT scanning enabled
+
     
     //stop ui & show informational alert
     dispatch_sync(dispatch_get_main_queue(), ^{
@@ -382,8 +441,12 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     //start thread
     [virusTotalThread start];
     
-    //save it into array
-    [self.vtThreads addObject:virusTotalThread];
+    //sync
+    @synchronized(self.vtThreads)
+    {
+        //save it into array
+        [self.vtThreads addObject:virusTotalThread];
+    }
     
     return;
 }
@@ -720,7 +783,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     NSUInteger itemCount = 0;
     
     //flagged item count
-    //NSUInteger flaggedItemCount =  0;
+    NSUInteger flaggedItemCount =  0;
     
     //iterate over all plugins
     // ->sum up their item counts
@@ -741,23 +804,22 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
         }
         
         //add plugin's flagged items
-        //flaggedItemCount += plugin.flaggedItems.count;
+        flaggedItemCount += plugin.flaggedItems.count;
     }
     
     //init detailed msg
     details = [NSMutableString stringWithFormat:@"■ found %lu items", (unsigned long)itemCount];
     
-    /*
     //when VT integration is enabled
     // ->add flagged items
     if(YES != self.prefsWindowController.disableVTQueries)
     {
         //add flagged items
-        [details appendFormat:@" \r\n■ %lu flagged by virus total", flaggedItemCount];
+        [details appendFormat:@" \r\n■ %lu item(s) flagged by VirusTotal!", flaggedItemCount];
     }
-    */
     
-    //display 'saved' msg
+    //when 'save results' is enabled
+    // ->add msg about saving
     if(YES == self.prefsWindowController.saveOutput)
     {
         //add save msg
