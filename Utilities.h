@@ -57,4 +57,7 @@ BOOL isApple(NSString* path);
 //set the color of an attributed string
 NSMutableAttributedString* setStringColor(NSAttributedString* string, NSColor* color);
 
+//exec a process and grab it's output
+NSString* execTask(NSString* binaryPath, NSArray* arguments);
+
 #endif

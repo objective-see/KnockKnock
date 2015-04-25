@@ -205,7 +205,7 @@
         }
         
         //nap
-        [NSThread sleepForTimeInterval:60*1];
+        [NSThread sleepForTimeInterval:60.0f];
     }
     
     return;
@@ -282,8 +282,22 @@
         goto bail;
     }
     
-    //convert response (hopefully JSON)
-    results = [NSJSONSerialization JSONObjectWithData:vtData options:kNilOptions error:nil];
+    //serialize response into NSData obj
+    // ->wrap since we are serializing JSON
+    @try
+    {
+        //serialized
+        results = [NSJSONSerialization JSONObjectWithData:vtData options:kNilOptions error:nil];
+    }
+    //bail on any exceptions
+    @catch (NSException *exception)
+    {
+        //err msg
+        NSLog(@"OBJECTIVE-SEE ERROR: converting response %@ to JSON threw %@", vtData, exception);
+        
+        //bail
+        goto bail;
+    }
     
     //sanity check
     if(nil == results)
@@ -402,8 +416,24 @@ bail:
         goto bail;
     }
     
-    //convert response (hopefully JSON)
-    results = [NSJSONSerialization JSONObjectWithData:vtData options:kNilOptions error:nil];
+    //serialize response into NSData obj
+    // ->wrap since we are serializing JSON
+    @try
+    {
+        //serialize
+        results = [NSJSONSerialization JSONObjectWithData:vtData options:kNilOptions error:nil];
+    }
+    //bail on any exceptions
+    @catch (NSException *exception)
+    {
+        //err msg
+        NSLog(@"OBJECTIVE-SEE ERROR: converting response %@ to JSON threw %@", vtData, exception);
+        
+        //bail
+        goto bail;
+    }
+    
+    //sanity check
     if(nil == results)
     {
         //err msg

@@ -643,3 +643,56 @@ NSMutableAttributedString* setStringColor(NSAttributedString* string, NSColor* c
     return coloredString;
 }
 
+//exec a process and grab it's output
+NSString* execTask(NSString* binaryPath, NSArray* arguments)
+{
+    //task
+    NSTask *task = nil;
+    
+    //output pipe
+    NSPipe *outPipe = nil;
+    
+    //read handle
+    NSFileHandle* readHandle = nil;
+    
+    //output
+    NSMutableData *output = nil;
+    
+    //init task
+    task = [NSTask new];
+    
+    //init output pipe
+    outPipe = [NSPipe pipe];
+    
+    //init read handle
+    readHandle = [outPipe fileHandleForReading];
+    
+    //init output buffer
+    output = [NSMutableData data];
+    
+    //set task's path
+    [task setLaunchPath:binaryPath];
+    
+    //set task's args
+    [task setArguments:arguments];
+    
+    //set task's output
+    [task setStandardOutput:outPipe];
+    
+    //launch the task
+    [task launch];
+    
+    //read in output
+    while(YES == [task isRunning])
+    {
+        //accumulate output
+        [output appendData:[readHandle readDataToEndOfFile]];
+    }
+    
+    //grab any left over data
+    [output appendData:[readHandle readDataToEndOfFile]];
+    
+    //return output as string
+    return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+}
+

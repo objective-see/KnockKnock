@@ -70,6 +70,10 @@
 		CDA81E0A1A9B0AD8009790E2 /* BrowserExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81E091A9B0AD8009790E2 /* BrowserExtensions.m */; };
 		CDA81E651AA020FD009790E2 /* ExtensionInfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CDA81E631AA020FD009790E2 /* ExtensionInfoWindow.xib */; };
 		CDA81E661AA020FD009790E2 /* FileInfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CDA81E641AA020FD009790E2 /* FileInfoWindow.xib */; };
+		CDAB98991AEAA6CB00C75B4B /* AuthorizationPlugins.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAB98981AEAA6CB00C75B4B /* AuthorizationPlugins.m */; };
+		CDAB989C1AEAC95500C75B4B /* ItemEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAB989B1AEAC95500C75B4B /* ItemEnumerator.m */; };
+		CDAB989F1AEADE5A00C75B4B /* DylibInserts.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */; };
+		CDAB98A11AEAFAFA00C75B4B /* authorizationIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */; };
 		CDF08CBF1AC3DE25009B3423 /* logoAppleBG.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */; };
 		CDF08CC11AC3E8B0009B3423 /* showOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CC01AC3E8B0009B3423 /* showOver.png */; };
 		CDF08CC31AC3E98D009B3423 /* infoOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CC21AC3E98D009B3423 /* infoOver.png */; };
@@ -184,6 +188,13 @@
 		CDA81E091A9B0AD8009790E2 /* BrowserExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BrowserExtensions.m; path = Plugins/BrowserExtensions.m; sourceTree = "<group>"; };
 		CDA81E631AA020FD009790E2 /* ExtensionInfoWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ExtensionInfoWindow.xib; path = UI/ExtensionInfoWindow.xib; sourceTree = "<group>"; };
 		CDA81E641AA020FD009790E2 /* FileInfoWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FileInfoWindow.xib; path = UI/FileInfoWindow.xib; sourceTree = "<group>"; };
+		CDAB98971AEAA6CB00C75B4B /* AuthorizationPlugins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AuthorizationPlugins.h; path = Plugins/AuthorizationPlugins.h; sourceTree = "<group>"; };
+		CDAB98981AEAA6CB00C75B4B /* AuthorizationPlugins.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AuthorizationPlugins.m; path = Plugins/AuthorizationPlugins.m; sourceTree = "<group>"; };
+		CDAB989A1AEAC95500C75B4B /* ItemEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemEnumerator.h; sourceTree = "<group>"; };
+		CDAB989B1AEAC95500C75B4B /* ItemEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemEnumerator.m; sourceTree = "<group>"; };
+		CDAB989D1AEADE5A00C75B4B /* DylibInserts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DylibInserts.h; path = Plugins/DylibInserts.h; sourceTree = "<group>"; };
+		CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DylibInserts.m; path = Plugins/DylibInserts.m; sourceTree = "<group>"; };
+		CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = authorizationIcon.png; path = images/authorizationIcon.png; sourceTree = SOURCE_ROOT; };
 		CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoAppleBG.png; path = images/logoAppleBG.png; sourceTree = SOURCE_ROOT; };
 		CDF08CC01AC3E8B0009B3423 /* showOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = showOver.png; path = images/showOver.png; sourceTree = SOURCE_ROOT; };
 		CDF08CC21AC3E98D009B3423 /* infoOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = infoOver.png; path = images/infoOver.png; sourceTree = SOURCE_ROOT; };
@@ -226,6 +237,8 @@
 		1D21BC42172AF43D009D1CFD = {
 			isa = PBXGroup;
 			children = (
+				CDAB989A1AEAC95500C75B4B /* ItemEnumerator.h */,
+				CDAB989B1AEAC95500C75B4B /* ItemEnumerator.m */,
 				CD02195A1AD38823005148A2 /* kkRowCell.h */,
 				CD02195B1AD38823005148A2 /* kkRowCell.m */,
 				CD7B9FA91AD08FA100DF3C71 /* KKRow.h */,
@@ -315,6 +328,7 @@
 		CD6095501A8329FA00E091CD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */,
 				CD0219561AD37748005148A2 /* signed2.png */,
 				CD0219571AD37748005148A2 /* unsigned2.png */,
 				CD0219541AD34E4C005148A2 /* kkIcon.png */,
@@ -393,6 +407,10 @@
 		CDA81D861A96F429009790E2 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				CDAB989D1AEADE5A00C75B4B /* DylibInserts.h */,
+				CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */,
+				CDAB98971AEAA6CB00C75B4B /* AuthorizationPlugins.h */,
+				CDAB98981AEAA6CB00C75B4B /* AuthorizationPlugins.m */,
 				CD7B9F511ACBAE2900DF3C71 /* SpotlightImporters.h */,
 				CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */,
 				CDA81E081A9B0AD8009790E2 /* BrowserExtensions.h */,
@@ -507,6 +525,7 @@
 				CDA81D5B1A95B4B4009790E2 /* InfoPlist.strings in Resources */,
 				CDA81D6B1A95B4E9009790E2 /* show.png in Resources */,
 				CDF08CF31ACA6864009B3423 /* browserIcon.png in Resources */,
+				CDAB98A11AEAFAFA00C75B4B /* authorizationIcon.png in Resources */,
 				CD001B391AB903040089014A /* logoApple.png in Resources */,
 				CDF08CEF1ACA677B009B3423 /* launchIcon.png in Resources */,
 				CD7B9FA41ACBCFAD00DF3C71 /* spotlightIcon.png in Resources */,
@@ -577,13 +596,16 @@
 				CDA81D5E1A95B4B4009790E2 /* main.m in Sources */,
 				CD7B9F501ACB9A8400DF3C71 /* Exception.m in Sources */,
 				CDA81E0A1A9B0AD8009790E2 /* BrowserExtensions.m in Sources */,
+				CDAB989F1AEADE5A00C75B4B /* DylibInserts.m in Sources */,
 				CDF08CDB1AC8820F009B3423 /* MachO.m in Sources */,
+				CDAB98991AEAA6CB00C75B4B /* AuthorizationPlugins.m in Sources */,
 				CDA81DFE1A9A7D26009790E2 /* Command.m in Sources */,
 				CD0219531AD34D9A005148A2 /* AboutWindowController.m in Sources */,
 				CDA81E011A9A7D26009790E2 /* ItemBase.m in Sources */,
 				CDA81DFF1A9A7D26009790E2 /* Extension.m in Sources */,
 				CDF08CC61AC46E75009B3423 /* VTButton.m in Sources */,
 				CDA81D8F1A96F557009790E2 /* PluginBase.m in Sources */,
+				CDAB989C1AEAC95500C75B4B /* ItemEnumerator.m in Sources */,
 				CDA81D771A95B7C1009790E2 /* CategoryTableController.m in Sources */,
 				CD7B9F531ACBAE2900DF3C71 /* SpotlightImporters.m in Sources */,
 				CDA81D531A95B492009790E2 /* Utilities.m in Sources */,

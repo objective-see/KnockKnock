@@ -296,8 +296,30 @@ bail:
     //Extension object
     Extension* extensionObj = nil;
     
+    //sanity check
+    // ->make sure preference file exists
+    if(YES != [[NSFileManager defaultManager] fileExistsAtPath:[CHROME_EXTENSION_DIRECTORY stringByExpandingTildeInPath]])
+    {
+        //bail
+        goto bail;
+    }
+    
     //load preferences
-    preferences = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:[CHROME_EXTENSION_DIRECTORY stringByExpandingTildeInPath]] options:kNilOptions error:NULL];
+    // ->wrap since we are serializing JSON
+    @try
+    {
+        //load prefs
+        preferences = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:[CHROME_EXTENSION_DIRECTORY stringByExpandingTildeInPath]] options:kNilOptions error:NULL];
+    }
+    //just bail on any exceptions
+    @catch(NSException *exception)
+    {
+        //err msg
+        NSLog(@"OBJECTIVE-SEE ERROR: converting chrome pref's to JSON threw %@", exception);
+        
+        //bail
+        goto bail;
+    }
     
     //extract extensions
     extensions = preferences[@"extensions"][@"settings"];
@@ -400,8 +422,10 @@ bail:
         //process item
         // ->save and report to UI
         [super processItem:extensionObj];
-    
     }
+    
+//bail
+bail:
     
     return;
 }
@@ -478,8 +502,20 @@ bail:
         for(NSString* extensionFile in extensionFiles)
         {
             //load extensions
-            // ->in all extension files, under 'addons' key
-            extensions = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:extensionFile] options:kNilOptions error:NULL][@"addons"];
+            // ->wrap since we are serializing JSON
+            @try
+            {
+                //load em
+                // ->extension files, under 'addons' key
+                extensions = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:extensionFile] options:kNilOptions error:NULL][@"addons"];
+            }
+            //catch any exceptions
+            // ->just try next
+            @catch(NSException *exception)
+            {
+                //next
+                continue;
+            }
             
             //parse out all extensions
             for(NSDictionary* extension in extensions)

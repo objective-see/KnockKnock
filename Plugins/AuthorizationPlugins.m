@@ -1,26 +1,26 @@
 //
-//  SpotlightImporters.m
+//  AuthorizationPlugins.m
 //  KnockKnock
 //
 
 #import "File.h"
 #import "Utilities.h"
-#import "SpotlightImporters.h"
+#import "AuthorizationPlugins.h"
 
 //plugin name
-#define PLUGIN_NAME @"Spotlight Importers"
+#define PLUGIN_NAME @"Authorization Plugins"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"bundles loaded by Spotlight (mdworker)"
+#define PLUGIN_DESCRIPTION @"registered custom authorization bundles"
 
 //plugin icon
-#define PLUGIN_ICON @"spotlightIcon"
+#define PLUGIN_ICON @"authorizationIcon"
 
 //plugin search directories
-NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight", @"/Library/Spotlight", @"~/Library/Spotlight"};
+NSString * const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreServices/SecurityAgentPlugins", @"/Library/Security/SecurityAgentPlugins/"};
 
 
-@implementation SpotlightImporters
+@implementation AuthorizationPlugins
 
 //init
 // ->set name, description, etc
@@ -47,16 +47,16 @@ NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight",
 -(void)scan
 {
     //spotlight importer directory
-    NSString* importerDirectory = nil;
+    NSString* authPluginDirectory = nil;
     
     //number of search directories
     NSUInteger directoryCount = 0;
     
-    //all spotlight importers
-    NSArray* allImporters = nil;
+    //all auth plugins
+    NSArray* allAuthPlugins = nil;
     
-    //path to importer
-    NSString* importerPath = nil;
+    //path to auth plugin
+    NSString* authPluginPath = nil;
     
     //directory (bundle) flag
     BOOL isDirectory = NO;
@@ -68,27 +68,27 @@ NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight",
     //NSLog(@"%@: scanning", PLUGIN_NAME);
     
     //get number of search directories
-    directoryCount = sizeof(SPOTLIGHT_SEARCH_DIRECTORIES)/sizeof(SPOTLIGHT_SEARCH_DIRECTORIES[0]);
+    directoryCount = sizeof(AUTHORIZATION_SEARCH_DIRECTORIES)/sizeof(AUTHORIZATION_SEARCH_DIRECTORIES[0]);
     
     //iterate over all login item search directories
     // ->get all login items plists and process 'em
     for(NSUInteger i=0; i < directoryCount; i++)
     {
         //extract current directory
-        importerDirectory = [SPOTLIGHT_SEARCH_DIRECTORIES[i] stringByExpandingTildeInPath];
+        authPluginDirectory = [AUTHORIZATION_SEARCH_DIRECTORIES[i] stringByExpandingTildeInPath];
         
         //get all items in current directory
-        allImporters = directoryContents(importerDirectory, nil);
+        allAuthPlugins = directoryContents(authPluginDirectory, nil);
         
         //iterate over all importers
         // ->perform some sanity checks and then save
-        for(NSString* importer in allImporters)
+        for(NSString* importer in allAuthPlugins)
         {
             //build full path to importer
-            importerPath = [NSString stringWithFormat:@"%@/%@", importerDirectory, importer];
+            authPluginPath = [NSString stringWithFormat:@"%@/%@", authPluginDirectory, importer];
             
             //get directory flag
-            if(YES != [[NSFileManager defaultManager] fileExistsAtPath:importerPath isDirectory:&isDirectory])
+            if(YES != [[NSFileManager defaultManager] fileExistsAtPath:authPluginPath isDirectory:&isDirectory])
             {
                 //ignore errors
                 continue;
@@ -101,8 +101,11 @@ NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight",
                 continue;
             }
             
+            //TODO: write helper function: isBundle
+            //TODO: also call in SpotLight importers
+            
             //create File object for importer
-            fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:importerPath}];
+            fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:authPluginPath}];
             
             //skip File objects that err'd out for any reason
             if(nil == fileObj)
@@ -116,7 +119,7 @@ NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight",
             [super processItem:fileObj];
         }
         
-    }//spotlight importer directories
+    }//auth plugin directories
     
     return;
 }

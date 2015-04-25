@@ -59,6 +59,15 @@
 //hash key, MD5
 #define KEY_HASH_MD5 @"md5"
 
+//path to system profiler
+#define SYSTEM_PROFILER @"/usr/sbin/system_profiler"
+
+//dyld_ key for launch items
+#define LAUNCH_ITEM_DYLD_KEY @"EnvironmentVariables"
+
+//dyld_ key for applications
+#define APPLICATION_DYLD_KEY @"LSEnvironment"
+
 //menu
 
 //tag for prefs menu item
@@ -184,12 +193,6 @@
 
 //result hash
 #define VT_RESULT_HASH @"hash"
-
-//results known
-//#define VT_RESULTS_FOUND @"found"
-
-//results detection ratio
-//#define VT_RESULTS_RATIO @"detection_ratio"
 
 //results positives
 #define VT_RESULTS_POSITIVES @"positives"

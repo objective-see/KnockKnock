@@ -12,7 +12,7 @@
 #import "AppDelegate.h"
 
 //supported plugins
-NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"LaunchItems", @"LoginItems", @"SpotlightImporters"};
+NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"Kexts", @"LaunchItems", @"LoginItems", @"SpotlightImporters"};
 
 
 @implementation AppDelegate
@@ -24,6 +24,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
 @synthesize selectedPlugin;
 @synthesize activePluginIndex;
 @synthesize itemTableController;
+@synthesize sharedItemEnumerator;
 @synthesize aboutWindowController;
 @synthesize prefsWindowController;
 @synthesize showPreferencesButton;
@@ -81,6 +82,12 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
         //exit
         exit(0);
     }
+    
+    //kick off thread to begin enumerating shared objects
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        
+    });
 
     //instantiate all plugins objects
     self.plugins = [self instantiatePlugins];
@@ -247,10 +254,20 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     }
 
     //check state
-    // ->STOP scan
+    // ->STOP scan, by cancelling threads, etc.
     else
     {
-        //sync
+        //tell enumerator to stop
+        [self.sharedItemEnumerator stop];
+        
+        //cancel enumerator thread
+        if(YES == [self.sharedItemEnumerator.enumeratorThread isExecuting])
+        {
+            //cancel
+            [self.sharedItemEnumerator.enumeratorThread cancel];
+        }
+        
+        //sync to cancel all VT threads
         @synchronized(self.vtThreads)
         {
             //tell all VT threads to bail
@@ -301,6 +318,12 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     
     //reset active plugin index
     self.activePluginIndex = 0;
+    
+    //alloc shared item enumerator
+    sharedItemEnumerator = [[ItemEnumerator alloc] init];
+    
+    //start enumeration
+    [self.sharedItemEnumerator start];
     
     //iterate over all plugins
     // ->invoke's each scan message
@@ -358,7 +381,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
         
         //nap
         // ->VT threads take some time to spawn/process
-        [NSThread sleepForTimeInterval:5*1];
+        [NSThread sleepForTimeInterval:5.0f];
         
         //wait for all VT threads to exit
         while(YES)
@@ -843,7 +866,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
     [self.resultsWindowController.detailsLabel setStringValue:details];
     
     //make it modal
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
         //modal!
         [[NSApplication sharedApplication] runModalForWindow:resultsWindowController.window];
@@ -878,7 +901,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"BrowserExtensions", @"Kexts", @"Launch
         
         //show it
         [detectionAlert runModal];
-        
     }
     
     return;
@@ -1152,7 +1174,7 @@ bail:
     [self.prefsWindowController showWindow:self];
     
     //make it modal
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
         //capture existing prefs
         // ->needed to trigger re-saves

@@ -6,13 +6,13 @@
 #import "File.h"
 #import "Utilities.h"
 #import "AppDelegate.h"
-#import "LaunchItems.h"
+#import "DylibInserts.h"
 
 //plugin name
-#define PLUGIN_NAME @"Launch Items"
+#define PLUGIN_NAME @"Dylib Inserts"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"daemons and agents loaded by launchd"
+#define PLUGIN_DESCRIPTION @"dynamic libraries inserted via env. vars"
 
 //plugin icon
 #define PLUGIN_ICON @"launchIcon"
@@ -20,7 +20,7 @@
 //(base) directory that has overrides for launch* and apps
 #define OVERRIDES_DIRECTORY @"/private/var/db/launchd.db/"
 
-@implementation LaunchItems
+@implementation DylibInserts
 
 //init
 // ->set name, description, etc
@@ -51,6 +51,9 @@
     
     //disable items
     NSArray* disabledItems = nil;
+    
+    //all installed applications
+    NSArray* applications = nil;
     
     //plist data
     NSDictionary* plistContents = nil;
@@ -108,37 +111,22 @@
             }
         }
         
-        //attempt to extact path to launch item
-        // ->first, via 'ProgramArguments'
-        if(nil != plistContents[@"ProgramArguments"])
-        {
-            //extract path
-            launchItemPath = [plistContents[@"ProgramArguments"] firstObject];
-        }
-        
-        //attempt to extact path to launch item
-        // ->second, via 'Program'
-        else if(nil != plistContents[@"Program"])
-        {
-            //extract path
-            launchItemPath = plistContents[@"Program"];
-        }
-        
-        //skip paths that don't exist
-        if( (nil == launchItemPath) ||
-            (YES != [[NSFileManager defaultManager] fileExistsAtPath:launchItemPath]))
+        //skip items that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARY' in it
+        if( (nil == plistContents[LAUNCH_ITEM_DYLD_KEY]) ||
+            (nil == plistContents[LAUNCH_ITEM_DYLD_KEY][@"DYLD_INSERT_LIBRARY"]) )
         {
             //skip
             continue;
         }
         
-        //create File object for launch item
+        //create File object for dylib inject
         // ->skip those that err out for any reason
         if(nil == (fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:launchItemPath, KEY_RESULT_PLIST:launchItemPlist}]))
         {
             //skip
             continue;
         }
+        
         
         //process item
         // ->save and report to UI

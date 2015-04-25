@@ -12,6 +12,7 @@
 #import "Filter.h"
 #import "PluginBase.h"
 #import "VirusTotal.h"
+#import "ItemEnumerator.h"
 #import "ItemTableController.h"
 #import "AboutWindowController.h"
 #import "PrefsWindowController.h"
@@ -28,6 +29,9 @@
 
 //plugin objects
 @property(nonatomic, retain)NSMutableArray* plugins;
+
+//shared item enumerator object
+@property(nonatomic, retain)ItemEnumerator* sharedItemEnumerator;
 
 //category table controller object
 @property (weak) IBOutlet CategoryTableController *categoryTableController;
