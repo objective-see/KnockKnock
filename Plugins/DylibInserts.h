@@ -17,7 +17,13 @@
 
 /* (custom) METHODS */
 
+//scan all launch items
+// ->looks in their plists for DYLD_INSERT_LIBRARYs
+-(void)scanLaunchItems;
 
+//scan all installed applications
+// ->looks in their plists for DYLD_INSERT_LIBRARYs
+-(void)scanApplications;
 
 
 @end

@@ -74,6 +74,7 @@
 		CDAB989C1AEAC95500C75B4B /* ItemEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAB989B1AEAC95500C75B4B /* ItemEnumerator.m */; };
 		CDAB989F1AEADE5A00C75B4B /* DylibInserts.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */; };
 		CDAB98A11AEAFAFA00C75B4B /* authorizationIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */; };
+		CDAB98A31AEB413C00C75B4B /* dylibIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDAB98A21AEB413C00C75B4B /* dylibIcon.png */; };
 		CDF08CBF1AC3DE25009B3423 /* logoAppleBG.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */; };
 		CDF08CC11AC3E8B0009B3423 /* showOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CC01AC3E8B0009B3423 /* showOver.png */; };
 		CDF08CC31AC3E98D009B3423 /* infoOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CC21AC3E98D009B3423 /* infoOver.png */; };
@@ -195,6 +196,7 @@
 		CDAB989D1AEADE5A00C75B4B /* DylibInserts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DylibInserts.h; path = Plugins/DylibInserts.h; sourceTree = "<group>"; };
 		CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DylibInserts.m; path = Plugins/DylibInserts.m; sourceTree = "<group>"; };
 		CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = authorizationIcon.png; path = images/authorizationIcon.png; sourceTree = SOURCE_ROOT; };
+		CDAB98A21AEB413C00C75B4B /* dylibIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dylibIcon.png; path = images/dylibIcon.png; sourceTree = SOURCE_ROOT; };
 		CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoAppleBG.png; path = images/logoAppleBG.png; sourceTree = SOURCE_ROOT; };
 		CDF08CC01AC3E8B0009B3423 /* showOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = showOver.png; path = images/showOver.png; sourceTree = SOURCE_ROOT; };
 		CDF08CC21AC3E98D009B3423 /* infoOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = infoOver.png; path = images/infoOver.png; sourceTree = SOURCE_ROOT; };
@@ -328,6 +330,7 @@
 		CD6095501A8329FA00E091CD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				CDAB98A21AEB413C00C75B4B /* dylibIcon.png */,
 				CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */,
 				CD0219561AD37748005148A2 /* signed2.png */,
 				CD0219571AD37748005148A2 /* unsigned2.png */,
@@ -550,6 +553,7 @@
 				CD001B381AB903040089014A /* logo.png in Resources */,
 				CDA81D6D1A95B4E9009790E2 /* scanIcon.png in Resources */,
 				CDF08CCF1AC4C6E8009B3423 /* settingsOver.png in Resources */,
+				CDAB98A31AEB413C00C75B4B /* dylibIcon.png in Resources */,
 				CDF08CC31AC3E98D009B3423 /* infoOver.png in Resources */,
 				CDF08CF41ACA6864009B3423 /* loginIcon.png in Resources */,
 				CD0219501AD34D8B005148A2 /* PrefsWindow.xib in Resources */,

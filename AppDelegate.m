@@ -12,7 +12,7 @@
 #import "AppDelegate.h"
 
 //supported plugins
-NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"Kexts", @"LaunchItems", @"LoginItems", @"SpotlightImporters"};
+NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"LoginItems", @"SpotlightImporters"};
 
 
 @implementation AppDelegate
@@ -56,6 +56,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     
     return;
 }
+
 //automatically invoked by OS
 // ->main entry point
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
@@ -83,11 +84,12 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         exit(0);
     }
     
+    //alloc shared item enumerator
+    sharedItemEnumerator = [[ItemEnumerator alloc] init];
+    
     //kick off thread to begin enumerating shared objects
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-        
-    });
+    // ->this takes awhile, so do it now!
+    [self.sharedItemEnumerator start];
 
     //instantiate all plugins objects
     self.plugins = [self instantiatePlugins];
@@ -319,12 +321,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     //reset active plugin index
     self.activePluginIndex = 0;
     
-    //alloc shared item enumerator
-    sharedItemEnumerator = [[ItemEnumerator alloc] init];
-    
-    //start enumeration
-    [self.sharedItemEnumerator start];
-    
     //iterate over all plugins
     // ->invoke's each scan message
     for(PluginBase* plugin in self.plugins)
@@ -435,7 +431,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     //stop ui & show informational alert
     dispatch_sync(dispatch_get_main_queue(), ^{
         
-        //save results?
+        //check if user wants to save results
         if(YES == self.prefsWindowController.saveOutput)
         {
             //save
@@ -838,7 +834,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     if(YES != self.prefsWindowController.disableVTQueries)
     {
         //add flagged items
-        [details appendFormat:@" \r\n■ %lu item(s) flagged by VirusTotal!", flaggedItemCount];
+        [details appendFormat:@" \r\n■ %lu item(s) flagged by VirusTotal", flaggedItemCount];
     }
     
     //when 'save results' is enabled

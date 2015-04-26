@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>1ECDBF86-1DFC-4002-A5BE-41FC31ACB68B</string>
 	<key>IDESourceControlProjectName</key>
-	<string>KnockKnock</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>A9FFC1B124E25027A0E10FB456DBA9E2803FAE9D</key>
 		<string>https://bitbucket.org/objective-see/knockknock.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>KnockKnock.xcodeproj</string>
+	<string>KnockKnock.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>A9FFC1B124E25027A0E10FB456DBA9E2803FAE9D</key>

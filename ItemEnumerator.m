@@ -33,13 +33,13 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
     launchItemsEnumerator = [[NSThread alloc] initWithTarget:self selector:@selector(enumerateLaunchItems) object:nil];
 
     //alloc/init thread to enumerate installed applications
-    //applicationsEnumerator = [[NSThread alloc] initWithTarget:self selector:@selector(enumerateApplications) object:nil];
+    applicationsEnumerator = [[NSThread alloc] initWithTarget:self selector:@selector(enumerateApplications) object:nil];
 
     //start launch item enumerator thread
     [self.launchItemsEnumerator start];
     
     //start installed application enumerator thread
-    //[self.applicationsEnumerator start];
+    [self.applicationsEnumerator start];
     
     return;
 }
@@ -54,14 +54,12 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
         [self.launchItemsEnumerator cancel];
     }
     
-    /*
     //cancel installed application enumerator thread
     if(YES == [self.applicationsEnumerator isExecuting])
     {
         //cancel
         [self.applicationsEnumerator cancel];
     }
-    */
     
     //set launch items array to nil
     self.launchItems = nil;
@@ -115,7 +113,6 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
 }
 
 
-/*
 //generate list of all installed applications
 // ->save into iVar, 'applications'
 -(void)enumerateApplications
@@ -123,42 +120,49 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
     //installed apps
     NSMutableArray* installedApplications = nil;
     
-    //
-    NSArray* systemProfilerInfo = nil;
+    //output from system profiler task
+    NSData* taskOutput = nil;
     
-    //output from
-    NSString* output = nil;
+    //serialized task output
+    NSArray* serializedOutput = nil;
     
     //alloc array for installed apps
     installedApplications = [NSMutableArray array];
     
     //exec system profiler
-    output = execTask(SYSTEM_PROFILER, @[@"SPApplicationsDataType", @"-xml",  @"-detailLevel", @"mini"]);
-    
-    //TODO convert directly to dictionary from output
-    // ->no need for file
-    [output writeToFile:@"del.txt" atomically:YES encoding:NSUTF8StringEncoding error:nil];
-    
-    systemProfilerInfo = [NSArray arrayWithContentsOfFile:@"del.txt"];
-    
-    //iterate over to save all install apps
-    // ->list of apps in '_items' key of array
-    for(NSDictionary* installedApp in systemProfilerInfo[0][@"_items"])
+    taskOutput = execTask(SYSTEM_PROFILER, @[@"SPApplicationsDataType", @"-xml",  @"-detailLevel", @"mini"]);
+
+    //sanity check
+    if(nil == taskOutput)
     {
-        //save
-        // ->'path' key contains full path
-        [installedApplications addObject:installedApp[@"path"]];
+        //bail
+        goto bail;
     }
     
-    //save into iVar
-    self.applications = installedApplications;
+    //serialize output to array
+    serializedOutput = [NSPropertyListSerialization propertyListWithData:taskOutput options:kNilOptions format:NULL error:NULL];
     
+    //grab list of installed apps from '_items' key
+    // ->save into iVar 'applications'
+    @try
+    {
+        //save
+        self.applications = serializedOutput[0][@"_items"];
+    }
+    @catch (NSException *exception)
+    {
+        //err msg
+        NSLog(@"OBJECTIVE-SEE ERROR: serialized output not formatted as expected");
+        
+        //bail
+        goto bail;
+    }
+   
 //bail
 bail:
     
     return;
 }
-*/
 
 
 @end

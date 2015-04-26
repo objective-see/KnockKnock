@@ -45,11 +45,7 @@
 /* METHODS */
 
 //init method
-//-(id)initWithParams:(NSString*)filePath plist:(NSString*)filePlist;
-
-//get the virus total page for the item
-// ->can return nil if its an unknown binary
--(NSURL*)getVirusTotalPage;
+-(id)initWithParams:(NSDictionary*)params;
 
 //format the signing info dictionary
 -(NSString*)formatSigningInfo;

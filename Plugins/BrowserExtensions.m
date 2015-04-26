@@ -29,13 +29,20 @@
 //name account for safari extensions
 #define SAFARI_KEYCHAIN_ACCOUNT "Safari"
 
+//google chrome's base directory
+#define CHROME_BASE_PROFILE_DIRECTORY @"~/Library/Application Support/Google/Chrome/"
+
 //plugin search directory
 // ->chrome
-#define CHROME_EXTENSION_DIRECTORY @"~/Library/Application Support/Google/Chrome/Default/Preferences/"
+#define CHROME_EXTENSION_FILE @"~/Library/Application Support/Google/Chrome/Default/Preferences"
 
 //plugin search directory
 // ->chrome
 #define FIREFOX_EXTENSION_DIRECTORY @"~/Library/Application Support/Firefox/Profiles/"
+
+//opera base directory
+// ->contains preferences, extensions,e tc
+#define OPERA_INFO_BASE_DIRECTORY @"~/Library/Application Support/com.operasoftware.Opera/"
 
 @implementation BrowserExtensions
 
@@ -96,6 +103,13 @@
             //scan
             [self scanExtensionsFirefox:installedBrowser];
         }
+        
+        //scan for Opera extensions
+        else if(NSNotFound != [installedBrowser rangeOfString:@"Opera.app"].location)
+        {
+            //scan
+            [self scanExtensionsOpera:installedBrowser];
+        }
     }
 
     return;
@@ -146,7 +160,6 @@
     return browsers;
 }
 
-
 //scan for Safari extensions
 -(void)scanExtensionsSafari:(NSString*)browserPath
 {
@@ -168,6 +181,9 @@
     
     //extension path
     NSString* path = nil;
+    
+    //extension id
+    NSString* extensionID = nil;
     
     //extension info
     NSMutableDictionary* extensionInfo = nil;
@@ -233,8 +249,18 @@
         //save path
         extensionInfo[KEY_RESULT_PATH] = path;
         
-        //extract/save identifier
-        extensionInfo[KEY_EXTENSION_ID] = extension[@"Bundle Identifier"];
+        //extract id
+        extensionID = extension[@"Bundle Identifier"];
+        
+        //provide default value for nil ids
+        if(nil == extensionID)
+        {
+            //default
+            extensionID = @"unknown";
+        }
+        
+        //save identifier
+        extensionInfo[KEY_EXTENSION_ID] = extensionID;
         
         //save browser path (i.e. Safari)
         extensionInfo[KEY_EXTENSION_BROWSER] = browserPath;
@@ -275,6 +301,12 @@ bail:
 //scan for Chrome extensions
 -(void)scanExtensionsChrome:(NSString*)browserPath
 {
+    //preference files
+    NSMutableArray* preferenceFiles = nil;
+    
+    //profile directories
+    NSArray* profiles = nil;
+    
     //preferences
     NSDictionary* preferences = nil;
     
@@ -296,140 +328,163 @@ bail:
     //Extension object
     Extension* extensionObj = nil;
     
-    //sanity check
-    // ->make sure preference file exists
-    if(YES != [[NSFileManager defaultManager] fileExistsAtPath:[CHROME_EXTENSION_DIRECTORY stringByExpandingTildeInPath]])
+    //alloc list for preference files
+    preferenceFiles = [NSMutableArray array];
+    
+    //add default
+    [preferenceFiles addObject:[CHROME_EXTENSION_FILE stringByExpandingTildeInPath]];
+    
+    //get profile dirs
+    // ->'Profile 1', etc...
+    profiles = directoryContents([CHROME_BASE_PROFILE_DIRECTORY stringByExpandingTildeInPath], @"self BEGINSWITH 'Profile'");
+    
+    //build and append full paths of preferences files to list
+    for(NSString* profile in profiles)
     {
-        //bail
-        goto bail;
+        //add
+        [preferenceFiles addObject:[NSString stringWithFormat:@"%@/%@/Preferences", [CHROME_BASE_PROFILE_DIRECTORY stringByExpandingTildeInPath], profile]];
     }
     
-    //load preferences
-    // ->wrap since we are serializing JSON
-    @try
+    //process all preference files
+    // ->load/parse/extract extensions
+    for(NSString* preferenceFile in preferenceFiles)
     {
-        //load prefs
-        preferences = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:[CHROME_EXTENSION_DIRECTORY stringByExpandingTildeInPath]] options:kNilOptions error:NULL];
-    }
-    //just bail on any exceptions
-    @catch(NSException *exception)
-    {
-        //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: converting chrome pref's to JSON threw %@", exception);
-        
-        //bail
-        goto bail;
-    }
-    
-    //extract extensions
-    extensions = preferences[@"extensions"][@"settings"];
-    
-    //iterate over all extensions
-    // ->skip disabled ones, etc
-    for(NSString* key in extensions)
-    {
-        //alloc extension info
-        extensionInfo = [NSMutableDictionary dictionary];
-        
-        //extract current extension
-        extension = extensions[key];
-        
-        //skip disabled ones
-        if(YES != [extension[@"state"] boolValue])
+        //skip non-existent preference files
+        if(YES != [[NSFileManager defaultManager] fileExistsAtPath:preferenceFile])
         {
             //skip
             continue;
         }
         
-        //skip extensions that are installed by default
-        // ->hope this is ok
-        if(YES == [extension[@"was_installed_by_default"] boolValue])
+        //load preferences
+        // ->wrap since we are serializing JSON
+        @try
         {
-            //skip
-            continue;
+            //load prefs
+            preferences = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:preferenceFile] options:kNilOptions error:NULL];
         }
-    
-        //skip extensions w/o paths
-        if(nil == extension[@"path"])
+        //skip to next, on any exceptions
+        @catch(NSException *exception)
         {
-            //skip
-            continue;
-        }
-        
-        //save key as id
-        extensionInfo[KEY_EXTENSION_ID] = key;
-        
-        //extact path
-        // ->sometimes its a full path
-        if(YES == [[NSFileManager defaultManager] fileExistsAtPath:extension[@"path"]])
-        {
-            //extract full path
-            path = extension[@"path"];
-        }
-        //extract path
-        // ->generally have to build it
-        else
-        {
-            //build path
-            path = [NSString stringWithFormat:@"%@/Extensions/%@", [[CHROME_EXTENSION_DIRECTORY stringByExpandingTildeInPath] stringByDeletingLastPathComponent], extension[@"path"]];
+            //err msg
+            //NSLog(@"OBJECTIVE-SEE ERROR: converting chrome pref's to JSON threw %@", exception);
             
-            //skip paths that don't exist
-            if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
+            //skip
+            continue;
+        }
+        
+        //extract extensions
+        extensions = preferences[@"extensions"][@"settings"];
+        
+        //iterate over all extensions
+        // ->skip disabled ones, etc
+        for(NSString* key in extensions)
+        {
+            //alloc extension info
+            extensionInfo = [NSMutableDictionary dictionary];
+            
+            //extract current extension
+            extension = extensions[key];
+            
+            //skip disabled ones
+            if(YES != [extension[@"state"] boolValue])
             {
                 //skip
                 continue;
             }
-        }
-        
-        //save path
-        extensionInfo[KEY_RESULT_PATH] = path;
-        
-        //extract manifest
-        // ->contains name, etc
-        manifest = extension[@"manifest"];
-        
-        //skip blank names
-        if(nil == manifest[@"name"])
-        {
-            //skip
-            continue;
-        }
-        
-        //extract/save name
-        extensionInfo[KEY_RESULT_NAME] = manifest[@"name"];
-        
-        //save any details (description)
-        if(nil != manifest[@"description"])
-        {
-            //save
-            extensionInfo[KEY_EXTENSION_DETAILS] = manifest[@"description"];
-        }
-        
-        //save browser path (i.e. Chrome)
-        extensionInfo[KEY_EXTENSION_BROWSER] = browserPath;
-        
-        //save plugin
-        extensionInfo[KEY_RESULT_PLUGIN] = self;
-        
-        //create Extension object for launch item
-        // ->skip those that err out for any reason
-        if(nil == (extensionObj = [[Extension alloc] initWithParams:extensionInfo]))
-        {
-            //skip
-            continue;
-        }
-        
-        //process item
-        // ->save and report to UI
-        [super processItem:extensionObj];
-    }
+            
+            //skip extensions that are installed by default
+            // ->hope this is ok
+            if(YES == [extension[@"was_installed_by_default"] boolValue])
+            {
+                //skip
+                continue;
+            }
+            
+            //skip extensions w/o paths
+            if(nil == extension[@"path"])
+            {
+                //skip
+                continue;
+            }
+            
+            //save key as id
+            extensionInfo[KEY_EXTENSION_ID] = key;
+            
+            //extact path
+            // ->sometimes its a full path
+            if(YES == [[NSFileManager defaultManager] fileExistsAtPath:extension[@"path"]])
+            {
+                //extract full path
+                path = extension[@"path"];
+            }
+            //extract path
+            // ->generally have to build it
+            else
+            {
+                //build path
+                path = [NSString stringWithFormat:@"%@/Extensions/%@", [preferenceFile stringByDeletingLastPathComponent], extension[@"path"]];
+                
+                //skip paths that don't exist
+                if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
+                {
+                    //skip
+                    continue;
+                }
+            }
+            
+            //save path
+            extensionInfo[KEY_RESULT_PATH] = path;
+            
+            //extract manifest
+            // ->contains name, etc
+            manifest = extension[@"manifest"];
+            
+            //skip blank names
+            if(nil == manifest[@"name"])
+            {
+                //skip
+                continue;
+            }
+            
+            //extract/save name
+            extensionInfo[KEY_RESULT_NAME] = manifest[@"name"];
+            
+            //save any details (description)
+            if(nil != manifest[@"description"])
+            {
+                //save
+                extensionInfo[KEY_EXTENSION_DETAILS] = manifest[@"description"];
+            }
+            
+            //save browser path (i.e. Chrome)
+            extensionInfo[KEY_EXTENSION_BROWSER] = browserPath;
+            
+            //save plugin
+            extensionInfo[KEY_RESULT_PLUGIN] = self;
+            
+            //create Extension object for launch item
+            // ->skip those that err out for any reason
+            if(nil == (extensionObj = [[Extension alloc] initWithParams:extensionInfo]))
+            {
+                //skip
+                continue;
+            }
+            
+            //process item
+            // ->save and report to UI
+            [super processItem:extensionObj];
+
+        }//for all extensions
+
+    }//for all profile files
+    
     
 //bail
 bail:
     
     return;
 }
-
 
 //scan for Firefox extensions
 -(void)scanExtensionsFirefox:(NSString*)browserPath
@@ -636,6 +691,176 @@ bail:
         }//for all extension files
         
     }//for all profiles
+    
+    return;
+}
+
+//scan for Opera extensions
+// note: this seems identical to chrome!
+//       so updates to that should go here too?
+-(void)scanExtensionsOpera:(NSString*)browserPath
+{
+    //preferences file
+    NSString* preferenceFile = nil;
+    
+    //extensions
+    NSDictionary* extensions = nil;
+    
+    //preferences
+    NSDictionary* preferences = nil;
+    
+    //extension info
+    NSMutableDictionary* extensionInfo = nil;
+    
+    //current extension
+    NSDictionary* extension = nil;
+    
+    //current extension manifest
+    NSDictionary* manifest = nil;
+    
+    //extension path
+    NSString* path = nil;
+    
+    //Extension object
+    Extension* extensionObj = nil;
+    
+    //build path to preferences
+    preferenceFile = [NSString stringWithFormat:@"%@/Preferences", [OPERA_INFO_BASE_DIRECTORY stringByExpandingTildeInPath]];
+    
+    //make sure preference file exists
+    if(YES != [[NSFileManager defaultManager] fileExistsAtPath:preferenceFile])
+    {
+        //bail
+        goto bail;
+    }
+    
+    //load preferences
+    // ->wrap since we are serializing JSON
+    @try
+    {
+        //load prefs
+        preferences = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:preferenceFile] options:kNilOptions error:NULL];
+    }
+    //skip to next, on any exceptions
+    @catch(NSException *exception)
+    {
+        //bail
+        goto bail;
+    }
+    
+    //extract extensions
+    extensions = preferences[@"extensions"][@"settings"];
+    
+    //iterate over all extensions
+    // ->skip disabled ones, etc
+    for(NSString* key in extensions)
+    {
+        //alloc extension info
+        extensionInfo = [NSMutableDictionary dictionary];
+        
+        //extract current extension
+        extension = extensions[key];
+        
+        //skip black-listed ones
+        if(YES == [extensions[@"blacklist"] boolValue])
+        {
+            //skip
+            continue;
+        }
+        
+        //skip disabled ones
+        if(YES != [extension[@"state"] boolValue])
+        {
+            //skip
+            continue;
+        }
+        
+        //skip extensions that are installed by default
+        // ->hope this is ok
+        if(YES == [extension[@"was_installed_by_default"] boolValue])
+        {
+            //skip
+            continue;
+        }
+        
+        //skip extensions w/o paths
+        if(nil == extension[@"path"])
+        {
+            //skip
+            continue;
+        }
+        
+        //save key as id
+        extensionInfo[KEY_EXTENSION_ID] = key;
+        
+        //extact path
+        // ->sometimes its a full path
+        if(YES == [[NSFileManager defaultManager] fileExistsAtPath:extension[@"path"]])
+        {
+            //extract full path
+            path = extension[@"path"];
+        }
+        //extract path
+        // ->generally have to build it
+        else
+        {
+            //build path
+            path = [NSString stringWithFormat:@"%@/Extensions/%@", [OPERA_INFO_BASE_DIRECTORY stringByExpandingTildeInPath], extension[@"path"]];
+            
+            //skip paths that don't exist
+            if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
+            {
+                //skip
+                continue;
+            }
+        }
+        
+        //save path
+        extensionInfo[KEY_RESULT_PATH] = path;
+        
+        //extract manifest
+        // ->contains name, etc
+        manifest = extension[@"manifest"];
+        
+        //skip blank names
+        if(nil == manifest[@"name"])
+        {
+            //skip
+            continue;
+        }
+        
+        //extract/save name
+        extensionInfo[KEY_RESULT_NAME] = manifest[@"name"];
+        
+        //save any details (description)
+        if(nil != manifest[@"description"])
+        {
+            //save
+            extensionInfo[KEY_EXTENSION_DETAILS] = manifest[@"description"];
+        }
+        
+        //save browser path (i.e. Chrome)
+        extensionInfo[KEY_EXTENSION_BROWSER] = browserPath;
+        
+        //save plugin
+        extensionInfo[KEY_RESULT_PLUGIN] = self;
+        
+        //create Extension object for launch item
+        // ->skip those that err out for any reason
+        if(nil == (extensionObj = [[Extension alloc] initWithParams:extensionInfo]))
+        {
+            //skip
+            continue;
+        }
+        
+        //process item
+        // ->save and report to UI
+        [super processItem:extensionObj];
+        
+    }//for all extensions
+    
+//bail
+bail:
     
     return;
 }

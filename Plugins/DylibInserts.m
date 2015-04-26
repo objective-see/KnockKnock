@@ -8,14 +8,34 @@
 #import "AppDelegate.h"
 #import "DylibInserts.h"
 
+/*
+
+ # for launch agents
+ # edit com.blah.blah.plist
+ # <key>EnvironmentVariables</key>
+ #   <dict>
+ #   <key>DYLD_INSERT_LIBRARIES</key>
+ #   <string>/path/to/dylib</string>
+ #  </dict>
+ #
+ # for apps
+ # <key>LSEnvironment</key>
+ #   <dict>
+ # 	  <key>DYLD_INSERT_LIBRARIES</key>
+ #	  <string>/path/to/dylib</string>
+ #	  </dict>
+ # /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -v -f /Applications/ApplicationName.app
+ 
+*/
+
 //plugin name
-#define PLUGIN_NAME @"Dylib Inserts"
+#define PLUGIN_NAME @"Library Inserts"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"dynamic libraries inserted via env. vars"
+#define PLUGIN_DESCRIPTION @"dylibs inserted via DYLD_INSERT_LIBRARIES"
 
 //plugin icon
-#define PLUGIN_ICON @"launchIcon"
+#define PLUGIN_ICON @"dylibIcon"
 
 //(base) directory that has overrides for launch* and apps
 #define OVERRIDES_DIRECTORY @"/private/var/db/launchd.db/"
@@ -43,8 +63,27 @@
     return self;
 }
 
-//scan for login items
+//scan for launch items and installed applications
+// ->looking for plists that contain DYLD_INSERT_LIBRARYs
 -(void)scan
+{
+    //dbg msg
+    //NSLog(@"%@: scanning", PLUGIN_NAME);
+    
+    //scan for launch items w/ DYLD_INSERT_LIBRARIES
+    // ->will report any findings to UI
+    [self scanLaunchItems];
+    
+    //scan for applications w/ DYLD_INSERT_LIBRARIES
+    // ->will report any findings to UI
+    [self scanApplications];
+    
+    return;
+}
+
+//scan all launch items
+// ->looks in their plists for DYLD_INSERT_LIBRARIES
+-(void)scanLaunchItems
 {
     //all launch items
     NSArray* launchItems = nil;
@@ -52,24 +91,15 @@
     //disable items
     NSArray* disabledItems = nil;
     
-    //all installed applications
-    NSArray* applications = nil;
-    
     //plist data
     NSDictionary* plistContents = nil;
     
-    //launch item binary
-    NSString* launchItemPath = nil;
-    
+    //path to inserted dylib
+    NSString* dylibPath = nil;
+
     //detected (auto-started) login item
     File* fileObj = nil;
-    
-    //dbg msg
-    //NSLog(@"%@: scanning", PLUGIN_NAME);
-    
-    //get disabled items
-    disabledItems = [self getDisabledItems];
-    
+
     //wait for shared item enumerator to complete enumeration of launch items
     do
     {
@@ -81,7 +111,10 @@
         launchItems = ((AppDelegate*)[[NSApplication sharedApplication] delegate]).sharedItemEnumerator.launchItems;
         
     //keep trying until we get em!
-    }while(nil == launchItems);
+    } while(nil == launchItems);
+    
+    //get disabled items
+    disabledItems = [self getDisabledItems];
     
     //iterate over all launch items
     // ->scan/process each
@@ -111,28 +144,132 @@
             }
         }
         
-        //skip items that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARY' in it
+        //TODO: remove
+        /*NSLog(@"checking %@", launchItemPlist);
+        if(YES == [launchItemPlist isEqualToString:@"/Users/patrick/Library/LaunchAgents/com.calc.plist"])
+        {
+            NSLog(@"ok!");
+        }
+        */
+        
+        //skip items that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARIES'
         if( (nil == plistContents[LAUNCH_ITEM_DYLD_KEY]) ||
-            (nil == plistContents[LAUNCH_ITEM_DYLD_KEY][@"DYLD_INSERT_LIBRARY"]) )
+            (nil == plistContents[LAUNCH_ITEM_DYLD_KEY][@"DYLD_INSERT_LIBRARIES"]) )
         {
             //skip
             continue;
         }
         
-        //create File object for dylib inject
+        //grab inserted dylib
+        dylibPath = plistContents[LAUNCH_ITEM_DYLD_KEY][@"DYLD_INSERT_LIBRARIES"];
+        
+        
+        //create File object for injected dylib
         // ->skip those that err out for any reason
-        if(nil == (fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:launchItemPath, KEY_RESULT_PLIST:launchItemPlist}]))
+        if(nil == (fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:dylibPath, KEY_RESULT_PLIST:launchItemPlist}]))
         {
             //skip
             continue;
         }
-        
         
         //process item
         // ->save and report to UI
         [super processItem:fileObj];
     }
+    
+    return;
+}
 
+//scan all installed applications
+// ->looks in their plists for DYLD_INSERT_LIBRARYs
+-(void)scanApplications
+{
+    //installed apps
+    NSArray* installedApps = nil;
+    
+    //app's bundle
+    NSBundle* appBundle = nil;
+    
+    //path to app's plist
+    NSURL* appPlist = nil;
+    
+    //path to inserted dylib
+    NSString* dylibPath = nil;
+    
+    //detected (auto-started) login item
+    File* fileObj = nil;
+    
+    //wait for shared item enumerator to complete enumeration of installed apps
+    do
+    {
+        //nap
+        [NSThread sleepForTimeInterval:0.1f];
+        
+        //try grab installed apps
+        // ->will only !nil, when enumeration is complete
+        installedApps = ((AppDelegate*)[[NSApplication sharedApplication] delegate]).sharedItemEnumerator.applications;
+        
+        //TODO add time interval
+        
+    //keep trying until we get em!
+    } while(nil == installedApps);
+    
+    //iterate over all install apps
+    // ->scan/process each
+    for(NSDictionary* installedApp in installedApps)
+    {
+        //skip apps that don't have paths
+        if(nil == installedApp[@"path"])
+        {
+            //skip
+            continue;
+        }
+        
+        //try grab app's bundle
+        appBundle = [NSBundle bundleWithPath:installedApp[@"path"]];
+        
+        //skip apps that don't have bundle/info dictionary
+        if( (nil == appBundle) ||
+            (nil == appBundle.infoDictionary) )
+        {
+            //skip
+            continue;
+        }
+        
+        //skip apps that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARIES'
+        if( (nil == appBundle.infoDictionary[APPLICATION_DYLD_KEY]) ||
+            (nil == appBundle.infoDictionary[APPLICATION_DYLD_KEY][@"DYLD_INSERT_LIBRARIES"]) )
+        {
+            //skip
+            continue;
+        }
+        
+        //get path  to app's Info.plist
+        appPlist = appBundle.infoDictionary[@"CFBundleInfoPlistURL"];
+        
+        //skip apps that this fails
+        if(nil == appPlist)
+        {
+            //skip
+            continue;
+        }
+        
+        //grab inserted dylib
+        dylibPath = appBundle.infoDictionary[APPLICATION_DYLD_KEY][@"DYLD_INSERT_LIBRARIES"];
+        
+        //create File object for injected dylib
+        // ->skip those that err out for any reason
+        if(nil == (fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:dylibPath, KEY_RESULT_PLIST:[appPlist absoluteString]}]))
+        {
+            //skip
+            continue;
+        }
+        
+        //process item
+        // ->save and report to UI
+        [super processItem:fileObj];
+    }
+    
     return;
 }
 

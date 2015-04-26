@@ -24,7 +24,6 @@
 @synthesize vtInfo;
 
 
-
 //init method
 -(id)initWithParams:(NSDictionary*)params
 {
@@ -109,17 +108,6 @@
 bail:
     
     return self;
-}
-
-//get the virus total page for the item
-// ->can return nil if its an unknown binary
--(NSURL*)getVirusTotalPage
-{
-    //virus total url
-    NSURL* virusTotalURL = nil;
-    
-    
-    return virusTotalURL;
 }
 
 //format the signing info dictionary

@@ -447,7 +447,7 @@ NSArray* directoryContents(NSString* directory, NSString* predicate)
     //matches
     NSArray* matches = nil;
     
-    //get (umfiltered) directory contents
+    //get (unfiltered) directory contents
     directoryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directory error:nil];
     
     //filter out matches
@@ -488,7 +488,7 @@ NSBundle* findAppBundle(NSString* binaryPath)
         //check for match
         // ->binary path's match
         if( (nil != appBundle) &&
-           (YES == [appBundle.executablePath isEqualToString:binaryPath]))
+            (YES == [appBundle.executablePath isEqualToString:binaryPath]))
         {
             //all done
             break;
@@ -505,8 +505,8 @@ NSBundle* findAppBundle(NSString* binaryPath)
         //scan until we get to root
         // ->of course, loop will be exited if app info dictionary is found/loaded
     } while( (nil != appPath) &&
-            (YES != [appPath isEqualToString:@"/"]) &&
-            (YES != [appPath isEqualToString:@""]) );
+             (YES != [appPath isEqualToString:@"/"]) &&
+             (YES != [appPath isEqualToString:@""]) );
     
     return appBundle;
 }
@@ -644,7 +644,7 @@ NSMutableAttributedString* setStringColor(NSAttributedString* string, NSColor* c
 }
 
 //exec a process and grab it's output
-NSString* execTask(NSString* binaryPath, NSArray* arguments)
+NSData* execTask(NSString* binaryPath, NSArray* arguments)
 {
     //task
     NSTask *task = nil;
@@ -693,6 +693,6 @@ NSString* execTask(NSString* binaryPath, NSArray* arguments)
     [output appendData:[readHandle readDataToEndOfFile]];
     
     //return output as string
-    return [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
+    return output;
 }
 
