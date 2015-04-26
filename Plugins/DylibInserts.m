@@ -94,6 +94,9 @@
     //plist data
     NSDictionary* plistContents = nil;
     
+    //environment var dictionary
+    NSDictionary* enviroVars = nil;
+    
     //path to inserted dylib
     NSString* dylibPath = nil;
 
@@ -144,25 +147,20 @@
             }
         }
         
-        //TODO: remove
-        /*NSLog(@"checking %@", launchItemPlist);
-        if(YES == [launchItemPlist isEqualToString:@"/Users/patrick/Library/LaunchAgents/com.calc.plist"])
-        {
-            NSLog(@"ok!");
-        }
-        */
+        //extact environment vars dictionary
+        enviroVars = plistContents[LAUNCH_ITEM_DYLD_KEY];
         
-        //skip items that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARIES'
-        if( (nil == plistContents[LAUNCH_ITEM_DYLD_KEY]) ||
-            (nil == plistContents[LAUNCH_ITEM_DYLD_KEY][@"DYLD_INSERT_LIBRARIES"]) )
+        //skip apps that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARIES'
+        if( (nil == enviroVars) ||
+            (YES != [enviroVars isKindOfClass:[NSDictionary class]]) ||
+            (nil == enviroVars[@"DYLD_INSERT_LIBRARIES"]) )
         {
             //skip
             continue;
         }
         
         //grab inserted dylib
-        dylibPath = plistContents[LAUNCH_ITEM_DYLD_KEY][@"DYLD_INSERT_LIBRARIES"];
-        
+        dylibPath = enviroVars[@"DYLD_INSERT_LIBRARIES"];
         
         //create File object for injected dylib
         // ->skip those that err out for any reason
@@ -193,6 +191,9 @@
     //path to app's plist
     NSURL* appPlist = nil;
     
+    //environment var dictionary
+    NSDictionary* enviroVars = nil;
+    
     //path to inserted dylib
     NSString* dylibPath = nil;
     
@@ -209,7 +210,7 @@
         // ->will only !nil, when enumeration is complete
         installedApps = ((AppDelegate*)[[NSApplication sharedApplication] delegate]).sharedItemEnumerator.applications;
         
-        //TODO add time interval
+        //TODO: add time interval
         
     //keep trying until we get em!
     } while(nil == installedApps);
@@ -236,9 +237,13 @@
             continue;
         }
         
+        //extact environment vars dictionary
+        enviroVars = appBundle.infoDictionary[APPLICATION_DYLD_KEY];
+        
         //skip apps that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARIES'
-        if( (nil == appBundle.infoDictionary[APPLICATION_DYLD_KEY]) ||
-            (nil == appBundle.infoDictionary[APPLICATION_DYLD_KEY][@"DYLD_INSERT_LIBRARIES"]) )
+        if( (nil == enviroVars) ||
+            (YES != [enviroVars isKindOfClass:[NSDictionary class]]) ||
+            (nil == enviroVars[@"DYLD_INSERT_LIBRARIES"]) )
         {
             //skip
             continue;
@@ -255,11 +260,11 @@
         }
         
         //grab inserted dylib
-        dylibPath = appBundle.infoDictionary[APPLICATION_DYLD_KEY][@"DYLD_INSERT_LIBRARIES"];
+        dylibPath = enviroVars[@"DYLD_INSERT_LIBRARIES"];
         
         //create File object for injected dylib
         // ->skip those that err out for any reason
-        if(nil == (fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:dylibPath, KEY_RESULT_PLIST:[appPlist absoluteString]}]))
+        if(nil == (fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:dylibPath, KEY_RESULT_PLIST:appPlist.path}]))
         {
             //skip
             continue;
