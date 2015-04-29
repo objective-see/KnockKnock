@@ -196,6 +196,9 @@ bail:
     // ->for intermediate conversions
     NSData *jsonData = nil;
     
+    //plist
+    NSString* filePlist = nil;
+    
     //hashes
     NSString* fileHashes = nil;
     
@@ -205,27 +208,78 @@ bail:
     //VT detection ratio
     NSString* vtDetectionRatio = nil;
     
-    //convert hash dictionary
-    jsonData = [NSJSONSerialization dataWithJSONObject:self.hashes options:kNilOptions error:NULL];
-    if(nil != jsonData)
+    //init file hash to default string
+    // ->used when hashes are nil, or serialization fails
+    fileHashes = @"\"unknown\"";
+    
+    //init file signature to default string
+    // ->used when signatures are nil, or serialization fails
+    fileSigs = @"\"unknown\"";
+    
+    //convert hashes to JSON
+    if(nil != self.hashes)
     {
-        //convert to data to string
-        fileHashes = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        //convert hash dictionary
+        // ->wrap since we are serializing JSON
+        @try
+        {
+            //convert
+            jsonData = [NSJSONSerialization dataWithJSONObject:self.hashes options:kNilOptions error:NULL];
+            if(nil != jsonData)
+            {
+                //convert data to string
+                fileHashes = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+            }
+        }
+        //ignore exceptions
+        // ->file hashes will just be 'unknown'
+        @catch(NSException *exception)
+        {
+            ;
+        }
     }
     
-    //convert signing dictionary
-    jsonData = [NSJSONSerialization dataWithJSONObject:self.signingInfo options:kNilOptions error:NULL];
-    if(nil != jsonData)
+    //convert signing dictionary to JSON
+    if(nil != self.signingInfo)
     {
-        //convert to data to string
-        fileSigs = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        //convert signing dictionary
+        // ->wrap since we are serializing JSON
+        @try
+        {
+            //convert
+            jsonData = [NSJSONSerialization dataWithJSONObject:self.signingInfo options:kNilOptions error:NULL];
+            if(nil != jsonData)
+            {
+                //convert data to string
+                fileSigs = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+            }
+        }
+        //ignore exceptions
+        // ->file sigs will just be 'unknown'
+        @catch(NSException *exception)
+        {
+            ;
+        }
+    }
+    
+    //provide a default string if the file doesn't have a plist
+    if(nil == self.plist)
+    {
+        //set
+        filePlist = @"n/a";
+    }
+    //use plist as is
+    else
+    {
+        //set
+        filePlist = self.plist;
     }
     
     //init VT detection ratio
     vtDetectionRatio = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)[self.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[self.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
     
     //init json
-    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"plist\": \"%@\", \"hashes\": %@, \"signature(s)\": %@, \"VT detection\": \"%@\"", self.name, self.path, self.plist, fileHashes, fileSigs, vtDetectionRatio];
+    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"plist\": \"%@\", \"hashes\": %@, \"signature(s)\": %@, \"VT detection\": \"%@\"", self.name, self.path, filePlist, fileHashes, fileSigs, vtDetectionRatio];
     
     return json;
 }

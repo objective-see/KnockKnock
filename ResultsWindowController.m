@@ -15,8 +15,8 @@
 
 @implementation ResultsWindowController
 
+@synthesize details;
 @synthesize detailsLabel;
-
 
 //automatically called when nib is loaded
 // ->center window
@@ -36,8 +36,8 @@
     //make white
     [self.window setBackgroundColor: NSColor.whiteColor];
     
-    //set version sting
-    [self.detailsLabel setStringValue:[NSString stringWithFormat:@"version: %@", getAppVersion()]];
+    //set details
+    self.detailsLabel.stringValue = self.details;
     
     return;
 }

@@ -48,9 +48,8 @@
     // ->VT threads might still be accessing
     @synchronized(self.allItems)
     {
-        
-    //remove all items
-    [self.allItems removeAllObjects];
+        //remove all items
+        [self.allItems removeAllObjects];
         
     }//sync
     
@@ -58,9 +57,8 @@
     // ->VT threads might still be accessing
     @synchronized(self.unknownItems)
     {
-    
-    //remove unknown items
-    [self.unknownItems removeAllObjects];
+        //remove unknown items
+        [self.unknownItems removeAllObjects];
         
     }//sync
     
@@ -68,10 +66,8 @@
     // ->VT threads might still be accessing
     @synchronized(self.flaggedItems)
     {
-
-    //remove flagged items
-    [self.flaggedItems removeAllObjects];
-        
+        //remove flagged items
+        [self.flaggedItems removeAllObjects];
     }
     
     return;

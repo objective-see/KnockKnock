@@ -42,6 +42,10 @@
     //make button selected
     [self.window makeFirstResponder:self.okButton];
     
+    //capture existing prefs
+    // ->needed to trigger re-saves
+    [self captureExistingPrefs];
+    
     return;
 }
 

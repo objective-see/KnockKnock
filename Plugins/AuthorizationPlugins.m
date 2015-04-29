@@ -59,7 +59,7 @@ NSString * const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreSer
     NSString* authPluginPath = nil;
     
     //directory (bundle) flag
-    BOOL isDirectory = NO;
+    //BOOL isDirectory = NO;
     
     //File obj
     File* fileObj = nil;
@@ -87,23 +87,14 @@ NSString * const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreSer
             //build full path to importer
             authPluginPath = [NSString stringWithFormat:@"%@/%@", authPluginDirectory, importer];
             
-            //get directory flag
-            if(YES != [[NSFileManager defaultManager] fileExistsAtPath:authPluginPath isDirectory:&isDirectory])
-            {
-                //ignore errors
-                continue;
-            }
-            
-            //skip non-directories
-            if(YES != isDirectory)
+            //make sure importer is a bundle
+            // ->i.e. not just a random directory
+            if(YES != [[NSWorkspace sharedWorkspace] isFilePackageAtPath:authPluginPath])
             {
                 //skip
                 continue;
             }
-            
-            //TODO: write helper function: isBundle
-            //TODO: also call in SpotLight importers
-            
+        
             //create File object for importer
             fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:authPluginPath}];
             

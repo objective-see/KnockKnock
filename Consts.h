@@ -112,14 +112,17 @@
 //id (tag) for path
 #define TABLE_ROW_PATH_LABEL 101
 
+//id (tag) for plist
+#define TABLE_ROW_PLIST_LABEL 102
+
 //id (tag) for 'virus total' button
-#define TABLE_ROW_VT_BUTTON 102
+#define TABLE_ROW_VT_BUTTON 103
 
 //id (tag) for 'info' button
-#define TABLE_ROW_INFO_BUTTON 104
+#define TABLE_ROW_INFO_BUTTON 105
 
 //id (tag) for 'show' button
-#define TABLE_ROW_SHOW_BUTTON 106
+#define TABLE_ROW_SHOW_BUTTON 107
 
 //ellipis
 // ->for long paths...

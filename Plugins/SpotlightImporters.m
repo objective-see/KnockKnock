@@ -43,7 +43,7 @@ NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight",
     return self;
 }
 
-//scan for login items
+//scan for spotlight importers
 -(void)scan
 {
     //spotlight importer directory
@@ -57,9 +57,6 @@ NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight",
     
     //path to importer
     NSString* importerPath = nil;
-    
-    //directory (bundle) flag
-    BOOL isDirectory = NO;
     
     //File obj
     File* fileObj = nil;
@@ -87,15 +84,9 @@ NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight",
             //build full path to importer
             importerPath = [NSString stringWithFormat:@"%@/%@", importerDirectory, importer];
             
-            //get directory flag
-            if(YES != [[NSFileManager defaultManager] fileExistsAtPath:importerPath isDirectory:&isDirectory])
-            {
-                //ignore errors
-                continue;
-            }
-            
-            //skip non-directories
-            if(YES != isDirectory)
+            //make sure importer is a bundle
+            // ->i.e. not just a random directory
+            if(YES != [[NSWorkspace sharedWorkspace] isFilePackageAtPath:importerPath])
             {
                 //skip
                 continue;

@@ -427,7 +427,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         
     }//VT scanning enabled
 
-    
     //stop ui & show informational alert
     dispatch_sync(dispatch_get_main_queue(), ^{
         
@@ -850,24 +849,22 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     {
         //alloc/init
         resultsWindowController = [[ResultsWindowController alloc] initWithWindowNibName:@"ResultsWindow"];
+        
+        //set details
+        self.resultsWindowController.details = details;
     }
     
-    //center window
-    [[self.resultsWindowController window] center];
+    //subsequent times
+    // ->set details directly
+    if(nil != self.resultsWindowController.detailsLabel)
+    {
+        //set
+        self.resultsWindowController.detailsLabel.stringValue = details;
+    }
     
-    //show it
-    [self.resultsWindowController showWindow:self];
     
-    //set details
-    [self.resultsWindowController.detailsLabel setStringValue:details];
-    
-    //make it modal
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        
-        //modal!
-        [[NSApplication sharedApplication] runModalForWindow:resultsWindowController.window];
-        
-    });
+    //show it modally
+    [[NSApplication sharedApplication] runModalForWindow:resultsWindowController.window];
     
     return;
 } 
@@ -880,27 +877,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     [NSApp terminate:self];
     
     return;
-}
-
-//button handler
-// ->invoked when user checks/unchecks 'weak hijack detection' checkbox
--(IBAction)hijackDetectionOptions:(id)sender
-{
-    //alert
-    NSAlert* detectionAlert = nil;
-    
-    //check if user clicked (on)
-    if(NSOnState == ((NSButton*)sender).state)
-    {
-        //alloc/init alert
-        detectionAlert = [NSAlert alertWithMessageText:@"This might produce false positives" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"please consult an expert if any results are found!"];
-        
-        //show it
-        [detectionAlert runModal];
-    }
-    
-    return;
-    
 }
 
 //automatically invoked when mouse entered
@@ -1163,24 +1139,8 @@ bail:
         prefsWindowController = [[PrefsWindowController alloc] initWithWindowNibName:@"PrefsWindow"];
     }
     
-    //center window
-    [[self.prefsWindowController window] center];
-    
-    //show it
-    [self.prefsWindowController showWindow:self];
-    
-    //make it modal
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        
-        //capture existing prefs
-        // ->needed to trigger re-saves
-        [self.prefsWindowController captureExistingPrefs];
-        
-        //modal!
-        [[NSApplication sharedApplication] runModalForWindow:prefsWindowController.window];
-        
-    });
-    
+    //show it modally
+    [[NSApplication sharedApplication] runModalForWindow:prefsWindowController.window];
     
     return;
 }

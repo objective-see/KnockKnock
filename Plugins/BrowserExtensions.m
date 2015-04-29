@@ -160,6 +160,7 @@
     return browsers;
 }
 
+
 //scan for Safari extensions
 -(void)scanExtensionsSafari:(NSString*)browserPath
 {
@@ -194,18 +195,32 @@
     //query keychain to get safari extensions
     status = SecKeychainFindGenericPassword (NULL, (UInt32)strlen(SAFARI_KEYCHAIN_SERVICE), SAFARI_KEYCHAIN_SERVICE, (UInt32)strlen(SAFARI_KEYCHAIN_ACCOUNT), SAFARI_KEYCHAIN_ACCOUNT, &keychainDataLength, &keychainData, &keychainItemRef);
     
-    //check success
-    if(STATUS_SUCCESS != status)
+    //on success
+    // ->convert binary plist keychain data (extensions) into dictionary
+    if(errSecSuccess == status)
+    {
+        //convert
+        extensions = [NSPropertyListSerialization propertyListWithData: [NSData dataWithBytes:keychainData length:keychainDataLength] options:0 format:NULL error:NULL];
+    }
+    
+    //older versions of Safari don't store their extensions in the keychain
+    // ->can manually load from extensions plist file
+    else if(errSecItemNotFound == status)
+    {
+        //try load from extensions plist file
+        extensions = [NSDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", [SAFARI_EXTENSION_DIRECTORY stringByExpandingTildeInPath], @"Extensions.plist"]];
+    }
+    
+    //make sure extensions were found
+    // ->bail if nothing was found/parsed
+    if(nil == extensions)
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: querying keychain for Safari extensions failed with %d", status);
+        //NSLog(@"OBJECTIVE-SEE ERROR: querying keychain for Safari extensions failed with %d", status);
         
         //bail
         goto bail;
     }
-    
-    //convert binary plist keychain data to NSDictionary
-    extensions = [NSPropertyListSerialization propertyListWithData: [NSData dataWithBytes:keychainData length:keychainDataLength] options:0 format:NULL error:NULL];
     
     //iterate over all installed extensions
     // ->save/report enabled ones

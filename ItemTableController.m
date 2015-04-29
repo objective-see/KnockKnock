@@ -39,6 +39,15 @@
     return self;
 }
 
+//prevent table rows from being highlightable
+-(void)awakeFromNib
+{
+    //disable highlighting
+    [self.itemTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleNone];
+    
+    return;
+}
+
 //table delegate
 // ->return number of rows, which is just number of items in the currently selected plugin
 -(NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
@@ -61,7 +70,6 @@
     if( (0 == rows) &&
         (nil != selectedPluginObj) )
     {
-        
         //set string (to include plugin's name)
         [self.noItemsLabel setStringValue:[NSString stringWithFormat:@"no %@ found", [selectedPluginObj.name lowercaseString]]];
         
@@ -108,7 +116,10 @@
     //(for files) signed/unsigned icon
     NSImage* signatureStatus = nil;
     
-    //path frame
+    //item name frame
+    CGRect nameFrame = {0};
+    
+    //item path frame
     CGRect pathFrame = {0};
     
     //attribute dictionary
@@ -117,11 +128,18 @@
     //paragraph style
     NSMutableParagraphStyle *paragraphStyle = nil;
     
-    //truncate path
+    //truncated path
     NSString* truncatedPath = nil;
+    
+    //truncated plist
+    NSString* truncatedPlist = nil;
     
     //tracking area
     NSTrackingArea* trackingArea = nil;
+    
+    //flag indicating row has tracking area
+    // ->ensures we don't add 2x
+    BOOL hasTrackingArea = NO;
     
     //set selected plugin
     selectedPluginObj =  ((AppDelegate*)[[NSApplication sharedApplication] delegate]).selectedPlugin;
@@ -145,6 +163,32 @@
         goto bail;
     }
     
+    //check if cell was previously used (by checking the item name)
+    // ->if so, set flag to indicated tracking area does not need to be added
+    if(YES != [itemCell.textField.stringValue isEqualToString:@"Item Name"])
+    {
+        //set flag
+        hasTrackingArea = YES;
+    }
+    
+    //default
+    // ->set main textfield's color to black
+    itemCell.textField.textColor = [NSColor blackColor];
+    
+    //grab path's frame
+    pathFrame = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame;
+    
+    //default
+    // ->set y-offset of path (no plist)
+    pathFrame.origin.y = 16;
+    
+    //set frame
+    ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
+    
+    //default
+    // ->hide plist label
+    [((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PLIST_LABEL]) setHidden:YES];
+    
     //extract plugin item for row
     item = tableItems[row];
 
@@ -152,23 +196,28 @@
     // ->name
     [itemCell.textField setStringValue:item.name];
     
-    //init tracking area
-    // ->for 'show' button
-    trackingArea = [[NSTrackingArea alloc] initWithRect:[[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON] bounds]
-                    options:(NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways)
-                    owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:TABLE_ROW_SHOW_BUTTON]}];
-    
-    //add tracking area to 'show' button
-    [[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON] addTrackingArea:trackingArea];
-    
-    //init tracking area
-    // ->for 'info' button
-    trackingArea = [[NSTrackingArea alloc] initWithRect:[[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON] bounds]
-                    options:(NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways)
-                    owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:TABLE_ROW_INFO_BUTTON]}];
-    
-    //add tracking area to 'info' button
-    [[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON] addTrackingArea:trackingArea];
+    //only have to add tracking area once
+    // ->add it the first time
+    if(NO == hasTrackingArea)
+    {
+        //init tracking area
+        // ->for 'show' button
+        trackingArea = [[NSTrackingArea alloc] initWithRect:[[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON] bounds]
+                        options:(NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways)
+                        owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:TABLE_ROW_SHOW_BUTTON]}];
+        
+        //add tracking area to 'show' button
+        [[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON] addTrackingArea:trackingArea];
+        
+        //init tracking area
+        // ->for 'info' button
+        trackingArea = [[NSTrackingArea alloc] initWithRect:[[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON] bounds]
+                        options:(NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways)
+                        owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:TABLE_ROW_INFO_BUTTON]}];
+        
+        //add tracking area to 'info' button
+        [[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON] addTrackingArea:trackingArea];
+    }
     
     //get signature image view
     signatureImageView = [itemCell viewWithTag:TABLE_ROW_SIGNATURE_ICON];
@@ -180,6 +229,14 @@
     // ->path
     if(YES == [item isKindOfClass:[File class]])
     {
+        //grab virus total button
+        // ->need it for frame computations, etc
+        vtButton = [itemCell viewWithTag:TABLE_ROW_VT_BUTTON];
+        
+        //set image
+        // ->app's icon
+        itemCell.imageView.image = getIconForBinary(((File*)item).path, ((File*)item).bundle);
+
         //set signature status icon
         //switch on signing status
         if( (nil != ((File*)item).signingInfo) &&
@@ -189,24 +246,33 @@
             signatureStatus = [NSImage imageNamed:@"signed"];
         }
         //signature not present or invalid
-        // ->
+        // ->just set text unsigned
         else
         {
             //signed
             signatureStatus = [NSImage imageNamed:@"unsigned"];
         }
-        
+
         //set signature icon
         signatureImageView.image = signatureStatus;
         
         //show signature icon
         signatureImageView.hidden = NO;
         
-        //set path to be aligned to item name
-        // ->since there isn't a signature icon
-        pathFrame.origin.x = 68;
+        //get item name
+        nameFrame = itemCell.textField.frame;
         
-        //update frame
+        //shift over item name
+        // ->since there's a signature icon
+        nameFrame.origin.x = 66;
+        
+        //update name frame
+        itemCell.textField.frame = nameFrame;
+                
+        //path should go to vt button
+        pathFrame.size.width = vtButton.frame.origin.x - pathFrame.origin.x;
+        
+        //set new frame
         ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
         
         //truncate path
@@ -215,13 +281,26 @@
         //set detailed text
         // ->always item's path
         [[itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG] setStringValue:truncatedPath];
-
-        //set image
-        // ->app's icon
-        itemCell.imageView.image = getIconForBinary(((File*)item).path, ((File*)item).bundle);
         
-        //grab virus total button
-        vtButton = [itemCell viewWithTag:TABLE_ROW_VT_BUTTON];
+        //for files w/ plist
+        // ->set/show
+        if(nil != ((File*)item).plist)
+        {
+            //shift up frame
+            pathFrame.origin.y = 20;
+        
+            //set new frame
+            ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
+            
+            //truncate plist
+            truncatedPlist = stringByTruncatingString([itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG], ((File*)item).plist, itemCell.frame.size.width-TABLE_BUTTONS_FILE);
+        
+            //set plist
+            [((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PLIST_LABEL]) setStringValue:truncatedPlist];
+            
+            //show
+            [((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PLIST_LABEL]) setHidden:NO];
+        }
         
         //configure/show VT info
         // ->only if 'disable' preference not set
@@ -355,12 +434,25 @@
         //hide signature status
         signatureImageView.hidden = YES;
         
-        //set path to be aligned to item name
+        //get item name
+        nameFrame = itemCell.textField.frame;
+        
+        //shift 'back' item name
         // ->since there isn't a signature icon
-        pathFrame.origin.x = 50;
+        nameFrame.origin.x = 50;
         
         //update frame
-        ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
+        itemCell.textField.frame = nameFrame;
+        
+        //for extensions
+        // ->path should start inline w/ name
+        pathFrame.origin.x = 50;
+        
+        //path should go to info button
+        pathFrame.size.width = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON]).frame.origin.x - pathFrame.origin.x;
+        
+        //set new frame
+        //((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
         
         //truncate path
         truncatedPath = stringByTruncatingString([itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG], [item path], itemCell.frame.size.width-TABLE_BUTTONS_EXTENTION);
@@ -385,12 +477,6 @@ bail:
     
     return itemCell;
 }
-
--(NSIndexSet *)tableView:(NSTableView *)tableView selectionIndexesForProposedSelection:(NSIndexSet *)proposedSelectionIndexes
-{
-    return nil;
-}
-
 
 //automatically invoked when mouse entered
 -(void)mouseEntered:(NSEvent*)theEvent
@@ -489,7 +575,6 @@ bail:
         //bail
         goto bail;
     }
-
     
     //get row that's about to be selected
     currentRow = [self.itemTableView viewAtColumn:0 row:rowIndex makeIfNecessary:YES];
@@ -498,33 +583,7 @@ bail:
     // ->tag id of button, passed in userData var
     button = [currentRow viewWithTag:[((NSDictionary*)theEvent.userData)[@"tag"] unsignedIntegerValue]];
     label = [currentRow viewWithTag: 1 + [((NSDictionary*)theEvent.userData)[@"tag"] unsignedIntegerValue]];
-    
-    
-    //[label setFont:[NSFont fontWithName:@"Menlo" size:9]];
-    
-    /*
-    //no image for VT button
-    // ->reset text color to black
-    if(nil == imageName)
-    {
-        if(YES == shouldReset)
-        {
-            NSMutableAttributedString *colorTitle = [[NSMutableAttributedString alloc] initWithAttributedString:[button attributedTitle]];
-            NSRange titleRange = NSMakeRange(0, [colorTitle length]);
-            [colorTitle addAttribute:NSForegroundColorAttributeName value:[NSColor blackColor] range:titleRange];
-            [button setAttributedTitle:colorTitle];
-        }
-        else
-        {
-            NSMutableAttributedString *colorTitle = [[NSMutableAttributedString alloc] initWithAttributedString:[button attributedTitle]];
-            NSRange titleRange = NSMakeRange(0, [colorTitle length]);
-            [colorTitle addAttribute:NSForegroundColorAttributeName value:[NSColor grayColor] range:titleRange];
-            [button setAttributedTitle:colorTitle];
-        }
-        
-    }
-    */
-    
+
     //restore default button image
     // ->for 'info' and 'show' buttons
     if(nil != imageName)
@@ -626,7 +685,7 @@ bail:
 
 //automatically invoked when user clicks the 'info' icon
 // ->create/configure/display info window
-- (IBAction)showInfo:(id)sender
+-(IBAction)showInfo:(id)sender
 {
     //array backing table
     NSArray* tableItems = nil;

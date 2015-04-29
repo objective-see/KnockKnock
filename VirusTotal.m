@@ -243,12 +243,24 @@
     if(nil != params)
     {
         //convert items to JSON'd data for POST request
-        postData = [NSJSONSerialization dataWithJSONObject:params options:kNilOptions error:nil];
-        if(nil == postData)
+        // ->wrap since we are serializing JSON
+        @try
         {
-            //err msg
-            NSLog(@"OBJECTIVE-SEE ERROR: failed to convert request %@ to JSON", postData);
+            //convert items
+            postData = [NSJSONSerialization dataWithJSONObject:params options:kNilOptions error:nil];
+            if(nil == postData)
+            {
+                //err msg
+                NSLog(@"OBJECTIVE-SEE ERROR: failed to convert request %@ to JSON", postData);
+                
+                //bail
+                goto bail;
+            }
             
+        }
+        //bail on exceptions
+        @catch(NSException *exception)
+        {
             //bail
             goto bail;
         }
