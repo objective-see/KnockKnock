@@ -52,7 +52,7 @@
 //save existing prefs
 -(void)captureExistingPrefs
 {
-    //save current state of 'show os/trusted' components
+    //save current state of 'include os/trusted' components
     self.showTrustedItems = self.showTrustedItemsBtn.state;
     
     //save current state of 'disable VT'

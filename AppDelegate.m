@@ -804,7 +804,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     NSUInteger flaggedItemCount =  0;
     
     //iterate over all plugins
-    // ->sum up their item counts
+    // ->sum up their item counts and flag items count
     for(PluginBase* plugin in self.plugins)
     {
         //when showing all findings
@@ -813,21 +813,36 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         {
             //add up
             itemCount += plugin.allItems.count;
+            
+            //add plugin's flagged items
+            flaggedItemCount += plugin.flaggedItems.count;
+            
+            //init detailed msg
+            details = [NSMutableString stringWithFormat:@"■ found %lu items", (unsigned long)itemCount];
         }
         //otherwise just unknown items
         else
         {
             //add up
             itemCount += plugin.unknownItems.count;
+            
+            //manually check if each unknown item is flagged
+            // ->gotta do this since flaggedItems includes all items
+            for(ItemBase* item in plugin.unknownItems)
+            {
+                //check if item it flagged
+                if(YES == [plugin.flaggedItems containsObject:item])
+                {
+                    //inc
+                    flaggedItemCount++;
+                }
+            }
+            
+            //init detailed msg
+            details = [NSMutableString stringWithFormat:@"■ found %lu non-OS items", (unsigned long)itemCount];
         }
-        
-        //add plugin's flagged items
-        flaggedItemCount += plugin.flaggedItems.count;
     }
-    
-    //init detailed msg
-    details = [NSMutableString stringWithFormat:@"■ found %lu items", (unsigned long)itemCount];
-    
+
     //when VT integration is enabled
     // ->add flagged items
     if(YES != self.prefsWindowController.disableVTQueries)

@@ -68,6 +68,9 @@
     //plugin
     PluginBase* plugin = nil;
     
+    //flag indicating a *visible* item is flagged
+    BOOL hasFlaggedItem = NO;
+    
     //extract plugin object
     plugin = self.tableContents[row];
     
@@ -77,6 +80,14 @@
     {
         //set count
         itemsInCategory = plugin.allItems.count;
+        
+        //check if any item is flagged
+        if( (YES != ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries) &&
+            (0 != plugin.flaggedItems.count) )
+        {
+            //set flag
+            hasFlaggedItem = YES;
+        }
     }
     //set item number of category items
     // ->case: filtering (i.e., unknown items)
@@ -84,6 +95,25 @@
     {
         //set count
         itemsInCategory = plugin.unknownItems.count;
+        
+        //check if any item is flagged
+        if(YES != ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries)
+        {
+            //manually check if any unknown item is flagged
+            // ->gotta do this since flaggedItems includes all items
+            for(ItemBase* item in plugin.unknownItems)
+            {
+                //check if item it flagged
+                if(YES == [plugin.flaggedItems containsObject:item])
+                {
+                    //set flag
+                    hasFlaggedItem = YES;
+                    
+                    //exit loop
+                    break;
+                }
+            }
+        }
     }
 
     //create cell
@@ -100,15 +130,15 @@
     //set (main) text
     [categoryCell.textField setStringValue:plugin.name];
     
-    //when VT scanning enable & plugin has flagged objects
+    //when any *visible* item is flagged
     // ->set the title's color to red
-    if( (YES != ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries) &&
-        (0 != plugin.flaggedItems.count) )
+    if(YES == hasFlaggedItem)
     {
         //red
         [categoryCell.textField setTextColor:[NSColor redColor]];
     }
-    //otherwise set it to black
+    //no flagged items
+    // ->set title's color to black
     else
     {
         //black
