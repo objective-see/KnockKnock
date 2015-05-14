@@ -39,7 +39,8 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 @synthesize progressIndicator;
 @synthesize vulnerableAppHeaderIndex;
 
-//TODO: check if VT can be reached! if not, error? or don't show '0 VT results detected' etc...
+//TODO: check if VT can be reached! if not, error? or don't show '0 VT results detected'
+
 
 //center window
 // ->also make front
@@ -74,6 +75,9 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     //init array for virus total threads
     vtThreads = [NSMutableArray array];
     
+    //alloc shared item enumerator
+    sharedItemEnumerator = [[ItemEnumerator alloc] init];
+    
     //check that OS is supported
     if(YES != isSupportedOS())
     {
@@ -83,9 +87,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         //exit
         exit(0);
     }
-    
-    //alloc shared item enumerator
-    sharedItemEnumerator = [[ItemEnumerator alloc] init];
     
     //kick off thread to begin enumerating shared objects
     // ->this takes awhile, so do it now!
@@ -877,9 +878,17 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         self.resultsWindowController.detailsLabel.stringValue = details;
     }
     
+    //show it
+    [self.resultsWindowController showWindow:self];
     
-    //show it modally
-    [[NSApplication sharedApplication] runModalForWindow:resultsWindowController.window];
+    //invoke function in background that will make window modal
+    // ->waits until window is non-nil
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        //make modal
+        makeModal(self.resultsWindowController);
+        
+    });
     
     return;
 } 
@@ -1154,9 +1163,18 @@ bail:
         prefsWindowController = [[PrefsWindowController alloc] initWithWindowNibName:@"PrefsWindow"];
     }
     
-    //show it modally
-    [[NSApplication sharedApplication] runModalForWindow:prefsWindowController.window];
+    //show it
+    [self.prefsWindowController showWindow:self];
     
+    //invoke function in background that will make window modal
+    // ->waits until window is non-nil
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+        //make modal
+        makeModal(self.prefsWindowController);
+        
+    });
+
     return;
 }
 

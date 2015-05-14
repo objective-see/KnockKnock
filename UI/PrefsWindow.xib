@@ -32,7 +32,7 @@
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="settings" id="xKf-GK-m0k"/>
                     </imageView>
                     <button focusRingType="none" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4xV-kQ-iaT">
-                        <rect key="frame" x="101" y="85" width="189" height="18"/>
+                        <rect key="frame" x="101" y="85" width="264" height="18"/>
                         <buttonCell key="cell" type="check" title="include os/known items" bezelStyle="regularSquare" imagePosition="left" focusRingType="none" inset="2" id="WN8-cQ-8xh">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" size="13" name="Menlo-Regular"/>

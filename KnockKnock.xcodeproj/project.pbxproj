@@ -21,6 +21,8 @@
 		CD02195E1AD39A74005148A2 /* ResultsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD02195D1AD39A74005148A2 /* ResultsWindow.xib */; };
 		CD0219611AD39A83005148A2 /* ResultsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD0219601AD39A83005148A2 /* ResultsWindowController.m */; };
 		CD6095731A87067D00E091CD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6095721A87067D00E091CD /* Security.framework */; };
+		CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975031B02F60400CE819B /* RFOverlayScroller.m */; };
+		CD6975071B02F60400CE819B /* RFOverlayScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975051B02F60400CE819B /* RFOverlayScrollView.m */; };
 		CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */; };
 		CD7B9F501ACB9A8400DF3C71 /* Exception.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9F4F1ACB9A8400DF3C71 /* Exception.m */; };
 		CD7B9F531ACBAE2900DF3C71 /* SpotlightImporters.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */; };
@@ -75,6 +77,7 @@
 		CDAB989F1AEADE5A00C75B4B /* DylibInserts.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */; };
 		CDAB98A11AEAFAFA00C75B4B /* authorizationIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */; };
 		CDAB98A31AEB413C00C75B4B /* dylibIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDAB98A21AEB413C00C75B4B /* dylibIcon.png */; };
+		CDDBC2301B04771100B021E0 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */; };
 		CDF08CBF1AC3DE25009B3423 /* logoAppleBG.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */; };
 		CDF08CC11AC3E8B0009B3423 /* showOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CC01AC3E8B0009B3423 /* showOver.png */; };
 		CDF08CC31AC3E98D009B3423 /* infoOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CC21AC3E98D009B3423 /* infoOver.png */; };
@@ -117,6 +120,10 @@
 		CD02195F1AD39A83005148A2 /* ResultsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultsWindowController.h; sourceTree = "<group>"; };
 		CD0219601AD39A83005148A2 /* ResultsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultsWindowController.m; sourceTree = "<group>"; };
 		CD6095721A87067D00E091CD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		CD6975021B02F60400CE819B /* RFOverlayScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RFOverlayScroller.h; path = 3rdParty/RFOverlayScroller.h; sourceTree = "<group>"; };
+		CD6975031B02F60400CE819B /* RFOverlayScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RFOverlayScroller.m; path = 3rdParty/RFOverlayScroller.m; sourceTree = "<group>"; };
+		CD6975041B02F60400CE819B /* RFOverlayScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RFOverlayScrollView.h; path = 3rdParty/RFOverlayScrollView.h; sourceTree = "<group>"; };
+		CD6975051B02F60400CE819B /* RFOverlayScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RFOverlayScrollView.m; path = 3rdParty/RFOverlayScrollView.m; sourceTree = "<group>"; };
 		CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoAppleOver.png; path = images/logoAppleOver.png; sourceTree = SOURCE_ROOT; };
 		CD7B9F4E1ACB9A8400DF3C71 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exception.h; sourceTree = SOURCE_ROOT; };
 		CD7B9F4F1ACB9A8400DF3C71 /* Exception.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Exception.m; sourceTree = SOURCE_ROOT; };
@@ -197,6 +204,7 @@
 		CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DylibInserts.m; path = Plugins/DylibInserts.m; sourceTree = "<group>"; };
 		CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = authorizationIcon.png; path = images/authorizationIcon.png; sourceTree = SOURCE_ROOT; };
 		CDAB98A21AEB413C00C75B4B /* dylibIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dylibIcon.png; path = images/dylibIcon.png; sourceTree = SOURCE_ROOT; };
+		CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
 		CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoAppleBG.png; path = images/logoAppleBG.png; sourceTree = SOURCE_ROOT; };
 		CDF08CC01AC3E8B0009B3423 /* showOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = showOver.png; path = images/showOver.png; sourceTree = SOURCE_ROOT; };
 		CDF08CC21AC3E98D009B3423 /* infoOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = infoOver.png; path = images/infoOver.png; sourceTree = SOURCE_ROOT; };
@@ -227,6 +235,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDDBC2301B04771100B021E0 /* ServiceManagement.framework in Frameworks */,
 				CDF08CEA1AC8D97B009B3423 /* Quartz.framework in Frameworks */,
 				CD6095731A87067D00E091CD /* Security.framework in Frameworks */,
 				1D21BC4F172AF43D009D1CFD /* Cocoa.framework in Frameworks */,
@@ -273,6 +282,7 @@
 		1D21BC4D172AF43D009D1CFD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */,
 				CDF08CE91AC8D97B009B3423 /* Quartz.framework */,
 				CD6095721A87067D00E091CD /* Security.framework */,
 				1D21BC4E172AF43D009D1CFD /* Cocoa.framework */,
@@ -465,6 +475,10 @@
 		CDF08CE31AC89FD4009B3423 /* 3rdParty */ = {
 			isa = PBXGroup;
 			children = (
+				CD6975021B02F60400CE819B /* RFOverlayScroller.h */,
+				CD6975031B02F60400CE819B /* RFOverlayScroller.m */,
+				CD6975041B02F60400CE819B /* RFOverlayScrollView.h */,
+				CD6975051B02F60400CE819B /* RFOverlayScrollView.m */,
 				CDF08CE41AC89FE1009B3423 /* HyperlinkTextField.h */,
 				CDF08CE51AC89FE1009B3423 /* HyperlinkTextField.m */,
 			);
@@ -589,6 +603,7 @@
 				CDA81DEE1A99B5F8009790E2 /* Filter.m in Sources */,
 				CDA81D501A95B492009790E2 /* Binary.m in Sources */,
 				CDA81D7B1A95D29B009790E2 /* ItemTableController.m in Sources */,
+				CD6975071B02F60400CE819B /* RFOverlayScrollView.m in Sources */,
 				CDF08CCA1AC4C678009B3423 /* PrefsWindowController.m in Sources */,
 				CDA81E071A9AFFA7009790E2 /* LoginItems.m in Sources */,
 				CDA81DEA1A997BF1009790E2 /* InfoWindowController.m in Sources */,
@@ -599,6 +614,7 @@
 				CDA81D4F1A95B492009790E2 /* AppDelegate.m in Sources */,
 				CDA81D5E1A95B4B4009790E2 /* main.m in Sources */,
 				CD7B9F501ACB9A8400DF3C71 /* Exception.m in Sources */,
+				CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */,
 				CDA81E0A1A9B0AD8009790E2 /* BrowserExtensions.m in Sources */,
 				CDAB989F1AEADE5A00C75B4B /* DylibInserts.m in Sources */,
 				CDF08CDB1AC8820F009B3423 /* MachO.m in Sources */,

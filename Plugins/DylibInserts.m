@@ -201,7 +201,8 @@
     File* fileObj = nil;
     
     //wait for shared item enumerator to complete enumeration of installed apps
-    do
+    // ->give up after 5 minutes
+    for(NSUInteger i=0; i<(10*60)*5; i++)
     {
         //nap
         [NSThread sleepForTimeInterval:0.1f];
@@ -210,10 +211,22 @@
         // ->will only !nil, when enumeration is complete
         installedApps = ((AppDelegate*)[[NSApplication sharedApplication] delegate]).sharedItemEnumerator.applications;
         
-        //TODO: add time interval
+        //exit loop once we have apps
+        if(nil != installedApps)
+        {
+            //break
+            break;
+        }
         
-    //keep trying until we get em!
-    } while(nil == installedApps);
+    }//try up to 5 minutes?
+    
+    //make sure installed apps were found
+    // ->i.e. didn't time out
+    if(nil == installedApps)
+    {
+        //bail
+        goto bail;
+    }
     
     //iterate over all install apps
     // ->scan/process each
@@ -274,6 +287,9 @@
         // ->save and report to UI
         [super processItem:fileObj];
     }
+    
+//bail
+bail:
     
     return;
 }

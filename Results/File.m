@@ -40,7 +40,7 @@
         if(YES != [[NSFileManager defaultManager] fileExistsAtPath:params[KEY_RESULT_PATH] isDirectory:&isDirectory])
         {
             //err msg
-            NSLog(@"OBJECTIVE-SEE ERROR: %@ not found", params[KEY_RESULT_PATH]);
+            //NSLog(@"OBJECTIVE-SEE ERROR: %@ not found", params[KEY_RESULT_PATH]);
             
             //set self to nil
             self = nil;

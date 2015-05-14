@@ -696,3 +696,34 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments)
     return output;
 }
 
+//wait until a window is non nil
+// ->then make it modal
+void makeModal(NSWindowController* windowController)
+{
+    //wait up to 1 second window to be non-nil
+    // ->then make modal
+    for(int i=0; i<20; i++)
+    {
+        //can make it modal once we have a window
+        if(nil != windowController.window)
+        {
+            //make modal on main thread
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                
+                //modal
+                [[NSApplication sharedApplication] runModalForWindow:windowController.window];
+        
+            });
+            
+            //all done
+            break;
+        }
+        
+        //nap
+        [NSThread sleepForTimeInterval:0.05f];
+
+    }//until 1 second
+    
+    return;
+}
+

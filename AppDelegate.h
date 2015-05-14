@@ -87,7 +87,6 @@
 //results window controller
 @property(nonatomic, retain)ResultsWindowController* resultsWindowController;
 
-
 /* METHODS */
 
 //init tracking areas for buttons

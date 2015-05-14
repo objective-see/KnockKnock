@@ -60,4 +60,8 @@ NSMutableAttributedString* setStringColor(NSAttributedString* string, NSColor* c
 //exec a process and grab it's output
 NSData* execTask(NSString* binaryPath, NSArray* arguments);
 
+//wait until a window is non nil
+// ->then make it modal
+void makeModal(NSWindowController* windowController);
+
 #endif
