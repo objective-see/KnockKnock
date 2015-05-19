@@ -27,6 +27,12 @@
 
 }
 
+/* PROPERTIES */
+
+//flag for secondary scan
+// ->need to restart shared enumerator 
+@property BOOL secondaryScan;
+
 //plugin objects
 @property(nonatomic, retain)NSMutableArray* plugins;
 
@@ -132,6 +138,10 @@
 
 //action for 'about' in menu/logo in UI
 -(IBAction)about:(id)sender;
+
+//execute logic to complete scan
+// ->ensures various threads are terminated, etc
+-(void)completeScan;
 
 //version string
 @property (weak) IBOutlet NSTextField *versionString;

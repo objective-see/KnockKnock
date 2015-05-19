@@ -112,8 +112,21 @@
         // ->first, via 'ProgramArguments'
         if(nil != plistContents[@"ProgramArguments"])
         {
-            //extract path
-            launchItemPath = [plistContents[@"ProgramArguments"] firstObject];
+            //should (usually) be an array
+            // ->extract & grab first item
+            if(YES == [plistContents[@"ProgramArguments"] isKindOfClass:[NSArray class]])
+            {
+                //extract path
+                launchItemPath = [plistContents[@"ProgramArguments"] firstObject];
+            }
+            
+            //sometime this is a string...
+            // ->just save as path (assumes no args)
+            else if(YES == [plistContents[@"ProgramArguments"] isKindOfClass:[NSString class]])
+            {
+                //extract path
+                launchItemPath = plistContents[@"ProgramArguments"];
+            }
         }
         
         //attempt to extact path to launch item

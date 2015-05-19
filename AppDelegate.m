@@ -89,7 +89,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     }
     
     //kick off thread to begin enumerating shared objects
-    // ->this takes awhile, so do it now!
+    // ->this takes awhile, so do it now/first!
     [self.sharedItemEnumerator start];
 
     //instantiate all plugins objects
@@ -127,6 +127,15 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     //set delegate
     // ->ensures our 'windowWillClose' method, which has logic to fully exit app
     self.window.delegate = self;
+    
+    //alloc/init prefs
+    prefsWindowController = [[PrefsWindowController alloc] initWithWindowNibName:@"PrefsWindow"];
+    
+    //register defaults
+    [self.prefsWindowController registerDefaults];
+    
+    //load prefs
+    [self.prefsWindowController loadPreferences];
 
     return;
 }
@@ -260,37 +269,8 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     // ->STOP scan, by cancelling threads, etc.
     else
     {
-        //tell enumerator to stop
-        [self.sharedItemEnumerator stop];
-        
-        //cancel enumerator thread
-        if(YES == [self.sharedItemEnumerator.enumeratorThread isExecuting])
-        {
-            //cancel
-            [self.sharedItemEnumerator.enumeratorThread cancel];
-        }
-        
-        //sync to cancel all VT threads
-        @synchronized(self.vtThreads)
-        {
-            //tell all VT threads to bail
-            for(NSThread* vtThread in self.vtThreads)
-            {
-                //cancel running threads
-                if(YES == [vtThread isExecuting])
-                {
-                    //cancel
-                    [vtThread cancel];
-                }
-            }
-        }
-        
-        //cancel scanner thread
-        if(YES == [self.scannerThread isExecuting])
-        {
-            //cancel
-            [self.scannerThread cancel];
-        }
+        //complete scan
+        [self completeScan];
         
         //update the UI
         // ->reflect the stopped state & and display stats
@@ -301,13 +281,26 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 }
 
 //kickoff background thread to scan
+// ->also shared enumerator thread (if needed)
 -(void)startScan
 {
-    //alloc thread
+    //alloc scanner thread
     scannerThread = [[NSThread alloc] initWithTarget:self selector:@selector(scan) object:nil];
     
-    //start thread
+    //on secondary runs
+    // ->always restart shared enumerator
+    if(YES == self.secondaryScan)
+    {
+        //start it
+        [self.sharedItemEnumerator start];
+    }
+    
+    //start scanner thread
     [self.scannerThread start];
+    
+    //set flag
+    // ->indicates that this isn't first scan
+    self.secondaryScan = YES;
     
     return;
 }
@@ -427,8 +420,12 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         }//active thread
         
     }//VT scanning enabled
+    
+    //execute final scan logic
+    [self completeScan];
 
     //stop ui & show informational alert
+    // ->executed on main thread
     dispatch_sync(dispatch_get_main_queue(), ^{
         
         //check if user wants to save results
@@ -636,6 +633,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     return;
 }
 
+
 //callback when user has updated prefs
 // ->reload table, etc
 -(void)applyPreferences
@@ -740,6 +738,53 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 
     //disable gear (show prefs) button
     self.showPreferencesButton.enabled = NO;
+    
+    return;
+}
+
+//execute logic to complete scan
+// ->ensures various threads are terminated, etc
+-(void)completeScan
+{
+    //tell enumerator to stop
+    [self.sharedItemEnumerator stop];
+    
+    //cancel enumerator thread
+    if(YES == [self.sharedItemEnumerator.enumeratorThread isExecuting])
+    {
+        //cancel
+        [self.sharedItemEnumerator.enumeratorThread cancel];
+    }
+    
+    //sync to cancel all VT threads
+    @synchronized(self.vtThreads)
+    {
+        //tell all VT threads to bail
+        for(NSThread* vtThread in self.vtThreads)
+        {
+            //cancel running threads
+            if(YES == [vtThread isExecuting])
+            {
+                //cancel
+                [vtThread cancel];
+            }
+        }
+    }
+    
+    //remove all VT threads
+    [self.vtThreads removeAllObjects];
+    
+    //when invoked from the UI (e.g. 'Stop Scan' was clicked)
+    // ->cancel scanner thread
+    if([NSThread currentThread] != self.scannerThread)
+    {
+        //cancel scanner thread
+        if(YES == [self.scannerThread isExecuting])
+        {
+            //cancel
+            [self.scannerThread cancel];
+        }
+    }
     
     return;
 }
@@ -1156,13 +1201,6 @@ bail:
 // ->show preferences
 -(IBAction)showPreferences:(id)sender
 {
-    //alloc/init settings window
-    if(nil == self.prefsWindowController)
-    {
-        //alloc/init
-        prefsWindowController = [[PrefsWindowController alloc] initWithWindowNibName:@"PrefsWindow"];
-    }
-    
     //show it
     [self.prefsWindowController showWindow:self];
     

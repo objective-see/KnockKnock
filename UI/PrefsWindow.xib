@@ -7,12 +7,9 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PrefsWindowController">
             <connections>
-                <outlet property="disableVTQueries" destination="d54-mZ-jqy" id="gCe-BP-bct"/>
                 <outlet property="disableVTQueriesBtn" destination="d54-mZ-jqy" id="Xx6-E1-yv0"/>
                 <outlet property="okButton" destination="HZZ-Es-mpy" id="GKU-Jc-ENB"/>
-                <outlet property="saveOutput" destination="6la-v6-zBD" id="iif-cF-w6y"/>
                 <outlet property="saveOutputBtn" destination="6la-v6-zBD" id="m3d-J9-MZg"/>
-                <outlet property="showTrustedItems" destination="4xV-kQ-iaT" id="3wm-5q-ib3"/>
                 <outlet property="showTrustedItemsBtn" destination="4xV-kQ-iaT" id="aEg-d4-Orl"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>

@@ -13,6 +13,15 @@
     
 }
 
+/* METHODS */
+
+//register default prefs
+// ->only used if user hasn't set any
+-(void)registerDefaults;
+
+//load (persistence) preferences from file system
+-(void)loadPreferences;
+
 //buttons
 
 //button for filtering out OS componets

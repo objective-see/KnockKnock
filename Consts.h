@@ -24,6 +24,24 @@
 //status msg
 #define SCAN_MSG_COMPLETE @"scan complete"
 
+//prefs
+// ->filter out OS/known
+#define PREF_SHOW_TRUSTED_ITEMS @"showTrustedItems"
+
+//prefs
+// ->disable VT querires
+#define PREF_DISABLE_VT_QUERIRES @"disableVTQueries"
+
+//prefs
+// ->filter out OS/known
+#define PREF_SAVE_OUTPUT @"saveOutput"
+
+//disabled state
+#define STATE_DISABLED 0
+
+//enabled state
+#define STATE_ENABLED 1
+
 //success
 #define STATUS_SUCCESS 0
 
