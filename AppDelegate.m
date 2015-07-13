@@ -12,7 +12,7 @@
 #import "AppDelegate.h"
 
 //supported plugins
-NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"LoginItems", @"SpotlightImporters"};
+NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"Kexts", @"LaunchItems", @"DylibInserts", @"LoginItems", @"SpotlightImporters"};
 
 
 @implementation AppDelegate
@@ -97,10 +97,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     
     //set selected plugin to first
     self.selectedPlugin = [self.plugins firstObject];
-    
-    //dbg msg
-    //NSLog(@"KNOCKKNOCK: registered plugins: %@", self.plugins);
-    
+
     //pre-populate category table w/ each plugin title
     [self.categoryTableController initTable:self.plugins];
     
@@ -421,25 +418,31 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         
     }//VT scanning enabled
     
-    //execute final scan logic
-    [self completeScan];
+    //complete scan logic and show result
+    // ->but *only* if scan wasn't stopped
+    if(YES != [[NSThread currentThread] isCancelled])
+    {
+        //execute final scan logic
+        [self completeScan];
 
-    //stop ui & show informational alert
-    // ->executed on main thread
-    dispatch_sync(dispatch_get_main_queue(), ^{
+        //stop ui & show informational alert
+        // ->executed on main thread
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            
+            //check if user wants to save results
+            if(YES == self.prefsWindowController.saveOutput)
+            {
+                //save
+                [self saveResults];
+            }
+            
+            //update the UI
+            // ->reflect the stopped state
+            [self stopScanUI:SCAN_MSG_COMPLETE];
+            
+        });
         
-        //check if user wants to save results
-        if(YES == self.prefsWindowController.saveOutput)
-        {
-            //save
-            [self saveResults];
-        }
-        
-        //update the UI
-        // ->reflect the stopped state
-        [self stopScanUI:SCAN_MSG_COMPLETE];
-        
-    });
+    }//scan not stopped by user
     
     return;
 }
@@ -585,8 +588,14 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 }
 
 //update a single row
--(void)itemProcessed:(File*)fileObj rowIndex:(NSUInteger)rowIndex
+-(void)itemProcessed:(File*)fileObj
 {
+    //row index
+    __block NSUInteger rowIndex = NSNotFound;
+    
+    //current items
+    __block NSArray* tableItems = nil;
+    
     //reload category table (on main thread)
     // ->ensures correct title color (red, or reset)
     dispatch_sync(dispatch_get_main_queue(), ^{
@@ -602,14 +611,24 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         //execute on main (UI) thread
         dispatch_sync(dispatch_get_main_queue(), ^{
             
-            //start table updates
-            [self.itemTableController.itemTableView beginUpdates];
+            //get current items
+            tableItems = [self.itemTableController getTableItems];
             
-            //update
-            [self.itemTableController.itemTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:rowIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+            //find index of item
+            rowIndex = [tableItems indexOfObject:fileObj];
             
-            //end table updates
-            [self.itemTableController.itemTableView endUpdates];
+            //reload row
+            if(NSNotFound != rowIndex)
+            {
+                //start table updates
+                [self.itemTableController.itemTableView beginUpdates];
+            
+                //update
+                [self.itemTableController.itemTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:rowIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+            
+                //end table updates
+                [self.itemTableController.itemTableView endUpdates];
+            }
             
         });
     }

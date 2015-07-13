@@ -114,7 +114,7 @@
     VTButton* vtButton;
     
     //(for files) signed/unsigned icon
-    NSImage* signatureStatus = nil;
+    //NSImage* signatureStatus = nil;
     
     //item name frame
     CGRect nameFrame = {0};
@@ -154,9 +154,74 @@
         //bail
         goto bail;
     }
+    
+    //extract plugin item for row
+    item = tableItems[row];
+    
+    //handle Command items
+    // ->vry basic row
+    if(YES == [item isKindOfClass:[Command class]])
+    {
+        //make table cell
+        itemCell = [tableView makeViewWithIdentifier:@"CommandCell" owner:self];
+        if(nil == itemCell)
+        {
+            //bail
+            goto bail;
+        }
+        
+        //check if cell was previously used (by checking the item name)
+        // ->if so, set flag to indicated tracking area does not need to be added
+        if(YES != [itemCell.textField.stringValue isEqualToString:@"Command"])
+        {
+            //set flag
+            hasTrackingArea = YES;
+        }
+        
+        //only have to add tracking area once
+        // ->add it the first time
+        if(NO == hasTrackingArea)
+        {
+            //init tracking area
+            // ->for 'show' button
+            trackingArea = [[NSTrackingArea alloc] initWithRect:[[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON] bounds]
+                                                        options:(NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways)
+                                                          owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:TABLE_ROW_SHOW_BUTTON]}];
+            
+            //add tracking area to 'show' button
+            [[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON] addTrackingArea:trackingArea];
+            
+        }
+        
+        //set text to command
+        [itemCell.textField setStringValue:((Command*)item).command];
+        
+        //get path's frame
+        pathFrame = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame;
+
+        //for extensions
+        // ->path should start inline w/ name
+        pathFrame.origin.x = 50;
+        
+        //path should go to 'show' button
+        pathFrame.size.width = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON]).frame.origin.x - pathFrame.origin.x;
+        
+        //set new frame
+        ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
+        
+        //truncate path
+        truncatedPath = stringByTruncatingString([itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG], item.path, itemCell.frame.size.width-TABLE_BUTTONS_COMMANDS);
+        
+        //set detailed text
+        // ->always item's path
+        [[itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG] setStringValue:truncatedPath];
+
+        //all done
+        goto bail;
+    }
 
     //make table cell
-    itemCell = [tableView makeViewWithIdentifier:@"ImageCell" owner:self];
+    itemCell = [tableView makeViewWithIdentifier:@"FileCell" owner:self];
     if(nil == itemCell)
     {
         //bail
@@ -189,9 +254,6 @@
     // ->hide plist label
     [((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PLIST_LABEL]) setHidden:YES];
     
-    //extract plugin item for row
-    item = tableItems[row];
-
     //set main text
     // ->name
     [itemCell.textField setStringValue:item.name];
@@ -217,6 +279,7 @@
         
         //add tracking area to 'info' button
         [[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON] addTrackingArea:trackingArea];
+        
     }
     
     //get signature image view
@@ -237,24 +300,8 @@
         // ->app's icon
         itemCell.imageView.image = getIconForBinary(((File*)item).path, ((File*)item).bundle);
 
-        //set signature status icon
-        //switch on signing status
-        if( (nil != ((File*)item).signingInfo) &&
-            (STATUS_SUCCESS == [((File*)item).signingInfo[KEY_SIGNATURE_STATUS] integerValue]) )
-        {
-            //signed
-            signatureStatus = [NSImage imageNamed:@"signed"];
-        }
-        //signature not present or invalid
-        // ->just set text unsigned
-        else
-        {
-            //signed
-            signatureStatus = [NSImage imageNamed:@"unsigned"];
-        }
-
         //set signature icon
-        signatureImageView.image = signatureStatus;
+        signatureImageView.image = getCodeSigningIcon((File*)item);//signatureStatus;
         
         //show signature icon
         signatureImageView.hidden = NO;
@@ -426,7 +473,8 @@
             //hide virus total button label
             [[itemCell viewWithTag:TABLE_ROW_VT_BUTTON+1] setHidden:YES];
         }
-    }
+        
+    }//file(s)
     
     //EXTENSIONS
     else if(YES == [item isKindOfClass:[Extension class]])
@@ -452,7 +500,7 @@
         pathFrame.size.width = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON]).frame.origin.x - pathFrame.origin.x;
         
         //set new frame
-        //((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
+        ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
         
         //truncate path
         truncatedPath = stringByTruncatingString([itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG], [item path], itemCell.frame.size.width-TABLE_BUTTONS_EXTENTION);
@@ -470,7 +518,8 @@
         
         //hide virus total label
         [[itemCell viewWithTag:TABLE_ROW_VT_BUTTON+1] setHidden:YES];
-    }
+    
+    }//extension(s)
 
 //bail
 bail:
@@ -655,7 +704,10 @@ bail:
     
     //index of selected row
     NSInteger selectedRow = 0;
-        
+    
+    //file open error alert
+    NSAlert* errorAlert = nil;
+    
     //grab selected row
     selectedRow = [self.itemTableView rowForView:sender];
     
@@ -673,9 +725,16 @@ bail:
     //extract selected item
     selectedItem = tableItems[selectedRow];
 
-    //open Finder
-    // ->will reveal binary
-    [[NSWorkspace sharedWorkspace] selectFile:[selectedItem pathForFinder] inFileViewerRootedAtPath:nil];
+    //open item in Finder
+    // ->error alert shown if file open fails
+    if(YES != [[NSWorkspace sharedWorkspace] selectFile:[selectedItem pathForFinder] inFileViewerRootedAtPath:nil])
+    {
+        //alloc/init alert
+        errorAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"ERROR:\nfailed to open %@", [selectedItem pathForFinder]] defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"errno value: %d", errno];
+        
+        //show it
+        [errorAlert runModal];
+    }
     
 //bail
 bail:
@@ -762,26 +821,68 @@ bail:
         selectedItem = tableItems[rowIndex];
         
         //alloc/init info window
-        vtWindowController = [[VTInfoWindowController alloc] initWithItem:selectedItem rowIndex:rowIndex];
+        vtWindowController = [[VTInfoWindowController alloc] initWithItem:selectedItem];
         
         //show it
         [self.vtWindowController.windowController showWindow:self];
       
-        /*
-        //make it modal
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            
-            //modal!
-            [[NSApplication sharedApplication] runModalForWindow:vtWindowController.windowController.window];
-            
-        });
-        */
     }
     
 //bail
 bail:
     
     return;
+}
+
+
+//set code signing image
+// ->either signed, unsigned, or unknown
+NSImage* getCodeSigningIcon(File* binary)
+{
+    //signature image
+    NSImage* codeSignIcon = nil;
+    
+    //set signature status icon
+    if(nil != binary.signingInfo)
+    {
+        //binary is signed by apple
+        if(YES == [binary.signingInfo[KEY_SIGNING_IS_APPLE] boolValue])
+        {
+            //set
+            codeSignIcon = [NSImage imageNamed:@"signedAppleIcon"];
+        }
+        
+        //binary is signed
+        else if(STATUS_SUCCESS == [binary.signingInfo[KEY_SIGNATURE_STATUS] integerValue])
+        {
+            //set
+            codeSignIcon = [NSImage imageNamed:@"signed"];
+        }
+        
+        //binary not signed
+        else if(errSecCSUnsigned == [binary.signingInfo[KEY_SIGNATURE_STATUS] integerValue])
+        {
+            //set
+            codeSignIcon = [NSImage imageNamed:@"unsigned"];
+        }
+        
+        //unknown
+        else
+        {
+            //set
+            codeSignIcon = [NSImage imageNamed:@"unknown"];
+        }
+    }
+    //signing info is nil
+    // ->just to unknown
+    else
+    {
+        //set
+        codeSignIcon = [NSImage imageNamed:@"unknown"];
+    }
+    
+    return codeSignIcon;
+    
 }
 
 @end

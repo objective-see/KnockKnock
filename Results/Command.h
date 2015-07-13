@@ -14,6 +14,9 @@
     
 }
 
+/* PROPERTIES */
+@property (nonatomic, retain)NSString* command;
+
 /* METHODS */
 
 

@@ -24,20 +24,18 @@
 //file object
 @property(nonatomic, retain)File* fileObj;
 
-//row index
-@property NSUInteger rowIndex;
 
 //properties in window
 @property (weak) IBOutlet NSTextField *unknownFile;
 
 @property (weak) IBOutlet NSTextField *fileNameLabel;
-@property (weak) IBOutlet HyperlinkTextField *fileName;
+@property (weak) IBOutlet NSTextField *fileName;
 
 @property (weak) IBOutlet NSTextField *detectionRatioLabel;
 @property (weak) IBOutlet NSTextField *detectionRatio;
 
 @property (weak) IBOutlet NSTextField *analysisURLLabel;
-@property (weak) IBOutlet NSTextField *analysisURL;
+@property (weak) IBOutlet HyperlinkTextField *analysisURL;
 
 @property (weak) IBOutlet NSButton *closeButton;
 
@@ -50,7 +48,7 @@
 
 //init method
 // ->save item and load nib
--(id)initWithItem:(File*)selectedItem rowIndex:(NSUInteger)itemRowIndex;
+-(id)initWithItem:(File*)selectedItem;
 
 //'submit' button handler
 -(IBAction)vtButtonHandler:(id)sender;

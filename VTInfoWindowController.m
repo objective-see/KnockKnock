@@ -23,13 +23,12 @@
 
 @implementation VTInfoWindowController
 
-@synthesize rowIndex;
 @synthesize windowController;
 
 
 //init method
 // ->save item and load nib
--(id)initWithItem:(File*)selectedItem rowIndex:(NSUInteger)itemRowIndex
+-(id)initWithItem:(File*)selectedItem
 {
     self = [super init];
     if(nil != self)
@@ -39,9 +38,6 @@
     
         //save item
         self.windowController.fileObj = selectedItem;
-        
-        //save row index
-        self.windowController.rowIndex = itemRowIndex;
     }
     
     return self;
@@ -129,7 +125,7 @@
         //analysis url
         [self.analysisURL setStringValue:@"VirusTotal report"];
         
-        //make analyis url a hyperlink
+        //make analysis url a hyperlink
         makeTextViewHyperlink(self.analysisURL, [NSURL URLWithString:self.fileObj.vtInfo[VT_RESULTS_URL]]);
         
         //set 'submit' button text to 'rescan'
@@ -180,9 +176,6 @@
 // ->tell OS that we are done with window so it can (now) be freed
 -(void)windowWillClose:(NSNotification *)notification
 {
-    //make un-modal
-    //[[NSApplication sharedApplication] stopModal];
-    
     //stop spinner
     // ->will hide too
     [self.progressIndicator stopAnimation:nil];
@@ -295,13 +288,13 @@
                     //kick off task to re-query VT
                     // ->wait 60 seconds though to give VT servers some time to process
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        [vtObj getInfoForItem:self.fileObj scanID:scanID rowIndex:self.rowIndex];
+                        [vtObj getInfoForItem:self.fileObj scanID:scanID];
                     });
                 }
                 
                 //ask app delegate to update item in table
                 // ->will change the item's VT status to ... (pending)
-                [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj rowIndex:self.rowIndex];
+                [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj];
                 
                 //nap so user can see msg 'submitting' msg
                 [NSThread sleepForTimeInterval:0.5];
@@ -330,7 +323,6 @@
                     [self.window close];
                     
                 });
-                
             }
             
             //error
@@ -366,29 +358,23 @@
             //submit file to VT
             result = [vtObj submit:self.fileObj];
             
-            // ->need this for (re)queries
-            scanID = result[VT_RESULTS_SCANID];
-            
-            //reset file's VT info
-            self.fileObj.vtInfo = nil;
-            
-            //with a scan id can query VT
-            // ->will update VT button in UI once results are retrieved
-            if(nil != scanID)
-            {
-                //kick off task to re-query VT
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [vtObj getInfoForItem:self.fileObj scanID:scanID rowIndex:self.rowIndex];
-                });
-            }
-            
             //got response
-            // ->update UI and launch browswer to show report
-            if(nil != result)
+            // ->requery VT to get scan results
+            if( (nil != result) &&
+                (nil != result[VT_RESULTS_SCANID]) )
             {
+                //reset file's VT info
+                self.fileObj.vtInfo = nil;
+            
+                //kick off task to re-query VT
+                // ->pass in scan result ID
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [vtObj getInfoForItem:self.fileObj scanID:result[VT_RESULTS_SCANID]];
+                });
+            
                 //ask app delegate to update item in table
                 // ->will change the item's VT status to ... (pending)
-                [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj rowIndex:self.rowIndex];
+                [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj];
                 
                 //update status msg
                 dispatch_sync(dispatch_get_main_queue(), ^{
@@ -434,6 +420,11 @@
             
         });
     }
+    
+//bail
+bail:
+    
+
 
     return;
 }

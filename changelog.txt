@@ -1,0 +1,58 @@
+KNOCKKNOCK CHANGELOG
+
+VERSION 1.0.0 (4/23/2015)
+ initial release
+
+
+VERSION 1.1.0 (4/24/2015)
+ added plugin to scan for Authorization Plugins
+ fixed NSJSONSerialization bug (parsing Google Chrome plugins)
+
+
+VERSION 1.2.0 (4/25/2015)
+ added DYLD_INSERT_LIBRARIES plugin
+ browser extensions plugin now supports enumerating Opera plugins
+ browser extensions plugin improved to enumerate Google Chrome with multiple profiles
+ increased timeouts for making a popups modal (to avoid NSInternalInconsistencyException issues)
+ fixed nil dictionary insertion when processing Safari extensions with missin 'Bundle Identifier'
+
+
+VERSION 1.2.1 (4/25/2015)
+ improved DYLD_INSERT_LIBRARIES plugin to report path to applications' Info.plist as string (instead of URL)
+ fixed issue in DYLD_INSERT_LIBRARIES plugin, where NSInvalidArgumentException would result if enviro var was string 
+
+
+VERSION 1.2.2 (4/28/2015)
+ browser extensions plugin now supports enumerating extensions in older versions of Safari
+ improved JSON output & fixed bug when saving JSON when file hash or signature was nil
+ recompiled with updated/improved (shared) MachO parser
+ fixed issue where on multiple scans, result popup was not properly updated
+ improved UI to display item's plist (when applicable) into the item's row
+ listed items in item table are now selectable 
+
+ 
+VERSION 1.2.3 (4/30/2015)
+ improved VirusTotal logic (e.g. when an signed OS file was flagged)
+ tweaked UI to be more compatible with OS X 10.9
+
+
+VERSION 1.2.4 (5/4/2015)
+ added timeout to injected dylib scanning plugin
+ improvided logic for making windows modal (e.g. window checks)
+
+
+VERSION 1.3.0 (5/13/2015)
+ added ability to enumerate login items, installed by sandboxed apps
+ improved vertical scrollbars, so they'd always be rendered in 'modern' style
+ other minor UI tweaks (e.g. pref window clipping)
+
+
+VERSION 1.3.1 (5/18/2015)
+ made preferences persistence
+ fixed logic bug where re-scans might hang
+ added extra error checking in launch item plugin
+   
+
+ 
+
+

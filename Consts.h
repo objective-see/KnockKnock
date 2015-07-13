@@ -48,6 +48,7 @@
 //keys for signing stuff
 #define KEY_SIGNATURE_STATUS @"signatureStatus"
 #define KEY_SIGNING_AUTHORITIES @"signingAuthorities"
+#define KEY_SIGNING_IS_APPLE @"signedByApple"
 
 //OS version x
 #define OS_MAJOR_VERSION_X 10
@@ -77,6 +78,12 @@
 //hash key, MD5
 #define KEY_HASH_MD5 @"md5"
 
+//path to crontab
+#define CRONTAB @"/usr/bin/crontab"
+
+//cron file(s) directory
+#define CRON_FILES_DIRECTORY @"/private/var/at/tabs"
+
 //path to system profiler
 #define SYSTEM_PROFILER @"/usr/sbin/system_profiler"
 
@@ -93,11 +100,14 @@
 
 //main window
 
-//space for File's button in time table (w/ VT info)
-#define TABLE_BUTTONS_FILE 225
+//space for File's button in item table (w/ VT info)
+#define TABLE_BUTTONS_FILE 200
 
-//space for Extension's button in time table
-#define TABLE_BUTTONS_EXTENTION 135
+//space for Extension's button in item table
+#define TABLE_BUTTONS_EXTENTION 120
+
+//space for Command's button in item table
+#define TABLE_BUTTONS_COMMANDS 75
 
 
 //scan button
@@ -170,6 +180,9 @@
 
 //plist key
 #define KEY_RESULT_PLIST @"plist"
+
+//command key
+#define KEY_RESULT_COMMAND @"command"
 
 //extension id key
 #define KEY_EXTENSION_ID @"id"

@@ -89,12 +89,12 @@
         //got match
         isTrusted = YES;
     }
-    //then check if its signed by apple
+    //otherwise check if its signed by apple
     // ->apple-signed files are always trusted
     else
     {
         //check for apple signature
-        isTrusted = isApple(fileObj.path);
+        isTrusted = [fileObj.signingInfo[KEY_SIGNING_IS_APPLE] boolValue];
     }
     
     return isTrusted;

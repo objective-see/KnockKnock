@@ -45,9 +45,6 @@ NSDictionary* hashFile(NSString* filePath);
 // ->extracted from Info.plist
 NSString* getAppVersion();
 
-//determine if a file is signed by Apple proper
-BOOL isApple(NSString* path);
-
 //convert a textview to a clickable hyperlink
 void makeTextViewHyperlink(NSTextField* textField, NSURL* url);
 

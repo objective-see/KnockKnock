@@ -15,11 +15,21 @@
     
 }
 
+//PROPERTIES
+
+//overridden disabled items
+@property(nonatomic, retain)NSMutableArray* disabledItems;
+
+//overridden enabled items
+@property(nonatomic, retain)NSMutableArray* enabledItems;
+
 /* (custom) METHODS */
 
-//get all disabled launch items
+//get all overridden enabled/disabled launch items
 // ->specified in various overrides.plist files
--(NSArray*)getDisabledItems;
+-(void)processOverrides;
 
+//checks if an item will be automatically run by the OS
+-(BOOL)isAutoRun:(NSDictionary*)plistContents;
 
 @end

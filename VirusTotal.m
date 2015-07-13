@@ -161,7 +161,7 @@
 
 //get VT info for a single item
 // ->will then callback into AppDelegate to reload item in UI
--(void)getInfoForItem:(File*)fileObj scanID:(NSString*)scanID rowIndex:(NSUInteger)rowIndex
+-(void)getInfoForItem:(File*)fileObj scanID:(NSString*)scanID
 {
     //VT query URL
     NSURL* queryURL = nil;
@@ -198,7 +198,7 @@
             }
             
             //callback up into UI to reload item
-            [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:fileObj rowIndex:rowIndex];
+            [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:fileObj];
             
             //exit loop
             break;

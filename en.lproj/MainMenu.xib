@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <development version="5000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7702"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -167,7 +167,7 @@
                                             </textFieldCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
-                                                <tableCellView identifier="ImageCell" id="576">
+                                                <tableCellView identifier="FileCell" id="576">
                                                     <rect key="frame" x="1" y="1" width="834" height="66"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
@@ -228,7 +228,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <button toolTip="show in finder" verticalHuggingPriority="750" tag="107" id="602">
-                                                            <rect key="frame" x="798" y="22" width="27" height="21"/>
+                                                            <rect key="frame" x="798" y="20" width="27" height="24"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="show" imagePosition="only" alignment="center" alternateImage="showBG" state="on" imageScaling="proportionallyDown" inset="2" id="603">
                                                                 <behavior key="behavior" lightByContents="YES"/>
@@ -239,7 +239,7 @@
                                                             </connections>
                                                         </button>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" tag="108" id="rjr-rW-ScS">
-                                                            <rect key="frame" x="790" y="4" width="49" height="12"/>
+                                                            <rect key="frame" x="787" y="4" width="49" height="12"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="show" id="3n6-7o-mGC">
                                                                 <font key="font" size="9" name="Menlo-Regular"/>
@@ -269,6 +269,59 @@
                                                     <connections>
                                                         <outlet property="imageView" destination="577" id="581"/>
                                                         <outlet property="textField" destination="578" id="582"/>
+                                                    </connections>
+                                                </tableCellView>
+                                                <tableCellView identifier="CommandCell" id="n0G-fw-7qX">
+                                                    <rect key="frame" x="1" y="1" width="834" height="66"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <subviews>
+                                                        <imageView id="9vY-7y-ZHe">
+                                                            <rect key="frame" x="5" y="13" width="40" height="40"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="binaryIcon" id="dVo-AX-092"/>
+                                                        </imageView>
+                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="s2m-Ro-25U">
+                                                            <rect key="frame" x="51" y="34" width="618" height="18"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" title="Command" id="66D-SU-ADH">
+                                                                <font key="font" size="13" name="Menlo-Regular"/>
+                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" tag="101" id="ZOQ-sX-OJ3">
+                                                            <rect key="frame" x="51" y="18" width="680" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" title="item path" id="W7z-UG-RS9">
+                                                                <font key="font" size="11" name="Menlo-Regular"/>
+                                                                <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                        <button toolTip="show in finder" verticalHuggingPriority="750" tag="107" id="FJa-D6-BXh">
+                                                            <rect key="frame" x="798" y="20" width="27" height="24"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                            <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="show" imagePosition="only" alignment="center" alternateImage="showBG" state="on" imageScaling="proportionallyDown" inset="2" id="bII-lI-zIh">
+                                                                <behavior key="behavior" lightByContents="YES"/>
+                                                                <font key="font" metaFont="system"/>
+                                                            </buttonCell>
+                                                            <connections>
+                                                                <action selector="showInFinder:" target="8VH-uv-w4O" id="9Dd-FG-R1Y"/>
+                                                            </connections>
+                                                        </button>
+                                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" tag="108" id="W4S-lZ-nlD">
+                                                            <rect key="frame" x="787" y="4" width="49" height="12"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="show" id="RsS-lJ-vVj">
+                                                                <font key="font" size="9" name="Menlo-Regular"/>
+                                                                <color key="textColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                    </subviews>
+                                                    <connections>
+                                                        <outlet property="imageView" destination="9vY-7y-ZHe" id="KDg-Ye-DaU"/>
+                                                        <outlet property="textField" destination="s2m-Ro-25U" id="BJl-bI-yjK"/>
                                                     </connections>
                                                 </tableCellView>
                                             </prototypeCellViews>
@@ -403,6 +456,7 @@
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSColorPanel" width="32" height="32"/>
+        <image name="binaryIcon" width="512" height="512"/>
         <image name="info" width="256" height="256"/>
         <image name="infoBG" width="256" height="256"/>
         <image name="kkText" width="426.48001098632812" height="85.919998168945312"/>

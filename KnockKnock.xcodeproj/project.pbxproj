@@ -23,6 +23,10 @@
 		CD6095731A87067D00E091CD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6095721A87067D00E091CD /* Security.framework */; };
 		CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975031B02F60400CE819B /* RFOverlayScroller.m */; };
 		CD6975071B02F60400CE819B /* RFOverlayScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975051B02F60400CE819B /* RFOverlayScrollView.m */; };
+		CD6BBBE91B50D67A00506D0D /* binaryIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = CD6BBBE81B50D67A00506D0D /* binaryIcon.icns */; };
+		CD6BBBEB1B50DF7100506D0D /* signedAppleIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD6BBBEA1B50DF7100506D0D /* signedAppleIcon.png */; };
+		CD6BBBED1B51C62B00506D0D /* unknown.png in Resources */ = {isa = PBXBuildFile; fileRef = CD6BBBEC1B51C62B00506D0D /* unknown.png */; };
+		CD6BBBF01B52032D00506D0D /* NSApplicationKeyEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6BBBEF1B52032D00506D0D /* NSApplicationKeyEvents.m */; };
 		CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */; };
 		CD7B9F501ACB9A8400DF3C71 /* Exception.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9F4F1ACB9A8400DF3C71 /* Exception.m */; };
 		CD7B9F531ACBAE2900DF3C71 /* SpotlightImporters.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */; };
@@ -77,6 +81,8 @@
 		CDAB989F1AEADE5A00C75B4B /* DylibInserts.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */; };
 		CDAB98A11AEAFAFA00C75B4B /* authorizationIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */; };
 		CDAB98A31AEB413C00C75B4B /* dylibIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDAB98A21AEB413C00C75B4B /* dylibIcon.png */; };
+		CDD83FD41B50C48C0037124E /* Cronjobs.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD83FD31B50C48C0037124E /* Cronjobs.m */; };
+		CDD83FD61B50C76F0037124E /* cronIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDD83FD51B50C76F0037124E /* cronIcon.png */; };
 		CDDBC2301B04771100B021E0 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */; };
 		CDF08CBF1AC3DE25009B3423 /* logoAppleBG.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */; };
 		CDF08CC11AC3E8B0009B3423 /* showOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CC01AC3E8B0009B3423 /* showOver.png */; };
@@ -124,6 +130,11 @@
 		CD6975031B02F60400CE819B /* RFOverlayScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RFOverlayScroller.m; path = 3rdParty/RFOverlayScroller.m; sourceTree = "<group>"; };
 		CD6975041B02F60400CE819B /* RFOverlayScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RFOverlayScrollView.h; path = 3rdParty/RFOverlayScrollView.h; sourceTree = "<group>"; };
 		CD6975051B02F60400CE819B /* RFOverlayScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RFOverlayScrollView.m; path = 3rdParty/RFOverlayScrollView.m; sourceTree = "<group>"; };
+		CD6BBBE81B50D67A00506D0D /* binaryIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = binaryIcon.icns; path = images/binaryIcon.icns; sourceTree = SOURCE_ROOT; };
+		CD6BBBEA1B50DF7100506D0D /* signedAppleIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = signedAppleIcon.png; path = images/signedAppleIcon.png; sourceTree = SOURCE_ROOT; };
+		CD6BBBEC1B51C62B00506D0D /* unknown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unknown.png; path = images/unknown.png; sourceTree = SOURCE_ROOT; };
+		CD6BBBEE1B52032D00506D0D /* NSApplicationKeyEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSApplicationKeyEvents.h; sourceTree = "<group>"; };
+		CD6BBBEF1B52032D00506D0D /* NSApplicationKeyEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSApplicationKeyEvents.m; sourceTree = "<group>"; };
 		CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoAppleOver.png; path = images/logoAppleOver.png; sourceTree = SOURCE_ROOT; };
 		CD7B9F4E1ACB9A8400DF3C71 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exception.h; sourceTree = SOURCE_ROOT; };
 		CD7B9F4F1ACB9A8400DF3C71 /* Exception.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Exception.m; sourceTree = SOURCE_ROOT; };
@@ -204,6 +215,9 @@
 		CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DylibInserts.m; path = Plugins/DylibInserts.m; sourceTree = "<group>"; };
 		CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = authorizationIcon.png; path = images/authorizationIcon.png; sourceTree = SOURCE_ROOT; };
 		CDAB98A21AEB413C00C75B4B /* dylibIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dylibIcon.png; path = images/dylibIcon.png; sourceTree = SOURCE_ROOT; };
+		CDD83FD21B50C48C0037124E /* Cronjobs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cronjobs.h; path = Plugins/Cronjobs.h; sourceTree = "<group>"; };
+		CDD83FD31B50C48C0037124E /* Cronjobs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Cronjobs.m; path = Plugins/Cronjobs.m; sourceTree = "<group>"; };
+		CDD83FD51B50C76F0037124E /* cronIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cronIcon.png; path = images/cronIcon.png; sourceTree = SOURCE_ROOT; };
 		CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
 		CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoAppleBG.png; path = images/logoAppleBG.png; sourceTree = SOURCE_ROOT; };
 		CDF08CC01AC3E8B0009B3423 /* showOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = showOver.png; path = images/showOver.png; sourceTree = SOURCE_ROOT; };
@@ -248,6 +262,8 @@
 		1D21BC42172AF43D009D1CFD = {
 			isa = PBXGroup;
 			children = (
+				CD6BBBEE1B52032D00506D0D /* NSApplicationKeyEvents.h */,
+				CD6BBBEF1B52032D00506D0D /* NSApplicationKeyEvents.m */,
 				CDAB989A1AEAC95500C75B4B /* ItemEnumerator.h */,
 				CDAB989B1AEAC95500C75B4B /* ItemEnumerator.m */,
 				CD02195A1AD38823005148A2 /* kkRowCell.h */,
@@ -340,6 +356,10 @@
 		CD6095501A8329FA00E091CD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				CD6BBBEC1B51C62B00506D0D /* unknown.png */,
+				CD6BBBEA1B50DF7100506D0D /* signedAppleIcon.png */,
+				CD6BBBE81B50D67A00506D0D /* binaryIcon.icns */,
+				CDD83FD51B50C76F0037124E /* cronIcon.png */,
 				CDAB98A21AEB413C00C75B4B /* dylibIcon.png */,
 				CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */,
 				CD0219561AD37748005148A2 /* signed2.png */,
@@ -420,6 +440,8 @@
 		CDA81D861A96F429009790E2 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				CDD83FD21B50C48C0037124E /* Cronjobs.h */,
+				CDD83FD31B50C48C0037124E /* Cronjobs.m */,
 				CDAB989D1AEADE5A00C75B4B /* DylibInserts.h */,
 				CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */,
 				CDAB98971AEAA6CB00C75B4B /* AuthorizationPlugins.h */,
@@ -543,9 +565,11 @@
 				CDA81D6B1A95B4E9009790E2 /* show.png in Resources */,
 				CDF08CF31ACA6864009B3423 /* browserIcon.png in Resources */,
 				CDAB98A11AEAFAFA00C75B4B /* authorizationIcon.png in Resources */,
+				CD6BBBEB1B50DF7100506D0D /* signedAppleIcon.png in Resources */,
 				CD001B391AB903040089014A /* logoApple.png in Resources */,
 				CDF08CEF1ACA677B009B3423 /* launchIcon.png in Resources */,
 				CD7B9FA41ACBCFAD00DF3C71 /* spotlightIcon.png in Resources */,
+				CD6BBBED1B51C62B00506D0D /* unknown.png in Resources */,
 				CDA81E651AA020FD009790E2 /* ExtensionInfoWindow.xib in Resources */,
 				CD7B9FA81ACCAE5E00DF3C71 /* stopScanOver.png in Resources */,
 				CDA81D701A95B4E9009790E2 /* stopScan.png in Resources */,
@@ -562,6 +586,7 @@
 				CDA81DD41A9970A0009790E2 /* unsigned.png in Resources */,
 				CD7B9FA71ACCAE5E00DF3C71 /* startScanOver.png in Resources */,
 				CD001B371AB903040089014A /* kkText.png in Resources */,
+				CD6BBBE91B50D67A00506D0D /* binaryIcon.icns in Resources */,
 				CDF08CC11AC3E8B0009B3423 /* showOver.png in Resources */,
 				CDA81DCC1A9960A3009790E2 /* virusTotalBG.png in Resources */,
 				CD001B381AB903040089014A /* logo.png in Resources */,
@@ -586,6 +611,7 @@
 				CDA81DCA1A9960A3009790E2 /* infoBG.png in Resources */,
 				CDF08CD11AC4C6E8009B3423 /* settings.png in Resources */,
 				CDA81DD31A9970A0009790E2 /* signed.png in Resources */,
+				CDD83FD61B50C76F0037124E /* cronIcon.png in Resources */,
 				CDA81E661AA020FD009790E2 /* FileInfoWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -611,11 +637,13 @@
 				CDA81E041A9AB89C009790E2 /* LaunchItems.m in Sources */,
 				CDF08CE61AC89FE1009B3423 /* HyperlinkTextField.m in Sources */,
 				CDA81E001A9A7D26009790E2 /* File.m in Sources */,
+				CD6BBBF01B52032D00506D0D /* NSApplicationKeyEvents.m in Sources */,
 				CDA81D4F1A95B492009790E2 /* AppDelegate.m in Sources */,
 				CDA81D5E1A95B4B4009790E2 /* main.m in Sources */,
 				CD7B9F501ACB9A8400DF3C71 /* Exception.m in Sources */,
 				CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */,
 				CDA81E0A1A9B0AD8009790E2 /* BrowserExtensions.m in Sources */,
+				CDD83FD41B50C48C0037124E /* Cronjobs.m in Sources */,
 				CDAB989F1AEADE5A00C75B4B /* DylibInserts.m in Sources */,
 				CDF08CDB1AC8820F009B3423 /* MachO.m in Sources */,
 				CDAB98991AEAA6CB00C75B4B /* AuthorizationPlugins.m in Sources */,

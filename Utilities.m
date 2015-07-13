@@ -146,6 +146,9 @@ NSDictionary* extractSigningInfo(NSString* path)
             //bail
             goto bail;
         }
+        
+        //determine if binary is signed by Apple
+        signingStatus[KEY_SIGNING_IS_APPLE] = [NSNumber numberWithBool:isApple(path)];
     }
     
     //init array for certificate names
@@ -300,7 +303,7 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle)
     NSString* iconExtension = nil;
     
     //system's document icon
-    NSData* documentIcon = nil;
+    static NSData* documentIcon = nil;
     
     //icon
     NSImage* icon = nil;
@@ -347,11 +350,16 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle)
         icon = [[NSWorkspace sharedWorkspace] iconForFile:binary];
         
         //load system document icon
-        documentIcon = [[[NSWorkspace sharedWorkspace] iconForFileType:
+        // ->static var, so only load once
+        if(nil == documentIcon)
+        {
+            //load
+            documentIcon = [[[NSWorkspace sharedWorkspace] iconForFileType:
                          NSFileTypeForHFSTypeCode(kGenericDocumentIcon)] TIFFRepresentation];
+        }
         
         //if 'iconForFile' method doesn't find and icon, it returns the system 'document' icon
-        // ->the system 'applicaiton' icon seems more applicable, so use that here...
+        // ->the system 'application' icon seems more applicable, so use that here...
         if(YES == [[icon TIFFRepresentation] isEqual:documentIcon])
         {
             //set icon to system 'applicaiton' icon

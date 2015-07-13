@@ -3,7 +3,9 @@
 //  KnockKnock
 
 #import "Consts.h"
+#import "Command.h"
 #import "ItemBase.h"
+
 
 #define kErrFormat @"%@ not implemented in subclass %@"
 #define kExceptName @"KK Item"
@@ -26,16 +28,21 @@
     {
         //save plugin
         self.plugin = params[KEY_RESULT_PLUGIN];
-        
+    
         //extract/save name
         self.name = params[KEY_RESULT_NAME];
         
         //extract/save path
         self.path = params[KEY_RESULT_PATH];
         
-        //get attributes
-        // ->based off path
-        self.attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.path error:nil];
+        //for files/extensions
+        // ->get attributes
+        if(YES != [self isKindOfClass:[Command class]])
+        {
+            //get attributes
+            // ->based off path
+            self.attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.path error:nil];
+        }
     }
     
     return self;

@@ -35,6 +35,6 @@
 
 //get info for a single item
 // ->will callback into AppDelegate to reload plugin
--(void)getInfoForItem:(File*)fileObj scanID:(NSString*)scanID rowIndex:(NSUInteger)rowIndex;
+-(void)getInfoForItem:(File*)fileObj scanID:(NSString*)scanID;
 
 @end

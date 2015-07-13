@@ -33,6 +33,7 @@
 // ->need to restart shared enumerator 
 @property BOOL secondaryScan;
 
+
 //plugin objects
 @property(nonatomic, retain)NSMutableArray* plugins;
 
@@ -119,7 +120,7 @@
 -(void)applyPreferences;
 
 //update a single row
--(void)itemProcessed:(File*)fileObj rowIndex:(NSUInteger)rowIndex;
+-(void)itemProcessed:(File*)fileObj;
 
 //action
 // ->invoked when user clicks 'About/Info' or Objective-See logo in main UI

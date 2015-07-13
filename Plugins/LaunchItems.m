@@ -22,6 +22,10 @@
 
 @implementation LaunchItems
 
+@synthesize enabledItems;
+@synthesize disabledItems;
+
+
 //init
 // ->set name, description, etc
 -(id)init
@@ -49,9 +53,6 @@
     //all launch items
     NSArray* launchItems = nil;
     
-    //disable items
-    NSArray* disabledItems = nil;
-    
     //plist data
     NSDictionary* plistContents = nil;
     
@@ -61,11 +62,8 @@
     //detected (auto-started) login item
     File* fileObj = nil;
     
-    //dbg msg
-    //NSLog(@"%@: scanning", PLUGIN_NAME);
-    
-    //get disabled items
-    disabledItems = [self getDisabledItems];
+    //get overriden enabled & disabled items
+    [self processOverrides];
     
     //wait for shared item enumerator to complete enumeration of launch items
     do
@@ -78,34 +76,23 @@
         launchItems = ((AppDelegate*)[[NSApplication sharedApplication] delegate]).sharedItemEnumerator.launchItems;
         
     //keep trying until we get em!
-    }while(nil == launchItems);
+    } while(nil == launchItems);
     
     //iterate over all launch items
     // ->scan/process each
     for(NSString* launchItemPlist in launchItems)
     {
-        //load launch item's plist
+        //reset
+        launchItemPath = nil;
+        
+        //load plist contents
         plistContents = [NSDictionary dictionaryWithContentsOfFile:launchItemPlist];
         
-        //skip disabled launch items
-        if(YES == [disabledItems containsObject:plistContents[@"Label"]])
+        //skip non-auto run items
+        if(YES != [self isAutoRun:plistContents])
         {
             //skip
             continue;
-        }
-        
-        //skip items that aren't auto launched
-        // ->neither 'RunAtLoad' *and* 'KeepAlive' is set to YES
-        if( (YES != [plistContents[@"RunAtLoad"] isKindOfClass:[NSNumber class]]) ||
-            (YES != [plistContents[@"RunAtLoad"] boolValue]) )
-        {
-            //also check 'KeepAlive'
-            if( (YES != [plistContents[@"KeepAlive"] isKindOfClass:[NSNumber class]]) ||
-                (YES != [plistContents[@"KeepAlive"] boolValue]) )
-            {
-                //skip
-                continue;
-            }
         }
         
         //attempt to extact path to launch item
@@ -161,13 +148,10 @@
     return;
 }
 
-//get all disabled launch items
+//get all overridden enabled/disabled launch items
 // ->specified in various overrides.plist files
--(NSArray*)getDisabledItems
+-(void)processOverrides
 {
-    //disable items
-    NSMutableArray* disabledItems = nil;
-    
     //override directories
     NSArray* overrideDirectories = nil;
     
@@ -180,7 +164,10 @@
     //override contents
     NSDictionary* overrideContents = nil;
     
-    //alloc array
+    //alloc enabled items array
+    enabledItems = [NSMutableArray array];
+    
+    //alloc disabled items array
     disabledItems = [NSMutableArray array];
     
     //get all override directories
@@ -220,19 +207,112 @@
         // ->save any that are disabled
         for(NSString* overrideItem in overrideContents)
         {
-            //skip enabled items
-            if(YES != [overrideContents[overrideItem][@"Disabled"] boolValue])
+            //skip items that don't have 'Disabled' key
+            if(nil == overrideContents[overrideItem][@"Disabled"])
             {
                 //skip
                 continue;
             }
             
-            //save disabled item
-            [disabledItems addObject:overrideItem];
+            //add enabled item
+            if(YES == [overrideContents[overrideItem][@"Disabled"] boolValue])
+            {
+                //add
+                [self.enabledItems addObject:overrideItem];
+            }
+            //add disabled item
+            else
+            {
+                //add
+                [self.disabledItems addObject:overrideItem];
+            }
         }
     }
     
-    return disabledItems;
+    return;
+}
+
+//checks if an item will be automatically run by the OS
+-(BOOL)isAutoRun:(NSDictionary*)plistContents
+{
+    //flag
+    BOOL isAutoRun = NO;
+    
+    //flag for 'RunAtLoad'
+    // ->default to -1 for not found
+    NSInteger runAtLoad = -1;
+    
+    //flag for 'KeepAlive'
+    // ->default to -1 for not found
+    NSInteger keepAlive = -1;
+    
+    //flag for 'OnDemand'
+    // ->default to -1 for not found
+    NSInteger onDemand = -1;
+    
+    //skip launch items overriden with 'Disable'
+    if(YES == [self.disabledItems containsObject:plistContents[@"Label"]])
+    {
+        //bail
+        goto bail;
+    }
+
+    //skip directly disabled items
+    // ->unless its overridden w/ enabled
+    if( (YES == [plistContents[@"Disabled"] isKindOfClass:[NSNumber class]]) &&
+        (YES == [plistContents[@"Disabled"] boolValue]) )
+    {
+        //also make sure it's not enabled via an override
+        if(YES != [self.disabledItems containsObject:plistContents[@"Label"]])
+        {
+            //bail
+            goto bail;
+        }
+    }
+    
+    //set 'RunAtLoad' flag
+    if(YES == [plistContents[@"RunAtLoad"] isKindOfClass:[NSNumber class]])
+    {
+        //set
+        runAtLoad = [plistContents[@"RunAtLoad"] boolValue];
+    }
+    
+    //set 'KeepAlive' flag
+    if(YES == [plistContents[@"KeepAlive"] isKindOfClass:[NSNumber class]])
+    {
+        //set
+        keepAlive = [plistContents[@"KeepAlive"] boolValue];
+    }
+    
+    //set 'OnDemand' flag
+    if(YES == [plistContents[@"OnDemand"] isKindOfClass:[NSNumber class]])
+    {
+        //set
+        onDemand = [plistContents[@"OnDemand"] boolValue];
+    }
+    
+    //first check 'RunAtLoad'/'KeepAlive'
+    // ->either of these set to ok, means auto run!
+    if( (YES == runAtLoad) ||
+        (YES == keepAlive) )
+    {
+        //auto
+        isAutoRun = YES;
+    }
+    
+    //when neither 'RunAtLoad' and 'KeepAlive' not found
+    // ->check if 'OnDemand' is set to false (e.g. HackingTeam)
+    else if( ((-1 == runAtLoad) && (-1 == keepAlive)) &&
+             (NO == onDemand) )
+    {
+        //auto
+        isAutoRun = YES;
+    }
+    
+//bail
+bail:
+    
+    return isAutoRun;
 }
 
 @end
