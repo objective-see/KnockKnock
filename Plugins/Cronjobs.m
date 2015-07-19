@@ -2,6 +2,8 @@
 //  CronJobs.m
 //  KnockKnock
 //
+//  Created by Patrick Wardle on 7/10/15.
+//  Copyright (c) 2015 Objective-See. All rights reserved.
 
 #import "Command.h"
 #import "Cronjobs.h"
@@ -87,10 +89,10 @@
     //  ->and call back up into UI to add
     for(NSString* cronJob in [cronJobs componentsSeparatedByString:@"\n"])
     {
-        //create File object for importer
+        //create Command object for job
         commandObj = [[Command alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_COMMAND:cronJob, KEY_RESULT_PATH:cronFile}];
         
-        //skip File objects that err'd out for any reason
+        //skip Command objects that err'd out for any reason
         if(nil == commandObj)
         {
             //skip

@@ -33,12 +33,14 @@
 // ->need to restart shared enumerator 
 @property BOOL secondaryScan;
 
-
 //plugin objects
 @property(nonatomic, retain)NSMutableArray* plugins;
 
 //shared item enumerator object
 @property(nonatomic, retain)ItemEnumerator* sharedItemEnumerator;
+
+//version string
+@property (weak) IBOutlet NSTextField *versionString;
 
 //category table controller object
 @property (weak) IBOutlet CategoryTableController *categoryTableController;
@@ -94,6 +96,9 @@
 //results window controller
 @property(nonatomic, retain)ResultsWindowController* resultsWindowController;
 
+//connection flag
+@property BOOL isConnected;
+
 /* METHODS */
 
 //init tracking areas for buttons
@@ -126,6 +131,8 @@
 // ->invoked when user clicks 'About/Info' or Objective-See logo in main UI
 -(void)displayScanStats;
 
+//action
+// ->invoked when user click main scan button
 -(IBAction)scanButtonHandler:(id)sender;
 
 //button handler for when settings icon (gear) is clicked
@@ -144,8 +151,8 @@
 // ->ensures various threads are terminated, etc
 -(void)completeScan;
 
-//version string
-@property (weak) IBOutlet NSTextField *versionString;
-
+//show 'save file popup
+// ->user clicks ok, save results (JSON) to disk
+-(void)saveResults;
 
 @end

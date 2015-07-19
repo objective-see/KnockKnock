@@ -21,7 +21,6 @@
 NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaemons/", @"/Library/LaunchDaemons/", @"/System/Library/LaunchAgents/", @"/Library/LaunchAgents/", @"~/Library/LaunchAgents/"};
 
 
-
 //enumerate all 'shared' items
 // ->that is to say, items that multiple plugins scan/process
 -(void)start

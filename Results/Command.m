@@ -8,6 +8,7 @@
 
 #import "Consts.h"
 #import "Command.h"
+#import "Utilities.h"
 
 @implementation Command
 
@@ -34,7 +35,8 @@
     NSString *json = nil;
     
     //init json
-    json = [NSString stringWithFormat:@"\"command\": \"%@\", \"file\": \"%@\"", self.command, self.path];
+    // ->note: command is escaped to make sure its valid JSON
+    json = [NSString stringWithFormat:@"\"command\": \"%@\", \"file\": \"%@\"", escapeString(self.command), self.path];
     
     return json;
 }

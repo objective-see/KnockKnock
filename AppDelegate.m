@@ -12,14 +12,14 @@
 #import "AppDelegate.h"
 
 //supported plugins
-NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"Kexts", @"LaunchItems", @"DylibInserts", @"LoginItems", @"SpotlightImporters"};
-
+NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"Kexts", @"LaunchItems", @"DylibInserts", @"LoginItems", @"LogInOutHooks", @"SpotlightImporters"};
 
 @implementation AppDelegate
 
 @synthesize plugins;
 @synthesize filterObj;
 @synthesize vtThreads;
+@synthesize isConnected;
 @synthesize virusTotalObj;
 @synthesize selectedPlugin;
 @synthesize activePluginIndex;
@@ -38,9 +38,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 @synthesize scanButtonLabel;
 @synthesize progressIndicator;
 @synthesize vulnerableAppHeaderIndex;
-
-//TODO: check if VT can be reached! if not, error? or don't show '0 VT results detected'
-
 
 //center window
 // ->also make front
@@ -311,6 +308,9 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     
     //reset active plugin index
     self.activePluginIndex = 0;
+ 
+    //set scan flag
+    self.isConnected = isNetworkConnected();
     
     //iterate over all plugins
     // ->invoke's each scan message
@@ -338,9 +338,10 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         // ->will call back up into UI as items are found
         [plugin scan];
         
-        //when 'disable VT' prefs not selected
+        //when 'disable VT' prefs not selected and network is reachable
         // ->kick of thread to perform VT query in background
-        if(YES != self.prefsWindowController.disableVTQueries)
+        if( (YES != self.prefsWindowController.disableVTQueries) &&
+            (YES == self.isConnected) )
         {
             //do query
             [self queryVT:plugin];
@@ -354,9 +355,10 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     // ->just to be safe...
     self.activePluginIndex = 0;
     
-    //if VT querying is enabled (default)
+    //if VT querying is enabled (default) and network is available
     // ->wait till all VT threads are done
-    if(YES != self.prefsWindowController.disableVTQueries)
+    if( (YES != self.prefsWindowController.disableVTQueries) &&
+        (YES == self.isConnected) )
     {
         //update scanner msg
         dispatch_sync(dispatch_get_main_queue(), ^{
@@ -428,13 +430,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         //stop ui & show informational alert
         // ->executed on main thread
         dispatch_sync(dispatch_get_main_queue(), ^{
-            
-            //check if user wants to save results
-            if(YES == self.prefsWindowController.saveOutput)
-            {
-                //save
-                [self saveResults];
-            }
             
             //update the UI
             // ->reflect the stopped state
@@ -660,9 +655,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     //currently selected category
     NSUInteger selectedCategory = 0;
     
-    //save alert
-    NSAlert* saveAlert = nil;
-    
     //get currently selected category
     selectedCategory = self.categoryTableController.categoryTableView.selectedRow;
     
@@ -676,10 +668,15 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     //reload item table
     [self.itemTableController.itemTableView reloadData];
     
-    //if VT query was never done (e.g. scan was started w/ pref disabled)
+    //(re)check network connectivity
+    // ->set iVar
+    self.isConnected = isNetworkConnected();
+    
+    //if VT query was never done (e.g. scan was started w/ pref disabled) and network is available
     // ->kick off VT queries now
     if( (0 == self.vtThreads.count) &&
-        (YES != self.prefsWindowController.disableVTQueries) )
+        (YES != self.prefsWindowController.disableVTQueries) &&
+        (YES == self.isConnected) )
     {
         //iterate over all plugins
         // ->do VT query for each
@@ -697,12 +694,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     {
         //save
         [self saveResults];
-        
-        //alloc/init alert
-        saveAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"current results saved to %@", OUTPUT_FILE] defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"subsequent scans will overwrite this file"];
-        
-        //show it
-        [saveAlert runModal];
     }
    
     return;
@@ -912,19 +903,23 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     // ->add flagged items
     if(YES != self.prefsWindowController.disableVTQueries)
     {
-        //add flagged items
-        [details appendFormat:@" \r\n■ %lu item(s) flagged by VirusTotal", flaggedItemCount];
+        //when network is down
+        // ->add msg about not being able to query VT
+        if(YES != self.isConnected)
+        {
+            //add disconnected msg
+            [details appendFormat:@" \r\n■ unable to query VirusTotal (network)"];
+        }
+        //otherwise
+        // ->add details about # of flagged items
+        else
+        {
+            //add flagged items
+            [details appendFormat:@" \r\n■ %lu item(s) flagged by VirusTotal", flaggedItemCount];
+        }
     }
     
-    //when 'save results' is enabled
-    // ->add msg about saving
-    if(YES == self.prefsWindowController.saveOutput)
-    {
-        //add save msg
-        [details appendFormat:@" \r\n■ saved findings to '%@'", OUTPUT_FILE];
-    }
-    
-    //alloc/init settings window
+    //alloc/init results window
     if(nil == self.resultsWindowController)
     {
         //alloc/init
@@ -1085,110 +1080,129 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     return;    
 }
 
-//save results to disk
-// ->JSON dumped to current directory
+//show 'save file popup
+// ->user clicks ok, save results (JSON) to disk
 -(void)saveResults
 {
+    //save panel
+    NSSavePanel *panel = nil;
+    
+    //save results popup
+    __block NSAlert* saveResultPopup = nil;
+    
     //output
-    NSMutableString* output = nil;
+    __block NSMutableString* output = nil;
     
     //plugin items
-    NSArray* items = nil;
-
-    //output directory
-    NSString* outputDirectory = nil;
-    
-    //output file
-    NSString* outputFile = nil;
+    __block NSArray* items = nil;
     
     //error
-    NSError* error = nil;
+    __block NSError* error = nil;
     
-    //init output string
-    output = [NSMutableString string];
+    //create panel
+    panel = [NSSavePanel savePanel];
     
-    //start JSON
-    [output appendString:@"{"];
+    //suggest file name
+    [panel setNameFieldStringValue:OUTPUT_FILE];
     
-    //iterate over all plugins
-    // ->format/add items to output
-    for(PluginBase* plugin in self.plugins)
-    {
-        //set items
-        // ->all?
-        if(YES == self.prefsWindowController.showTrustedItems)
-        {
-            //set
-            items = plugin.allItems;
-        }
-        //set items
-        // ->just unknown items
-        else
-        {
-            //set
-            items = plugin.unknownItems;
-        }
-        
-        //add plugin name
-        [output appendString:[NSString stringWithFormat:@"\"%@\":[", plugin.name]];
-    
-        //sync
-        // ->since array will be reset if user clicks 'stop' scan
-        @synchronized(items)
-        {
-        
-        //iterate over all items
-        // ->convert to JSON/append to output
-        for(ItemBase* item in items)
-        {
-            //add item
-            [output appendFormat:@"{%@},", [item toJSON]];
+    //show panel
+    // ->completion handler will invoked when user clicks 'ok'
+    [panel beginWithCompletionHandler:^(NSInteger result)
+     {
+         //only need to handle 'ok'
+         if(NSFileHandlingPanelOKButton == result)
+         {
+            //init output string
+            output = [NSMutableString string];
             
-        }//all plugin items
+            //start JSON
+            [output appendString:@"{"];
             
-        }//sync
-        
-        //remove last ','
-        if(YES == [output hasSuffix:@","])
-        {
-            //remove
-            [output deleteCharactersInRange:NSMakeRange([output length]-1, 1)];
-        }
-        
-        //terminate list
-        [output appendString:@"],"];
+            //iterate over all plugins
+            // ->format/add items to output
+            for(PluginBase* plugin in self.plugins)
+            {
+                //set items
+                // ->all?
+                if(YES == self.prefsWindowController.showTrustedItems)
+                {
+                    //set
+                    items = plugin.allItems;
+                }
+                //set items
+                // ->just unknown items
+                else
+                {
+                    //set
+                    items = plugin.unknownItems;
+                }
+                
+                //add plugin name
+                [output appendString:[NSString stringWithFormat:@"\"%@\":[", plugin.name]];
+            
+                //sync
+                // ->since array will be reset if user clicks 'stop' scan
+                @synchronized(items)
+                {
+                
+                //iterate over all items
+                // ->convert to JSON/append to output
+                for(ItemBase* item in items)
+                {
+                    //add item
+                    [output appendFormat:@"{%@},", [item toJSON]];
+                    
+                }//all plugin items
+                    
+                }//sync
+                
+                //remove last ','
+                if(YES == [output hasSuffix:@","])
+                {
+                    //remove
+                    [output deleteCharactersInRange:NSMakeRange([output length]-1, 1)];
+                }
+                
+                //terminate list
+                [output appendString:@"],"];
 
-    }//all plugins
+            }//all plugins
+            
+            //remove last ','
+            if(YES == [output hasSuffix:@","])
+            {
+                //remove
+                [output deleteCharactersInRange:NSMakeRange([output length]-1, 1)];
+            }
+            
+            //terminate list/output
+            [output appendString:@"}"];
+            
+            //save JSON to disk
+            // ->on error will show err msg in popup
+            if(YES != [output writeToURL:[panel URL] atomically:YES encoding:NSUTF8StringEncoding error:&error])
+            {
+                //err msg
+                NSLog(@"OBJECTIVE-SEE ERROR: saving output to %@ failed with %@", [panel URL], error);
+                
+                //init popup w/ error msg
+                saveResultPopup = [NSAlert alertWithMessageText:@"ERROR: failed to save output" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"details: %@", error];
+
+            }
+            //happy
+            // ->set result msg
+            else
+            {
+                //init popup w/ msg
+                saveResultPopup = [NSAlert alertWithMessageText:@"Succesfully saved output" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"file: %s", [[panel URL] fileSystemRepresentation]];
+            }
+                 
+            //show popup
+            [saveResultPopup runModal];
+             
+         }//clicked 'ok' (to save)
     
-    //remove last ','
-    if(YES == [output hasSuffix:@","])
-    {
-        //remove
-        [output deleteCharactersInRange:NSMakeRange([output length]-1, 1)];
-    }
-    
-    //terminate list/output
-    [output appendString:@"}"];
-    
-    //init output directory
-    // ->app's directory
-    outputDirectory = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
-    
-    //init full path to output file
-    outputFile = [NSString stringWithFormat:@"%@/%@", outputDirectory, OUTPUT_FILE];
-    
-    //save JSON to disk
-    if(YES != [output writeToFile:outputFile atomically:YES encoding:NSUTF8StringEncoding error:nil])
-    {
-        //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: saving output to %@ failed with %@", outputFile, error);
-        
-        //bail
-        goto bail;
-    }
-    
-//bail
-bail:
+     }]; //panel callback
     
     return;
 }

@@ -61,4 +61,10 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments);
 // ->then make it modal
 void makeModal(NSWindowController* windowController);
 
+//check if computer has network connection
+BOOL isNetworkConnected();
+
+//escape \ and "s in a string
+NSString* escapeString(NSString* unescapedString);
+
 #endif

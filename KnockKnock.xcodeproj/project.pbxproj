@@ -81,6 +81,9 @@
 		CDAB989F1AEADE5A00C75B4B /* DylibInserts.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */; };
 		CDAB98A11AEAFAFA00C75B4B /* authorizationIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */; };
 		CDAB98A31AEB413C00C75B4B /* dylibIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDAB98A21AEB413C00C75B4B /* dylibIcon.png */; };
+		CDBE491A1B5B25E30031FC22 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDBE49191B5B25E30031FC22 /* SystemConfiguration.framework */; };
+		CDBE491D1B5B44BB0031FC22 /* LogInOutHooks.m in Sources */ = {isa = PBXBuildFile; fileRef = CDBE491C1B5B44BB0031FC22 /* LogInOutHooks.m */; };
+		CDBE491F1B5B46040031FC22 /* logInOutIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDBE491E1B5B46040031FC22 /* logInOutIcon.png */; };
 		CDD83FD41B50C48C0037124E /* Cronjobs.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD83FD31B50C48C0037124E /* Cronjobs.m */; };
 		CDD83FD61B50C76F0037124E /* cronIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDD83FD51B50C76F0037124E /* cronIcon.png */; };
 		CDDBC2301B04771100B021E0 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */; };
@@ -215,6 +218,10 @@
 		CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DylibInserts.m; path = Plugins/DylibInserts.m; sourceTree = "<group>"; };
 		CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = authorizationIcon.png; path = images/authorizationIcon.png; sourceTree = SOURCE_ROOT; };
 		CDAB98A21AEB413C00C75B4B /* dylibIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dylibIcon.png; path = images/dylibIcon.png; sourceTree = SOURCE_ROOT; };
+		CDBE49191B5B25E30031FC22 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		CDBE491B1B5B44BB0031FC22 /* LogInOutHooks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogInOutHooks.h; path = Plugins/LogInOutHooks.h; sourceTree = "<group>"; };
+		CDBE491C1B5B44BB0031FC22 /* LogInOutHooks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LogInOutHooks.m; path = Plugins/LogInOutHooks.m; sourceTree = "<group>"; };
+		CDBE491E1B5B46040031FC22 /* logInOutIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logInOutIcon.png; path = images/logInOutIcon.png; sourceTree = SOURCE_ROOT; };
 		CDD83FD21B50C48C0037124E /* Cronjobs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cronjobs.h; path = Plugins/Cronjobs.h; sourceTree = "<group>"; };
 		CDD83FD31B50C48C0037124E /* Cronjobs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Cronjobs.m; path = Plugins/Cronjobs.m; sourceTree = "<group>"; };
 		CDD83FD51B50C76F0037124E /* cronIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cronIcon.png; path = images/cronIcon.png; sourceTree = SOURCE_ROOT; };
@@ -249,6 +256,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDBE491A1B5B25E30031FC22 /* SystemConfiguration.framework in Frameworks */,
 				CDDBC2301B04771100B021E0 /* ServiceManagement.framework in Frameworks */,
 				CDF08CEA1AC8D97B009B3423 /* Quartz.framework in Frameworks */,
 				CD6095731A87067D00E091CD /* Security.framework in Frameworks */,
@@ -298,6 +306,7 @@
 		1D21BC4D172AF43D009D1CFD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CDBE49191B5B25E30031FC22 /* SystemConfiguration.framework */,
 				CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */,
 				CDF08CE91AC8D97B009B3423 /* Quartz.framework */,
 				CD6095721A87067D00E091CD /* Security.framework */,
@@ -356,6 +365,7 @@
 		CD6095501A8329FA00E091CD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				CDBE491E1B5B46040031FC22 /* logInOutIcon.png */,
 				CD6BBBEC1B51C62B00506D0D /* unknown.png */,
 				CD6BBBEA1B50DF7100506D0D /* signedAppleIcon.png */,
 				CD6BBBE81B50D67A00506D0D /* binaryIcon.icns */,
@@ -440,6 +450,8 @@
 		CDA81D861A96F429009790E2 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				CDBE491B1B5B44BB0031FC22 /* LogInOutHooks.h */,
+				CDBE491C1B5B44BB0031FC22 /* LogInOutHooks.m */,
 				CDD83FD21B50C48C0037124E /* Cronjobs.h */,
 				CDD83FD31B50C48C0037124E /* Cronjobs.m */,
 				CDAB989D1AEADE5A00C75B4B /* DylibInserts.h */,
@@ -603,6 +615,7 @@
 				CDF08CE21AC88E0F009B3423 /* VTInfoWindow.xib in Resources */,
 				CDA81D6F1A95B4E9009790E2 /* startScanBG.png in Resources */,
 				CDA81DF31A99B8C2009790E2 /* whitelistedCommands.json in Resources */,
+				CDBE491F1B5B46040031FC22 /* logInOutIcon.png in Resources */,
 				CDA81D721A95B4E9009790E2 /* virus.png in Resources */,
 				CDA81DC91A9960A3009790E2 /* info.png in Resources */,
 				CDA81D741A95B4FB009790E2 /* icon.iconset in Resources */,
@@ -652,6 +665,7 @@
 				CDA81E011A9A7D26009790E2 /* ItemBase.m in Sources */,
 				CDA81DFF1A9A7D26009790E2 /* Extension.m in Sources */,
 				CDF08CC61AC46E75009B3423 /* VTButton.m in Sources */,
+				CDBE491D1B5B44BB0031FC22 /* LogInOutHooks.m in Sources */,
 				CDA81D8F1A96F557009790E2 /* PluginBase.m in Sources */,
 				CDAB989C1AEAC95500C75B4B /* ItemEnumerator.m in Sources */,
 				CDA81D771A95B7C1009790E2 /* CategoryTableController.m in Sources */,

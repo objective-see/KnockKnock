@@ -1,8 +1,8 @@
 //
-//  AuthorizationPlugins.h
+//  Cronjobs.h
 //  KnockKnock
 //
-//  Created by Patrick Wardle on 4/24/15.
+//  Created by Patrick Wardle on 7/10/15.
 //  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 

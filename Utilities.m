@@ -12,6 +12,7 @@
 #import <Security/Security.h>
 #import <Foundation/Foundation.h>
 #import <CommonCrypto/CommonDigest.h>
+#import <SystemConfiguration/SystemConfiguration.h>
 
 //check if OS is supported
 BOOL isSupportedOS()
@@ -734,4 +735,113 @@ void makeModal(NSWindowController* windowController)
     
     return;
 }
+
+
+//check if computer has network connection
+BOOL isNetworkConnected()
+{
+    //flag
+    BOOL isConnected = NO;
+    
+    //sock addr stuct
+    struct sockaddr zeroAddress = {0};
+    
+    //reachability ref
+    SCNetworkReachabilityRef reachabilityRef = NULL;
+    
+    //reachability flags
+    SCNetworkReachabilityFlags flags = 0;
+    
+    //reachable flag
+    BOOL isReachable = NO;
+    
+    //connection required flag
+    BOOL connectionRequired = NO;
+    
+    //ensure its cleared out
+    bzero(&zeroAddress, sizeof(zeroAddress));
+    
+    //set size
+    zeroAddress.sa_len = sizeof(zeroAddress);
+    
+    //set family
+    zeroAddress.sa_family = AF_INET;
+    
+    //create reachability ref
+    reachabilityRef = SCNetworkReachabilityCreateWithAddress(NULL, (const struct sockaddr*)&zeroAddress);
+    
+    //sanity check
+    if(NULL == reachabilityRef)
+    {
+        //bail
+        goto bail;
+    }
+    
+    //get flags
+    if(TRUE != SCNetworkReachabilityGetFlags(reachabilityRef, &flags))
+    {
+        //bail
+        goto bail;
+    }
+    
+    //set reachable flag
+    isReachable = ((flags & kSCNetworkFlagsReachable) != 0);
+    
+    //set connection required flag
+    connectionRequired = ((flags & kSCNetworkFlagsConnectionRequired) != 0);
+    
+    //finally
+    // ->determine if network is available
+    isConnected = (isReachable && !connectionRequired) ? YES : NO;
+    
+//bail
+bail:
+
+    //cleanup
+    if(NULL != reachabilityRef)
+    {
+        //release
+        CFRelease(reachabilityRef);
+    }
+    
+    return isConnected;
+}
+
+//escape \ and "s in a string
+NSString* escapeString(NSString* unescapedString)
+{
+    //return string
+    NSMutableString *escapedString = nil;
+    
+    //char
+    unichar c = 0;
+    
+    //alloc escaped string
+    escapedString = [[NSMutableString alloc] init];
+    
+    //check each char
+    // ->escape as needed
+    for(int i = 0; i < [unescapedString length]; i++) {
+        
+        //grab char
+        c = [unescapedString characterAtIndex:i];
+        
+        //escape chars
+        if( ('\'' == c) ||
+            ('"' == c) )
+        {
+            //escape
+            [escapedString appendFormat:@"\\%c", c];
+        }
+        //no need to escape
+        else
+        {
+            //use as is
+            [escapedString appendFormat:@"%c", c];
+        }
+    }
+    
+    return escapedString;
+}
+
 
