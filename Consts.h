@@ -33,7 +33,7 @@
 #define PREF_DISABLE_VT_QUERIRES @"disableVTQueries"
 
 //prefs
-// ->filter out OS/known
+// ->save output
 #define PREF_SAVE_OUTPUT @"saveOutput"
 
 //disabled state

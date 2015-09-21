@@ -265,6 +265,7 @@
                 // ->need this for (re)queries
                 scanID = result[VT_RESULTS_SCANID];
                 
+                //TOOD: FIX LOGIC - only remove if not still flagged
                 //if file was flagged
                 // ->remove it from list of plugin's flagged
                 if(0 != [self.fileObj.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue])

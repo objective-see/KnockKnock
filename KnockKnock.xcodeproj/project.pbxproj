@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1D21BC4F172AF43D009D1CFD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D21BC4E172AF43D009D1CFD /* Cocoa.framework */; };
+		7DAA77FD1B8C5786004840B9 /* MachO.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DAA77FC1B8C5786004840B9 /* MachO.m */; };
 		CD001B371AB903040089014A /* kkText.png in Resources */ = {isa = PBXBuildFile; fileRef = CD001B341AB903040089014A /* kkText.png */; };
 		CD001B381AB903040089014A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CD001B351AB903040089014A /* logo.png */; };
 		CD001B391AB903040089014A /* logoApple.png in Resources */ = {isa = PBXBuildFile; fileRef = CD001B361AB903040089014A /* logoApple.png */; };
@@ -95,7 +96,6 @@
 		CDF08CCF1AC4C6E8009B3423 /* settingsOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CCC1AC4C6E8009B3423 /* settingsOver.png */; };
 		CDF08CD01AC4C6E8009B3423 /* settingsBG.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CCD1AC4C6E8009B3423 /* settingsBG.png */; };
 		CDF08CD11AC4C6E8009B3423 /* settings.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CCE1AC4C6E8009B3423 /* settings.png */; };
-		CDF08CDB1AC8820F009B3423 /* MachO.m in Sources */ = {isa = PBXBuildFile; fileRef = CDF08CD91AC8820F009B3423 /* MachO.m */; };
 		CDF08CDF1AC886F2009B3423 /* VTInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CDF08CDD1AC886F2009B3423 /* VTInfoWindowController.m */; };
 		CDF08CE21AC88E0F009B3423 /* VTInfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CE11AC88E0F009B3423 /* VTInfoWindow.xib */; };
 		CDF08CE61AC89FE1009B3423 /* HyperlinkTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CDF08CE51AC89FE1009B3423 /* HyperlinkTextField.m */; };
@@ -113,6 +113,8 @@
 		1D21BC51172AF43D009D1CFD /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		1D21BC52172AF43D009D1CFD /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		1D21BC53172AF43D009D1CFD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		7DAA77FB1B8C5786004840B9 /* MachO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachO.h; path = ../MachO/MachOParser/MachO.h; sourceTree = "<group>"; };
+		7DAA77FC1B8C5786004840B9 /* MachO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MachO.m; path = ../MachO/MachOParser/MachO.m; sourceTree = "<group>"; };
 		CD001B341AB903040089014A /* kkText.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kkText.png; path = images/kkText.png; sourceTree = SOURCE_ROOT; };
 		CD001B351AB903040089014A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = images/logo.png; sourceTree = SOURCE_ROOT; };
 		CD001B361AB903040089014A /* logoApple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoApple.png; path = images/logoApple.png; sourceTree = SOURCE_ROOT; };
@@ -236,8 +238,6 @@
 		CDF08CCC1AC4C6E8009B3423 /* settingsOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = settingsOver.png; path = images/settingsOver.png; sourceTree = SOURCE_ROOT; };
 		CDF08CCD1AC4C6E8009B3423 /* settingsBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = settingsBG.png; path = images/settingsBG.png; sourceTree = SOURCE_ROOT; };
 		CDF08CCE1AC4C6E8009B3423 /* settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = settings.png; path = images/settings.png; sourceTree = SOURCE_ROOT; };
-		CDF08CD91AC8820F009B3423 /* MachO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MachO.m; path = ../MachOParser/MachOParser/MachO.m; sourceTree = "<group>"; };
-		CDF08CDA1AC8820F009B3423 /* MachO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachO.h; path = ../MachOParser/MachOParser/MachO.h; sourceTree = "<group>"; };
 		CDF08CDC1AC886F2009B3423 /* VTInfoWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTInfoWindowController.h; sourceTree = "<group>"; };
 		CDF08CDD1AC886F2009B3423 /* VTInfoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VTInfoWindowController.m; sourceTree = "<group>"; };
 		CDF08CE11AC88E0F009B3423 /* VTInfoWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = VTInfoWindow.xib; path = UI/VTInfoWindow.xib; sourceTree = "<group>"; };
@@ -500,8 +500,8 @@
 		CDF08CD81AC881F9009B3423 /* MachOParser */ = {
 			isa = PBXGroup;
 			children = (
-				CDF08CD91AC8820F009B3423 /* MachO.m */,
-				CDF08CDA1AC8820F009B3423 /* MachO.h */,
+				7DAA77FB1B8C5786004840B9 /* MachO.h */,
+				7DAA77FC1B8C5786004840B9 /* MachO.m */,
 			);
 			name = MachOParser;
 			sourceTree = "<group>";
@@ -636,6 +636,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DAA77FD1B8C5786004840B9 /* MachO.m in Sources */,
 				CD83887F1AACCEDF000EB098 /* VirusTotal.m in Sources */,
 				CDF08CDF1AC886F2009B3423 /* VTInfoWindowController.m in Sources */,
 				CD0219611AD39A83005148A2 /* ResultsWindowController.m in Sources */,
@@ -658,7 +659,6 @@
 				CDA81E0A1A9B0AD8009790E2 /* BrowserExtensions.m in Sources */,
 				CDD83FD41B50C48C0037124E /* Cronjobs.m in Sources */,
 				CDAB989F1AEADE5A00C75B4B /* DylibInserts.m in Sources */,
-				CDF08CDB1AC8820F009B3423 /* MachO.m in Sources */,
 				CDAB98991AEAA6CB00C75B4B /* AuthorizationPlugins.m in Sources */,
 				CDA81DFE1A9A7D26009790E2 /* Command.m in Sources */,
 				CD0219531AD34D9A005148A2 /* AboutWindowController.m in Sources */,

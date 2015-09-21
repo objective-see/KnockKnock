@@ -1237,6 +1237,8 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     //show it
     [self.prefsWindowController showWindow:self];
     
+    //TODO:
+    // use: [[NSApplication sharedApplication] runModalForWindow:prefsWindowController.window]; ? 
     //invoke function in background that will make window modal
     // ->waits until window is non-nil
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
