@@ -89,6 +89,12 @@
             //font
             self.noItemsLabel.font = [NSFont fontWithName:@"Menlo-Regular" size:13];
             
+            //center text
+            self.noItemsLabel.alignment = NSCenterTextAlignment;
+            
+            //make uneditable
+            self.noItemsLabel.editable = NO;
+            
             //use auto-layout
             self.noItemsLabel.translatesAutoresizingMaskIntoConstraints = NO;
             
@@ -99,7 +105,7 @@
             [self.noItemsLabel addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[noItemsLabel(==300)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(noItemsLabel)]];
             
             //set height constraint
-            [self.noItemsLabel addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[noItemsLabel(==40)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(noItemsLabel)]];
+            [self.noItemsLabel addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[noItemsLabel(==20)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(noItemsLabel)]];
             
             //set top padding constraint
             [self.noItemsLabel.superview addConstraint:[NSLayoutConstraint constraintWithItem:self.noItemsLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.noItemsLabel.superview attribute:NSLayoutAttributeTop multiplier:1.0f constant:25.0f]];
@@ -261,7 +267,7 @@
     if(nil != itemPathTopPadding)
     {
         //shift up
-        itemPathTopPadding.constant = 3;
+        itemPathTopPadding.constant = 1;
     }
     
     //check if cell was previously used (by checking the item name)
@@ -275,7 +281,6 @@
     //default
     // ->set main textfield's color to black
     itemCell.textField.textColor = [NSColor blackColor];
-    
     
     //default
     // ->hide plist label
@@ -311,9 +316,6 @@
     //get signature image view
     signatureImageView = [itemCell viewWithTag:TABLE_ROW_SIGNATURE_ICON];
     
-    //get path's frame
-    //pathFrame = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame;
-    
     //set detailed text
     // ->path
     if(YES == [item isKindOfClass:[File class]])
@@ -331,16 +333,6 @@
         
         //show signature icon
         signatureImageView.hidden = NO;
-        
-        //get item name
-        //nameFrame = itemCell.textField.frame;
-        
-        //shift over item name
-        // ->since there's a signature icon
-        //nameFrame.origin.x = 66;
-        
-        //update name frame
-        //itemCell.textField.frame = nameFrame;
         
         //set detailed text
         // ->always item's path

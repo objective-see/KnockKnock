@@ -38,12 +38,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 @synthesize progressIndicator;
 @synthesize vulnerableAppHeaderIndex;
 
-//TODO:
-// ->verify app bundle (to detect modifications to whitelist)? - DONE
-// ->'no items found label' - DONE
-// -> El Capitan Hashes - DONE
-// ->add support for __XPC_DYLD_INSERT_LIBRARIES -DONE
-
 //center window
 // ->also make front
 -(void)awakeFromNib
@@ -69,7 +63,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     
     //first thing...
     // ->install exception handlers!
-    //installExceptionHandlers();
+    installExceptionHandlers();
     
     //init filter object
     filterObj = [[Filter alloc] init];
@@ -92,13 +86,10 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         //exit
         exit(0);
     }
-    
-    //TODO: re-enable for release
-    
-    /*
+   
     //verify self
     signingStatus = verifySelf();
-    
+   
     //show error if app (self) cannot be verified
     if(noErr != signingStatus)
     {
@@ -108,7 +99,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         //exit
         exit(0);
     }
-    */
     
     
     //kick off thread to begin enumerating shared objects

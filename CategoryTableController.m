@@ -222,7 +222,7 @@ bail:
 //bail
 bail:
     
-    return YES;
+    return shouldSelect;
 }
 
 
