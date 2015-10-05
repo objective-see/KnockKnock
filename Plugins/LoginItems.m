@@ -1,5 +1,5 @@
 //
-//  LaunchItems.m
+//  LoginItems.m
 //  KnockKnock
 //
 
@@ -178,7 +178,7 @@
     return traditionalItems;
 }
 
-//enumerate sandboxed login items
+//enumerate sandboxed (app) login items
 // ->scan /Applications for 'Contents/Library/LoginItems/' and xref w/ launchd jobs
 -(NSMutableArray*)enumSandboxItems
 {

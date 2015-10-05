@@ -545,8 +545,8 @@
 		1D21BC43172AF43D009D1CFD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0620;
-				ORGANIZATIONNAME = "Lucas Derraugh";
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Objective-See";
 			};
 			buildConfigurationList = 1D21BC46172AF43D009D1CFD /* Build configuration list for PBXProject "KnockKnock" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -711,6 +711,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -765,6 +766,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
 				WRAPPER_EXTENSION = app;
 			};
@@ -777,6 +779,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
 				WRAPPER_EXTENSION = app;
 			};

@@ -73,8 +73,11 @@
         //set string (to include plugin's name)
         [self.noItemsLabel setStringValue:[NSString stringWithFormat:@"no %@ found", [selectedPluginObj.name lowercaseString]]];
         
+        //TODO: make front!
+        
         //show label
         self.noItemsLabel.hidden = NO;
+        
     }
     else
     {
@@ -120,7 +123,7 @@
     CGRect nameFrame = {0};
     
     //item path frame
-    CGRect pathFrame = {0};
+    //CGRect pathFrame = {0};
     
     //attribute dictionary
     NSMutableDictionary *stringAttributes = nil;
@@ -129,20 +132,26 @@
     NSMutableParagraphStyle *paragraphStyle = nil;
     
     //truncated path
-    NSString* truncatedPath = nil;
+    //NSString* truncatedPath = nil;
     
     //truncated plist
-    NSString* truncatedPlist = nil;
+    //NSString* truncatedPlist = nil;
     
     //tracking area
     NSTrackingArea* trackingArea = nil;
+    
+    //item path's top padding (constraint)
+    NSLayoutConstraint* itemPathTopPadding = nil;
+    
+    //item name's left padding
+    NSLayoutConstraint* itemNameLeftPadding = nil;
     
     //flag indicating row has tracking area
     // ->ensures we don't add 2x
     BOOL hasTrackingArea = NO;
     
     //set selected plugin
-    selectedPluginObj =  ((AppDelegate*)[[NSApplication sharedApplication] delegate]).selectedPlugin;
+    selectedPluginObj = ((AppDelegate*)[[NSApplication sharedApplication] delegate]).selectedPlugin;
   
     //get array backing table
     tableItems = [self getTableItems];
@@ -159,7 +168,7 @@
     item = tableItems[row];
     
     //handle Command items
-    // ->vry basic row
+    // ->vry basic row, bails when done
     if(YES == [item isKindOfClass:[Command class]])
     {
         //make table cell
@@ -196,25 +205,9 @@
         //set text to command
         [itemCell.textField setStringValue:((Command*)item).command];
         
-        //get path's frame
-        pathFrame = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame;
-
-        //for extensions
-        // ->path should start inline w/ name
-        pathFrame.origin.x = 50;
-        
-        //path should go to 'show' button
-        pathFrame.size.width = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_SHOW_BUTTON]).frame.origin.x - pathFrame.origin.x;
-        
-        //set new frame
-        ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
-        
-        //truncate path
-        truncatedPath = stringByTruncatingString([itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG], item.path, itemCell.frame.size.width-TABLE_BUTTONS_COMMANDS);
-        
         //set detailed text
         // ->always item's path
-        [[itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG] setStringValue:truncatedPath];
+        [[itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG] setStringValue:item.path];
 
         //all done
         goto bail;
@@ -226,6 +219,26 @@
     {
         //bail
         goto bail;
+    }
+    
+    //grab item's name left constraint
+    itemNameLeftPadding = findConstraint(itemCell, @"itemNameLeftPadding");
+    
+    //grab item's path top constraint
+    itemPathTopPadding = findConstraint(itemCell, @"itemPathTopPadding");
+    
+    //set item's name left padding to default
+    if(nil != itemNameLeftPadding)
+    {
+        //set
+        itemNameLeftPadding.constant = 68;
+    }
+    
+    //set item's path top padding to default
+    if(nil != itemPathTopPadding)
+    {
+        //shift up
+        itemPathTopPadding.constant = 3;
     }
     
     //check if cell was previously used (by checking the item name)
@@ -240,15 +253,6 @@
     // ->set main textfield's color to black
     itemCell.textField.textColor = [NSColor blackColor];
     
-    //grab path's frame
-    pathFrame = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame;
-    
-    //default
-    // ->set y-offset of path (no plist)
-    pathFrame.origin.y = 16;
-    
-    //set frame
-    ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
     
     //default
     // ->hide plist label
@@ -279,14 +283,13 @@
         
         //add tracking area to 'info' button
         [[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON] addTrackingArea:trackingArea];
-        
     }
     
     //get signature image view
     signatureImageView = [itemCell viewWithTag:TABLE_ROW_SIGNATURE_ICON];
     
     //get path's frame
-    pathFrame = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame;
+    //pathFrame = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame;
     
     //set detailed text
     // ->path
@@ -307,43 +310,33 @@
         signatureImageView.hidden = NO;
         
         //get item name
-        nameFrame = itemCell.textField.frame;
+        //nameFrame = itemCell.textField.frame;
         
         //shift over item name
         // ->since there's a signature icon
-        nameFrame.origin.x = 66;
+        //nameFrame.origin.x = 66;
         
         //update name frame
-        itemCell.textField.frame = nameFrame;
-                
-        //path should go to vt button
-        pathFrame.size.width = vtButton.frame.origin.x - pathFrame.origin.x;
-        
-        //set new frame
-        ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
-        
-        //truncate path
-        truncatedPath = stringByTruncatingString([itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG], [item path], itemCell.frame.size.width-TABLE_BUTTONS_FILE);
+        //itemCell.textField.frame = nameFrame;
         
         //set detailed text
         // ->always item's path
-        [[itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG] setStringValue:truncatedPath];
+        [[itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG] setStringValue:item.path];
         
         //for files w/ plist
-        // ->set/show
+        // ->show plist
         if(nil != ((File*)item).plist)
         {
-            //shift up frame
-            pathFrame.origin.y = 20;
-        
-            //set new frame
-            ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
+            //shift up item path
+            // ->makes name for plist
+            if(nil != itemPathTopPadding)
+            {
+                //shift up
+                itemPathTopPadding.constant = -2;
+            }
             
-            //truncate plist
-            truncatedPlist = stringByTruncatingString([itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG], ((File*)item).plist, itemCell.frame.size.width-TABLE_BUTTONS_FILE);
-        
             //set plist
-            [((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PLIST_LABEL]) setStringValue:truncatedPlist];
+            [((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PLIST_LABEL]) setStringValue:((File*)item).plist];
             
             //show
             [((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PLIST_LABEL]) setHidden:NO];
@@ -482,32 +475,25 @@
         //hide signature status
         signatureImageView.hidden = YES;
         
-        //get item name
-        nameFrame = itemCell.textField.frame;
+        //set item's name left padding back
+        // ->extensions don't have a signing icon
+        if(nil != itemNameLeftPadding)
+        {
+            //set
+            itemNameLeftPadding.constant = 53;
+        }
         
-        //shift 'back' item name
-        // ->since there isn't a signature icon
-        nameFrame.origin.x = 50;
-        
-        //update frame
-        itemCell.textField.frame = nameFrame;
-        
+                
         //for extensions
         // ->path should start inline w/ name
-        pathFrame.origin.x = 50;
+        //pathFrame.origin.x = 50;
         
         //path should go to info button
-        pathFrame.size.width = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON]).frame.origin.x - pathFrame.origin.x;
-        
-        //set new frame
-        ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PATH_LABEL]).frame = pathFrame;
-        
-        //truncate path
-        truncatedPath = stringByTruncatingString([itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG], [item path], itemCell.frame.size.width-TABLE_BUTTONS_EXTENTION);
+        //pathFrame.size.width = ((NSTextField*)[itemCell viewWithTag:TABLE_ROW_INFO_BUTTON]).frame.origin.x - pathFrame.origin.x;
         
         //set detailed text
         // ->always item's path
-        [[itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG] setStringValue:truncatedPath];
+        [[itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG] setStringValue:item.path];
 
         //set image
         // ->will be browser's icon
@@ -727,7 +713,7 @@ bail:
 
     //open item in Finder
     // ->error alert shown if file open fails
-    if(YES != [[NSWorkspace sharedWorkspace] selectFile:[selectedItem pathForFinder] inFileViewerRootedAtPath:nil])
+    if(YES != [[NSWorkspace sharedWorkspace] selectFile:[selectedItem pathForFinder] inFileViewerRootedAtPath:@""])
     {
         //alloc/init alert
         errorAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"ERROR:\nfailed to open %@", [selectedItem pathForFinder]] defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"errno value: %d", errno];

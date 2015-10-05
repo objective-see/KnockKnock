@@ -220,6 +220,7 @@
                 //add
                 [self.enabledItems addObject:overrideItem];
             }
+            
             //add disabled item
             else
             {

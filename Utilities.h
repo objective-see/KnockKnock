@@ -67,4 +67,11 @@ BOOL isNetworkConnected();
 //escape \ and "s in a string
 NSString* escapeString(NSString* unescapedString);
 
+//find a constraint (by name) of a view
+NSLayoutConstraint* findConstraint(NSView* view, NSString* constraintName);
+
+//check if app is pristine
+// ->that is to say, nobody modified on-disk image/resources (white lists!, etc)
+BOOL isPristine();
+
 #endif

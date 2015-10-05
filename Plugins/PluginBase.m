@@ -108,7 +108,7 @@
     }
     
     //report it to the UI
-    [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemFound];
+    [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemFound:item];
     
     return;
 }

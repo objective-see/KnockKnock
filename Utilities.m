@@ -844,4 +844,82 @@ NSString* escapeString(NSString* unescapedString)
     return escapedString;
 }
 
+//find a constraint (by name) of a view
+NSLayoutConstraint* findConstraint(NSView* view, NSString* constraintName)
+{
+    //constraint
+    NSLayoutConstraint* constraint = nil;
+    
+    //iterate over all view
+    for(NSLayoutConstraint* currentConstraint in view.constraints)
+    {
+        //find item path's constraint
+        if(YES == [currentConstraint.identifier isEqualToString:constraintName])
+        {
+            //save constraint
+            constraint = currentConstraint;
+            
+            //bail
+            break;
+        }
+    }
+    
+    return constraint;
+}
+
+//check if app is pristine
+// ->that is to say, nobody modified on-disk image/resources (white lists!, etc)
+BOOL isPristine()
+{
+    //flag
+    BOOL pristine = NO;
+    
+    //status
+    OSStatus status = !noErr;
+    
+    //sec ref (for self)
+    SecCodeRef secRef = NULL;
+    
+    //get sec ref to self
+    status = SecCodeCopySelf(kSecCSDefaultFlags, &secRef);
+    
+    //check
+    if(noErr != status)
+    {
+        //bail
+        goto bail;
+    }
+   
+    //check code signature
+    status = SecCodeCheckValidity(secRef, kSecCSDefaultFlags, NULL);
+    
+    //check
+    if(status != noErr)
+    {
+        //err msg
+        NSLog(@"OBJECTIVE-SEE ERROR: failed to validate application bundle (%d)", status);
+        
+        //bail
+        goto bail;
+    }
+    
+    //happy!
+    pristine = YES;
+    
+    
+//bail
+bail:
+    
+    //release sec ref
+    if(NULL != secRef)
+    {
+        //release
+        CFRelease(secRef);
+        
+    }
+    
+    
+    return pristine;
+}
+
 

@@ -48,8 +48,6 @@
 //item table controller object
 @property (weak) IBOutlet ItemTableController *itemTableController;
 
-//currently active (scanner) plugin
-@property NSUInteger activePluginIndex;
 
 //currently selected (in table) plugin
 @property(nonatomic, retain)PluginBase* selectedPlugin;
@@ -99,6 +97,10 @@
 //connection flag
 @property BOOL isConnected;
 
+//constraint for status text
+@property (weak) IBOutlet NSLayoutConstraint *statusTextConstraint;
+
+
 /* METHODS */
 
 //init tracking areas for buttons
@@ -110,7 +112,7 @@
 
 //callback method, invoked by plugin(s) when item is found
 // ->update the 'total' count and the item table (if active plugin is selected in UI)
--(void)itemFound;
+-(void)itemFound:(ItemBase*)item;
 
 //callback method, invoked by virus total when plugin's items have been processed
 // ->reload table if plugin matches active plugin

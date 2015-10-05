@@ -22,7 +22,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 @synthesize isConnected;
 @synthesize virusTotalObj;
 @synthesize selectedPlugin;
-@synthesize activePluginIndex;
 @synthesize itemTableController;
 @synthesize sharedItemEnumerator;
 @synthesize aboutWindowController;
@@ -38,6 +37,12 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 @synthesize scanButtonLabel;
 @synthesize progressIndicator;
 @synthesize vulnerableAppHeaderIndex;
+
+//TODO:
+// ->verify app bundle (to detect modifications to whitelist)? https://groups.google.com/forum/#!msg/cocoa-dev/5Z72WrtKrD0/D2cfSfZeLlsJ
+// ->'no items found label'
+// -> El Capitan Hashes - DONE
+// ->add support for __XPC_DYLD_INSERT_LIBRARIES -DONE
 
 //center window
 // ->also make front
@@ -77,6 +82,16 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     
     //check that OS is supported
     if(YES != isSupportedOS())
+    {
+        //show alert
+        [self showUnsupportedAlert];
+        
+        //exit
+        exit(0);
+    }
+    
+    //ensure nobody has messed with us!
+    if(YES != isPristine())
     {
         //show alert
         [self showUnsupportedAlert];
@@ -306,9 +321,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     //flag indicating an active VT thread
     BOOL activeThread = NO;
     
-    //reset active plugin index
-    self.activePluginIndex = 0;
- 
     //set scan flag
     self.isConnected = isNetworkConnected();
     
@@ -346,14 +358,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
             //do query
             [self queryVT:plugin];
         }
-        
-        //go to next active plugin
-        self.activePluginIndex++;
     }
-    
-    //reset active plugin index
-    // ->just to be safe...
-    self.activePluginIndex = 0;
     
     //if VT querying is enabled (default) and network is available
     // ->wait till all VT threads are done
@@ -478,44 +483,31 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 
 //callback method, invoked by plugin(s) when item is found
 // ->update the 'total' count and the item table (if it's selected)
--(void)itemFound
+-(void)itemFound:(ItemBase*)item
 {
-    //active plugin object
-    PluginBase* activePlugin = nil;
-    
-    //item
-    ItemBase* uncoveredItem = nil;
-    
     //item backing item table
     // ->depending on flilter status, either all items, or just known ones
     NSArray* tableItems = nil;
-    
-    //grab active plugin object
-    activePlugin = self.plugins[self.activePluginIndex];
-    
-    //extract uncovered item
-    // ->either File obj, Command obj, or Extension obj
-    uncoveredItem = [activePlugin.allItems lastObject];
     
     //only show refresh table if
     // a) filter is not enabled (e.g. show all)
     // b) filtering is enable, but item is unknown
     if( (YES == self.prefsWindowController.showTrustedItems) ||
-        ((YES != self.prefsWindowController.showTrustedItems) && (YES != uncoveredItem.isTrusted)) )
+        ((YES != self.prefsWindowController.showTrustedItems) && (YES != item.isTrusted)) )
     {
         //set table item array
         // ->case: all
         if(YES == self.prefsWindowController.showTrustedItems)
         {
             //set to all items
-            tableItems = activePlugin.allItems;
+            tableItems = item.plugin.allItems;
         }
         //set table item array
         // ->case: unknown items
         else
         {
             //set to unknown items
-            tableItems = activePlugin.unknownItems;
+            tableItems = item.plugin.unknownItems;
         }
         //reload category table (on main thread)
         // ->this will result in the 'total' being updated
@@ -526,11 +518,11 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
             
             //update category table row
             // ->this will result in the 'total' being updated
-            [self.categoryTableController.categoryTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:self.activePluginIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+            [self.categoryTableController.categoryTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:[self.plugins indexOfObject:item.plugin]] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
             
             //if this plugin is currently the selected one (in the category table)
             // ->update the item row
-            if(self.selectedPlugin == activePlugin)
+            if(self.selectedPlugin == item.plugin)
             {
                 //first tell item table the # of items have changed
                 [self.itemTableController.itemTableView noteNumberOfRowsChanged];
@@ -703,21 +695,12 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 // ->disable settings, set text 'stop scan', etc...
 -(void)startScanUI
 {
-    //status msg's frame
-    CGRect newFrame = {};
-    
     //if scan was previous run
     // ->will need to shift status msg back over
     if(YES != [[self.statusText stringValue] isEqualToString:@""])
     {
-        //grab status msg's frame
-        newFrame = self.statusText.frame;
-        
-        //shift it over (since activity spinner is about to be shown)
-        newFrame.origin.x -= 50;
-        
-        //update status msg w/ new frame
-        self.statusText.frame = newFrame;
+        //reset
+        self.statusTextConstraint.constant = 56;
     }
     
     //reset category table
@@ -803,23 +786,14 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 // ->set text back to 'start scan', etc...
 -(void)stopScanUI:(NSString*)statusMsg
 {
-    //status msg's frame
-    CGRect newFrame = {};
-
     //stop spinner
     [self.progressIndicator stopAnimation:nil];
     
     //hide progress indicator
     self.progressIndicator.hidden = YES;
     
-    //grab status msg's frame
-    newFrame = self.statusText.frame;
-    
-    //shift it over (since activity spinner is gone)
-    newFrame.origin.x += 50;
-    
-    //update status msg w/ new frame
-    self.statusText.frame = newFrame;
+    //shift over status msg
+    self.statusTextConstraint.constant = 10;
     
     //set status msg
     [self.statusText setStringValue:statusMsg];

@@ -32,7 +32,7 @@
 #define PLUGIN_NAME @"Library Inserts"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"dylibs inserted via DYLD_INSERT_LIBRARIES"
+#define PLUGIN_DESCRIPTION @"dylibs inserted via *DYLD_INSERT_LIBRARIES"
 
 //plugin icon
 #define PLUGIN_ICON @"dylibIcon"
@@ -70,11 +70,11 @@
     //dbg msg
     //NSLog(@"%@: scanning", PLUGIN_NAME);
     
-    //scan for launch items w/ DYLD_INSERT_LIBRARIES
+    //scan for launch items w/ DYLD_INSERT_LIBRARIES or __XPC_DYLD_INSERT_LIBRARIES
     // ->will report any findings to UI
     [self scanLaunchItems];
     
-    //scan for applications w/ DYLD_INSERT_LIBRARIES
+    //scan for applications w/ DYLD_INSERT_LIBRARIES or __XPC_DYLD_INSERT_LIBRARIES
     // ->will report any findings to UI
     [self scanApplications];
     
@@ -82,7 +82,7 @@
 }
 
 //scan all launch items
-// ->looks in their plists for DYLD_INSERT_LIBRARIES
+// ->looks in their plists for DYLD_INSERT_LIBRARIES or __XPC_DYLD_INSERT_LIBRARIES
 -(void)scanLaunchItems
 {
     //all launch items
@@ -150,17 +150,29 @@
         //extact environment vars dictionary
         enviroVars = plistContents[LAUNCH_ITEM_DYLD_KEY];
         
-        //skip apps that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARIES'
+        //skip apps that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARIES' or '__XPC_DYLD_INSERT_LIBRARIES'
         if( (nil == enviroVars) ||
             (YES != [enviroVars isKindOfClass:[NSDictionary class]]) ||
-            (nil == enviroVars[@"DYLD_INSERT_LIBRARIES"]) )
+            ( (nil == enviroVars[@"DYLD_INSERT_LIBRARIES"]) && (nil == enviroVars[@"__XPC_DYLD_INSERT_LIBRARIES"]) ))
         {
             //skip
             continue;
         }
         
-        //grab inserted dylib
-        dylibPath = enviroVars[@"DYLD_INSERT_LIBRARIES"];
+        //grab dylib path
+        // ->first attempt via 'DYLD_INSERT_LIBRARIES'
+        if(nil != enviroVars[@"DYLD_INSERT_LIBRARIES"])
+        {
+            //grab
+            dylibPath = enviroVars[@"DYLD_INSERT_LIBRARIES"];
+        }
+        //grab dylib path
+        // ->will be in '__XPC_DYLD_INSERT_LIBRARIES'
+        else
+        {
+            //grab
+            dylibPath = enviroVars[@"__XPC_DYLD_INSERT_LIBRARIES"];
+        }
         
         //create File object for injected dylib
         // ->skip those that err out for any reason
@@ -253,16 +265,16 @@
         //extact environment vars dictionary
         enviroVars = appBundle.infoDictionary[APPLICATION_DYLD_KEY];
         
-        //skip apps that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARIES'
+        //skip apps that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARIES' or '__XPC_DYLD_INSERT_LIBRARIES'
         if( (nil == enviroVars) ||
             (YES != [enviroVars isKindOfClass:[NSDictionary class]]) ||
-            (nil == enviroVars[@"DYLD_INSERT_LIBRARIES"]) )
+            ( (nil == enviroVars[@"DYLD_INSERT_LIBRARIES"]) && (nil != enviroVars[@"__XPC_DYLD_INSERT_LIBRARIES"]) ))
         {
             //skip
             continue;
         }
         
-        //get path  to app's Info.plist
+        //get path to app's Info.plist
         appPlist = appBundle.infoDictionary[@"CFBundleInfoPlistURL"];
         
         //skip apps that this fails
@@ -272,8 +284,20 @@
             continue;
         }
         
-        //grab inserted dylib
-        dylibPath = enviroVars[@"DYLD_INSERT_LIBRARIES"];
+        //grab dylib path
+        // ->first attempt via 'DYLD_INSERT_LIBRARIES'
+        if(nil != enviroVars[@"DYLD_INSERT_LIBRARIES"])
+        {
+            //grab
+            dylibPath = enviroVars[@"DYLD_INSERT_LIBRARIES"];
+        }
+        //grab dylib path
+        // ->will be in '__XPC_DYLD_INSERT_LIBRARIES'
+        else
+        {
+            //grab
+            dylibPath = enviroVars[@"__XPC_DYLD_INSERT_LIBRARIES"];
+        }
         
         //create File object for injected dylib
         // ->skip those that err out for any reason
