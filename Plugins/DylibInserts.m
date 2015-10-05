@@ -268,7 +268,7 @@
         //skip apps that don't have env var dictionary w/ 'DYLD_INSERT_LIBRARIES' or '__XPC_DYLD_INSERT_LIBRARIES'
         if( (nil == enviroVars) ||
             (YES != [enviroVars isKindOfClass:[NSDictionary class]]) ||
-            ( (nil == enviroVars[@"DYLD_INSERT_LIBRARIES"]) && (nil != enviroVars[@"__XPC_DYLD_INSERT_LIBRARIES"]) ))
+            ( (nil == enviroVars[@"DYLD_INSERT_LIBRARIES"]) && (nil == enviroVars[@"__XPC_DYLD_INSERT_LIBRARIES"]) ))
         {
             //skip
             continue;

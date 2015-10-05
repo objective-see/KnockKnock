@@ -869,11 +869,8 @@ NSLayoutConstraint* findConstraint(NSView* view, NSString* constraintName)
 
 //check if app is pristine
 // ->that is to say, nobody modified on-disk image/resources (white lists!, etc)
-BOOL isPristine()
+OSStatus verifySelf()
 {
-    //flag
-    BOOL pristine = NO;
-    
     //status
     OSStatus status = !noErr;
     
@@ -890,8 +887,8 @@ BOOL isPristine()
         goto bail;
     }
    
-    //check code signature
-    status = SecCodeCheckValidity(secRef, kSecCSDefaultFlags, NULL);
+    //validate
+    status = SecStaticCodeCheckValidityWithErrors(secRef, kSecCSDefaultFlags, NULL, NULL);
     
     //check
     if(status != noErr)
@@ -903,10 +900,6 @@ BOOL isPristine()
         goto bail;
     }
     
-    //happy!
-    pristine = YES;
-    
-    
 //bail
 bail:
     
@@ -915,11 +908,9 @@ bail:
     {
         //release
         CFRelease(secRef);
-        
     }
     
-    
-    return pristine;
+    return status;
 }
 
 

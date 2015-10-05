@@ -22,9 +22,11 @@
 
 @implementation ItemTableController
 
+@synthesize noItemsLabel;
 @synthesize itemTableView;
 @synthesize vtWindowController;
 @synthesize infoWindowController;
+
 
 //invoked automatically while nib is loaded
 // ->note: outlets are nil here...
@@ -70,18 +72,54 @@
     if( (0 == rows) &&
         (nil != selectedPluginObj) )
     {
-        //set string (to include plugin's name)
-        [self.noItemsLabel setStringValue:[NSString stringWithFormat:@"no %@ found", [selectedPluginObj.name lowercaseString]]];
-        
-        //TODO: make front!
+
+        //first time
+        // ->alloc/init it
+        if(nil == self.noItemsLabel)
+        {
+            //alloc
+            noItemsLabel = [[NSTextField alloc] init];
+            
+            //no border
+            self.noItemsLabel.bordered = NO;
+            
+            //no background color
+            self.noItemsLabel.backgroundColor = [NSColor clearColor];
+            
+            //font
+            self.noItemsLabel.font = [NSFont fontWithName:@"Menlo-Regular" size:13];
+            
+            //use auto-layout
+            self.noItemsLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            //add to table
+            [self.itemTableView addSubview:noItemsLabel];
+            
+            //set width constraint
+            [self.noItemsLabel addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[noItemsLabel(==300)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(noItemsLabel)]];
+            
+            //set height constraint
+            [self.noItemsLabel addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[noItemsLabel(==40)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(noItemsLabel)]];
+            
+            //set top padding constraint
+            [self.noItemsLabel.superview addConstraint:[NSLayoutConstraint constraintWithItem:self.noItemsLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.noItemsLabel.superview attribute:NSLayoutAttributeTop multiplier:1.0f constant:25.0f]];
+            
+            //set center constraint
+            [self.noItemsLabel.superview addConstraint:[NSLayoutConstraint constraintWithItem:self.noItemsLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.noItemsLabel.superview attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
+        }
         
         //show label
         self.noItemsLabel.hidden = NO;
         
+        //set string
+        self.noItemsLabel.stringValue = [NSString stringWithFormat:@"no %@ found", [selectedPluginObj.name lowercaseString]];
     }
+    
+    //there *are* items
+    // ->hide label
     else
     {
-        //hide label
+        //hide
         self.noItemsLabel.hidden = YES;
     }
 
@@ -116,26 +154,11 @@
     // ->for File objects only...
     VTButton* vtButton;
     
-    //(for files) signed/unsigned icon
-    //NSImage* signatureStatus = nil;
-    
-    //item name frame
-    CGRect nameFrame = {0};
-    
-    //item path frame
-    //CGRect pathFrame = {0};
-    
     //attribute dictionary
     NSMutableDictionary *stringAttributes = nil;
     
     //paragraph style
     NSMutableParagraphStyle *paragraphStyle = nil;
-    
-    //truncated path
-    //NSString* truncatedPath = nil;
-    
-    //truncated plist
-    //NSString* truncatedPlist = nil;
     
     //tracking area
     NSTrackingArea* trackingArea = nil;

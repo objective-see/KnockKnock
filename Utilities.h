@@ -72,6 +72,6 @@ NSLayoutConstraint* findConstraint(NSView* view, NSString* constraintName);
 
 //check if app is pristine
 // ->that is to say, nobody modified on-disk image/resources (white lists!, etc)
-BOOL isPristine();
+OSStatus verifySelf();
 
 #endif

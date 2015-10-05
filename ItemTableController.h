@@ -26,7 +26,7 @@
 @property (nonatomic, retain)VTInfoWindowController* vtWindowController;
 
 //no items label
-@property (weak) IBOutlet NSTextField *noItemsLabel;
+@property (nonatomic, retain) IBOutlet NSTextField *noItemsLabel;
 
 /* METHODS */
 

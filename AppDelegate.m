@@ -39,8 +39,8 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 @synthesize vulnerableAppHeaderIndex;
 
 //TODO:
-// ->verify app bundle (to detect modifications to whitelist)? https://groups.google.com/forum/#!msg/cocoa-dev/5Z72WrtKrD0/D2cfSfZeLlsJ
-// ->'no items found label'
+// ->verify app bundle (to detect modifications to whitelist)? - DONE
+// ->'no items found label' - DONE
 // -> El Capitan Hashes - DONE
 // ->add support for __XPC_DYLD_INSERT_LIBRARIES -DONE
 
@@ -64,9 +64,12 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 // ->main entry point
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+    //app's (self) signing status
+    OSStatus signingStatus = !noErr;
+    
     //first thing...
     // ->install exception handlers!
-    installExceptionHandlers();
+    //installExceptionHandlers();
     
     //init filter object
     filterObj = [[Filter alloc] init];
@@ -90,15 +93,23 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         exit(0);
     }
     
-    //ensure nobody has messed with us!
-    if(YES != isPristine())
+    //TODO: re-enable for release
+    
+    /*
+    //verify self
+    signingStatus = verifySelf();
+    
+    //show error if app (self) cannot be verified
+    if(noErr != signingStatus)
     {
         //show alert
-        [self showUnsupportedAlert];
+        [self showUnverifiedAlert:signingStatus];
         
         //exit
         exit(0);
     }
+    */
+    
     
     //kick off thread to begin enumerating shared objects
     // ->this takes awhile, so do it now/first!
@@ -152,18 +163,29 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 //display alert about OS not being supported
 -(void)showUnsupportedAlert
 {
-    //response
-    // ->index of button click
-    NSModalResponse response = 0;
-    
     //alert box
-    NSAlert* fullScanAlert = nil;
+    NSAlert* unsupportedAlert = nil;
     
     //alloc/init alert
-    fullScanAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"OS X %@ is not supported", [[NSProcessInfo processInfo] operatingSystemVersionString]] defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"sorry for the inconvenience!"];
+    unsupportedAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"OS X %@ is not supported", [[NSProcessInfo processInfo] operatingSystemVersionString]] defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"sorry for the inconvenience!"];
     
-    //and show it
-    response = [fullScanAlert runModal];
+    //show it
+    [unsupportedAlert runModal];
+    
+    return;
+}
+
+//display alert about app being unverifable
+-(void)showUnverifiedAlert:(OSStatus)signingError
+{
+    //alert box
+    NSAlert* modifiedAlert = nil;
+    
+    //alloc/init alert
+    modifiedAlert = [NSAlert alertWithMessageText:@"ERROR: application could not be verified" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"code: %d\nplease re-download, and run again", signingError];
+    
+    //show it
+    [modifiedAlert runModal];
     
     return;
 }
@@ -1211,8 +1233,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     //show it
     [self.prefsWindowController showWindow:self];
     
-    //TODO:
-    // use: [[NSApplication sharedApplication] runModalForWindow:prefsWindowController.window]; ? 
     //invoke function in background that will make window modal
     // ->waits until window is non-nil
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
