@@ -302,7 +302,7 @@
                                                         <constraint firstItem="578" firstAttribute="leading" secondItem="576" secondAttribute="leading" constant="68" identifier="itemNameLeftPadding" id="pLY-If-0U7"/>
                                                         <constraint firstItem="jMK-Qd-DDP" firstAttribute="leading" secondItem="578" secondAttribute="trailing" constant="6" id="qpS-dH-ii1"/>
                                                         <constraint firstItem="CiH-Az-c01" firstAttribute="leading" secondItem="u9p-Kt-bod" secondAttribute="trailing" constant="6" id="uqb-U4-SGY"/>
-                                                        <constraint firstItem="BUm-sJ-dtF" firstAttribute="top" secondItem="578" secondAttribute="bottom" constant="1" identifier="itemPathTopPadding" id="vti-l0-X0m"/>
+                                                        <constraint firstItem="BUm-sJ-dtF" firstAttribute="top" secondItem="578" secondAttribute="bottom" constant="2" identifier="itemPathTopPadding" id="vti-l0-X0m"/>
                                                     </constraints>
                                                     <connections>
                                                         <outlet property="imageView" destination="577" id="581"/>

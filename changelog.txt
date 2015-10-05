@@ -1,6 +1,14 @@
 KNOCKKNOCK CHANGELOG
 
 
+VERSION 1.6.0 (10/5/2015)
+ made application fully resizable
+ improved 'inserted dylibs' plugin (now checks for __XPC_DYLD_INSERT_LIBRARIES) 
+ added self verification check so malicious modifications (e.g. whitelists) may be detected
+ updated whitelist hashes for El Capitan
+ fixed bug where VirusTotal timeout could trigger crash
+
+
 VERSION 1.5.0 (7/19/2015)
  added Cron Job plugin
  added Login/Logout Hook plugin

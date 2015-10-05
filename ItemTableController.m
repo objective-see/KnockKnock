@@ -267,7 +267,7 @@
     if(nil != itemPathTopPadding)
     {
         //shift up
-        itemPathTopPadding.constant = 1;
+        itemPathTopPadding.constant = 2;
     }
     
     //check if cell was previously used (by checking the item name)
