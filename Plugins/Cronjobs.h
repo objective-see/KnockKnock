@@ -16,5 +16,9 @@
 
 /* (custom) METHODS */
 
+//determines if a line is really a cronjob
+// ->ignores everything that doesn't start with a digit, '*', or '@'
+-(BOOL)isJob:(NSString*)possibleJob;
+
 
 @end

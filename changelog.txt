@@ -1,6 +1,10 @@
 KNOCKKNOCK CHANGELOG
 
 
+VERSION 1.6.1 (10/8/2015)
+ updated crontab plugin, so it would ignore commented out jobs
+
+
 VERSION 1.6.0 (10/5/2015)
  made application fully resizable
  improved 'inserted dylibs' plugin (now checks for __XPC_DYLD_INSERT_LIBRARIES) 

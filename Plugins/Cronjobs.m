@@ -9,7 +9,6 @@
 #import "Cronjobs.h"
 #import "Utilities.h"
 
-
 //plugin name
 #define PLUGIN_NAME @"Cron Jobs"
 
@@ -89,6 +88,14 @@
     //  ->and call back up into UI to add
     for(NSString* cronJob in [cronJobs componentsSeparatedByString:@"\n"])
     {
+        //skip lines that aren't jobs
+        // ->comments, etc
+        if(YES != [self isJob:cronJob])
+        {
+            //skip
+            continue;
+        }
+        
         //create Command object for job
         commandObj = [[Command alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_COMMAND:cronJob, KEY_RESULT_PATH:cronFile}];
         
@@ -108,6 +115,44 @@
 bail:
     
     return;
+}
+
+//determines if a line is really a cronjob
+// ->ignores everything that doesn't start with a digit, '*', or '@'
+-(BOOL)isJob:(NSString*)possibleJob
+{
+    //flag
+    BOOL isValidJob = NO;
+    
+    //make sure length is decent
+    if(0 == possibleJob.length)
+    {
+        //bail
+        goto bail;
+    }
+    
+    //lines should usually start with a number
+    // ->unless a '*', or '@'
+    if(YES != isnumber([possibleJob characterAtIndex:0]))
+    {
+        //not a number
+        // ->check for '*', or '@'
+        if( (YES != [possibleJob hasPrefix:@"*"]) &&
+            (YES != [possibleJob hasPrefix:@"@"]) )
+        {
+            //bail
+            goto bail;
+        }
+    }
+    
+    //happy
+    // ->appears to be a valid job
+    isValidJob = YES;
+    
+//bail
+bail:
+    
+    return isValidJob;
 }
 
 @end

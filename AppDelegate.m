@@ -60,7 +60,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 {
     //app's (self) signing status
     OSStatus signingStatus = !noErr;
-    
+
     //first thing...
     // ->install exception handlers!
     installExceptionHandlers();
@@ -86,7 +86,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         //exit
         exit(0);
     }
-   
+
     //verify self
     signingStatus = verifySelf();
    
@@ -99,7 +99,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
         //exit
         exit(0);
     }
-    
     
     //kick off thread to begin enumerating shared objects
     // ->this takes awhile, so do it now/first!
