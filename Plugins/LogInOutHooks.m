@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Objective-See. All rights reserved.
 
 #import "File.h"
+#import "Command.h"
 #import "Utilities.h"
 #import "LogInOutHooks.h"
 
@@ -23,8 +24,7 @@
 #define PLUGIN_ICON @"logInOutIcon"
 
 //plugin search directories
-NSString * const HOOK_SEARCH_FILES[] = {@"/Library/Preferences/com.apple.loginwindow.plist", @"~/Library/Preferences/com.apple.loginwindow.plist"};
-
+NSString* const HOOK_SEARCH_FILES[] = {@"/Library/Preferences/com.apple.loginwindow.plist", @"~/Library/Preferences/com.apple.loginwindow.plist"};
 
 @implementation LogInOutHooks
 
@@ -95,22 +95,39 @@ bail:
     return;
 }
 
-//create a File obj
+//create a File or Command obj
 // ->then save & report to UI
--(void)processHook:(NSString*)file parentFile:(NSString*)parentFile
+-(void)processHook:(NSString*)payload parentFile:(NSString*)parentFile
 {
-    //File obj
-    File* fileObj = nil;
+    //File or Command Obj
+    ItemBase* item = nil;
     
-    //create File object for hook
-    fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:file, KEY_RESULT_PLIST:parentFile}];
-    
-    //only process created objs.
-    if(nil != fileObj)
+    //hook payload will usually will be a file
+    if(YES == [[NSFileManager defaultManager] fileExistsAtPath:payload])
     {
-        //save and report to UI
-        [super processItem:fileObj];
+        //create File object for hook
+        item = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:payload, KEY_RESULT_PLIST:parentFile}];
     }
+    //otherwise
+    // ->likely a command
+    else
+    {
+        //create Command object for hook
+        item = [[Command alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_COMMAND:payload, KEY_RESULT_PATH:parentFile}];
+    }
+    
+    //ignore items w/ errors
+    if(nil == item)
+    {
+        //ignore
+        goto bail;
+    }
+    
+    //save and report to UI
+    [super processItem:item];
+    
+//bail
+bail:
     
     return;
 }

@@ -1,6 +1,6 @@
 //
 //  Utilities.m
-//  DHS
+//  KnockKnock
 //
 //  Created by Patrick Wardle on 2/7/15.
 //  Copyright (c) 2015 Objective-See. All rights reserved.
@@ -14,7 +14,15 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
+/* GLOBALS */
+
+//flag for yosemite+
+// ->needed for code-signing flags
+BOOL isYosemitePlus = NO;
+
+
 //check if OS is supported
+// ->also set's Yosemite+ flag (for signing check flags)
 BOOL isSupportedOS()
 {
     //return
@@ -49,6 +57,14 @@ BOOL isSupportedOS()
         isSupported = YES;
     }
     
+    //also set yosemite+ flag
+    if( (versionMajor == OS_MAJOR_VERSION_X) &&
+        (versionMinor >= OS_MINOR_VERSION_YOSEMITE) )
+    {
+        //set flag
+        isYosemitePlus = YES;
+    }
+    
 //bail
 bail:
     
@@ -78,7 +94,6 @@ bail:
     return version;
 }
 
-
 //get the signing info of a file
 NSDictionary* extractSigningInfo(NSString* path)
 {
@@ -106,6 +121,9 @@ NSDictionary* extractSigningInfo(NSString* path)
     //common name on chert
     CFStringRef commonName = NULL;
     
+    //flags
+    SecCSFlags csFlags = kSecCSDefaultFlags;
+    
     //init signing status
     signingStatus = [NSMutableDictionary dictionary];
     
@@ -115,18 +133,16 @@ NSDictionary* extractSigningInfo(NSString* path)
     //save signature status
     signingStatus[KEY_SIGNATURE_STATUS] = [NSNumber numberWithInt:status];
     
-    //sanity check
-    if(STATUS_SUCCESS != status)
+    //init flags
+    // ->yosemite+ can do 'stronger' checks
+    if(YES == isYosemitePlus)
     {
-        //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: SecStaticCodeCreateWithPath() failed on %@ with %d", path, status);
-        
-        //bail
-        goto bail;
+        //set
+        csFlags = kSecCSCheckNestedCode|kSecCSStrictValidate|kSecCSDoNotValidateResources;
     }
     
     //check signature
-    status = SecStaticCodeCheckValidityWithErrors(staticCode, kSecCSDoNotValidateResources, NULL, NULL);
+    status = SecStaticCodeCheckValidity(staticCode, csFlags, NULL);
     
     //(re)save signature status
     signingStatus[KEY_SIGNATURE_STATUS] = [NSNumber numberWithInt:status];
@@ -227,6 +243,9 @@ BOOL isApple(NSString* path)
     //signing reqs
     SecRequirementRef requirementRef = NULL;
     
+    //flags
+    SecCSFlags csFlags = kSecCSDefaultFlags;
+    
     //status
     OSStatus status = -1;
     
@@ -254,13 +273,21 @@ BOOL isApple(NSString* path)
         goto bail;
     }
     
+    //init flags
+    // ->yosemite+ can do 'stronger' checks
+    if(YES == isYosemitePlus)
+    {
+        //set
+        csFlags = kSecCSCheckNestedCode|kSecCSStrictValidate|kSecCSDoNotValidateResources;
+    }
+
     //check if file is signed by apple
     // ->i.e. it conforms to req string
-    status = SecStaticCodeCheckValidity(staticCode, kSecCSDefaultFlags, requirementRef);
+    status = SecStaticCodeCheckValidity(staticCode, csFlags, requirementRef);
     if(STATUS_SUCCESS != status)
     {
         //bail
-        // ->just means app isn't signed by apple
+        // ->just means app isn't signed by apple, or something didn't validate
         goto bail;
     }
     
@@ -284,11 +311,54 @@ bail:
         //free
         CFRelease(staticCode);
     }
-
     
     return isApple;
 }
 
+//given a path to binary
+// parse it back up to find app's bundle
+NSBundle* findAppBundle(NSString* binaryPath)
+{
+    //app's bundle
+    NSBundle* appBundle = nil;
+    
+    //app's path
+    NSString* appPath = nil;
+    
+    //first just try full path
+    appPath = binaryPath;
+    
+    //try to find the app's bundle/info dictionary
+    do
+    {
+        //try to load app's bundle
+        appBundle = [NSBundle bundleWithPath:appPath];
+        
+        //check for match
+        // ->binary path's match
+        if( (nil != appBundle) &&
+           (YES == [appBundle.executablePath isEqualToString:binaryPath]))
+        {
+            //all done
+            break;
+        }
+        
+        //always unset bundle var since it's being returned
+        // ->and at this point, its not a match
+        appBundle = nil;
+        
+        //remove last part
+        // ->will try this next
+        appPath = [appPath stringByDeletingLastPathComponent];
+        
+        //scan until we get to root
+        // ->of course, loop will be exited if app info dictionary is found/loaded
+    } while( (nil != appPath) &&
+             (YES != [appPath isEqualToString:@"/"]) &&
+             (YES != [appPath isEqualToString:@""]) );
+    
+    return appBundle;
+}
 
 //get an icon for a process
 // ->for apps, this will be app's icon, otherwise just a standard system one
@@ -456,6 +526,13 @@ NSArray* directoryContents(NSString* directory, NSString* predicate)
     //matches
     NSArray* matches = nil;
     
+    //sanity check
+    if(0 == [directory length])
+    {
+        //bail
+        goto bail;
+    }
+    
     //get (unfiltered) directory contents
     directoryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directory error:nil];
     
@@ -472,52 +549,10 @@ NSArray* directoryContents(NSString* directory, NSString* predicate)
         matches = directoryContents;
     }
 
+//bail
+bail:
+    
     return matches;
-}
-
-//given a path to binary
-// parse it back up to find app's bundle
-NSBundle* findAppBundle(NSString* binaryPath)
-{
-    //app's bundle
-    NSBundle* appBundle = nil;
-    
-    //app's path
-    NSString* appPath = nil;
-    
-    //first just try full path
-    appPath = binaryPath;
-    
-    //try to find the app's bundle/info dictionary
-    do
-    {
-        //try to load app's bundle
-        appBundle = [NSBundle bundleWithPath:appPath];
-        
-        //check for match
-        // ->binary path's match
-        if( (nil != appBundle) &&
-            (YES == [appBundle.executablePath isEqualToString:binaryPath]))
-        {
-            //all done
-            break;
-        }
-        
-        //always unset bundle var since it's being returned
-        // ->and at this point, its not a match
-        appBundle = nil;
-        
-        //remove last part
-        // ->will try this next
-        appPath = [appPath stringByDeletingLastPathComponent];
-        
-        //scan until we get to root
-        // ->of course, loop will be exited if app info dictionary is found/loaded
-    } while( (nil != appPath) &&
-             (YES != [appPath isEqualToString:@"/"]) &&
-             (YES != [appPath isEqualToString:@""]) );
-    
-    return appBundle;
 }
 
 //hash a file
@@ -879,8 +914,6 @@ OSStatus verifySelf()
     
     //get sec ref to self
     status = SecCodeCopySelf(kSecCSDefaultFlags, &secRef);
-    
-    //check
     if(noErr != status)
     {
         //bail
@@ -888,10 +921,8 @@ OSStatus verifySelf()
     }
    
     //validate
-    status = SecStaticCodeCheckValidityWithErrors(secRef, kSecCSDefaultFlags, NULL, NULL);
-    
-    //check
-    if(status != noErr)
+    status = SecStaticCodeCheckValidity(secRef, kSecCSDefaultFlags, NULL);
+    if(noErr != status)
     {
         //err msg
         NSLog(@"OBJECTIVE-SEE ERROR: failed to validate application bundle (%d)", status);

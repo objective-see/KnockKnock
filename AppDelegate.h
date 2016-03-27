@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
-#import "Binary.h"
 #import "Results/ItemBase.h"
 
 #import "Filter.h"
@@ -48,23 +47,25 @@
 //item table controller object
 @property (weak) IBOutlet ItemTableController *itemTableController;
 
-
 //currently selected (in table) plugin
 @property(nonatomic, retain)PluginBase* selectedPlugin;
 
 //array to hold binary objects that are in array
 @property (nonatomic, retain)NSMutableArray *tableContents;
 
-//index of 'Vulnerable Applications' header row
-@property NSUInteger vulnerableAppHeaderIndex;
-
+//main window
 @property (assign) IBOutlet NSWindow *window;
 
+//logo button
 @property (weak) IBOutlet NSButton *logoButton;
 
-@property(weak) IBOutlet NSButton *scanButton;
-@property(weak) IBOutlet NSTextField *scanButtonLabel;
+//scan button
+@property (weak) IBOutlet NSButton *scanButton;
 
+//scan button label
+@property (weak) IBOutlet NSTextField *scanButtonLabel;
+
+//show preferences button
 @property (weak) IBOutlet NSButton *showPreferencesButton;
 
 //spinner

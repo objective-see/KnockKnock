@@ -1,9 +1,9 @@
 //
 //  PluginBase.h
-//  BlockBlock
+//  KnockKnock
 //
 //  Created by Patrick Wardle on 9/25/14.
-//  Copyright (c) 2014 Synack. All rights reserved.
+//  Copyright (c) 2015 Objective-See, LLC. All rights reserved.
 //
 
 #import "Consts.h"
@@ -34,9 +34,6 @@
 @property(retain, nonatomic)NSString* icon;
 
 /* METHODS */
-
-//init method
-//-(id)initWithParams:(NSDictionary*)params;
 
 //reset
 // ->remove all items

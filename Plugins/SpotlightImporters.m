@@ -67,8 +67,8 @@ NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight",
     //get number of search directories
     directoryCount = sizeof(SPOTLIGHT_SEARCH_DIRECTORIES)/sizeof(SPOTLIGHT_SEARCH_DIRECTORIES[0]);
     
-    //iterate over all login item search directories
-    // ->get all login items plists and process 'em
+    //iterate over all spotlight importer search directories
+    // ->get all spotlight importer bundles and process each of them
     for(NSUInteger i=0; i < directoryCount; i++)
     {
         //extract current directory

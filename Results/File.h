@@ -47,6 +47,10 @@
 //init method
 -(id)initWithParams:(NSDictionary*)params;
 
+//determine name
+// ->extra logic for apps (plists), etc
+-(NSString*)determineName;
+
 //format the signing info dictionary
 -(NSString*)formatSigningInfo;
 

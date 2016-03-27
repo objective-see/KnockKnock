@@ -72,7 +72,7 @@
             if(nil == (self.path = self.bundle.executablePath))
             {
                 //err msg
-                //NSLog(@"OBJECTIVE-SEE ERROR: couldn't find executable in bundle %@", itemPath);
+                //NSLog(@"OBJECTIVE-SEE ERROR: couldn't find executable path in bundle %@", itemPath);
                 
                 //set self to nil
                 self = nil;
@@ -86,8 +86,8 @@
         // ->ok if this is nil
         self.plist = params[KEY_RESULT_PLIST];
 
-        //extract name
-        self.name = [[self.path lastPathComponent] stringByDeletingPathExtension];
+        //determine name
+        self.name = [self determineName];
         
         //computes hashes
         // ->set 'md5' and 'sha1' iVars
@@ -108,6 +108,50 @@
 bail:
     
     return self;
+}
+
+//determine name
+// ->extra logic for apps (plists), etc
+-(NSString*)determineName
+{
+    //name
+    NSString* fileName =  nil;
+    
+    //try find bundle
+    if(nil == self.bundle)
+    {
+        //find
+        self.bundle = findAppBundle(self.path);
+    }
+
+    //try either 'CFBundleName' or 'CFBundleDisplayName' from Info.plist
+    if( (nil != self.bundle) &&
+        (nil != self.bundle.infoDictionary) )
+    {
+        //default to 'CFBundleName'
+        if(nil != [self.bundle.infoDictionary objectForKey:@"CFBundleName"])
+        {
+            //set
+            fileName = [self.bundle.infoDictionary objectForKey:@"CFBundleName"];
+        }
+        //otherwise use 'CFBundleDisplayName'
+        else if(nil != [self.bundle.infoDictionary objectForKey:@"CFBundleDisplayName"])
+        {
+            //set
+            fileName = [self.bundle.infoDictionary objectForKey:@"CFBundleDisplayName"];
+        }
+    }
+    
+    //no bundle or file name extaction failed
+    // ->use from path
+    if(nil == fileName)
+    {
+        //from path
+        fileName = [self.path lastPathComponent];
+        //[[self.path lastPathComponent] stringByDeletingPathExtension];
+    }
+
+    return fileName;
 }
 
 //format the signing info dictionary

@@ -1,6 +1,6 @@
 //
 //  Consts.h
-//  DHS
+//  KnockKnock
 //
 //  Created by Patrick Wardle on 2/4/15.
 //  Copyright (c) 2015 Objective-See. All rights reserved.
@@ -58,7 +58,6 @@
 
 //OS version yosemite
 #define OS_MINOR_VERSION_YOSEMITE 10
-
 
 //executable path
 #define EXECUTABLE_PATH @"@executable_path"

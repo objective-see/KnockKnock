@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "A9FFC1B124E25027A0E10FB456DBA9E2803FAE9D",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "A9FFC1B124E25027A0E10FB456DBA9E2803FAE9D" : 0,
+    "7564E3FECD3AE625755C217749E31B3EE2B69E20" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "1ECDBF86-1DFC-4002-A5BE-41FC31ACB68B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "A9FFC1B124E25027A0E10FB456DBA9E2803FAE9D" : "KnockKnock",
+    "7564E3FECD3AE625755C217749E31B3EE2B69E20" : "MachO"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "KnockKnock",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "KnockKnock.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/bitbucket.org\/objective-see\/macho.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7564E3FECD3AE625755C217749E31B3EE2B69E20"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/bitbucket.org\/objective-see\/knockknock.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A9FFC1B124E25027A0E10FB456DBA9E2803FAE9D"
+    }
+  ]
+}

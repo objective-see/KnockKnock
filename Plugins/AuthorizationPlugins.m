@@ -2,6 +2,8 @@
 //  AuthorizationPlugins.m
 //  KnockKnock
 //
+//  Notes: Authorization, or Authentication plugins can be used to customize logins,
+//         example app (for testing, etc): http://www.rohos.com/2015/10/installing-rohos-logon-in-mac-os-10-11-el-capitan/
 
 #import "File.h"
 #import "Utilities.h"
@@ -17,7 +19,7 @@
 #define PLUGIN_ICON @"authorizationIcon"
 
 //plugin search directories
-NSString * const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreServices/SecurityAgentPlugins", @"/Library/Security/SecurityAgentPlugins/"};
+NSString* const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreServices/SecurityAgentPlugins", @"/Library/Security/SecurityAgentPlugins/"};
 
 
 @implementation AuthorizationPlugins
@@ -43,10 +45,10 @@ NSString * const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreSer
     return self;
 }
 
-//scan for login items
+//scan for auth plugins
 -(void)scan
 {
-    //spotlight importer directory
+    //auth plugin directory
     NSString* authPluginDirectory = nil;
     
     //number of search directories
@@ -58,9 +60,6 @@ NSString * const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreSer
     //path to auth plugin
     NSString* authPluginPath = nil;
     
-    //directory (bundle) flag
-    //BOOL isDirectory = NO;
-    
     //File obj
     File* fileObj = nil;
     
@@ -70,8 +69,8 @@ NSString * const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreSer
     //get number of search directories
     directoryCount = sizeof(AUTHORIZATION_SEARCH_DIRECTORIES)/sizeof(AUTHORIZATION_SEARCH_DIRECTORIES[0]);
     
-    //iterate over all login item search directories
-    // ->get all login items plists and process 'em
+    //iterate over all auth plugin search directories
+    // ->get all authorization plugins and process each of them
     for(NSUInteger i=0; i < directoryCount; i++)
     {
         //extract current directory
@@ -82,12 +81,12 @@ NSString * const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreSer
         
         //iterate over all importers
         // ->perform some sanity checks and then save
-        for(NSString* importer in allAuthPlugins)
+        for(NSString* authPlugin in allAuthPlugins)
         {
-            //build full path to importer
-            authPluginPath = [NSString stringWithFormat:@"%@/%@", authPluginDirectory, importer];
+            //build full path to plugin
+            authPluginPath = [NSString stringWithFormat:@"%@/%@", authPluginDirectory, authPlugin];
             
-            //make sure importer is a bundle
+            //make sure plugin is a bundle
             // ->i.e. not just a random directory
             if(YES != [[NSWorkspace sharedWorkspace] isFilePackageAtPath:authPluginPath])
             {
@@ -95,7 +94,7 @@ NSString * const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreSer
                 continue;
             }
         
-            //create File object for importer
+            //create File object for plugin
             fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:authPluginPath}];
             
             //skip File objects that err'd out for any reason

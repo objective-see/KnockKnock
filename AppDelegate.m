@@ -4,24 +4,28 @@
 //
 
 #import "Consts.h"
-#import "Binary.h"
-#import "Scanner.h"
 #import "Exception.h"
 #import "Utilities.h"
 #import "PluginBase.h"
 #import "AppDelegate.h"
 
 //supported plugins
-NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"Kexts", @"LaunchItems", @"DylibInserts", @"LoginItems", @"LogInOutHooks", @"SpotlightImporters"};
+NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"Kexts", @"LaunchItems", @"DylibInserts", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"SpotlightImporters", @"StartupScripts"};
 
 @implementation AppDelegate
 
 @synthesize plugins;
 @synthesize filterObj;
 @synthesize vtThreads;
+@synthesize scanButton;
 @synthesize isConnected;
+@synthesize scannerThread;
+@synthesize tableContents;
+@synthesize versionString;
 @synthesize virusTotalObj;
 @synthesize selectedPlugin;
+@synthesize scanButtonLabel;
+@synthesize progressIndicator;
 @synthesize itemTableController;
 @synthesize sharedItemEnumerator;
 @synthesize aboutWindowController;
@@ -30,13 +34,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 @synthesize categoryTableController;
 @synthesize resultsWindowController;
 
-@synthesize scanButton;
-@synthesize scannerThread;
-@synthesize tableContents;
-@synthesize versionString;
-@synthesize scanButtonLabel;
-@synthesize progressIndicator;
-@synthesize vulnerableAppHeaderIndex;
 
 //center window
 // ->also make front
@@ -59,7 +56,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
     //app's (self) signing status
-    OSStatus signingStatus = !noErr;
+    OSStatus signingStatus = -1;
 
     //first thing...
     // ->install exception handlers!

@@ -8,7 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		1D21BC4F172AF43D009D1CFD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D21BC4E172AF43D009D1CFD /* Cocoa.framework */; };
+		7D0DAB861CA752AE0049BAFF /* PeriodicScrips.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0DAB851CA752AE0049BAFF /* PeriodicScrips.m */; };
+		7D0DAB881CA758790049BAFF /* periodicIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D0DAB871CA758790049BAFF /* periodicIcon.png */; };
 		7DAA77FD1B8C5786004840B9 /* MachO.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DAA77FC1B8C5786004840B9 /* MachO.m */; };
+		7DE29CA41CA7BC5600DFA6A6 /* StartupScripts.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE29CA21CA7BC5600DFA6A6 /* StartupScripts.m */; };
+		7DE29CA61CA7C10500DFA6A6 /* startupScriptsIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE29CA51CA7C10500DFA6A6 /* startupScriptsIcon.png */; };
 		CD001B371AB903040089014A /* kkText.png in Resources */ = {isa = PBXBuildFile; fileRef = CD001B341AB903040089014A /* kkText.png */; };
 		CD001B381AB903040089014A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CD001B351AB903040089014A /* logo.png */; };
 		CD001B391AB903040089014A /* logoApple.png in Resources */ = {isa = PBXBuildFile; fileRef = CD001B361AB903040089014A /* logoApple.png */; };
@@ -37,7 +41,6 @@
 		CD7B9FAB1AD08FA100DF3C71 /* KKRow.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9FAA1AD08FA100DF3C71 /* KKRow.m */; };
 		CD83887F1AACCEDF000EB098 /* VirusTotal.m in Sources */ = {isa = PBXBuildFile; fileRef = CD83887E1AACCEDF000EB098 /* VirusTotal.m */; };
 		CDA81D4F1A95B492009790E2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D451A95B492009790E2 /* AppDelegate.m */; };
-		CDA81D501A95B492009790E2 /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D471A95B492009790E2 /* Binary.m */; };
 		CDA81D531A95B492009790E2 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D4E1A95B492009790E2 /* Utilities.m */; };
 		CDA81D5B1A95B4B4009790E2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CDA81D541A95B4B4009790E2 /* InfoPlist.strings */; };
 		CDA81D5C1A95B4B4009790E2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CDA81D561A95B4B4009790E2 /* MainMenu.xib */; };
@@ -113,8 +116,14 @@
 		1D21BC51172AF43D009D1CFD /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		1D21BC52172AF43D009D1CFD /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		1D21BC53172AF43D009D1CFD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		7D0DAB841CA752AE0049BAFF /* PeriodicScrips.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeriodicScrips.h; path = Plugins/PeriodicScrips.h; sourceTree = "<group>"; };
+		7D0DAB851CA752AE0049BAFF /* PeriodicScrips.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PeriodicScrips.m; path = Plugins/PeriodicScrips.m; sourceTree = "<group>"; };
+		7D0DAB871CA758790049BAFF /* periodicIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = periodicIcon.png; path = images/periodicIcon.png; sourceTree = SOURCE_ROOT; };
 		7DAA77FB1B8C5786004840B9 /* MachO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachO.h; path = ../MachO/MachOParser/MachO.h; sourceTree = "<group>"; };
 		7DAA77FC1B8C5786004840B9 /* MachO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MachO.m; path = ../MachO/MachOParser/MachO.m; sourceTree = "<group>"; };
+		7DE29CA21CA7BC5600DFA6A6 /* StartupScripts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StartupScripts.m; path = Plugins/StartupScripts.m; sourceTree = "<group>"; };
+		7DE29CA31CA7BC5600DFA6A6 /* StartupScripts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StartupScripts.h; path = Plugins/StartupScripts.h; sourceTree = "<group>"; };
+		7DE29CA51CA7C10500DFA6A6 /* startupScriptsIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = startupScriptsIcon.png; path = images/startupScriptsIcon.png; sourceTree = SOURCE_ROOT; };
 		CD001B341AB903040089014A /* kkText.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kkText.png; path = images/kkText.png; sourceTree = SOURCE_ROOT; };
 		CD001B351AB903040089014A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = images/logo.png; sourceTree = SOURCE_ROOT; };
 		CD001B361AB903040089014A /* logoApple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoApple.png; path = images/logoApple.png; sourceTree = SOURCE_ROOT; };
@@ -154,8 +163,6 @@
 		CD83887E1AACCEDF000EB098 /* VirusTotal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VirusTotal.m; sourceTree = "<group>"; };
 		CDA81D441A95B492009790E2 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		CDA81D451A95B492009790E2 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = SOURCE_ROOT; };
-		CDA81D461A95B492009790E2 /* Binary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Binary.h; sourceTree = SOURCE_ROOT; };
-		CDA81D471A95B492009790E2 /* Binary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Binary.m; sourceTree = SOURCE_ROOT; };
 		CDA81D481A95B492009790E2 /* Consts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Consts.h; sourceTree = SOURCE_ROOT; };
 		CDA81D4D1A95B492009790E2 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = SOURCE_ROOT; };
 		CDA81D4E1A95B492009790E2 /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = SOURCE_ROOT; };
@@ -339,8 +346,6 @@
 				CDF08CC51AC46E75009B3423 /* VTButton.m */,
 				CDA81D441A95B492009790E2 /* AppDelegate.h */,
 				CDA81D451A95B492009790E2 /* AppDelegate.m */,
-				CDA81D461A95B492009790E2 /* Binary.h */,
-				CDA81D471A95B492009790E2 /* Binary.m */,
 				CDA81D481A95B492009790E2 /* Consts.h */,
 				CDA81D4D1A95B492009790E2 /* Utilities.h */,
 				CDA81D4E1A95B492009790E2 /* Utilities.m */,
@@ -365,6 +370,8 @@
 		CD6095501A8329FA00E091CD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				7DE29CA51CA7C10500DFA6A6 /* startupScriptsIcon.png */,
+				7D0DAB871CA758790049BAFF /* periodicIcon.png */,
 				CDBE491E1B5B46040031FC22 /* logInOutIcon.png */,
 				CD6BBBEC1B51C62B00506D0D /* unknown.png */,
 				CD6BBBEA1B50DF7100506D0D /* signedAppleIcon.png */,
@@ -450,6 +457,10 @@
 		CDA81D861A96F429009790E2 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				7DE29CA31CA7BC5600DFA6A6 /* StartupScripts.h */,
+				7DE29CA21CA7BC5600DFA6A6 /* StartupScripts.m */,
+				7D0DAB841CA752AE0049BAFF /* PeriodicScrips.h */,
+				7D0DAB851CA752AE0049BAFF /* PeriodicScrips.m */,
 				CDBE491B1B5B44BB0031FC22 /* LogInOutHooks.h */,
 				CDBE491C1B5B44BB0031FC22 /* LogInOutHooks.m */,
 				CDD83FD21B50C48C0037124E /* Cronjobs.h */,
@@ -547,6 +558,11 @@
 			attributes = {
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Objective-See";
+				TargetAttributes = {
+					1D21BC4A172AF43D009D1CFD = {
+						DevelopmentTeam = VBG97UB4TA;
+					};
+				};
 			};
 			buildConfigurationList = 1D21BC46172AF43D009D1CFD /* Build configuration list for PBXProject "KnockKnock" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -572,6 +588,7 @@
 			files = (
 				CDF08CE81AC8A35C009B3423 /* vtLogo.png in Resources */,
 				CDA81D691A95B4E9009790E2 /* bug.png in Resources */,
+				7D0DAB881CA758790049BAFF /* periodicIcon.png in Resources */,
 				CD02195E1AD39A74005148A2 /* ResultsWindow.xib in Resources */,
 				CDA81D5B1A95B4B4009790E2 /* InfoPlist.strings in Resources */,
 				CDA81D6B1A95B4E9009790E2 /* show.png in Resources */,
@@ -584,6 +601,7 @@
 				CD6BBBED1B51C62B00506D0D /* unknown.png in Resources */,
 				CDA81E651AA020FD009790E2 /* ExtensionInfoWindow.xib in Resources */,
 				CD7B9FA81ACCAE5E00DF3C71 /* stopScanOver.png in Resources */,
+				7DE29CA61CA7C10500DFA6A6 /* startupScriptsIcon.png in Resources */,
 				CDA81D701A95B4E9009790E2 /* stopScan.png in Resources */,
 				CDA81DF51A99B8C2009790E2 /* whitelistedFiles.json in Resources */,
 				CDF08CF01ACA677B009B3423 /* kernelIcon.png in Resources */,
@@ -638,10 +656,10 @@
 			files = (
 				7DAA77FD1B8C5786004840B9 /* MachO.m in Sources */,
 				CD83887F1AACCEDF000EB098 /* VirusTotal.m in Sources */,
+				7D0DAB861CA752AE0049BAFF /* PeriodicScrips.m in Sources */,
 				CDF08CDF1AC886F2009B3423 /* VTInfoWindowController.m in Sources */,
 				CD0219611AD39A83005148A2 /* ResultsWindowController.m in Sources */,
 				CDA81DEE1A99B5F8009790E2 /* Filter.m in Sources */,
-				CDA81D501A95B492009790E2 /* Binary.m in Sources */,
 				CDA81D7B1A95D29B009790E2 /* ItemTableController.m in Sources */,
 				CD6975071B02F60400CE819B /* RFOverlayScrollView.m in Sources */,
 				CDF08CCA1AC4C678009B3423 /* PrefsWindowController.m in Sources */,
@@ -654,6 +672,7 @@
 				CD6BBBF01B52032D00506D0D /* NSApplicationKeyEvents.m in Sources */,
 				CDA81D4F1A95B492009790E2 /* AppDelegate.m in Sources */,
 				CDA81D5E1A95B4B4009790E2 /* main.m in Sources */,
+				7DE29CA41CA7BC5600DFA6A6 /* StartupScripts.m in Sources */,
 				CD7B9F501ACB9A8400DF3C71 /* Exception.m in Sources */,
 				CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */,
 				CDA81E0A1A9B0AD8009790E2 /* BrowserExtensions.m in Sources */,
@@ -762,6 +781,7 @@
 		1D21BC69172AF43D009D1CFD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";
@@ -775,6 +795,7 @@
 		1D21BC6A172AF43D009D1CFD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";

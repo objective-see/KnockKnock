@@ -139,9 +139,6 @@
     //item cell
     NSTableCellView *itemCell = nil;
     
-    //plugin object
-    PluginBase* selectedPluginObj = nil;
-    
     //array backing table
     // ->based on filtering options, will either be all items, or only unknown ones
     NSArray* tableItems = nil;
@@ -179,9 +176,6 @@
     // ->ensures we don't add 2x
     BOOL hasTrackingArea = NO;
     
-    //set selected plugin
-    selectedPluginObj = ((AppDelegate*)[[NSApplication sharedApplication] delegate]).selectedPlugin;
-  
     //get array backing table
     tableItems = [self getTableItems];
 
@@ -567,9 +561,6 @@ bail:
     //button
     NSButton* button = nil;
     
-    //button's label
-    NSTextField* label = nil;
-    
     //image name
     NSString* imageName =  nil;
     
@@ -632,7 +623,6 @@ bail:
     //get button
     // ->tag id of button, passed in userData var
     button = [currentRow viewWithTag:[((NSDictionary*)theEvent.userData)[@"tag"] unsignedIntegerValue]];
-    label = [currentRow viewWithTag: 1 + [((NSDictionary*)theEvent.userData)[@"tag"] unsignedIntegerValue]];
 
     //restore default button image
     // ->for 'info' and 'show' buttons

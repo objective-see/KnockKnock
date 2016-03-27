@@ -203,9 +203,10 @@
         extensions = [NSPropertyListSerialization propertyListWithData: [NSData dataWithBytes:keychainData length:keychainDataLength] options:0 format:NULL error:NULL];
     }
     
-    //older versions of Safari don't store their extensions in the keychain
-    // ->can manually load from extensions plist file
-    else if(errSecItemNotFound == status)
+    //some versions/instances of Safari don't store their extensions in the keychain
+    // ->so manually load from extensions plist file
+    if( (errSecItemNotFound == status) ||
+        (0 == [extensions[@"Installed Extensions"] count]) )
     {
         //try load from extensions plist file
         extensions = [NSDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", [SAFARI_EXTENSION_DIRECTORY stringByExpandingTildeInPath], @"Extensions.plist"]];
@@ -301,6 +302,9 @@ bail:
     {
         //release
         SecKeychainItemFreeContent(NULL, keychainData);
+        
+        //reset
+        keychainData = NULL;
     }
     
     //release keychain item reference
@@ -308,6 +312,9 @@ bail:
     {
         //release
         CFRelease(keychainItemRef);
+        
+        //reset
+        keychainItemRef = NULL;
     }
     
     return;
@@ -524,7 +531,7 @@ bail:
     NSDictionary* defaultLocale = nil;
     
     //extension path
-    NSString* path = nil;
+    NSMutableString* path = nil;
     
     //extension info
     NSMutableDictionary* extensionInfo = nil;
@@ -605,7 +612,7 @@ bail:
                 if(YES == [[extensionFile lastPathComponent] isEqualToString:@"addons.json"])
                 {
                     //extract path
-                    path = [NSString stringWithFormat:@"%@/extensions/%@.xpi", [extensionFile stringByDeletingLastPathComponent], extension[@"id"]];
+                    path = [NSMutableString stringWithFormat:@"%@/extensions/%@.xpi", [extensionFile stringByDeletingLastPathComponent], extension[@"id"]];
                     
                     //skip invalid/not found paths
                     if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
@@ -639,13 +646,21 @@ bail:
                 else
                 {
                     //extract path
-                    path = [NSString stringWithFormat:@"%@/extensions/%@", [extensionFile stringByDeletingLastPathComponent], extension[@"id"]];
+                    path = [NSMutableString stringWithFormat:@"%@/extensions/%@", [extensionFile stringByDeletingLastPathComponent], extension[@"id"]];
                     
                     //skip invalid/not found paths
+                    // ->note: also checks for extensions that end in .xpi (to account for newer versions of firefox)
                     if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
                     {
-                        //skip
-                        continue;
+                        //create .xpi version
+                        [path appendString:@".xpi"];
+                        
+                        //check this variation too
+                        if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
+                        {
+                            //skip
+                            continue;
+                        }
                     }
                     
                     //save path
