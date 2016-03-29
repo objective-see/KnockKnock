@@ -505,13 +505,20 @@ bail:
 
         //find all items that match
         // ->might be dupes, which is fine
-        for(File* item in items)
+        for(ItemBase* item in items)
         {
+            //skip non-file items
+            if(YES != [item isKindOfClass:[File class]])
+            {
+                //skip
+                continue;
+            }
+            
             //for matches, save vt info
-            if(YES == [result[@"hash"] isEqualToString:item.hashes[KEY_HASH_SHA1]])
+            if(YES == [result[@"hash"] isEqualToString:((File*)item).hashes[KEY_HASH_SHA1]])
             {
                 //save
-                item.vtInfo = result;
+                ((File*)item).vtInfo = result;
                 
                 //if its flagged save in File's plugin
                 if(0 != [result[VT_RESULTS_POSITIVES] unsignedIntegerValue])
