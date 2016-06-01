@@ -37,6 +37,7 @@
 	"/usr/libexec/ntpd-wrapper":["baf0968c6df24734e079baeb01851221"],
     "/usr/libexec/postfix/check-aliases.sh":["ff8fb1f04e944737d2cd15e410f6de06"],
     "/Library/Spotlight/Microsoft Office.mdimporter/Contents/MacOS/Microsoft Office":["d9a23fc4585c30448bccf46213c26028"],
+    "/usr/libexec/gkreport":["a9355083f340d5a1f72127f8d1f08e44"],
     "/etc/periodic/daily/110.clean-tmps":["3f4a4eb220706b891260f1e22dff34d5"],
     "/etc/periodic/daily/130.clean-msgs":["f6367dd6876c2a06a5d6728d80ea19c3"],
     "/etc/periodic/daily/140.clean-rwho":["aecff6f0a6eb42bf5de8bcb6cd42276e"],

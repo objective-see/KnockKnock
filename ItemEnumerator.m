@@ -20,7 +20,6 @@
 //plugin search directories
 NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaemons/", @"/Library/LaunchDaemons/", @"/System/Library/LaunchAgents/", @"/Library/LaunchAgents/", @"~/Library/LaunchAgents/"};
 
-
 //enumerate all 'shared' items
 // ->that is to say, items that multiple plugins scan/process
 -(void)start
@@ -130,8 +129,6 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
     
     //exec system profiler
     taskOutput = execTask(SYSTEM_PROFILER, @[@"SPApplicationsDataType", @"-xml",  @"-detailLevel", @"mini"]);
-
-    //sanity check
     if(nil == taskOutput)
     {
         //bail
@@ -151,7 +148,7 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
     @catch (NSException *exception)
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: serialized output not formatted as expected");
+        //NSLog(@"OBJECTIVE-SEE ERROR: serialized output not formatted as expected");
         
         //bail
         goto bail;

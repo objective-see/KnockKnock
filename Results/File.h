@@ -36,6 +36,12 @@
 //signing info
 @property(nonatomic, retain)NSDictionary* signingInfo;
 
+//is packed
+@property BOOL isPacked;
+
+//is encrypted
+@property BOOL isEncrypted;
+
 /* VIRUS TOTAL INFO */
 
 //dictionary returned by VT

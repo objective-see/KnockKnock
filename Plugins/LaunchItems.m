@@ -86,7 +86,13 @@
         launchItemPath = nil;
         
         //load plist contents
+        // ->skip any that error out
         plistContents = [NSDictionary dictionaryWithContentsOfFile:launchItemPlist];
+        if(nil == plistContents)
+        {
+            //skip
+            continue;
+        }
         
         //skip non-auto run items
         if(YES != [self isAutoRun:plistContents])
@@ -95,9 +101,17 @@
             continue;
         }
         
-        //attempt to extact path to launch item
-        // ->first, via 'ProgramArguments'
-        if(nil != plistContents[@"ProgramArguments"])
+        //extact path to launch item
+        // ->first, check 'Program' key
+        if(nil != plistContents[@"Program"])
+        {
+            //extract path
+            launchItemPath = plistContents[@"Program"];
+        }
+        
+        //extact path to launch item
+        // ->second, via 'ProgramArguments' (sometimes just has args)
+        else if(nil != plistContents[@"ProgramArguments"])
         {
             //should (usually) be an array
             // ->extract & grab first item
@@ -114,14 +128,6 @@
                 //extract path
                 launchItemPath = plistContents[@"ProgramArguments"];
             }
-        }
-        
-        //attempt to extact path to launch item
-        // ->second, via 'Program'
-        else if(nil != plistContents[@"Program"])
-        {
-            //extract path
-            launchItemPath = plistContents[@"Program"];
         }
         
         //skip paths that don't exist
@@ -233,6 +239,12 @@
     return;
 }
 
+//TODO: just copy launchd's logic (old open source versions?)
+//      start/cal interval - DONE
+//      what does: '<key>ServiceIPC</key><true/>' do?
+//      what does 'MachServices' and 'Sockets' do?
+//      are alias followed? (simply google if 'dictionaryWithContentsOfFile' follows aliases...it really should!
+//
 //checks if an item will be automatically run by the OS
 -(BOOL)isAutoRun:(NSDictionary*)plistContents
 {
@@ -250,6 +262,9 @@
     //flag for 'OnDemand'
     // ->default to -1 for not found
     NSInteger onDemand = -1;
+    
+    //flag for start interval
+    BOOL startInterval = NO;
     
     //skip launch items overriden with 'Disable'
     if(YES == [self.disabledItems containsObject:plistContents[@"Label"]])
@@ -292,10 +307,28 @@
         onDemand = [plistContents[@"OnDemand"] boolValue];
     }
     
-    //first check 'RunAtLoad'/'KeepAlive'
+    //set 'StartInterval' flag
+    // ->check both and 'StartInterval' and 'StartCalendarInterval'
+    if( (nil != plistContents[@"StartInterval"]) ||
+        (nil != plistContents[@"StartCalendarInterval"]) )
+                 
+    {
+        //set
+        startInterval = YES;
+    }
+
+    //CHECK 0x1: 'RunAtLoad' / 'KeepAlive'
     // ->either of these set to ok, means auto run!
     if( (YES == runAtLoad) ||
         (YES == keepAlive) )
+    {
+        //auto
+        isAutoRun = YES;
+    }
+    
+    //CHECK 0x2: 'StartInterval' / 'StartCalendarInterval'
+    // ->either set, means will auto run (at some point)
+    else if(YES == startInterval)
     {
         //auto
         isAutoRun = YES;

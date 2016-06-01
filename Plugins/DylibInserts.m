@@ -126,13 +126,14 @@
         //load launch item's plist
         plistContents = [NSDictionary dictionaryWithContentsOfFile:launchItemPlist];
         
+        /*
         //skip disabled launch items
         if(YES == [disabledItems containsObject:plistContents[@"Label"]])
         {
             //skip
             continue;
         }
-        
+    
         //skip items that aren't auto launched
         // ->neither 'RunAtLoad' *and* 'KeepAlive' is set to YES
         if( (YES != [plistContents[@"RunAtLoad"] isKindOfClass:[NSNumber class]]) ||
@@ -146,6 +147,7 @@
                 continue;
             }
         }
+        */
         
         //extact environment vars dictionary
         enviroVars = plistContents[LAUNCH_ITEM_DYLD_KEY];
@@ -167,7 +169,7 @@
             dylibPath = enviroVars[@"DYLD_INSERT_LIBRARIES"];
         }
         //grab dylib path
-        // ->will be in '__XPC_DYLD_INSERT_LIBRARIES'
+        // ->check in '__XPC_DYLD_INSERT_LIBRARIES'
         else
         {
             //grab

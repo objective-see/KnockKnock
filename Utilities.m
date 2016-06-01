@@ -147,26 +147,28 @@ NSDictionary* extractSigningInfo(NSString* path)
     //(re)save signature status
     signingStatus[KEY_SIGNATURE_STATUS] = [NSNumber numberWithInt:status];
     
-    //if file is signed
-    // ->grab signing authorities
-    if(STATUS_SUCCESS == status)
+    //bail if not signed/errors
+    if(STATUS_SUCCESS != status)
     {
-        //grab signing authorities
-        status = SecCodeCopySigningInformation(staticCode, kSecCSSigningInformation, &signingInformation);
-        
-        //sanity check
-        if(STATUS_SUCCESS != status)
-        {
-            //err msg
-            NSLog(@"OBJECTIVE-SEE ERROR: SecCodeCopySigningInformation() failed on %@ with %d", path, status);
-            
-            //bail
-            goto bail;
-        }
-        
-        //determine if binary is signed by Apple
-        signingStatus[KEY_SIGNING_IS_APPLE] = [NSNumber numberWithBool:isApple(path)];
+        //bail
+        goto bail;
     }
+
+    //grab signing authorities
+    status = SecCodeCopySigningInformation(staticCode, kSecCSSigningInformation, &signingInformation);
+    
+    //(re)save signature status
+    signingStatus[KEY_SIGNATURE_STATUS] = [NSNumber numberWithInt:status];
+    
+    //sanity check
+    if(STATUS_SUCCESS != status)
+    {
+        //bail
+        goto bail;
+    }
+        
+    //determine if binary is signed by Apple
+    signingStatus[KEY_SIGNING_IS_APPLE] = [NSNumber numberWithBool:isApple(path)];
     
     //init array for certificate names
     signingStatus[KEY_SIGNING_AUTHORITIES] = [NSMutableArray array];
@@ -253,9 +255,6 @@ BOOL isApple(NSString* path)
     status = SecStaticCodeCreateWithPath((__bridge CFURLRef)([NSURL fileURLWithPath:path]), kSecCSDefaultFlags, &staticCode);
     if(STATUS_SUCCESS != status)
     {
-        //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: SecStaticCodeCreateWithPath() failed on %@ with %d", path, status);
-        
         //bail
         goto bail;
     }
@@ -266,9 +265,6 @@ BOOL isApple(NSString* path)
     if( (STATUS_SUCCESS != status) ||
         (requirementRef == NULL) )
     {
-        //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: SecRequirementCreateWithString() failed on %@ with %d", path, status);
-        
         //bail
         goto bail;
     }
@@ -691,7 +687,7 @@ NSMutableAttributedString* setStringColor(NSAttributedString* string, NSColor* c
 NSData* execTask(NSString* binaryPath, NSArray* arguments)
 {
     //task
-    NSTask *task = nil;
+    NSTask* task = nil;
     
     //output pipe
     NSPipe *outPipe = nil;
@@ -700,7 +696,7 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments)
     NSFileHandle* readHandle = nil;
     
     //output
-    NSMutableData *output = nil;
+    NSMutableData* output = nil;
     
     //init task
     task = [NSTask new];
@@ -722,6 +718,9 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments)
     
     //set task's output
     [task setStandardOutput:outPipe];
+    
+    //ignore stderr
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
     
     //launch the task
     [task launch];
@@ -924,9 +923,6 @@ OSStatus verifySelf()
     status = SecStaticCodeCheckValidity(secRef, kSecCSDefaultFlags, NULL);
     if(noErr != status)
     {
-        //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: failed to validate application bundle (%d)", status);
-        
         //bail
         goto bail;
     }

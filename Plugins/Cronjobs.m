@@ -64,9 +64,8 @@
     //exec cron
     // ->just for current user
     taskOutput = execTask(CRONTAB, @[@"-l"]);
-    
-    //sanity check
-    if(nil == taskOutput)
+    if( (nil == taskOutput) ||
+        (0 == taskOutput.length) )
     {
         //bail
         goto bail;

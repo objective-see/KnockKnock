@@ -147,6 +147,10 @@
     // ->this can be a File, Command, or Extension obj
     ItemBase* item = nil;
     
+    //string for name
+    // ->for File objs, can be attributed w/ packed/encrypted
+    NSMutableAttributedString* customizedItemName = nil;
+    
     //signature icon
     NSImageView* signatureImageView = nil;
     
@@ -158,10 +162,10 @@
     VTButton* vtButton;
     
     //attribute dictionary
-    NSMutableDictionary *stringAttributes = nil;
+    NSMutableDictionary* stringAttributes = nil;
     
     //paragraph style
-    NSMutableParagraphStyle *paragraphStyle = nil;
+    NSMutableParagraphStyle* paragraphStyle = nil;
     
     //tracking area
     NSTrackingArea* trackingArea = nil;
@@ -282,7 +286,8 @@
     
     //set main text
     // ->name
-    [itemCell.textField setStringValue:item.name];
+    //[itemCell.textField setStringValue:item.name];
+    itemCell.textField.attributedStringValue = [[NSMutableAttributedString alloc] initWithString:item.name];
     
     //only have to add tracking area once
     // ->add it the first time
@@ -323,7 +328,7 @@
         itemCell.imageView.image = getIconForBinary(((File*)item).path, ((File*)item).bundle);
 
         //set signature icon
-        signatureImageView.image = getCodeSigningIcon((File*)item);//signatureStatus;
+        signatureImageView.image = getCodeSigningIcon((File*)item);
         
         //show signature icon
         signatureImageView.hidden = NO;
@@ -397,6 +402,7 @@
                     vtDetectionRatio = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)[((File*)item).vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[((File*)item).vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
                     
                     //known 'good' files (0 positivies)
+                    // ->(re)set to black/gray
                     if(0 == [((File*)item).vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue])
                     {
                         //(re)set title black
@@ -474,6 +480,44 @@
             
             //hide virus total button label
             [[itemCell viewWithTag:TABLE_ROW_VT_BUTTON+1] setHidden:YES];
+        }
+        
+        //add 'packed' / 'encrypted' in red
+        // ->done here since VT stuff (above) sets name globally
+        if( (YES == ((File*)item).isPacked) ||
+            (YES == ((File*)item).isEncrypted) )
+        {
+            //init task string
+            customizedItemName = [[NSMutableAttributedString alloc] initWithString:@""];
+            
+            //add existing name
+            // ->uses existing color (red or black)
+            [customizedItemName appendAttributedString:[[NSMutableAttributedString alloc] initWithString:itemCell.textField.stringValue attributes:@{NSForegroundColorAttributeName:itemCell.textField.textColor}]];
+            
+            //add '('
+            // ->color, light gray
+            [customizedItemName appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@" (" attributes:@{NSForegroundColorAttributeName:[NSColor lightGrayColor]}]];
+            
+            //add 'encrypted'
+            if(YES == ((File*)item).isEncrypted)
+            {
+                //add
+                [customizedItemName appendAttributedString:[[NSAttributedString alloc] initWithString:@"encrypted" attributes:@{NSForegroundColorAttributeName:[NSColor redColor]}]];
+            }
+            //add 'packed'
+            // ->can't be both; and encryption takes precedence
+            else
+            {
+                //add
+                [customizedItemName appendAttributedString:[[NSAttributedString alloc] initWithString:@"packed" attributes:@{NSForegroundColorAttributeName:[NSColor redColor]}]];
+            }
+            
+            //close string with ')'
+            // ->color; light gray
+            [customizedItemName appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@")" attributes:@{NSForegroundColorAttributeName:[NSColor lightGrayColor]}]];
+            
+            //update name
+            itemCell.textField.attributedStringValue = customizedItemName;
         }
         
     }//file(s)

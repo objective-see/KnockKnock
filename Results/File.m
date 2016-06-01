@@ -8,6 +8,7 @@
 
 
 #import "File.h"
+#import "MachO.h"
 #import "Consts.h"
 #import "Utilities.h"
 #import "AppDelegate.h"
@@ -19,16 +20,20 @@
 @synthesize plist;
 @synthesize bundle;
 @synthesize hashes;
+@synthesize isPacked;
+@synthesize isEncrypted;
 @synthesize signingInfo;
 
 @synthesize vtInfo;
-
 
 //init method
 -(id)initWithParams:(NSDictionary*)params
 {
     //flag for directories
     BOOL isDirectory = NO;
+    
+    //mach-O parser
+    MachO* machoParser = nil;
     
     //super
     // ->saves path, etc
@@ -58,7 +63,7 @@
             if(nil == (bundle = [NSBundle bundleWithPath:params[KEY_RESULT_PATH]]))
             {
                 //err msg
-                NSLog(@"OBJECTIVE-SEE ERROR: couldn't create bundle for %@", params[KEY_RESULT_PATH]);
+                //NSLog(@"OBJECTIVE-SEE ERROR: couldn't create bundle for %@", params[KEY_RESULT_PATH]);
                 
                 //set self to nil
                 self = nil;
@@ -102,6 +107,29 @@
         //call into filter object to check if file is known
         // ->apple-signed or whitelisted
         self.isTrusted = [((AppDelegate*)[[NSApplication sharedApplication] delegate]).filterObj isTrustedFile:self];
+        
+        //alloc macho parser iVar
+        // ->new instance for each file!
+        machoParser = [[MachO alloc] init];
+        
+        //parse
+        // ->also do packed/encryption checks
+        if(YES == [machoParser parse:self.path classify:YES])
+        {
+            //unset 'packed' flag for apple signed binaries
+            // ->as apple doesn't pack binaries, but packer algo has some false positives
+            if(YES == [self.signingInfo[KEY_SIGNING_IS_APPLE] boolValue])
+            {
+                //unset
+                machoParser.binaryInfo[KEY_IS_PACKED] = NO;
+            }
+            
+            //set packed flag
+            self.isPacked = [machoParser.binaryInfo[KEY_IS_PACKED] boolValue];
+            
+            //set encrypted flag
+            self.isEncrypted = [machoParser.binaryInfo[KEY_IS_ENCRYPTED] boolValue];
+        }
     }
            
 //bail

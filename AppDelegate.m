@@ -34,7 +34,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 @synthesize categoryTableController;
 @synthesize resultsWindowController;
 
-
 //center window
 // ->also make front
 -(void)awakeFromNib
@@ -55,6 +54,11 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 // ->main entry point
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+    /*
+    extractSigningInfo(@"/Users/patrick/objective-see/tbd/DerivedData/tbd/Build/Products/Debug/tbd");
+    return;
+    */
+    
     //app's (self) signing status
     OSStatus signingStatus = -1;
 
