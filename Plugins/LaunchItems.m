@@ -239,12 +239,6 @@
     return;
 }
 
-//TODO: just copy launchd's logic (old open source versions?)
-//      start/cal interval - DONE
-//      what does: '<key>ServiceIPC</key><true/>' do?
-//      what does 'MachServices' and 'Sockets' do?
-//      are alias followed? (simply google if 'dictionaryWithContentsOfFile' follows aliases...it really should!
-//
 //checks if an item will be automatically run by the OS
 -(BOOL)isAutoRun:(NSDictionary*)plistContents
 {

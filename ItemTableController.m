@@ -499,10 +499,24 @@
             [customizedItemName appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@" (" attributes:@{NSForegroundColorAttributeName:[NSColor lightGrayColor]}]];
             
             //add 'encrypted'
+            // ->green if trusted (apple, etc), otherwise red
             if(YES == ((File*)item).isEncrypted)
             {
-                //add
-                [customizedItemName appendAttributedString:[[NSAttributedString alloc] initWithString:@"encrypted" attributes:@{NSForegroundColorAttributeName:[NSColor redColor]}]];
+                //trusted; green
+                if(YES == ((File*)item).isTrusted)
+                {
+                    //add
+                    [customizedItemName appendAttributedString:[[NSAttributedString alloc] initWithString:@"encrypted" attributes:@{NSForegroundColorAttributeName:[NSColor colorWithDeviceRed:38.0f/256.0f green:191.0f/256.0f blue:99.0f/256.0f alpha:1.0f]}]];
+
+                }
+                //untrusted; red
+                else
+                {
+                    //add
+                    [customizedItemName appendAttributedString:[[NSAttributedString alloc] initWithString:@"encrypted" attributes:@{NSForegroundColorAttributeName:[NSColor redColor]}]];
+
+                }
+                
             }
             //add 'packed'
             // ->can't be both; and encryption takes precedence
