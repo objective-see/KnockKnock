@@ -16,6 +16,7 @@
 @implementation ResultsWindowController
 
 @synthesize details;
+@synthesize okButton;
 @synthesize detailsLabel;
 
 //automatically called when nib is loaded
@@ -38,6 +39,9 @@
     
     //set details
     self.detailsLabel.stringValue = self.details;
+    
+    //make 'ok' button active
+    [self.window makeFirstResponder:okButton];
     
     return;
 }

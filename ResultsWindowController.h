@@ -19,8 +19,10 @@
 @property(nonatomic, retain)NSString* details;
 
 //details of results label/string
-@property(weak) IBOutlet NSTextField *detailsLabel;
+@property(weak) IBOutlet NSTextField* detailsLabel;
 
+//'ok' button
+@property (weak) IBOutlet NSButton* okButton;
 
 /* METHODS */
 

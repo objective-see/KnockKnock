@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 
 //supported plugins
-NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"Kexts", @"LaunchItems", @"DylibInserts", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"SpotlightImporters", @"StartupScripts"};
+NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"SpotlightImporters", @"StartupScripts"};
 
 @implementation AppDelegate
 

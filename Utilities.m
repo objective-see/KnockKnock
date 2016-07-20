@@ -146,8 +146,6 @@ NSDictionary* extractSigningInfo(NSString* path)
     
     //(re)save signature status
     signingStatus[KEY_SIGNATURE_STATUS] = [NSNumber numberWithInt:status];
-    
-    //bail if not signed/errors
     if(STATUS_SUCCESS != status)
     {
         //bail
@@ -159,8 +157,6 @@ NSDictionary* extractSigningInfo(NSString* path)
     
     //(re)save signature status
     signingStatus[KEY_SIGNATURE_STATUS] = [NSNumber numberWithInt:status];
-    
-    //sanity check
     if(STATUS_SUCCESS != status)
     {
         //bail

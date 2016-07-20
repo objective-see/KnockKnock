@@ -13,6 +13,8 @@
 		7DAA77FD1B8C5786004840B9 /* MachO.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DAA77FC1B8C5786004840B9 /* MachO.m */; };
 		7DE29CA41CA7BC5600DFA6A6 /* StartupScripts.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE29CA21CA7BC5600DFA6A6 /* StartupScripts.m */; };
 		7DE29CA61CA7C10500DFA6A6 /* startupScriptsIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE29CA51CA7C10500DFA6A6 /* startupScriptsIcon.png */; };
+		7DE2FE2E1D3F30BE006C1438 /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE2FE2D1D3F30BE006C1438 /* Extensions.m */; };
+		7DE2FE301D3F3228006C1438 /* extensionIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE2FE2F1D3F3228006C1438 /* extensionIcon.png */; };
 		CD001B371AB903040089014A /* kkText.png in Resources */ = {isa = PBXBuildFile; fileRef = CD001B341AB903040089014A /* kkText.png */; };
 		CD001B381AB903040089014A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CD001B351AB903040089014A /* logo.png */; };
 		CD001B391AB903040089014A /* logoApple.png in Resources */ = {isa = PBXBuildFile; fileRef = CD001B361AB903040089014A /* logoApple.png */; };
@@ -124,6 +126,9 @@
 		7DE29CA21CA7BC5600DFA6A6 /* StartupScripts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StartupScripts.m; path = Plugins/StartupScripts.m; sourceTree = "<group>"; };
 		7DE29CA31CA7BC5600DFA6A6 /* StartupScripts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StartupScripts.h; path = Plugins/StartupScripts.h; sourceTree = "<group>"; };
 		7DE29CA51CA7C10500DFA6A6 /* startupScriptsIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = startupScriptsIcon.png; path = images/startupScriptsIcon.png; sourceTree = SOURCE_ROOT; };
+		7DE2FE2C1D3F30BE006C1438 /* Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Extensions.h; path = Plugins/Extensions.h; sourceTree = "<group>"; };
+		7DE2FE2D1D3F30BE006C1438 /* Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Extensions.m; path = Plugins/Extensions.m; sourceTree = "<group>"; };
+		7DE2FE2F1D3F3228006C1438 /* extensionIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = extensionIcon.png; path = images/extensionIcon.png; sourceTree = SOURCE_ROOT; };
 		CD001B341AB903040089014A /* kkText.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kkText.png; path = images/kkText.png; sourceTree = SOURCE_ROOT; };
 		CD001B351AB903040089014A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = images/logo.png; sourceTree = SOURCE_ROOT; };
 		CD001B361AB903040089014A /* logoApple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoApple.png; path = images/logoApple.png; sourceTree = SOURCE_ROOT; };
@@ -370,6 +375,7 @@
 		CD6095501A8329FA00E091CD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				7DE2FE2F1D3F3228006C1438 /* extensionIcon.png */,
 				7DE29CA51CA7C10500DFA6A6 /* startupScriptsIcon.png */,
 				7D0DAB871CA758790049BAFF /* periodicIcon.png */,
 				CDBE491E1B5B46040031FC22 /* logInOutIcon.png */,
@@ -457,6 +463,8 @@
 		CDA81D861A96F429009790E2 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				7DE2FE2C1D3F30BE006C1438 /* Extensions.h */,
+				7DE2FE2D1D3F30BE006C1438 /* Extensions.m */,
 				7DE29CA31CA7BC5600DFA6A6 /* StartupScripts.h */,
 				7DE29CA21CA7BC5600DFA6A6 /* StartupScripts.m */,
 				7D0DAB841CA752AE0049BAFF /* PeriodicScrips.h */,
@@ -641,6 +649,7 @@
 				CD02194F1AD34D8B005148A2 /* AboutWindow.xib in Resources */,
 				CDA81DCA1A9960A3009790E2 /* infoBG.png in Resources */,
 				CDF08CD11AC4C6E8009B3423 /* settings.png in Resources */,
+				7DE2FE301D3F3228006C1438 /* extensionIcon.png in Resources */,
 				CDA81DD31A9970A0009790E2 /* signed.png in Resources */,
 				CDD83FD61B50C76F0037124E /* cronIcon.png in Resources */,
 				CDA81E661AA020FD009790E2 /* FileInfoWindow.xib in Resources */,
@@ -672,6 +681,7 @@
 				CD6BBBF01B52032D00506D0D /* NSApplicationKeyEvents.m in Sources */,
 				CDA81D4F1A95B492009790E2 /* AppDelegate.m in Sources */,
 				CDA81D5E1A95B4B4009790E2 /* main.m in Sources */,
+				7DE2FE2E1D3F30BE006C1438 /* Extensions.m in Sources */,
 				7DE29CA41CA7BC5600DFA6A6 /* StartupScripts.m in Sources */,
 				CD7B9F501ACB9A8400DF3C71 /* Exception.m in Sources */,
 				CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */,

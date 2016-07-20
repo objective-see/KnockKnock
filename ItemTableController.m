@@ -286,9 +286,8 @@
     
     //set main text
     // ->name
-    //[itemCell.textField setStringValue:item.name];
     itemCell.textField.attributedStringValue = [[NSMutableAttributedString alloc] initWithString:item.name];
-    
+        
     //only have to add tracking area once
     // ->add it the first time
     if(NO == hasTrackingArea)

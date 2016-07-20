@@ -86,6 +86,9 @@
 //path to system profiler
 #define SYSTEM_PROFILER @"/usr/sbin/system_profiler"
 
+//path for pluginkit
+#define PLUGIN_KIT @"/usr/bin/pluginkit"
+
 //dyld_ key for launch items
 #define LAUNCH_ITEM_DYLD_KEY @"EnvironmentVariables"
 
