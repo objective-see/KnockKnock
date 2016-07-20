@@ -57,12 +57,13 @@
     
     //exec 'pluginkit -vmA'
     taskOutput = execTask(PLUGIN_KIT, @[@"-vmA"]);
-    if(nil == taskOutput)
+    if( (nil == taskOutput) ||
+        (0 == taskOutput.length) )
     {
         //bail
         goto bail;
     }
-    
+
     //process each line
     for(NSString* line in [[[[NSString alloc] initWithData:taskOutput encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] componentsSeparatedByString:@"\n"])
     {

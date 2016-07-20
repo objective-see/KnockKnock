@@ -718,6 +718,19 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments)
     //ignore stderr
     [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
     
+    //wrap task launch
+    // ->can throw exception if binary path not found, etc
+    @try{
+        
+        //launch
+        [task launch];
+    }
+    @catch(NSException *exception)
+    {
+        //bail
+        goto bail;
+    }
+
     //launch the task
     [task launch];
     
@@ -730,6 +743,10 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments)
     
     //grab any left over data
     [output appendData:[readHandle readDataToEndOfFile]];
+    
+    
+//bail
+bail:
     
     //return output as string
     return output;

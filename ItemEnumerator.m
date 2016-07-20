@@ -129,7 +129,13 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
     
     //exec system profiler
     taskOutput = execTask(SYSTEM_PROFILER, @[@"SPApplicationsDataType", @"-xml",  @"-detailLevel", @"mini"]);
-    if(nil == taskOutput)
+    if( (nil == taskOutput) ||
+        (0 == taskOutput.length) )
+    {
+        //bail
+        goto bail;
+    }
+
     {
         //bail
         goto bail;
