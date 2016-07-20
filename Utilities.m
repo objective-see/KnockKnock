@@ -731,9 +731,6 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments)
         goto bail;
     }
 
-    //launch the task
-    [task launch];
-    
     //read in output
     while(YES == [task isRunning])
     {
