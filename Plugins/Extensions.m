@@ -68,8 +68,8 @@
     for(NSString* line in [[[[NSString alloc] initWithData:taskOutput encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] componentsSeparatedByString:@"\n"])
     {
         //ignore those that aren't enabled
-        // ->line will start with '-'
-        if(YES == [line hasPrefix:@"-"])
+        // ->enabled plugins start with '+'
+        if(YES != [line hasPrefix:@"+"])
         {
             //skip
             continue;
