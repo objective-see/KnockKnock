@@ -9,6 +9,8 @@
 #import "Consts.h"
 #import "Utilities.h"
 
+#import <libproc.h>
+#import <sys/sysctl.h>
 #import <Security/Security.h>
 #import <Foundation/Foundation.h>
 #import <CommonCrypto/CommonDigest.h>
@@ -948,6 +950,283 @@ bail:
     }
     
     return status;
+}
+
+//given a 'short' path or process name
+// ->find the full path by scanning $PATH
+NSString* which(NSString* processName)
+{
+    //full path
+    NSString* fullPath = nil;
+    
+    //get path
+    NSString* path = nil;
+    
+    //tokenized paths
+    NSArray* pathComponents = nil;
+    
+    //candidate file
+    NSString* candidateBinary = nil;
+    
+    //get path
+    path = [[[NSProcessInfo processInfo]environment]objectForKey:@"PATH"];
+    
+    //split on ':'
+    pathComponents = [path componentsSeparatedByString:@":"];
+    
+    //iterate over all path components
+    // ->build candidate path and check if it exists
+    for(NSString* pathComponent in pathComponents)
+    {
+        //build candidate path
+        // ->current path component + process name
+        candidateBinary = [pathComponent stringByAppendingPathComponent:processName];
+        
+        //check if it exists
+        if(YES == [[NSFileManager defaultManager] fileExistsAtPath:candidateBinary])
+        {
+            //check its executable
+            if(YES == [[NSFileManager defaultManager] isExecutableFileAtPath:candidateBinary])
+            {
+                //ok, happy now
+                fullPath = candidateBinary;
+                
+                //stop processing
+                break;
+            }
+        }
+        
+    }//for path components
+    
+    return fullPath;
+}
+
+//get process's path
+NSString* getProcessPath(pid_t pid)
+{
+    //task path
+    NSString* taskPath = nil;
+    
+    //buffer for process path
+    char pathBuffer[PROC_PIDPATHINFO_MAXSIZE] = {0};
+    
+    //status
+    int status = -1;
+    
+    //'management info base' array
+    int mib[3] = {0};
+    
+    //system's size for max args
+    int systemMaxArgs = 0;
+    
+    //process's args
+    char* taskArgs = NULL;
+    
+    //# of args
+    int numberOfArgs = 0;
+    
+    //size of buffers, etc
+    size_t size = 0;
+    
+    //reset buffer
+    bzero(pathBuffer, PROC_PIDPATHINFO_MAXSIZE);
+    
+    //first attempt to get path via 'proc_pidpath()'
+    status = proc_pidpath(pid, pathBuffer, sizeof(pathBuffer));
+    if(0 != status)
+    {
+        //init task's name
+        taskPath = [NSString stringWithUTF8String:pathBuffer];
+    }
+    //otherwise
+    // ->try via task's args ('KERN_PROCARGS2')
+    else
+    {
+        //init mib
+        // ->want system's size for max args
+        mib[0] = CTL_KERN;
+        mib[1] = KERN_ARGMAX;
+        
+        //set size
+        size = sizeof(systemMaxArgs);
+        
+        //get system's size for max args
+        if(-1 == sysctl(mib, 2, &systemMaxArgs, &size, NULL, 0))
+        {
+            //bail
+            goto bail;
+        }
+        
+        //alloc space for args
+        taskArgs = malloc(systemMaxArgs);
+        if(NULL == taskArgs)
+        {
+            //bail
+            goto bail;
+        }
+        
+        //init mib
+        // ->want process args
+        mib[0] = CTL_KERN;
+        mib[1] = KERN_PROCARGS2;
+        mib[2] = pid;
+        
+        //set size
+        size = (size_t)systemMaxArgs;
+        
+        //get process's args
+        if(-1 == sysctl(mib, 3, taskArgs, &size, NULL, 0))
+        {
+            //bail
+            goto bail;
+        }
+        
+        //sanity check
+        // ->ensure buffer is somewhat sane
+        if(size <= sizeof(int))
+        {
+            //bail
+            goto bail;
+        }
+        
+        //extract number of args
+        // ->at start of buffer
+        memcpy(&numberOfArgs, taskArgs, sizeof(numberOfArgs));
+        
+        //extract task's name
+        // ->follows # of args (int) and is NULL-terminated
+        taskPath = [NSString stringWithUTF8String:taskArgs + sizeof(int)];
+    }
+    
+//bail
+bail:
+    
+    //free process args
+    if(NULL != taskArgs)
+    {
+        //free
+        free(taskArgs);
+        
+        //reset
+        taskArgs = NULL;
+    }
+    
+    return taskPath;
+}
+
+//get array of running procs
+// ->returns an array of process paths
+NSMutableArray* runningProcesses()
+{
+    //running procs
+    NSMutableArray* processes = nil;
+    
+    //# of procs
+    int numberOfProcesses = 0;
+    
+    //array of pids
+    pid_t* pids = NULL;
+    
+    //process path
+    NSString* processPath = nil;
+    
+    //alloc array
+    processes = [NSMutableArray array];
+    
+    //get # of procs
+    numberOfProcesses = proc_listpids(PROC_ALL_PIDS, 0, NULL, 0);
+    
+    //alloc buffer for pids
+    pids = calloc(numberOfProcesses, sizeof(pid_t));
+    
+    //get list of pids
+    if(proc_listpids(PROC_ALL_PIDS, 0, pids, numberOfProcesses * sizeof(pid_t)) < 0)
+    {
+        //bail
+        goto bail;
+    }
+    
+    //iterate over all pids
+    // ->get name for each via helper function
+    for(int i = 0; i < numberOfProcesses; ++i)
+    {
+        //skip blank pids
+        if(0 == pids[i])
+        {
+            //skip
+            continue;
+        }
+        
+        //get name
+        processPath = getProcessPath(pids[i]);
+        if( (nil == processPath) ||
+           (0 == processPath.length) )
+        {
+            //skip
+            continue;
+        }
+        
+        //add to array
+        [processes addObject:processPath];
+    }
+    
+    //remove dups
+    processes = [[[NSSet setWithArray:processes] allObjects] mutableCopy];
+    
+//bail
+bail:
+    
+    //free buffer
+    if(NULL != pids)
+    {
+        //free
+        free(pids);
+    }
+    
+    return processes;
+}
+
+
+//check if a file is an executable
+BOOL isURLExecutable(NSURL* file)
+{
+    //return
+    BOOL isExecutable = NO;
+    
+    //bundle url
+    CFURLRef bundleURL = NULL;
+    
+    //architecture ref
+    CFArrayRef archArrayRef = NULL;
+    
+    //create bundle
+    bundleURL = CFURLCreateFromFileSystemRepresentation(NULL, (uint8_t*)[[file path] UTF8String], strlen((const char *)(uint8_t*)[[file path] UTF8String]), true);
+    
+    //get executable arch's
+    archArrayRef = CFBundleCopyExecutableArchitecturesForURL(bundleURL);
+    
+    //check arch for i386/x6_64
+    if(NULL != archArrayRef)
+    {
+        //set flag
+        isExecutable = [(__bridge NSArray*)archArrayRef containsObject:[NSNumber numberWithInt:kCFBundleExecutableArchitectureX86_64]] || [(__bridge NSArray*)archArrayRef containsObject:[NSNumber numberWithInt:kCFBundleExecutableArchitectureI386]];
+    }
+    
+    //free bundle url
+    if(NULL != bundleURL)
+    {
+        //free
+        CFRelease(bundleURL);
+    }
+    
+    //free arch ref
+    if(NULL != archArrayRef)
+    {
+        //free
+        CFRelease(archArrayRef);
+    }
+    
+    return isExecutable;
 }
 
 

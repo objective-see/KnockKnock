@@ -135,11 +135,6 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
         //bail
         goto bail;
     }
-
-    {
-        //bail
-        goto bail;
-    }
     
     //serialize output to array
     serializedOutput = [NSPropertyListSerialization propertyListWithData:taskOutput options:kNilOptions format:NULL error:NULL];

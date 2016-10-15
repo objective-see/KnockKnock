@@ -89,6 +89,9 @@
 //path for pluginkit
 #define PLUGIN_KIT @"/usr/bin/pluginkit"
 
+//path to lsof
+#define LSOF @"/usr/sbin/lsof"
+
 //dyld_ key for launch items
 #define LAUNCH_ITEM_DYLD_KEY @"EnvironmentVariables"
 

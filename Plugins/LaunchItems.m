@@ -130,9 +130,8 @@
             }
         }
         
-        //skip paths that don't exist
-        if( (nil == launchItemPath) ||
-            (YES != [[NSFileManager defaultManager] fileExistsAtPath:launchItemPath]))
+        //skip any that don't have a path
+        if(nil == launchItemPath)
         {
             //skip
             continue;
@@ -187,10 +186,17 @@
         overridePath = [NSString stringWithFormat:@"%@%@%@", OVERRIDES_DIRECTORY, overrideDirectory, @"/overrides.plist"];
         
         //skip files that don't exist/aren't accessible
+        // ->but first try to resolve via 'which()' to get long path
         if(YES != [[NSFileManager defaultManager] fileExistsAtPath:overridePath])
         {
-            //skip
-            continue;
+            //try resolve
+            overridePath = which(overridePath);
+            if( (nil == overridePath) ||
+                (YES != [[NSFileManager defaultManager] fileExistsAtPath:overridePath]))
+            {
+                //skip
+                continue;
+            }
         }
         
         //extract overrides UID from its directory name

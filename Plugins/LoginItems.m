@@ -91,6 +91,9 @@
     //then get (and append!) sandboxed items
     [loginItems addObjectsFromArray:[self enumSandboxItems]];
     
+    //remove any duplicates
+    loginItems = [[[NSSet setWithArray:loginItems] allObjects] mutableCopy];
+
     //enum and create traditional login items
     for(NSString* loginItem in loginItems)
     {

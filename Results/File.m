@@ -40,18 +40,25 @@
     self = [super initWithParams:params];
     if(self)
     {
-        //always skip not-existent paths
-        // ->also get set a directory flag at the same time ;)
-        if(YES != [[NSFileManager defaultManager] fileExistsAtPath:params[KEY_RESULT_PATH] isDirectory:&isDirectory])
+        //skip not-existent paths
+        // ->but also now check if they are just short paths (e.g. 'bash')
+        if(YES != [[NSFileManager defaultManager] fileExistsAtPath:self.path isDirectory:&isDirectory])
         {
-            //err msg
-            //NSLog(@"OBJECTIVE-SEE ERROR: %@ not found", params[KEY_RESULT_PATH]);
+            //might just be a 'short' path, like 'bash'
+            // ->try resolve to full path, such as: /bin/bash
+            self.path = which(self.path);
             
-            //set self to nil
-            self = nil;
-            
-            //bail
-            goto bail;
+            //still not found?
+            // ->ignore/bail...
+            if( (nil == self.path) ||
+                (YES != [[NSFileManager defaultManager] fileExistsAtPath:self.path]) )
+            {
+                //set self to nil
+                self = nil;
+                
+                //bail
+                goto bail;
+            }
         }
         
         //if path is directory
@@ -60,7 +67,7 @@
         {
             //load bundle
             // ->save this into 'bundle' iVar
-            if(nil == (bundle = [NSBundle bundleWithPath:params[KEY_RESULT_PATH]]))
+            if(nil == (bundle = [NSBundle bundleWithPath:self.path]))
             {
                 //err msg
                 //NSLog(@"OBJECTIVE-SEE ERROR: couldn't create bundle for %@", params[KEY_RESULT_PATH]);
@@ -113,7 +120,7 @@
         machoParser = [[MachO alloc] init];
         
         //parse
-        // ->also do packed/encryption checks
+        // ->also perform packed/encryption checks
         if(YES == [machoParser parse:self.path classify:YES])
         {
             //unset 'packed' flag for apple signed binaries

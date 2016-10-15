@@ -40,7 +40,8 @@
     return self;
 }
 
-//get list of installed extensions (via 'pluginkit -vmA')
+//get list of installed extensions
+// ->for now, done via exec'ing pluginkit
 -(NSMutableArray*)enumExtensions
 {
     //all extensions
@@ -49,11 +50,11 @@
     //task output
     NSData* taskOutput = nil;
     
+    //finder syncs (from plist)
+    NSDictionary* finderSyncs = nil;
+    
     //alloc array for extensions
     extensions = [NSMutableArray array];
-    
-    //start of path
-    NSRange pathOffset = {0};
     
     //exec 'pluginkit -vmA'
     taskOutput = execTask(PLUGIN_KIT, @[@"-vmA"]);
@@ -63,9 +64,64 @@
         //bail
         goto bail;
     }
+    
+    //process output
+    [extensions addObjectsFromArray:[self parseExtensions:[[[NSString alloc] initWithData:taskOutput encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]]];
+    
+    //load finder syncs from plist
+    finderSyncs = [NSDictionary dictionaryWithContentsOfFile:[FINDER_SYNCS stringByExpandingTildeInPath]];
+    if( (nil == finderSyncs) ||
+        (nil == finderSyncs[@"displayOrder"]) )
+    {
+        //bail
+        goto bail;
+    }
+    
+    //process each finder sync
+    // exec 'pluginkit -mi <bundle> -v' to get info
+    for(NSString* finderSync in finderSyncs[@"displayOrder"])
+    {
+        //exec pluginkit
+        taskOutput = execTask(PLUGIN_KIT, @[@"-mi", finderSync, @"-v"]);
+        if( (nil == taskOutput) ||
+            (0 == taskOutput.length) )
+        {
+            //skip
+            continue;
+        }
+        
+        //process output
+        [extensions addObjectsFromArray:[self parseExtensions:[[[NSString alloc] initWithData:taskOutput encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]]];
+    }
+    
+    //remove any duplicates
+    extensions = [[[NSSet setWithArray:extensions] allObjects] mutableCopy];
+    
+//bail
+bail:
+    
+    return extensions;
+    
+}
 
+//given output from plugin kit
+// ->parse out all enabled extensions
+-(NSMutableArray*)parseExtensions:(NSString*)output
+{
+    //enabled extensions
+    NSMutableArray* extensions = nil;
+    
+    //start of path
+    NSRange pathOffset = {0};
+    
+    //extension path
+    NSString* path = nil;
+    
+    //alloc array for extensions
+    extensions = [NSMutableArray array];
+    
     //process each line
-    for(NSString* line in [[[[NSString alloc] initWithData:taskOutput encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] componentsSeparatedByString:@"\n"])
+    for(NSString* line in [output componentsSeparatedByString:@"\n"])
     {
         //ignore those that aren't enabled
         // ->enabled plugins start with '+'
@@ -77,24 +133,24 @@
         
         //find start of path
         // ->first occurance of '/'
-        pathOffset =  [line rangeOfString:@"/"];
+        pathOffset = [line rangeOfString:@"/"];
         if(NSNotFound == pathOffset.location)
         {
             //skip
             continue;
         }
         
-        //add path
-        [extensions addObject:[line substringFromIndex:pathOffset.location]];
+        //grab path
+        path = [line substringFromIndex:pathOffset.location];
         
+        //add
+        [extensions addObject:path];
     }
-    
     
 //bail
 bail:
-    
+
     return extensions;
-    
 }
 
 //scan for extensions

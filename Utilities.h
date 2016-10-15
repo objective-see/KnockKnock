@@ -72,4 +72,15 @@ NSLayoutConstraint* findConstraint(NSView* view, NSString* constraintName);
 // ->that is to say, nobody modified on-disk image/resources (white lists!, etc)
 OSStatus verifySelf();
 
+//given a 'short' path or process name
+// ->find the full path by scanning $PATH
+NSString* which(NSString* processName);
+
+//get array of running procs
+// ->returns an array of process paths
+NSMutableArray* runningProcesses();
+
+//check if a file is an executable
+BOOL isURLExecutable(NSURL* file);
+
 #endif

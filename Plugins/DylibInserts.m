@@ -355,8 +355,14 @@ bail:
         //skip files that don't exist/aren't accessible
         if(YES != [[NSFileManager defaultManager] fileExistsAtPath:overridePath])
         {
-            //skip
-            continue;
+            //try resolve
+            overridePath = which(overridePath);
+            if( (nil == overridePath) ||
+                (YES != [[NSFileManager defaultManager] fileExistsAtPath:overridePath]))
+            {
+                //skip
+                continue;
+            }
         }
         
         //extract overrides UID from its directory name
