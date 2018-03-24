@@ -48,20 +48,24 @@
 }
 
 //scan for login items
+// note: keys in plist are all lower case'd for case-insensitive search
 -(void)scan
 {
     //all launch items
     NSArray* launchItems = nil;
     
     //plist data
-    NSDictionary* plistContents = nil;
+    NSDictionary* plist = nil;
+    
+    //processed plist
+    NSMutableDictionary* plistProcessed = nil;
     
     //launch item binary
     NSString* launchItemPath = nil;
     
     //detected (auto-started) login item
     File* fileObj = nil;
-    
+
     //get overriden enabled & disabled items
     [self processOverrides];
     
@@ -87,46 +91,67 @@
         
         //load plist contents
         // ->skip any that error out
-        plistContents = [NSDictionary dictionaryWithContentsOfFile:launchItemPlist];
-        if(nil == plistContents)
+        plist = [NSDictionary dictionaryWithContentsOfFile:launchItemPlist];
+        if(nil == plist)
         {
             //skip
             continue;
+        }
+        
+        //alloc
+        plistProcessed = [NSMutableDictionary dictionary];
+        
+        //convert keys to lower case
+        for(NSString* key in plist)
+        {
+            //add lower-case'd
+            plistProcessed[key.lowercaseString] = plist[key];
         }
         
         //skip non-auto run items
-        if(YES != [self isAutoRun:plistContents])
+        if(YES != [self isAutoRun:plistProcessed])
         {
             //skip
             continue;
         }
         
-        //extact path to launch item
-        // ->first, check 'Program' key
-        if(nil != plistContents[@"Program"])
+        //extract path to launch item
+        //  first, check 'Program' key
+        if(nil != plistProcessed[@"program"])
         {
-            //extract path
-            launchItemPath = plistContents[@"Program"];
+            //is it array?
+            if(YES == [plistProcessed[@"program"] isKindOfClass:[NSArray class]])
+            {
+                //extract path
+                launchItemPath = [plistProcessed[@"program"] firstObject];
+            }
+            
+            //is it a string?
+            else if(YES == [plistProcessed[@"program"] isKindOfClass:[NSString class]])
+            {
+                //extract path
+                launchItemPath = plistProcessed[@"program"];
+            }
         }
         
         //extact path to launch item
         // ->second, via 'ProgramArguments' (sometimes just has args)
-        else if(nil != plistContents[@"ProgramArguments"])
+        else if(nil != plistProcessed[@"programarguments"])
         {
             //should (usually) be an array
             // ->extract & grab first item
-            if(YES == [plistContents[@"ProgramArguments"] isKindOfClass:[NSArray class]])
+            if(YES == [plistProcessed[@"programarguments"] isKindOfClass:[NSArray class]])
             {
                 //extract path
-                launchItemPath = [plistContents[@"ProgramArguments"] firstObject];
+                launchItemPath = [plistProcessed[@"programarguments"] firstObject];
             }
             
             //sometime this is a string...
             // ->just save as path (assumes no args)
-            else if(YES == [plistContents[@"ProgramArguments"] isKindOfClass:[NSString class]])
+            else if(YES == [plistProcessed[@"programarguments"] isKindOfClass:[NSString class]])
             {
                 //extract path
-                launchItemPath = plistContents[@"ProgramArguments"];
+                launchItemPath = plistProcessed[@"programarguments"];
             }
         }
         
@@ -246,7 +271,8 @@
 }
 
 //checks if an item will be automatically run by the OS
--(BOOL)isAutoRun:(NSDictionary*)plistContents
+// note: all keys are lower-case, as we've converted them this way...
+-(BOOL)isAutoRun:(NSDictionary*)plist
 {
     //flag
     BOOL isAutoRun = NO;
@@ -267,7 +293,7 @@
     BOOL startInterval = NO;
     
     //skip launch items overriden with 'Disable'
-    if(YES == [self.disabledItems containsObject:plistContents[@"Label"]])
+    if(YES == [self.disabledItems containsObject:plist[@"label"]])
     {
         //bail
         goto bail;
@@ -275,11 +301,11 @@
 
     //skip directly disabled items
     // ->unless its overridden w/ enabled
-    if( (YES == [plistContents[@"Disabled"] isKindOfClass:[NSNumber class]]) &&
-        (YES == [plistContents[@"Disabled"] boolValue]) )
+    if( (YES == [plist[@"disabled"] isKindOfClass:[NSNumber class]]) &&
+        (YES == [plist[@"disabled"] boolValue]) )
     {
         //also make sure it's not enabled via an override
-        if(YES != [self.disabledItems containsObject:plistContents[@"Label"]])
+        if(YES != [self.disabledItems containsObject:plist[@"label"]])
         {
             //bail
             goto bail;
@@ -287,30 +313,30 @@
     }
     
     //set 'RunAtLoad' flag
-    if(YES == [plistContents[@"RunAtLoad"] isKindOfClass:[NSNumber class]])
+    if(YES == [plist[@"runatload"] isKindOfClass:[NSNumber class]])
     {
         //set
-        runAtLoad = [plistContents[@"RunAtLoad"] boolValue];
+        runAtLoad = [plist[@"runatload"] boolValue];
     }
     
     //set 'KeepAlive' flag
-    if(YES == [plistContents[@"KeepAlive"] isKindOfClass:[NSNumber class]])
+    if(YES == [plist[@"keepalive"] isKindOfClass:[NSNumber class]])
     {
         //set
-        keepAlive = [plistContents[@"KeepAlive"] boolValue];
+        keepAlive = [plist[@"keepalive"] boolValue];
     }
     
     //set 'OnDemand' flag
-    if(YES == [plistContents[@"OnDemand"] isKindOfClass:[NSNumber class]])
+    if(YES == [plist[@"ondemand"] isKindOfClass:[NSNumber class]])
     {
         //set
-        onDemand = [plistContents[@"OnDemand"] boolValue];
+        onDemand = [plist[@"ondemand"] boolValue];
     }
     
     //set 'StartInterval' flag
     // ->check both and 'StartInterval' and 'StartCalendarInterval'
-    if( (nil != plistContents[@"StartInterval"]) ||
-        (nil != plistContents[@"StartCalendarInterval"]) )
+    if( (nil != plist[@"startinterval"]) ||
+        (nil != plist[@"startcalendarinterval"]) )
                  
     {
         //set

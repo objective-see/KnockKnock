@@ -1186,7 +1186,6 @@ bail:
     return processes;
 }
 
-
 //check if a file is an executable
 BOOL isURLExecutable(NSURL* file)
 {
@@ -1229,4 +1228,25 @@ BOOL isURLExecutable(NSURL* file)
     return isExecutable;
 }
 
-
+//lookup object in dictionary
+// note: key can be case-insensitive
+id extractFromDictionary(NSDictionary* dictionary, NSString* sensitiveKey)
+{
+    //object
+    __block id object;
+    
+    //look for key
+    [dictionary enumerateKeysAndObjectsWithOptions:NSEnumerationConcurrent
+      usingBlock:^(id key, id obj, BOOL *stop)
+      {
+          //(case insenstive) match?
+          if( (YES == [key isKindOfClass:[NSString class]]) &&
+              (NSOrderedSame == [(NSString*)key caseInsensitiveCompare:sensitiveKey]) )
+          {
+            object = obj;
+            *stop = YES;
+          }
+    }];
+    
+    return object;
+}

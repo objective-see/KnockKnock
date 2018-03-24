@@ -11,6 +11,8 @@
             continueAfterRunningActions = "No"
             symbolName = "-[NSObject doesNotRecognizeSelector:]"
             moduleName = "">
+            <Locations>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

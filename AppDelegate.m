@@ -10,11 +10,21 @@
 #import "AppDelegate.h"
 
 //supported plugins
-NSString * const SUPPORTED_PLUGINS[] = {@"DylibProxies"}; //{@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"SpotlightImporters", @"StartupScripts"};
+NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"SpotlightImporters", @"StartupScripts"};
 
 //TODO: white list for el capitan! (think we are good, but test in VM)
 
 //TODO: cmdline interface
+
+//TODO: scan other volume
+
+//TODO: delete items
+
+//TODO: persistence via Event Mon
+
+//TODO: search
+
+//TODO: better parsing of args for /sh etc? or at least don't say they are 'APPLE' (and thus filter out)
 
 @implementation AppDelegate
 

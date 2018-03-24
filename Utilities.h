@@ -83,4 +83,8 @@ NSMutableArray* runningProcesses();
 //check if a file is an executable
 BOOL isURLExecutable(NSURL* file);
 
+//lookup object in dictionary
+// note: key can be case-insensitive
+id extractFromDictionary(NSDictionary* dictionary, NSString* sensitiveKey);
+
 #endif
