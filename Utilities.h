@@ -12,7 +12,7 @@
 /* METHODS */
 
 //check if OS is supported
-BOOL isSupportedOS();
+BOOL isSupportedOS(void);
 
 //get OS's major or minor version
 SInt32 getVersion(OSType selector);
@@ -41,7 +41,7 @@ NSDictionary* hashFile(NSString* filePath);
 
 //get app's version
 // ->extracted from Info.plist
-NSString* getAppVersion();
+NSString* getAppVersion(void);
 
 //convert a textview to a clickable hyperlink
 void makeTextViewHyperlink(NSTextField* textField, NSURL* url);
@@ -60,7 +60,7 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments);
 void makeModal(NSWindowController* windowController);
 
 //check if computer has network connection
-BOOL isNetworkConnected();
+BOOL isNetworkConnected(void);
 
 //escape \ and "s in a string
 NSString* escapeString(NSString* unescapedString);
@@ -70,7 +70,7 @@ NSLayoutConstraint* findConstraint(NSView* view, NSString* constraintName);
 
 //check if app is pristine
 // ->that is to say, nobody modified on-disk image/resources (white lists!, etc)
-OSStatus verifySelf();
+OSStatus verifySelf(void);
 
 //given a 'short' path or process name
 // ->find the full path by scanning $PATH
@@ -78,7 +78,7 @@ NSString* which(NSString* processName);
 
 //get array of running procs
 // ->returns an array of process paths
-NSMutableArray* runningProcesses();
+NSMutableArray* runningProcesses(void);
 
 //check if a file is an executable
 BOOL isURLExecutable(NSURL* file);

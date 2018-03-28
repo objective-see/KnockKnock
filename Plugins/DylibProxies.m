@@ -41,7 +41,7 @@
 }
 
 //find dylibs
-// ->loaded in (user) processes & references by all running procs
+// loaded in (user) processes & references by all running procs
 -(NSMutableArray*)enumDylibs
 {
     //dylibs
@@ -73,6 +73,10 @@
     
     //file path
     NSString* filePath = nil;
+    
+    //pool
+    @autoreleasepool
+    {
     
     //alloc array
     dylibs = [NSMutableArray array];
@@ -116,7 +120,7 @@
         
         //skip 'non files' / non-executable files
         if( (YES != [[NSFileManager defaultManager] fileExistsAtPath:filePath]) ||
-            (YES == isURLExecutable([NSURL fileURLWithPath:filePath])) )
+            (YES != isURLExecutable([NSURL fileURLWithPath:filePath])) )
         {
             //skip
             continue;
@@ -136,8 +140,9 @@
     
     //remove duplicates
     dylibs = [[[NSSet setWithArray:dylibs] allObjects] mutableCopy];
+        
+    }//pool
 
-//bail
 bail:
     
     return dylibs;
@@ -151,6 +156,10 @@ bail:
     
     //macho parser
     MachO* machoParser = nil;
+    
+    //pool
+    @autoreleasepool
+    {
     
     //alloc array
     dylibs = [NSMutableArray array];
@@ -178,6 +187,8 @@ bail:
     
     //remove duplicates
     dylibs = [[[NSSet setWithArray:dylibs] allObjects] mutableCopy];
+        
+    } //pool
     
     return dylibs;
 }
@@ -199,6 +210,10 @@ bail:
     // ->make sure its a dylib and then that it re-exports stuff?
     for(NSString* dylib in dylibs)
     {
+        //pool
+        @autoreleasepool
+        {
+            
         //alloc macho parser
         // ->new instance for each file!
         machoParser = [[MachO alloc] init];
@@ -226,15 +241,15 @@ bail:
         
         //save
         [proxies addObject:dylib];
+            
+        }//pool
     
     }
     
-//bail
 bail:
     
     return proxies;
 }
-
 
 //scan for proxy dylibs
 -(void)scan

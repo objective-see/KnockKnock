@@ -24,11 +24,11 @@
 		CD0219501AD34D8B005148A2 /* PrefsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD02194E1AD34D8B005148A2 /* PrefsWindow.xib */; };
 		CD0219531AD34D9A005148A2 /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD0219521AD34D9A005148A2 /* AboutWindowController.m */; };
 		CD0219551AD34E4C005148A2 /* kkIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD0219541AD34E4C005148A2 /* kkIcon.png */; };
-		CD0219581AD37748005148A2 /* signed2.png in Resources */ = {isa = PBXBuildFile; fileRef = CD0219561AD37748005148A2 /* signed2.png */; };
-		CD0219591AD37748005148A2 /* unsigned2.png in Resources */ = {isa = PBXBuildFile; fileRef = CD0219571AD37748005148A2 /* unsigned2.png */; };
 		CD02195C1AD38823005148A2 /* kkRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CD02195B1AD38823005148A2 /* kkRowCell.m */; };
 		CD02195E1AD39A74005148A2 /* ResultsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD02195D1AD39A74005148A2 /* ResultsWindow.xib */; };
 		CD0219611AD39A83005148A2 /* ResultsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD0219601AD39A83005148A2 /* ResultsWindowController.m */; };
+		CD2B613320675EEC00BF72E9 /* EventRules.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2B611220675EEB00BF72E9 /* EventRules.m */; };
+		CD2B61442067656200BF72E9 /* eventRulesIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD2B61432067656200BF72E9 /* eventRulesIcon.png */; };
 		CD6095731A87067D00E091CD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6095721A87067D00E091CD /* Security.framework */; };
 		CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975031B02F60400CE819B /* RFOverlayScroller.m */; };
 		CD6975071B02F60400CE819B /* RFOverlayScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975051B02F60400CE819B /* RFOverlayScrollView.m */; };
@@ -142,13 +142,14 @@
 		CD0219511AD34D9A005148A2 /* AboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutWindowController.h; sourceTree = "<group>"; };
 		CD0219521AD34D9A005148A2 /* AboutWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutWindowController.m; sourceTree = "<group>"; };
 		CD0219541AD34E4C005148A2 /* kkIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kkIcon.png; path = images/kkIcon.png; sourceTree = SOURCE_ROOT; };
-		CD0219561AD37748005148A2 /* signed2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = signed2.png; path = images/signed2.png; sourceTree = SOURCE_ROOT; };
-		CD0219571AD37748005148A2 /* unsigned2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unsigned2.png; path = images/unsigned2.png; sourceTree = SOURCE_ROOT; };
 		CD02195A1AD38823005148A2 /* kkRowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kkRowCell.h; sourceTree = "<group>"; };
 		CD02195B1AD38823005148A2 /* kkRowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = kkRowCell.m; sourceTree = "<group>"; };
 		CD02195D1AD39A74005148A2 /* ResultsWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ResultsWindow.xib; path = UI/ResultsWindow.xib; sourceTree = "<group>"; };
 		CD02195F1AD39A83005148A2 /* ResultsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultsWindowController.h; sourceTree = "<group>"; };
 		CD0219601AD39A83005148A2 /* ResultsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultsWindowController.m; sourceTree = "<group>"; };
+		CD2B611220675EEB00BF72E9 /* EventRules.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventRules.m; path = Plugins/EventRules.m; sourceTree = "<group>"; };
+		CD2B611320675EEB00BF72E9 /* EventRules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventRules.h; path = Plugins/EventRules.h; sourceTree = "<group>"; };
+		CD2B61432067656200BF72E9 /* eventRulesIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = eventRulesIcon.png; path = images/eventRulesIcon.png; sourceTree = SOURCE_ROOT; };
 		CD6095721A87067D00E091CD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CD6975021B02F60400CE819B /* RFOverlayScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RFOverlayScroller.h; path = 3rdParty/RFOverlayScroller.h; sourceTree = "<group>"; };
 		CD6975031B02F60400CE819B /* RFOverlayScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RFOverlayScroller.m; path = 3rdParty/RFOverlayScroller.m; sourceTree = "<group>"; };
@@ -380,6 +381,7 @@
 		CD6095501A8329FA00E091CD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				CD2B61432067656200BF72E9 /* eventRulesIcon.png */,
 				7D44F4C61DAAEF3E0085859C /* proxyIcon.png */,
 				7DE2FE2F1D3F3228006C1438 /* extensionIcon.png */,
 				7DE29CA51CA7C10500DFA6A6 /* startupScriptsIcon.png */,
@@ -391,8 +393,6 @@
 				CDD83FD51B50C76F0037124E /* cronIcon.png */,
 				CDAB98A21AEB413C00C75B4B /* dylibIcon.png */,
 				CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */,
-				CD0219561AD37748005148A2 /* signed2.png */,
-				CD0219571AD37748005148A2 /* unsigned2.png */,
 				CD0219541AD34E4C005148A2 /* kkIcon.png */,
 				CD7B9FA51ACCAE5E00DF3C71 /* startScanOver.png */,
 				CD7B9FA61ACCAE5E00DF3C71 /* stopScanOver.png */,
@@ -469,6 +469,8 @@
 		CDA81D861A96F429009790E2 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				CD2B611320675EEB00BF72E9 /* EventRules.h */,
+				CD2B611220675EEB00BF72E9 /* EventRules.m */,
 				7D44F4C31DAAEDE40085859C /* DylibProxies.h */,
 				7D44F4C41DAAEDE40085859C /* DylibProxies.m */,
 				7DE2FE2C1D3F30BE006C1438 /* Extensions.h */,
@@ -572,7 +574,7 @@
 		1D21BC43172AF43D009D1CFD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Objective-See";
 				TargetAttributes = {
 					1D21BC4A172AF43D009D1CFD = {
@@ -624,13 +626,12 @@
 				CDF08CF01ACA677B009B3423 /* kernelIcon.png in Resources */,
 				CDF08CD01AC4C6E8009B3423 /* settingsBG.png in Resources */,
 				CD0219551AD34E4C005148A2 /* kkIcon.png in Resources */,
-				CD0219591AD37748005148A2 /* unsigned2.png in Resources */,
 				CDA81D5C1A95B4B4009790E2 /* MainMenu.xib in Resources */,
 				CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */,
-				CD0219581AD37748005148A2 /* signed2.png in Resources */,
 				CDA81DCB1A9960A3009790E2 /* virusTotal.png in Resources */,
 				CDA81DF41A99B8C2009790E2 /* whitelistedExtensions.json in Resources */,
 				CDA81DD41A9970A0009790E2 /* unsigned.png in Resources */,
+				CD2B61442067656200BF72E9 /* eventRulesIcon.png in Resources */,
 				CD7B9FA71ACCAE5E00DF3C71 /* startScanOver.png in Resources */,
 				CD001B371AB903040089014A /* kkText.png in Resources */,
 				CD6BBBE91B50D67A00506D0D /* binaryIcon.icns in Resources */,
@@ -684,6 +685,7 @@
 				CD6975071B02F60400CE819B /* RFOverlayScrollView.m in Sources */,
 				CDF08CCA1AC4C678009B3423 /* PrefsWindowController.m in Sources */,
 				CDA81E071A9AFFA7009790E2 /* LoginItems.m in Sources */,
+				CD2B613320675EEC00BF72E9 /* EventRules.m in Sources */,
 				CDA81DEA1A997BF1009790E2 /* InfoWindowController.m in Sources */,
 				CD02195C1AD38823005148A2 /* kkRowCell.m in Sources */,
 				CDA81E041A9AB89C009790E2 /* LaunchItems.m in Sources */,
@@ -745,12 +747,18 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -787,12 +795,18 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

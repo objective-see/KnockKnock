@@ -128,7 +128,7 @@
             if(YES == [self.signingInfo[KEY_SIGNING_IS_APPLE] boolValue])
             {
                 //unset
-                machoParser.binaryInfo[KEY_IS_PACKED] = NO;
+                machoParser.binaryInfo[KEY_IS_PACKED] = @NO;
             }
             
             //set packed flag

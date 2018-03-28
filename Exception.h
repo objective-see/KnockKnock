@@ -4,9 +4,8 @@
 #import <syslog.h>
 #import <signal.h>
 
-
 //install exception/signal handlers
-void installExceptionHandlers();
+void installExceptionHandlers(void);
 
 //exception handler for Obj-C exceptions
 void exceptionHandler(NSException *exception);
@@ -15,6 +14,4 @@ void exceptionHandler(NSException *exception);
 void signalHandler(int signal, siginfo_t *info, void *context);
 
 //display an alert
-void showAlert();
-
-
+void showAlert(void);

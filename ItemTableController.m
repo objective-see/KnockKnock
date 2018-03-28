@@ -67,12 +67,11 @@
     // ->then grab count
     rows = [[self getTableItems] count];
     
-    //if not items have been found
-    // ->display 'not found' msg
+    //no items have been found?
+    // display 'not found' msg
     if( (0 == rows) &&
         (nil != selectedPluginObj) )
     {
-
         //first time
         // ->alloc/init it
         if(nil == self.noItemsLabel)
@@ -258,7 +257,7 @@
     if(nil != itemNameLeftPadding)
     {
         //set
-        itemNameLeftPadding.constant = 68;
+        itemNameLeftPadding.constant = 23;
     }
     
     //set item's path top padding to default
@@ -269,7 +268,7 @@
     }
     
     //check if cell was previously used (by checking the item name)
-    // ->if so, set flag to indicated tracking area does not need to be added
+    // if so, set flag to indicated tracking area does not need to be added
     if(YES != [itemCell.textField.stringValue isEqualToString:@"Item Name"])
     {
         //set flag
@@ -546,7 +545,7 @@
         if(nil != itemNameLeftPadding)
         {
             //set
-            itemNameLeftPadding.constant = 53;
+            itemNameLeftPadding.constant = 8;
         }
         
                 

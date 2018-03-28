@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 
 //supported plugins
-NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"SpotlightImporters", @"StartupScripts"};
+NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"SpotlightImporters", @"StartupScripts"};
 
 //TODO: white list for el capitan! (think we are good, but test in VM)
 
@@ -20,11 +20,10 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 
 //TODO: delete items
 
-//TODO: persistence via Event Mon
-
 //TODO: search
 
 //TODO: better parsing of args for /sh etc? or at least don't say they are 'APPLE' (and thus filter out)
+//      or make them a cmd!
 
 @implementation AppDelegate
 
@@ -349,6 +348,10 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     // ->invoke's each scan message
     for(PluginBase* plugin in self.plugins)
     {
+        //pool
+        @autoreleasepool
+        {
+        
         //exit if scanner (self) thread was cancelled
         if(YES == [[NSThread currentThread] isCancelled])
         {
@@ -379,6 +382,8 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
             //do query
             [self queryVT:plugin];
         }
+            
+        }//pool
     }
     
     //if VT querying is enabled (default) and network is available

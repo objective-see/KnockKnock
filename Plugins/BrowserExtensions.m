@@ -32,12 +32,16 @@
 //google chrome's base directory
 #define CHROME_BASE_PROFILE_DIRECTORY @"~/Library/Application Support/Google/Chrome/"
 
-//plugin search directory
+//plugin preferences file
 // ->chrome
-#define CHROME_EXTENSION_FILE @"~/Library/Application Support/Google/Chrome/Default/Preferences"
+#define CHROME_PREFERENCES_FILE @"~/Library/Application Support/Google/Chrome/Default/Preferences"
+
+//plugin secure preferences file
+// ->chrome
+#define CHROME_SECURE_PREFERENCES_FILE @"~/Library/Application Support/Google/Chrome/Default/Secure Preferences"
 
 //plugin search directory
-// ->chrome
+// ->firefox
 #define FIREFOX_EXTENSION_DIRECTORY @"~/Library/Application Support/Firefox/Profiles/"
 
 //opera base directory
@@ -353,8 +357,11 @@ bail:
     //alloc list for preference files
     preferenceFiles = [NSMutableArray array];
     
-    //add default
-    [preferenceFiles addObject:[CHROME_EXTENSION_FILE stringByExpandingTildeInPath]];
+    //add default ('Preferences')
+    [preferenceFiles addObject:[CHROME_PREFERENCES_FILE stringByExpandingTildeInPath]];
+    
+    //add default ('Secure Preferences')
+    [preferenceFiles addObject:[CHROME_SECURE_PREFERENCES_FILE stringByExpandingTildeInPath]];
     
     //get profile dirs
     // ->'Profile 1', etc...
@@ -363,8 +370,11 @@ bail:
     //build and append full paths of preferences files to list
     for(NSString* profile in profiles)
     {
-        //add
+        //add default prefs
         [preferenceFiles addObject:[NSString stringWithFormat:@"%@/%@/Preferences", [CHROME_BASE_PROFILE_DIRECTORY stringByExpandingTildeInPath], profile]];
+        
+        //add secure prefs
+        [preferenceFiles addObject:[NSString stringWithFormat:@"%@/%@/Secure Preferences", [CHROME_BASE_PROFILE_DIRECTORY stringByExpandingTildeInPath], profile]];
     }
     
     //process all preference files
@@ -501,8 +511,7 @@ bail:
 
     }//for all profile files
     
-    
-//bail
+
 bail:
     
     return;
