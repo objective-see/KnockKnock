@@ -48,12 +48,7 @@ NSString* const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreServ
 //scan for auth plugins
 -(void)scan
 {
-    //auth plugin directory
-    NSString* authPluginDirectory = nil;
-    
-    //number of search directories
-    NSUInteger directoryCount = 0;
-    
+
     //all auth plugins
     NSArray* allAuthPlugins = nil;
     
@@ -63,19 +58,10 @@ NSString* const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreServ
     //File obj
     File* fileObj = nil;
     
-    //dbg msg
-    //NSLog(@"%@: scanning", PLUGIN_NAME);
-    
-    //get number of search directories
-    directoryCount = sizeof(AUTHORIZATION_SEARCH_DIRECTORIES)/sizeof(AUTHORIZATION_SEARCH_DIRECTORIES[0]);
-    
     //iterate over all auth plugin search directories
-    // ->get all authorization plugins and process each of them
-    for(NSUInteger i=0; i < directoryCount; i++)
+    // get all authorization plugins and process each of them
+    for(NSString* authPluginDirectory in expandPaths(AUTHORIZATION_SEARCH_DIRECTORIES, sizeof(AUTHORIZATION_SEARCH_DIRECTORIES)/sizeof(AUTHORIZATION_SEARCH_DIRECTORIES[0])))
     {
-        //extract current directory
-        authPluginDirectory = [AUTHORIZATION_SEARCH_DIRECTORIES[i] stringByExpandingTildeInPath];
-        
         //get all items in current directory
         allAuthPlugins = directoryContents(authPluginDirectory, nil);
         

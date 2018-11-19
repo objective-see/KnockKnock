@@ -77,7 +77,7 @@
         
         //try grab launch items
         // ->will only !nil, when enumeration is complete
-        launchItems = ((AppDelegate*)[[NSApplication sharedApplication] delegate]).sharedItemEnumerator.launchItems;
+        launchItems = sharedItemEnumerator.launchItems;
         
     //keep trying until we get em!
     } while(nil == launchItems);

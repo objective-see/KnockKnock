@@ -275,9 +275,8 @@
         hasTrackingArea = YES;
     }
     
-    //default
-    // ->set main textfield's color to black
-    itemCell.textField.textColor = [NSColor blackColor];
+    //default color
+    itemCell.textField.textColor = NSColor.controlTextColor;
     
     //default
     // ->hide plist label
@@ -400,14 +399,14 @@
                     vtDetectionRatio = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)[((File*)item).vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[((File*)item).vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
                     
                     //known 'good' files (0 positivies)
-                    // ->(re)set to black/gray
+                    // ->(re)set colors
                     if(0 == [((File*)item).vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue])
                     {
-                        //(re)set title black
-                        itemCell.textField.textColor = [NSColor blackColor];
+                        //(re)set title color
+                        itemCell.textField.textColor = NSColor.controlTextColor;
                         
-                        //set color (black)
-                        stringAttributes[NSForegroundColorAttributeName] = [NSColor blackColor];
+                        //(re)set color
+                        stringAttributes[NSForegroundColorAttributeName] = NSColor.controlTextColor;
                         
                         //set string (vt ratio), with attributes
                         [vtButton setAttributedTitle:[[NSAttributedString alloc] initWithString:vtDetectionRatio attributes:stringAttributes]];
@@ -489,7 +488,7 @@
             customizedItemName = [[NSMutableAttributedString alloc] initWithString:@""];
             
             //add existing name
-            // ->uses existing color (red or black)
+            // ->uses existing color
             [customizedItemName appendAttributedString:[[NSMutableAttributedString alloc] initWithString:itemCell.textField.stringValue attributes:@{NSForegroundColorAttributeName:itemCell.textField.textColor}]];
             
             //add '('
@@ -889,47 +888,37 @@ NSImage* getCodeSigningIcon(File* binary)
     //signature image
     NSImage* codeSignIcon = nil;
     
-    //set signature status icon
-    if(nil != binary.signingInfo)
-    {
-        //binary is signed by apple
-        if(YES == [binary.signingInfo[KEY_SIGNING_IS_APPLE] boolValue])
-        {
-            //set
-            codeSignIcon = [NSImage imageNamed:@"signedAppleIcon"];
-        }
-        
-        //binary is signed
-        else if(STATUS_SUCCESS == [binary.signingInfo[KEY_SIGNATURE_STATUS] integerValue])
-        {
-            //set
-            codeSignIcon = [NSImage imageNamed:@"signed"];
-        }
-        
-        //binary not signed
-        else if(errSecCSUnsigned == [binary.signingInfo[KEY_SIGNATURE_STATUS] integerValue])
-        {
-            //set
-            codeSignIcon = [NSImage imageNamed:@"unsigned"];
-        }
-        
-        //unknown
-        else
-        {
-            //set
-            codeSignIcon = [NSImage imageNamed:@"unknown"];
-        }
-    }
-    //signing info is nil
-    // ->just to unknown
-    else
+    //no signing info or signing error
+    if( (nil == binary.signingInfo) ||
+        (nil == binary.signingInfo[KEY_SIGNATURE_STATUS]) ||
+        (errSecSuccess != [binary.signingInfo[KEY_SIGNATURE_STATUS] intValue]) )
     {
         //set
         codeSignIcon = [NSImage imageNamed:@"unknown"];
     }
+
+    //apple?
+    else if(Apple == [binary.signingInfo[KEY_SIGNATURE_SIGNER] intValue])
+    {
+        //set
+        codeSignIcon = [NSImage imageNamed:@"signedAppleIcon"];
+    }
     
+    //signed
+    else if(errSecSuccess == [binary.signingInfo[KEY_SIGNATURE_STATUS] intValue])
+    {
+        //set
+        codeSignIcon = [NSImage imageNamed:@"signed"];
+    }
+    
+    //unsigned
+    else if(errSecCSUnsigned == [binary.signingInfo[KEY_SIGNATURE_STATUS] intValue])
+    {
+        //set
+        codeSignIcon = [NSImage imageNamed:@"unsigned"];
+    }
+   
     return codeSignIcon;
-    
 }
 
 @end

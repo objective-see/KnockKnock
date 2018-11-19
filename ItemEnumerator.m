@@ -69,37 +69,28 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
 }
 
 //generate list of all launch items (daemons & agents)
-// ->save into iVar, 'launchItem'
 -(void)enumerateLaunchItems
 {
     //all launch items
     NSMutableArray* allLaunchItems = nil;
     
-    //number of search directories
-    NSUInteger directoryCount = 0;
-    
-    //current launch item directory
-    NSString* launchItemDirectory = nil;
+    //all launch item directories, expanded
+    NSMutableArray* launchItemDirectories = nil;
     
     //alloc array for all launch items
     allLaunchItems = [NSMutableArray array];
     
-    //get number of search directories
-    directoryCount = sizeof(LAUNCHITEM_SEARCH_DIRECTORIES)/sizeof(LAUNCHITEM_SEARCH_DIRECTORIES[0]);
+    //expand list
+    launchItemDirectories = expandPaths(LAUNCHITEM_SEARCH_DIRECTORIES, sizeof(LAUNCHITEM_SEARCH_DIRECTORIES)/sizeof(LAUNCHITEM_SEARCH_DIRECTORIES[0]));
     
-    //iterate over all launch item directories
-    // ->cumulativelly save all launch items
-    for(NSUInteger i=0; i < directoryCount; i++)
+    //iterate over all launch item direcoties
+    // grab all .plists and add to cumulative array
+    for(NSString* launchItemDirectory in launchItemDirectories)
     {
-        //extract current directory
-        launchItemDirectory = [LAUNCHITEM_SEARCH_DIRECTORIES[i] stringByExpandingTildeInPath];
-        
-        //iterate over all launch item (plists) in current launch item directory
-        // ->build full path it launch item and save it into array
+        //grab all plist
         for(NSString* plist in directoryContents(launchItemDirectory, @"self ENDSWITH '.plist'"))
         {
-            //build full path to item/plist
-            // ->save it into array
+            //build full path to item/plist and save
             [allLaunchItems addObject:[NSString stringWithFormat:@"%@/%@", launchItemDirectory, plist]];
         }
     }

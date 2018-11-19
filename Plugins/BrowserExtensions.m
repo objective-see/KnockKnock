@@ -40,6 +40,7 @@
 // ->chrome
 #define CHROME_SECURE_PREFERENCES_FILE @"~/Library/Application Support/Google/Chrome/Default/Secure Preferences"
 
+
 //plugin search directory
 // ->firefox
 #define FIREFOX_EXTENSION_DIRECTORY @"~/Library/Application Support/Firefox/Profiles/"
@@ -164,8 +165,8 @@
     return browsers;
 }
 
-
 //scan for Safari extensions
+// note: on Mojave+ this will just silently fail :(
 -(void)scanExtensionsSafari:(NSString*)browserPath
 {
     //status
@@ -197,7 +198,7 @@
     Extension* extensionObj = nil;
     
     //query keychain to get safari extensions
-    status = SecKeychainFindGenericPassword (NULL, (UInt32)strlen(SAFARI_KEYCHAIN_SERVICE), SAFARI_KEYCHAIN_SERVICE, (UInt32)strlen(SAFARI_KEYCHAIN_ACCOUNT), SAFARI_KEYCHAIN_ACCOUNT, &keychainDataLength, &keychainData, &keychainItemRef);
+    status = SecKeychainFindGenericPassword(NULL, (UInt32)strlen(SAFARI_KEYCHAIN_SERVICE), SAFARI_KEYCHAIN_SERVICE, (UInt32)strlen(SAFARI_KEYCHAIN_ACCOUNT), SAFARI_KEYCHAIN_ACCOUNT, &keychainDataLength, &keychainData, &keychainItemRef);
     
     //on success
     // ->convert binary plist keychain data (extensions) into dictionary
@@ -217,18 +218,15 @@
     }
     
     //make sure extensions were found
-    // ->bail if nothing was found/parsed
+    // bail if nothing was found/parsed
     if(nil == extensions)
     {
-        //err msg
-        //NSLog(@"OBJECTIVE-SEE ERROR: querying keychain for Safari extensions failed with %d", status);
-        
         //bail
         goto bail;
     }
     
     //iterate over all installed extensions
-    // ->save/report enabled ones
+    // save/report enabled ones
     for(NSDictionary* extension in extensions[@"Installed Extensions"])
     {
         //alloc extension info
@@ -327,11 +325,17 @@ bail:
 //scan for Chrome extensions
 -(void)scanExtensionsChrome:(NSString*)browserPath
 {
+    //all users
+    NSMutableDictionary* users = nil;
+    
     //preference files
     NSMutableArray* preferenceFiles = nil;
     
     //profile directories
     NSArray* profiles = nil;
+    
+    //(current) profile directory
+    NSString* profileDirectory = nil;
     
     //preferences
     NSDictionary* preferences = nil;
@@ -357,28 +361,52 @@ bail:
     //alloc list for preference files
     preferenceFiles = [NSMutableArray array];
     
-    //add default ('Preferences')
-    [preferenceFiles addObject:[CHROME_PREFERENCES_FILE stringByExpandingTildeInPath]];
+    //alloc users dictionary
+    users = [NSMutableDictionary dictionary];
     
-    //add default ('Secure Preferences')
-    [preferenceFiles addObject:[CHROME_SECURE_PREFERENCES_FILE stringByExpandingTildeInPath]];
-    
-    //get profile dirs
-    // ->'Profile 1', etc...
-    profiles = directoryContents([CHROME_BASE_PROFILE_DIRECTORY stringByExpandingTildeInPath], @"self BEGINSWITH 'Profile'");
-    
-    //build and append full paths of preferences files to list
-    for(NSString* profile in profiles)
+    //root?
+    // can scan all users
+    if(0 == geteuid())
     {
-        //add default prefs
-        [preferenceFiles addObject:[NSString stringWithFormat:@"%@/%@/Preferences", [CHROME_BASE_PROFILE_DIRECTORY stringByExpandingTildeInPath], profile]];
-        
-        //add secure prefs
-        [preferenceFiles addObject:[NSString stringWithFormat:@"%@/%@/Secure Preferences", [CHROME_BASE_PROFILE_DIRECTORY stringByExpandingTildeInPath], profile]];
+        //all
+        users = allUsers();
+    }
+    //just current user
+    else
+    {
+        //current
+        users[getConsoleUser()] = @{USER_NAME:getConsoleUser(), USER_DIRECTORY:NSHomeDirectoryForUser(getConsoleUser())};
     }
     
-    //process all preference files
-    // ->load/parse/extract extensions
+    //get profile files for all users
+    for(NSString* userID in users)
+    {
+        //add default ('Preferences')
+        [preferenceFiles addObject:[users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[CHROME_PREFERENCES_FILE substringFromIndex:1]]];
+        
+        //add default ('Secure Preferences')
+        [preferenceFiles addObject:[users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[CHROME_SECURE_PREFERENCES_FILE substringFromIndex:1]]];
+        
+        //get profile dirs
+        // 'Profile 1', etc...
+        profiles = directoryContents([users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[CHROME_BASE_PROFILE_DIRECTORY substringFromIndex:1]], @"self BEGINSWITH 'Profile'");
+        
+        //build and append full paths of preferences files to list
+        for(NSString* profile in profiles)
+        {
+            //init profile directory
+            profileDirectory = [users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[CHROME_BASE_PROFILE_DIRECTORY substringFromIndex:1]];
+            
+            //add default prefs
+            [preferenceFiles addObject:[NSString stringWithFormat:@"%@/%@/Preferences", profileDirectory, profile]];
+            
+            //add secure prefs
+            [preferenceFiles addObject:[NSString stringWithFormat:@"%@/%@/Secure Preferences", profileDirectory, profile]];
+        }
+    }
+    
+    //now process all preference files
+    // load/parse/extract extensions from each file
     for(NSString* preferenceFile in preferenceFiles)
     {
         //skip non-existent preference files
@@ -520,9 +548,12 @@ bail:
 //scan for Firefox extensions
 -(void)scanExtensionsFirefox:(NSString*)browserPath
 {
+    //users
+    NSMutableDictionary* users = nil;
+    
     //Firefox profiles
     NSArray* profiles = nil;
-    
+
     //path to extensions
     NSString* extensionsFile = nil;
     
@@ -541,8 +572,7 @@ bail:
     
     //extension path
     NSMutableString* path = nil;
-    
-    //extension info
+        //extension info
     NSMutableDictionary* extensionInfo = nil;
     
     //Extension object
@@ -551,186 +581,204 @@ bail:
     //init extension IDs array
     extensionIDs = [NSMutableArray array];
     
-    //get all profiles
-    profiles = directoryContents([FIREFOX_EXTENSION_DIRECTORY stringByExpandingTildeInPath], nil);
+    //alloc users dictionary
+    users = [NSMutableDictionary dictionary];
     
-    //iterate over all addons and extensions files in profile directories
-    //->extact all addons and extensions
-    for(NSString* profile in profiles)
+    //root?
+    // can scan all users
+    if(0 == geteuid())
     {
-        //init extension files array
-        extensionFiles = [NSMutableArray array];
-        
-        //init extension info dictionary
-        extensionInfo = [NSMutableDictionary dictionary];
-        
-        //init path to first extensions (addons.json) file
-        extensionsFile = [NSString stringWithFormat:@"%@/%@/addons.json", [FIREFOX_EXTENSION_DIRECTORY stringByExpandingTildeInPath], profile];
-        
-        //only add to list if it exists
-        if(YES == [[NSFileManager defaultManager] fileExistsAtPath:extensionsFile])
+        //all
+        users = allUsers();
+    }
+    //just current user
+    else
+    {
+        //current
+        users[getConsoleUser()] = @{USER_NAME:getConsoleUser(), USER_DIRECTORY:NSHomeDirectoryForUser(getConsoleUser())};
+    }
+    
+    //get profile files for all users
+    for(NSString* userID in users)
+    {
+        //get user profiles
+        profiles = directoryContents([users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[FIREFOX_EXTENSION_DIRECTORY substringFromIndex:1]], nil);
+                                     
+        //iterate over all addons and extensions files in profile directories
+        //->extact all addons and extensions
+        for(NSString* profile in profiles)
         {
-            //save
-            [extensionFiles addObject:extensionsFile];
-        }
-        
-        //init path to second extensions (extensions.json) file
-        extensionsFile = [NSString stringWithFormat:@"%@/%@/extensions.json", [FIREFOX_EXTENSION_DIRECTORY stringByExpandingTildeInPath], profile];
-        
-        //only add to list if it exists
-        if(YES == [[NSFileManager defaultManager] fileExistsAtPath:extensionsFile])
-        {
-            //save
-            [extensionFiles addObject:extensionsFile];
-        }
-        
-        //process both files
-        for(NSString* extensionFile in extensionFiles)
-        {
-            //load extensions
-            // ->wrap since we are serializing JSON
-            @try
+            //init extension files array
+            extensionFiles = [NSMutableArray array];
+            
+            //init extension info dictionary
+            extensionInfo = [NSMutableDictionary dictionary];
+            
+            //init path to first extensions (addons.json) file
+            extensionsFile = [NSString stringWithFormat:@"%@/%@/addons.json", [users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[FIREFOX_EXTENSION_DIRECTORY substringFromIndex:1]], profile];
+            if(YES == [[NSFileManager defaultManager] fileExistsAtPath:extensionsFile])
             {
-                //load em
-                // ->extension files, under 'addons' key
-                extensions = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:extensionFile] options:kNilOptions error:NULL][@"addons"];
-            }
-            //catch any exceptions
-            // ->just try next
-            @catch(NSException *exception)
-            {
-                //next
-                continue;
+                //save
+                [extensionFiles addObject:extensionsFile];
             }
             
-            //parse out all extensions
-            for(NSDictionary* extension in extensions)
+            //init path to second extensions (extensions.json) file
+            extensionsFile = [NSString stringWithFormat:@"%@/%@/extensions.json", [users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[FIREFOX_EXTENSION_DIRECTORY substringFromIndex:1]], profile];
+            if(YES == [[NSFileManager defaultManager] fileExistsAtPath:extensionsFile])
             {
-                //ignore dups
-                if(YES == [extensionIDs containsObject:extension[@"id"]])
+                //save
+                [extensionFiles addObject:extensionsFile];
+            }
+            
+            //process both files
+            for(NSString* extensionFile in extensionFiles)
+            {
+                //load extensions
+                // ->wrap since we are serializing JSON
+                @try
                 {
-                    //skip
+                    //load em
+                    // ->extension files, under 'addons' key
+                    extensions = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:extensionFile] options:kNilOptions error:NULL][@"addons"];
+                }
+                //catch any exceptions
+                // ->just try next
+                @catch(NSException *exception)
+                {
+                    //next
                     continue;
                 }
                 
-                //extract/save extension ID
-                extensionInfo[KEY_EXTENSION_ID] = extension[@"id"];
-                
-                //extract/save path, name, details
-                // ->case: addons.json file
-                if(YES == [[extensionFile lastPathComponent] isEqualToString:@"addons.json"])
+                //parse out all extensions
+                for(NSDictionary* extension in extensions)
                 {
-                    //extract path
-                    path = [NSMutableString stringWithFormat:@"%@/extensions/%@.xpi", [extensionFile stringByDeletingLastPathComponent], extension[@"id"]];
-                    
-                    //skip invalid/not found paths
-                    if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
+                    //ignore dups
+                    if(YES == [extensionIDs containsObject:extension[@"id"]])
                     {
                         //skip
                         continue;
                     }
                     
-                    //save path
-                    extensionInfo[KEY_RESULT_PATH] = path;
-
-                    //skip blank names
-                    if(nil == extension[@"name"])
-                    {
-                        //skip
-                        continue;
-                    }
+                    //extract/save extension ID
+                    extensionInfo[KEY_EXTENSION_ID] = extension[@"id"];
                     
-                    //extract/save name
-                    extensionInfo[KEY_RESULT_NAME] = extension[@"name"];
-                    
-                    //extract/save details
-                    if(nil != extension[@"description"])
+                    //extract/save path, name, details
+                    // ->case: addons.json file
+                    if(YES == [[extensionFile lastPathComponent] isEqualToString:@"addons.json"])
                     {
-                        //save
-                        extensionInfo[KEY_EXTENSION_DETAILS] = extension[@"description"];
-                    }
-                }
-                //extract/save path, name, details
-                // ->case: extensions.json file
-                else
-                {
-                    //extract path
-                    path = [NSMutableString stringWithFormat:@"%@/extensions/%@", [extensionFile stringByDeletingLastPathComponent], extension[@"id"]];
-                    
-                    //skip invalid/not found paths
-                    // ->note: also checks for extensions that end in .xpi (to account for newer versions of firefox)
-                    if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
-                    {
-                        //create .xpi version
-                        [path appendString:@".xpi"];
+                        //extract path
+                        path = [NSMutableString stringWithFormat:@"%@/extensions/%@.xpi", [extensionFile stringByDeletingLastPathComponent], extension[@"id"]];
                         
-                        //check this variation too
+                        //skip invalid/not found paths
                         if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
                         {
                             //skip
                             continue;
                         }
+                        
+                        //save path
+                        extensionInfo[KEY_RESULT_PATH] = path;
+                        
+                        //skip blank names
+                        if(nil == extension[@"name"])
+                        {
+                            //skip
+                            continue;
+                        }
+                        
+                        //extract/save name
+                        extensionInfo[KEY_RESULT_NAME] = extension[@"name"];
+                        
+                        //extract/save details
+                        if(nil != extension[@"description"])
+                        {
+                            //save
+                            extensionInfo[KEY_EXTENSION_DETAILS] = extension[@"description"];
+                        }
+                    }
+                    //extract/save path, name, details
+                    // ->case: extensions.json file
+                    else
+                    {
+                        //extract path
+                        path = [NSMutableString stringWithFormat:@"%@/extensions/%@", [extensionFile stringByDeletingLastPathComponent], extension[@"id"]];
+                        
+                        //skip invalid/not found paths
+                        // ->note: also checks for extensions that end in .xpi (to account for newer versions of firefox)
+                        if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
+                        {
+                            //create .xpi version
+                            [path appendString:@".xpi"];
+                            
+                            //check this variation too
+                            if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
+                            {
+                                //skip
+                                continue;
+                            }
+                        }
+                        
+                        //save path
+                        extensionInfo[KEY_RESULT_PATH] = path;
+                        
+                        //extract default locale
+                        defaultLocale = extension[@"defaultLocale"];
+                        
+                        //skip nil defaultLocales
+                        if(nil == defaultLocale)
+                        {
+                            //skip
+                            continue;
+                        }
+                        
+                        //skip blank names
+                        if(nil == defaultLocale[@"name"])
+                        {
+                            //skip
+                            continue;
+                        }
+                        
+                        //extract/save name
+                        extensionInfo[KEY_RESULT_NAME] = defaultLocale[@"name"];
+                        
+                        //extract/save details
+                        if(nil != defaultLocale[@"description"])
+                        {
+                            //save
+                            extensionInfo[KEY_EXTENSION_DETAILS] = defaultLocale[@"description"];
+                        }
                     }
                     
-                    //save path
-                    extensionInfo[KEY_RESULT_PATH] = path;
+                    //save extension ID
+                    // ->prevents dups (since multiple files are being parsed)
+                    [extensionIDs addObject:extensionInfo[KEY_EXTENSION_ID]];
                     
-                    //extract default locale
-                    defaultLocale = extension[@"defaultLocale"];
+                    //save browser path (i.e. Firefox)
+                    extensionInfo[KEY_EXTENSION_BROWSER] = browserPath;
                     
-                    //skip nil defaultLocales
-                    if(nil == defaultLocale)
+                    //save plugin
+                    extensionInfo[KEY_RESULT_PLUGIN] = self;
+                    
+                    //create Extension object for launch item
+                    // ->skip those that err out for any reason
+                    if(nil == (extensionObj = [[Extension alloc] initWithParams:extensionInfo]))
                     {
                         //skip
                         continue;
                     }
                     
-                    //skip blank names
-                    if(nil == defaultLocale[@"name"])
-                    {
-                        //skip
-                        continue;
-                    }
+                    //process item
+                    // ->save and report to UI
+                    [super processItem:extensionObj];
                     
-                    //extract/save name
-                    extensionInfo[KEY_RESULT_NAME] = defaultLocale[@"name"];
-                    
-                    //extract/save details
-                    if(nil != defaultLocale[@"description"])
-                    {
-                        //save
-                        extensionInfo[KEY_EXTENSION_DETAILS] = defaultLocale[@"description"];
-                    }
-                }
+                }//for all extension in file
                 
-                //save extension ID
-                // ->prevents dups (since multiple files are being parsed)
-                [extensionIDs addObject:extensionInfo[KEY_EXTENSION_ID]];
-                
-                //save browser path (i.e. Firefox)
-                extensionInfo[KEY_EXTENSION_BROWSER] = browserPath;
-                
-                //save plugin
-                extensionInfo[KEY_RESULT_PLUGIN] = self;
-                
-                //create Extension object for launch item
-                // ->skip those that err out for any reason
-                if(nil == (extensionObj = [[Extension alloc] initWithParams:extensionInfo]))
-                {
-                    //skip
-                    continue;
-                }
-                
-                //process item
-                // ->save and report to UI
-                [super processItem:extensionObj];
-                
-            }//for all extension in file
+            }//for all extension files
+            
+        }//for all profiles
         
-        }//for all extension files
-        
-    }//for all profiles
-    
+    }//for all users
+
     return;
 }
 

@@ -17,6 +17,9 @@
 //plugin icon
 #define PLUGIN_ICON @"proxyIcon"
 
+//(privacy) protected directories
+NSString * const PROTECTED_DIRECTORIES[] = {@"~/Library/Application Support/AddressBook", @"~/Library/Calendars", @"~/Pictures", @"~/Library/Mail", @"~/Library/Messages", @"~/Library/Safari", @"~/Library/Cookies", @"~/Library/HomeKit", @"~/Library/IdentityServices", @"~/Library/Metadata/CoreSpotlight", @"~/Library/PersonalizationPortrait", @"~/Library/Suggestions"};
+
 @implementation DylibProxies
 
 //init
@@ -74,13 +77,23 @@
     //file path
     NSString* filePath = nil;
     
+    //(privacy) protected directories
+    NSArray* protectedDirectories = nil;
+    
+    //flag
+    BOOL isProtected = NO;
+    
     //pool
     @autoreleasepool
     {
     
     //alloc array
     dylibs = [NSMutableArray array];
-
+        
+    //init set of (privacy) protected directories
+    // these will be skipped, as otherwise we will generate a privacy prompt
+    protectedDirectories = expandPaths(PROTECTED_DIRECTORIES, sizeof(PROTECTED_DIRECTORIES)/sizeof(PROTECTED_DIRECTORIES[0]));
+        
     //exec 'file' to get file type
     results = execTask(LSOF, @[@"-Fn", @"/"]);
     if( (nil == results) ||
@@ -102,9 +115,12 @@
     }
     
     //iterate over all results
-    // ->make file info dictionary for files (not sockets, etc)
+    // make file info dictionary for files (not sockets, etc)
     for(NSString* result in splitResults)
     {
+        //reset
+        isProtected = NO;
+        
         //skip any odd/weird/short lines
         // lsof outpupt will be in format: 'n<filePath'>
         if( (YES != [result hasPrefix:@"n"]) ||
@@ -115,12 +131,37 @@
         }
         
         //init file path
-        // ->result, minus first (lsof-added) char
+        // result, minus first (lsof-added) char
         filePath = [result substringFromIndex:0x1];
+        
+        //skip any files in (privacy) protected directories
+        // as otherwise we will generate a privacy prompt (on Mojave)
+        for(NSString* directory in protectedDirectories)
+        {
+            //reset
+            isProtected = NO;
+            
+            //check
+            if(YES == [filePath hasPrefix:directory])
+            {
+                //set flag
+                isProtected = YES;
+                
+                //done
+                break;
+            }
+        }
+        
+        //skip (privacy) protected files
+        if(YES == isProtected)
+        {
+            //skip
+            continue;
+        }
         
         //skip 'non files' / non-executable files
         if( (YES != [[NSFileManager defaultManager] fileExistsAtPath:filePath]) ||
-            (YES != isURLExecutable([NSURL fileURLWithPath:filePath])) )
+            (YES != isExecutable(filePath)) )
         {
             //skip
             continue;

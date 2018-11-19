@@ -20,6 +20,15 @@
 
 #import <Cocoa/Cocoa.h>
 
+/* GLOBALS */
+
+//shared enumerator
+extern ItemEnumerator* sharedItemEnumerator;
+
+//filter object
+extern Filter* itemFilter;
+
+
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate, NSTableViewDataSource, NSTableViewDelegate, NSMenuDelegate>
 {
    
@@ -28,15 +37,15 @@
 
 /* PROPERTIES */
 
+//friends
+@property (weak) IBOutlet NSWindow *friends;
+
 //flag for secondary scan
 // ->need to restart shared enumerator 
 @property BOOL secondaryScan;
 
 //plugin objects
 @property(nonatomic, retain)NSMutableArray* plugins;
-
-//shared item enumerator object
-@property(nonatomic, retain)ItemEnumerator* sharedItemEnumerator;
 
 //version string
 @property (weak) IBOutlet NSTextField *versionString;
@@ -76,9 +85,6 @@
 
 //non-UI thread that performs actual scan
 @property(nonatomic, strong)NSThread *scannerThread;
-
-//filter object
-@property(nonatomic, retain)Filter* filterObj;
 
 //virus total object
 @property(nonatomic, retain)VirusTotal* virusTotalObj;

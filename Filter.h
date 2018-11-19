@@ -25,6 +25,8 @@
 //white listed extensions
 @property(nonatomic, retain)NSDictionary* trustedExtensions;
 
+//white listed kexts
+@property(nonatomic, retain)NSDictionary* trustedKexts;
 
 /* METHODS */
 
@@ -32,15 +34,16 @@
 // ->file hashes, known commands, etc
 -(NSDictionary*)loadWhitelist:(NSString*)fileName;
 
-//check if a File obj is whitelisted
+//check if a File obj is white listed
 -(BOOL)isTrustedFile:(File*)fileObj;
 
-//check if a Command obj is whitelisted
+//check if a Command obj is white listed
 -(BOOL)isKnownCommand:(Command*)commandObj;
 
-//check if a Extension obj is whitelisted
+//check if a Extension obj is white listed
 -(BOOL)isTrustedExtension:(Extension*)extensionObj;
 
-
+//check if kext is white listed
+-(BOOL)isTrustedKext:(File*)fileObj;
 
 @end

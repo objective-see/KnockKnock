@@ -52,25 +52,13 @@ NSString* const HOOK_SEARCH_FILES[] = {@"/Library/Preferences/com.apple.loginwin
 //scan for login items
 -(void)scan
 {
-    //number of search directories
-    NSUInteger fileCount = 0;
-    
-    //login window plist
-    NSString* loginWindowPlist = nil;
-    
     //plist data
     NSDictionary* plistContents = nil;
     
-    //get number of login/out files
-    fileCount = sizeof(HOOK_SEARCH_FILES)/sizeof(HOOK_SEARCH_FILES[0]);
-    
     //iterate over all login/out file
     // ->get all hooks and process em
-    for(NSUInteger i=0; i < fileCount; i++)
+    for(NSString* loginWindowPlist in expandPaths(HOOK_SEARCH_FILES, sizeof(HOOK_SEARCH_FILES)/sizeof(HOOK_SEARCH_FILES[0])))
     {
-        //extract current file
-        loginWindowPlist = [HOOK_SEARCH_FILES[i] stringByExpandingTildeInPath];
-        
         //load plist contents
         plistContents = [NSDictionary dictionaryWithContentsOfFile:loginWindowPlist];
         
@@ -89,7 +77,6 @@ NSString* const HOOK_SEARCH_FILES[] = {@"/Library/Preferences/com.apple.loginwin
         }
     }
     
-//bail
 bail:
     
     return;

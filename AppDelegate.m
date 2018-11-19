@@ -4,31 +4,22 @@
 //
 
 #import "Consts.h"
-#import "Exception.h"
 #import "Utilities.h"
 #import "PluginBase.h"
 #import "AppDelegate.h"
 
-//supported plugins
-NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"SpotlightImporters", @"StartupScripts"};
 
-//TODO: white list for el capitan! (think we are good, but test in VM)
-
-//TODO: cmdline interface
-
-//TODO: scan other volume
-
-//TODO: delete items
-
-//TODO: search
+//TODO: scan other volumes
+//TODO: support delete items
+//TODO: search in UI
 
 //TODO: better parsing of args for /sh etc? or at least don't say they are 'APPLE' (and thus filter out)
 //      or make them a cmd!
 
 @implementation AppDelegate
 
+@synthesize friends;
 @synthesize plugins;
-@synthesize filterObj;
 @synthesize vtThreads;
 @synthesize scanButton;
 @synthesize isConnected;
@@ -40,7 +31,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 @synthesize scanButtonLabel;
 @synthesize progressIndicator;
 @synthesize itemTableController;
-@synthesize sharedItemEnumerator;
 @synthesize aboutWindowController;
 @synthesize prefsWindowController;
 @synthesize showPreferencesButton;
@@ -64,18 +54,16 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 }
 
 //automatically invoked by OS
-// ->main entry point
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+    //defaults
+    NSUserDefaults* defaults = nil;
+    
     //app's (self) signing status
     OSStatus signingStatus = -1;
-
-    //first thing...
-    // ->install exception handlers!
-    installExceptionHandlers();
     
     //init filter object
-    filterObj = [[Filter alloc] init];
+    itemFilter = [[Filter alloc] init];
     
     //init virus total object
     virusTotalObj = [[VirusTotal alloc] init];
@@ -86,16 +74,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     //alloc shared item enumerator
     sharedItemEnumerator = [[ItemEnumerator alloc] init];
     
-    //check that OS is supported
-    if(YES != isSupportedOS())
-    {
-        //show alert
-        [self showUnsupportedAlert];
-        
-        //exit
-        exit(0);
-    }
-
     //verify self
     signingStatus = verifySelf();
    
@@ -111,7 +89,28 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     
     //kick off thread to begin enumerating shared objects
     // ->this takes awhile, so do it now/first!
-    [self.sharedItemEnumerator start];
+    [sharedItemEnumerator start];
+    
+    //load defaults
+    defaults = [NSUserDefaults standardUserDefaults];
+    
+    //first time run?
+    // show thanks to friends window!
+    if(YES != [defaults boolForKey:NOT_FIRST_TIME])
+    {
+        //set key
+        [defaults setBool:YES forKey:NOT_FIRST_TIME];
+        
+        //show thanks
+        [self toggleFriends:nil];
+        
+        //close after 3 seconds
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            
+            //hide
+            [self.friends close];
+        });
+    }
 
     //instantiate all plugins objects
     self.plugins = [self instantiatePlugins];
@@ -157,6 +156,27 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 
     return;
 }
+
+//toggle friends view
+- (IBAction)toggleFriends:(id)sender
+{
+    //hide
+    if(YES == self.friends.visible)
+    {
+        //close to hide
+        [self.friends close];
+    }
+    //show
+    else
+    {
+        [self.friends makeKeyAndOrderFront:self];
+        [NSApp activateIgnoringOtherApps:YES];
+    }
+    
+
+    return;
+}
+
 
 //display alert about OS not being supported
 -(void)showUnsupportedAlert
@@ -239,7 +259,6 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 }
 
 //create instances of all registered plugins
-// ->returns list
 -(NSMutableArray*)instantiatePlugins
 {
     //plugin objects
@@ -321,7 +340,7 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
     if(YES == self.secondaryScan)
     {
         //start it
-        [self.sharedItemEnumerator start];
+        [sharedItemEnumerator start];
     }
     
     //start scanner thread
@@ -370,10 +389,16 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
             
         });
         
+        //set callback
+        plugin.callback = ^(ItemBase* item)
+        {
+            [self itemFound:item];
+        };
+            
         //scan
-        // ->will call back up into UI as items are found
+        // will invoke callback as items are found
         [plugin scan];
-        
+
         //when 'disable VT' prefs not selected and network is reachable
         // ->kick of thread to perform VT query in background
         if( (YES != self.prefsWindowController.disableVTQueries) &&
@@ -766,13 +791,13 @@ NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtens
 -(void)completeScan
 {
     //tell enumerator to stop
-    [self.sharedItemEnumerator stop];
+    [sharedItemEnumerator stop];
     
     //cancel enumerator thread
-    if(YES == [self.sharedItemEnumerator.enumeratorThread isExecuting])
+    if(YES == [sharedItemEnumerator.enumeratorThread isExecuting])
     {
         //cancel
-        [self.sharedItemEnumerator.enumeratorThread cancel];
+        [sharedItemEnumerator.enumeratorThread cancel];
     }
     
     //sync to cancel all VT threads

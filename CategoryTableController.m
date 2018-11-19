@@ -138,11 +138,11 @@
         [categoryCell.textField setTextColor:[NSColor redColor]];
     }
     //no flagged items
-    // ->set title's color to black
+    // ->set title's color
     else
     {
-        //black
-        [categoryCell.textField setTextColor:[NSColor blackColor]];
+        //reset
+        categoryCell.textField.textColor = NSColor.controlTextColor;
     }
     
     //set detailed text

@@ -7,6 +7,7 @@
 //
 
 
+#import "Utilities.h"
 #import "AppDelegate.h"
 #import "PrefsWindowController.h"
 
@@ -35,8 +36,13 @@
     //super
     [super windowDidLoad];
     
-    //make white
-    [self.window setBackgroundColor: NSColor.whiteColor];
+    //not in dark mode?
+    // make window white
+    if(YES != isDarkMode())
+    {
+        //make white
+        self.window.backgroundColor = NSColor.whiteColor;
+    }
     
     //make button selected
     [self.window makeFirstResponder:self.okButton];

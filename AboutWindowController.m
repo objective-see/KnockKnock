@@ -32,8 +32,13 @@
     //super
     [super windowDidLoad];
     
-    //make white
-    [self.window setBackgroundColor: NSColor.whiteColor];
+    //not in dark mode?
+    // make window white
+    if(YES != isDarkMode())
+    {
+        //make white
+        self.window.backgroundColor = NSColor.whiteColor;
+    }
     
     //set version sting
     [self.versionLabel setStringValue:[NSString stringWithFormat:@"version: %@", getAppVersion()]];

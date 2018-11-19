@@ -11,6 +11,7 @@
 
 @implementation Filter
 
+@synthesize trustedKexts;
 @synthesize trustedFiles;
 @synthesize knownCommands;
 @synthesize trustedExtensions;
@@ -34,6 +35,9 @@
         
         //load known extensions
         self.trustedExtensions = [self loadWhitelist:WHITE_LISTED_EXTENSIONS];
+        
+        //load known kexts
+        self.trustedKexts = [self loadWhitelist:WHITE_LISTED_KEXTS];
     }
     
     return self;
@@ -71,7 +75,7 @@
 
 //check if a File obj is known
 // ->whitelisted *or* signed by apple
--(BOOL)isTrustedFile:(File*)fileObj
+-(BOOL)isTrustedFile:(File*)file
 {
     //flag
     BOOL isTrusted = NO;
@@ -80,22 +84,36 @@
     NSArray* knownHashes = nil;
     
     //lookup based on name
-    knownHashes = self.trustedFiles[fileObj.path];
+    knownHashes = self.trustedFiles[file.path];
     
-    //first check if hash is known
+    //check if hash is known
     if( (nil != knownHashes) &&
-        (YES == [knownHashes containsObject:[fileObj.hashes[KEY_HASH_MD5] lowercaseString]]) )
+        (YES == [knownHashes containsObject:[file.hashes[KEY_HASH_MD5] lowercaseString]]) )
     {
         //got match
         isTrusted = YES;
+        
+        //bail
+        goto bail;
     }
-    //otherwise check if its signed by apple
-    // ->apple-signed files are always trusted
-    else
+    
+    //if kext
+    // check if trusted (apple, or 3rd-party, ships with OS)
+    if( (YES == [file.path hasPrefix:@"/Library/Extensions/"]) ||
+        (YES == [file.path hasPrefix:@"/System/Library/Extensions/"]) )
     {
-        //check for apple signature
-        isTrusted = [fileObj.signingInfo[KEY_SIGNING_IS_APPLE] boolValue];
+        //check
+        isTrusted = [self isTrustedKext:file];
+        
+        //bail
+        goto bail;
     }
+    
+    //finally, then check if its signed by apple
+    // note: apple-signed files are always trusted
+    isTrusted = (Apple == [file.signingInfo[KEY_SIGNATURE_SIGNER] intValue]);
+    
+bail:
     
     return isTrusted;
 }
@@ -121,6 +139,53 @@
         //trusted
         isTrusted = YES;
     }
+    
+    return isTrusted;
+}
+
+//check if a kext obj is known
+// whitelisted *or* signed by apple
+-(BOOL)isTrustedKext:(File*)file
+{
+    //flag
+    BOOL isTrusted = NO;
+    
+    //(trusted) signing id
+    // either list of hashes, or dev id
+    id whitelistInfo = nil;
+    
+    //lookup based on name
+    whitelistInfo = self.trustedKexts[file.path];
+
+    //hashes?
+    if( (YES == [whitelistInfo isKindOfClass:[NSArray class]]) &&
+        (YES == [whitelistInfo containsObject:[file.hashes[KEY_HASH_MD5] lowercaseString]]) )
+    {
+        //got match
+        isTrusted = YES;
+        
+        //bail
+        goto bail;
+    }
+    
+    //dev id?
+    // note: these are only for kexts that ship with macOS!
+     if( (YES == [whitelistInfo isKindOfClass:[NSString class]]) &&
+         (YES == [[file.signingInfo[KEY_SIGNATURE_AUTHORITIES] lastObject] isEqualToString:@"Apple Root CA"]) &&
+         (YES == [file.signingInfo[KEY_SIGNATURE_AUTHORITIES] containsObject:whitelistInfo]) )
+    {
+        //got match
+        isTrusted = YES;
+        
+        //bail
+        goto bail;
+    }
+    
+    //check for apple signature
+    // kexts that belong to apple, are trusted
+    isTrusted = (Apple == [file.signingInfo[KEY_SIGNATURE_SIGNER] intValue]);
+    
+bail:
     
     return isTrusted;
 }

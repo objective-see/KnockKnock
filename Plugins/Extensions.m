@@ -3,6 +3,7 @@
 //  KnockKnock
 //
 //  Notes: view via these via System Preferences->Extensions, or pluginkit -vmA
+//         only for current user, since we utilized 'pluginkit' which is "for current user"
 
 #import "File.h"
 #import "Utilities.h"
@@ -69,7 +70,7 @@
     [extensions addObjectsFromArray:[self parseExtensions:[[[NSString alloc] initWithData:taskOutput encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]]];
     
     //load finder syncs from plist
-    finderSyncs = [NSDictionary dictionaryWithContentsOfFile:[FINDER_SYNCS stringByExpandingTildeInPath]];
+    finderSyncs = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectoryForUser(getConsoleUser()) stringByAppendingPathComponent:[FINDER_SYNCS substringFromIndex:1]]];
     if( (nil == finderSyncs) ||
         (nil == finderSyncs[@"displayOrder"]) )
     {

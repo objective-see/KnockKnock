@@ -18,9 +18,13 @@
 //plugin icon
 #define PLUGIN_ICON @"loginIcon"
 
-@implementation LoginItems
+//plist (old)
+#define LOGIN_ITEM_PLIST_OLD @"~/Library/Preferences/com.apple.loginitems.plist"
 
-@synthesize enabledJobs;
+//plist (new)
+#define LOGIN_ITEM_PLIST_NEW @"~/Library/Application Support/com.apple.backgroundtaskmanagementagent/backgrounditems.btm"
+
+@implementation LoginItems
 
 //init
 // ->set name, description, etc
@@ -30,9 +34,6 @@
     self = [super init];
     if(self)
     {
-        //alloc array for enabled jobs
-        enabledJobs = [NSMutableArray array];
-        
         //set name
         self.name = PLUGIN_NAME;
         
@@ -49,9 +50,6 @@
 //scan for login items
 -(void)scan
 {
-    //all jobs
-    NSArray* jobs = nil;
-    
     //detected (auto-started) login item
     File* fileObj = nil;
     
@@ -59,32 +57,9 @@
     //NSLog(@"%@: scanning", PLUGIN_NAME);
     
     //login items
-    // ->both traditional and sandboxed
+    // both traditional and sandboxed
     NSMutableArray* loginItems = nil;
-    
-    //reset enabled jobs
-    [self.enabledJobs removeAllObjects];
-    
-    //get all jobs
-    // ->includes all enabled (sandboxed) login items, even if not running :)
-    jobs = (__bridge NSArray *)SMCopyAllJobDictionaries(kSMDomainUserLaunchd);
-    
-    //build list of enabled jobs
-    // ->save their bundle IDs
-    for(NSDictionary* job in jobs)
-    {
-        //skip non-enabled jobs or jobs w/o bundles ids
-        if( (YES != [[job objectForKey:@"OnDemand"] boolValue]) ||
-            (nil == [job objectForKey:@"Label"]) )
-        {
-            //next
-            continue;
-        }
-        
-        //save enabled job
-        [enabledJobs addObject:[job objectForKey:@"Label"]];
-    }
-    
+
     //first get traditional items
     loginItems = [self enumTraditionalItems];
     
@@ -94,13 +69,11 @@
     //remove any duplicates
     loginItems = [[[NSSet setWithArray:loginItems] allObjects] mutableCopy];
 
-    //enum and create traditional login items
+    //process all
     for(NSString* loginItem in loginItems)
     {
         //create File object for login item
         fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:loginItem}];
-    
-        //skip File objects that err'd out for any reason
         if(nil == fileObj)
         {
             //skip
@@ -108,18 +81,15 @@
         }
         
         //process item
-        // ->save and report to UI
+        // save and report to UI
         [super processItem:fileObj];
     }
-    
-    //release jobs
-    CFRelease((CFArrayRef)jobs);
     
     return;
 }
 
 //enumerate traditional login items
-// ->basically just invoke LSSharedFileListCopySnapshot(), etc to get list of items
+// invoke LSSharedFileListCopySnapshot(), etc to get list of items
 -(NSMutableArray*)enumTraditionalItems
 {
     //(traditional) login items
@@ -132,7 +102,7 @@
     CFArrayRef loginItems = nil;
     
     //seed
-    // ->needed for 'LSSharedFileListCopySnapshot' function
+    // needed for 'LSSharedFileListCopySnapshot' function
     UInt32 snapshotSeed = 0;
     
     //login item reference
@@ -151,7 +121,7 @@
     loginItems = LSSharedFileListCopySnapshot(sharedListRef, &snapshotSeed);
     
     //iterate over all items
-    // ->extract path, init File obj, and report to UI
+    // extracting path for each
     for(id item in (__bridge NSArray *)loginItems)
     {
         //type-cast
@@ -181,8 +151,277 @@
     return traditionalItems;
 }
 
+//extract login items from alias data
+// older versions of OSX use this format...
+-(NSMutableDictionary*)extractFromAlias:(NSDictionary*)data
+{
+    //login items
+    NSMutableDictionary* loginItems = nil;
+    
+    //init
+    loginItems = [NSMutableDictionary dictionary];
+    
+    //name
+    NSString* name = nil;
+    
+    //alias
+    NSData* alias = nil;
+    
+    //bookmark
+    CFDataRef bookmark = NULL;
+    
+    //bookmark url
+    CFURLRef url = NULL;
+    
+    //path
+    NSString* path = nil;
+    
+    //extract current login items
+    for(NSDictionary* loginItem in data[@"SessionItems"][@"CustomListItems"])
+    {
+        //extract alias
+        alias = loginItem[@"Alias"];
+        if(nil == alias)
+        {
+            //skip
+            continue;
+        }
+        
+        //create bookmark
+        bookmark = CFURLCreateBookmarkDataFromAliasRecord(kCFAllocatorDefault,(__bridge CFDataRef)(alias));
+        if(NULL == bookmark)
+        {
+            //skip
+            continue;
+        }
+        
+        //resolve bookmark data into URL
+        url = CFURLCreateByResolvingBookmarkData(kCFAllocatorDefault, bookmark, kCFBookmarkResolutionWithoutUIMask, nil, nil, nil, nil);
+        
+        //now release bookmark
+        CFRelease(bookmark);
+        
+        //sanity check
+        if(nil == url)
+        {
+            //skip
+            continue;
+        }
+        
+        //extract path
+        path = CFBridgingRelease(CFURLCopyPath(url));
+        
+        //now release url
+        CFRelease(url);
+        
+        //sanity check
+        if(nil == path)
+        {
+            //skip
+            continue;
+        }
+        
+        //use name from app bundle
+        // otherwise from 'NSURLNameKey'
+        name = [NSBundle bundleWithPath:path].infoDictionary[@"CFBundleName"];
+        if(0 == name.length)
+        {
+            //extract name
+            name = loginItem[@"Name"];
+        }
+        
+        //sanity check
+        if(nil == name)
+        {
+            //skip
+            continue;
+        }
+        
+        //add
+        // key: path
+        // value: name
+        loginItems[path] = name;
+    }
+    
+    return loginItems;
+}
+
+//extract login items from bookmark data
+// newer versions of macOS use this format...
+-(NSMutableDictionary*)extractFromBookmark:(NSDictionary*)data
+{
+    //login items
+    NSMutableDictionary* loginItems = nil;
+    
+    //init
+    loginItems = [NSMutableDictionary dictionary];
+    
+    //bookmark data
+    NSData* bookmark = nil;
+    
+    //bookmark properties
+    NSDictionary* properties = nil;
+    
+    //name
+    NSString* name = nil;
+    
+    //path
+    NSString* path = nil;
+    
+    //extract current login items
+    for(id object in data[@"$objects"])
+    {
+        //reset
+        bookmark = nil;
+        
+        //straight data?
+        if(YES == [object isKindOfClass:[NSData class]])
+        {
+            //assign
+            bookmark = object;
+        }
+        
+        //dictionary w/ data?
+        if(YES == [object isKindOfClass:[NSDictionary class]])
+        {
+            //extract bookmark data
+            bookmark = [object objectForKey:@"NS.data"];
+        }
+        
+        //no data?
+        if(nil == bookmark)
+        {
+            //skip
+            continue;
+        }
+        
+        //extact properties
+        // 'resourceValuesForKeys' returns a dictionary, but we want the 'NSURLBookmarkAllPropertiesKey' dictionary inside that
+        properties = [NSURL resourceValuesForKeys:@[@"NSURLBookmarkAllPropertiesKey"] fromBookmarkData:bookmark][@"NSURLBookmarkAllPropertiesKey"];
+        if(nil == properties)
+        {
+            //skip
+            continue;
+        }
+        
+        //extract path
+        path = properties[@"_NSURLPathKey"];
+        
+        //use name from app bundle
+        // otherwise from 'NSURLNameKey'
+        name = [NSBundle bundleWithPath:path].infoDictionary[@"CFBundleName"];
+        if(0 == name.length)
+        {
+            //extract name
+            name = properties[@"NSURLNameKey"];
+        }
+        
+        //skip any issues
+        if( (nil == name) ||
+            (nil == path) )
+        {
+            //skip
+            continue;
+        }
+        
+        //add
+        // key: path
+        // value: name
+        loginItems[path] = name;
+    }
+    
+    return loginItems;
+}
+
+//enumerate registered login items
+-(NSMutableDictionary*)enumRegisteredItems
+{
+    //flag
+    BOOL bookmarkFormat = NO;
+    
+    //plist file
+    NSString* plist = nil;
+    
+    //plist data
+    NSDictionary* plistData = nil;
+    
+    //users
+    NSMutableDictionary* users = nil;
+    
+    //registered items
+    NSMutableDictionary* registeredItems = nil;
+    
+    //alloc registered login items
+    registeredItems = [NSMutableDictionary dictionary];
+    
+    //alloc users dictionary
+    users = [NSMutableDictionary dictionary];
+    
+    //set flag
+    // pre-10.13, did not use bookmark format
+    bookmarkFormat = (13 < getVersion(gestaltSystemVersionMinor));
+    
+    //root?
+    // can scan all users
+    if(0 == geteuid())
+    {
+        //all
+        users = allUsers();
+    }
+    //just current user
+    else
+    {
+        //current
+        users[getConsoleUser()] = @{USER_NAME:getConsoleUser(), USER_DIRECTORY:NSHomeDirectoryForUser(getConsoleUser())};
+    }
+    
+    //process all plists
+    for(NSString* userID in users)
+    {
+        //new format?
+        // use new plist
+        if(YES == bookmarkFormat)
+        {
+            //new plist
+            plist = [users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[LOGIN_ITEM_PLIST_NEW substringFromIndex:1]];
+            
+            //load plist data
+            plistData = [NSDictionary dictionaryWithContentsOfFile:plist];
+            if(0 == plistData.count)
+            {
+                //skip
+                continue;
+            }
+            
+            //extract login items
+            [registeredItems addEntriesFromDictionary:[self extractFromBookmark:plistData]];
+        }
+        //old format
+        // use old plist
+        else
+        {
+            //old plist
+            plist = [users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[LOGIN_ITEM_PLIST_OLD substringFromIndex:1]];
+            
+            //load plist data
+            plistData = [NSDictionary dictionaryWithContentsOfFile:plist];
+            if(0 == plistData.count)
+            {
+                //skip
+                continue;
+            }
+            
+            //extract login items
+            [registeredItems addEntriesFromDictionary:[self extractFromAlias:plistData]];
+        }
+    }
+
+    return registeredItems;
+}
+
+
 //enumerate sandboxed (app) login items
-// ->scan /Applications for 'Contents/Library/LoginItems/' and xref w/ launchd jobs
+// scan /Applications for 'Contents/Library/LoginItems/' and xref w/ those in various plists jobs
 -(NSMutableArray*)enumSandboxItems
 {
     //(sandbox) login items
@@ -194,6 +433,10 @@
     //path to (sandboxed) login item directory
     NSString* loginItemDir = nil;
     
+    //registered items
+    // extracted from various plists
+    NSMutableDictionary* registeredItems = nil;
+    
     //candidate login items
     NSArray* candidateItems = nil;
     
@@ -203,6 +446,9 @@
     //alloc array
     sandboxItems = [NSMutableArray array];
     
+    //generate list of registered items
+    registeredItems = [self enumRegisteredItems];
+    
     //get all installed applications
     applications = [[NSFileManager defaultManager] directoryContentsAtPath:@"/Applications"];
     
@@ -211,8 +457,6 @@
     {
         //init path to possible (sandboxed) login item dir
         loginItemDir = [NSString stringWithFormat:@"/Applications/%@/Contents/Library/LoginItems/", application];
-        
-        //skip if app doesn't have any login items
         if(YES != [[NSFileManager defaultManager] fileExistsAtPath:loginItemDir])
         {
             //next
@@ -220,18 +464,16 @@
         }
         
         //get all app's login items
-        // ->these should (each) be apps/bundles themselves
+        // these should (each) be apps/bundles themselves
         candidateItems = [[NSFileManager defaultManager] directoryContentsAtPath:loginItemDir];
         
         //process app's candidate login items
-        // ->get bundle, path, and bundle id
-        //   then check to make sure there is a job that matches!
+        //   get bundle, path, and bundle id
+        //   then check to make sure there is a registered item that matches!
         for(NSString* candidateItem in candidateItems)
         {
             //get bundle for candidate login item
             candidateItemBundle = [NSBundle bundleWithPath:[NSString stringWithFormat:@"%@/%@", loginItemDir, candidateItem]];
-            
-            //skip ones that don't have bundles, binary paths, etc
             if( (nil == candidateItemBundle) ||
                 (nil == candidateItemBundle.executablePath) )
             {
@@ -239,15 +481,15 @@
                 continue;
             }
             
-            //skip items that aren't enabled
-            if(YES != [self.enabledJobs containsObject:candidateItemBundle.bundleIdentifier])
+            //skip if does match any registered items
+            if(nil == registeredItems[candidateItemBundle.bundlePath])
             {
-                //next
+                //skip
                 continue;
             }
             
             //save (sandboxed) login item
-            [sandboxItems addObject:candidateItemBundle.executablePath];
+            [sandboxItems addObject:candidateItemBundle.bundlePath];
 
         }//app's login item(s)
         

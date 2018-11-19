@@ -46,12 +46,6 @@ NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight",
 //scan for spotlight importers
 -(void)scan
 {
-    //spotlight importer directory
-    NSString* importerDirectory = nil;
-    
-    //number of search directories
-    NSUInteger directoryCount = 0;
-    
     //all spotlight importers
     NSArray* allImporters = nil;
     
@@ -64,16 +58,10 @@ NSString * const SPOTLIGHT_SEARCH_DIRECTORIES[] = {@"/System/Library/Spotlight",
     //dbg msg
     //NSLog(@"%@: scanning", PLUGIN_NAME);
     
-    //get number of search directories
-    directoryCount = sizeof(SPOTLIGHT_SEARCH_DIRECTORIES)/sizeof(SPOTLIGHT_SEARCH_DIRECTORIES[0]);
-    
     //iterate over all spotlight importer search directories
-    // ->get all spotlight importer bundles and process each of them
-    for(NSUInteger i=0; i < directoryCount; i++)
+    // get all spotlight importer bundles and process each of them
+    for(NSString* importerDirectory in expandPaths(SPOTLIGHT_SEARCH_DIRECTORIES, sizeof(SPOTLIGHT_SEARCH_DIRECTORIES)/sizeof(SPOTLIGHT_SEARCH_DIRECTORIES[0])))
     {
-        //extract current directory
-        importerDirectory = [SPOTLIGHT_SEARCH_DIRECTORIES[i] stringByExpandingTildeInPath];
-        
         //get all items in current directory
         allImporters = directoryContents(importerDirectory, nil);
         

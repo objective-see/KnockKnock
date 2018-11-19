@@ -24,11 +24,13 @@
 		CD0219501AD34D8B005148A2 /* PrefsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD02194E1AD34D8B005148A2 /* PrefsWindow.xib */; };
 		CD0219531AD34D9A005148A2 /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD0219521AD34D9A005148A2 /* AboutWindowController.m */; };
 		CD0219551AD34E4C005148A2 /* kkIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD0219541AD34E4C005148A2 /* kkIcon.png */; };
-		CD02195C1AD38823005148A2 /* kkRowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CD02195B1AD38823005148A2 /* kkRowCell.m */; };
 		CD02195E1AD39A74005148A2 /* ResultsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD02195D1AD39A74005148A2 /* ResultsWindow.xib */; };
 		CD0219611AD39A83005148A2 /* ResultsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD0219601AD39A83005148A2 /* ResultsWindowController.m */; };
+		CD24F074219D51210081B0E5 /* whitelistedKexts.json in Resources */ = {isa = PBXBuildFile; fileRef = CD24F073219D51210081B0E5 /* whitelistedKexts.json */; };
+		CD24F077219DF3DB0081B0E5 /* Signing.m in Sources */ = {isa = PBXBuildFile; fileRef = CD24F075219DF3DA0081B0E5 /* Signing.m */; };
 		CD2B613320675EEC00BF72E9 /* EventRules.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2B611220675EEB00BF72E9 /* EventRules.m */; };
 		CD2B61442067656200BF72E9 /* eventRulesIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD2B61432067656200BF72E9 /* eventRulesIcon.png */; };
+		CD585494219FE61D00A438B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD585493219FE61D00A438B0 /* Assets.xcassets */; };
 		CD6095731A87067D00E091CD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6095721A87067D00E091CD /* Security.framework */; };
 		CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975031B02F60400CE819B /* RFOverlayScroller.m */; };
 		CD6975071B02F60400CE819B /* RFOverlayScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975051B02F60400CE819B /* RFOverlayScrollView.m */; };
@@ -36,8 +38,9 @@
 		CD6BBBEB1B50DF7100506D0D /* signedAppleIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD6BBBEA1B50DF7100506D0D /* signedAppleIcon.png */; };
 		CD6BBBED1B51C62B00506D0D /* unknown.png in Resources */ = {isa = PBXBuildFile; fileRef = CD6BBBEC1B51C62B00506D0D /* unknown.png */; };
 		CD6BBBF01B52032D00506D0D /* NSApplicationKeyEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6BBBEF1B52032D00506D0D /* NSApplicationKeyEvents.m */; };
+		CD6DE4D1219E9AD30058094E /* Sentry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6DE4D0219E9AD30058094E /* Sentry.framework */; };
+		CD6DE4D3219E9C560058094E /* Sentry.framework in Copy Framework(s) */ = {isa = PBXBuildFile; fileRef = CD6DE4D0219E9AD30058094E /* Sentry.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */; };
-		CD7B9F501ACB9A8400DF3C71 /* Exception.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9F4F1ACB9A8400DF3C71 /* Exception.m */; };
 		CD7B9F531ACBAE2900DF3C71 /* SpotlightImporters.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */; };
 		CD7B9FA41ACBCFAD00DF3C71 /* spotlightIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9FA31ACBCFAD00DF3C71 /* spotlightIcon.png */; };
 		CD7B9FA71ACCAE5E00DF3C71 /* startScanOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9FA51ACCAE5E00DF3C71 /* startScanOver.png */; };
@@ -59,7 +62,6 @@
 		CDA81D701A95B4E9009790E2 /* stopScan.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA81D661A95B4E9009790E2 /* stopScan.png */; };
 		CDA81D711A95B4E9009790E2 /* stopScanBG.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA81D671A95B4E9009790E2 /* stopScanBG.png */; };
 		CDA81D721A95B4E9009790E2 /* virus.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA81D681A95B4E9009790E2 /* virus.png */; };
-		CDA81D741A95B4FB009790E2 /* icon.iconset in Resources */ = {isa = PBXBuildFile; fileRef = CDA81D731A95B4FB009790E2 /* icon.iconset */; };
 		CDA81D771A95B7C1009790E2 /* CategoryTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D761A95B7C1009790E2 /* CategoryTableController.m */; };
 		CDA81D7B1A95D29B009790E2 /* ItemTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D7A1A95D29B009790E2 /* ItemTableController.m */; };
 		CDA81D8E1A96F557009790E2 /* Kexts.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D8B1A96F557009790E2 /* Kexts.m */; };
@@ -114,6 +116,20 @@
 		CDF08CF41ACA6864009B3423 /* loginIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CF21ACA6864009B3423 /* loginIcon.png */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		CD6DE4D2219E9C3A0058094E /* Copy Framework(s) */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CD6DE4D3219E9C560058094E /* Sentry.framework in Copy Framework(s) */,
+			);
+			name = "Copy Framework(s)";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		1D21BC4B172AF43D009D1CFD /* KnockKnock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KnockKnock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D21BC4E172AF43D009D1CFD /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -142,14 +158,17 @@
 		CD0219511AD34D9A005148A2 /* AboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutWindowController.h; sourceTree = "<group>"; };
 		CD0219521AD34D9A005148A2 /* AboutWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutWindowController.m; sourceTree = "<group>"; };
 		CD0219541AD34E4C005148A2 /* kkIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kkIcon.png; path = images/kkIcon.png; sourceTree = SOURCE_ROOT; };
-		CD02195A1AD38823005148A2 /* kkRowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kkRowCell.h; sourceTree = "<group>"; };
-		CD02195B1AD38823005148A2 /* kkRowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = kkRowCell.m; sourceTree = "<group>"; };
 		CD02195D1AD39A74005148A2 /* ResultsWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ResultsWindow.xib; path = UI/ResultsWindow.xib; sourceTree = "<group>"; };
 		CD02195F1AD39A83005148A2 /* ResultsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultsWindowController.h; sourceTree = "<group>"; };
 		CD0219601AD39A83005148A2 /* ResultsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultsWindowController.m; sourceTree = "<group>"; };
+		CD24F072219AAC930081B0E5 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = SOURCE_ROOT; };
+		CD24F073219D51210081B0E5 /* whitelistedKexts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = whitelistedKexts.json; path = WhiteList/whitelistedKexts.json; sourceTree = "<group>"; };
+		CD24F075219DF3DA0081B0E5 /* Signing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Signing.m; sourceTree = SOURCE_ROOT; };
+		CD24F076219DF3DB0081B0E5 /* Signing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Signing.h; sourceTree = SOURCE_ROOT; };
 		CD2B611220675EEB00BF72E9 /* EventRules.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventRules.m; path = Plugins/EventRules.m; sourceTree = "<group>"; };
 		CD2B611320675EEB00BF72E9 /* EventRules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventRules.h; path = Plugins/EventRules.h; sourceTree = "<group>"; };
 		CD2B61432067656200BF72E9 /* eventRulesIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = eventRulesIcon.png; path = images/eventRulesIcon.png; sourceTree = SOURCE_ROOT; };
+		CD585493219FE61D00A438B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		CD6095721A87067D00E091CD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CD6975021B02F60400CE819B /* RFOverlayScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RFOverlayScroller.h; path = 3rdParty/RFOverlayScroller.h; sourceTree = "<group>"; };
 		CD6975031B02F60400CE819B /* RFOverlayScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RFOverlayScroller.m; path = 3rdParty/RFOverlayScroller.m; sourceTree = "<group>"; };
@@ -160,9 +179,8 @@
 		CD6BBBEC1B51C62B00506D0D /* unknown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unknown.png; path = images/unknown.png; sourceTree = SOURCE_ROOT; };
 		CD6BBBEE1B52032D00506D0D /* NSApplicationKeyEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSApplicationKeyEvents.h; sourceTree = "<group>"; };
 		CD6BBBEF1B52032D00506D0D /* NSApplicationKeyEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSApplicationKeyEvents.m; sourceTree = "<group>"; };
+		CD6DE4D0219E9AD30058094E /* Sentry.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sentry.framework; path = Carthage/Build/Mac/Sentry.framework; sourceTree = "<group>"; };
 		CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoAppleOver.png; path = images/logoAppleOver.png; sourceTree = SOURCE_ROOT; };
-		CD7B9F4E1ACB9A8400DF3C71 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exception.h; sourceTree = SOURCE_ROOT; };
-		CD7B9F4F1ACB9A8400DF3C71 /* Exception.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Exception.m; sourceTree = SOURCE_ROOT; };
 		CD7B9F511ACBAE2900DF3C71 /* SpotlightImporters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpotlightImporters.h; path = Plugins/SpotlightImporters.h; sourceTree = "<group>"; };
 		CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SpotlightImporters.m; path = Plugins/SpotlightImporters.m; sourceTree = "<group>"; };
 		CD7B9FA31ACBCFAD00DF3C71 /* spotlightIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spotlightIcon.png; path = images/spotlightIcon.png; sourceTree = SOURCE_ROOT; };
@@ -192,7 +210,6 @@
 		CDA81D661A95B4E9009790E2 /* stopScan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stopScan.png; path = images/stopScan.png; sourceTree = SOURCE_ROOT; };
 		CDA81D671A95B4E9009790E2 /* stopScanBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stopScanBG.png; path = images/stopScanBG.png; sourceTree = SOURCE_ROOT; };
 		CDA81D681A95B4E9009790E2 /* virus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = virus.png; path = images/virus.png; sourceTree = SOURCE_ROOT; };
-		CDA81D731A95B4FB009790E2 /* icon.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; name = icon.iconset; path = images/icon.iconset; sourceTree = SOURCE_ROOT; };
 		CDA81D751A95B7C1009790E2 /* CategoryTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryTableController.h; sourceTree = "<group>"; };
 		CDA81D761A95B7C1009790E2 /* CategoryTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryTableController.m; sourceTree = "<group>"; };
 		CDA81D791A95D29B009790E2 /* ItemTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemTableController.h; sourceTree = "<group>"; };
@@ -275,6 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDBE491A1B5B25E30031FC22 /* SystemConfiguration.framework in Frameworks */,
+				CD6DE4D1219E9AD30058094E /* Sentry.framework in Frameworks */,
 				CDDBC2301B04771100B021E0 /* ServiceManagement.framework in Frameworks */,
 				CDF08CEA1AC8D97B009B3423 /* Quartz.framework in Frameworks */,
 				CD6095731A87067D00E091CD /* Security.framework in Frameworks */,
@@ -292,8 +310,6 @@
 				CD6BBBEF1B52032D00506D0D /* NSApplicationKeyEvents.m */,
 				CDAB989A1AEAC95500C75B4B /* ItemEnumerator.h */,
 				CDAB989B1AEAC95500C75B4B /* ItemEnumerator.m */,
-				CD02195A1AD38823005148A2 /* kkRowCell.h */,
-				CD02195B1AD38823005148A2 /* kkRowCell.m */,
 				CD7B9FA91AD08FA100DF3C71 /* KKRow.h */,
 				CD7B9FAA1AD08FA100DF3C71 /* KKRow.m */,
 				CDF08CE31AC89FD4009B3423 /* 3rdParty */,
@@ -324,6 +340,7 @@
 		1D21BC4D172AF43D009D1CFD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CD6DE4D0219E9AD30058094E /* Sentry.framework */,
 				CDBE49191B5B25E30031FC22 /* SystemConfiguration.framework */,
 				CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */,
 				CDF08CE91AC8D97B009B3423 /* Quartz.framework */,
@@ -347,21 +364,21 @@
 		1D21BC54172AF43D009D1CFD /* KnockKnock */ = {
 			isa = PBXGroup;
 			children = (
-				CD7B9F4E1ACB9A8400DF3C71 /* Exception.h */,
-				CD7B9F4F1ACB9A8400DF3C71 /* Exception.m */,
 				CDF08CC71AC4C678009B3423 /* PrefsWindowController.h */,
 				CDF08CC81AC4C678009B3423 /* PrefsWindowController.m */,
-				CDA81D731A95B4FB009790E2 /* icon.iconset */,
 				CDA81D561A95B4B4009790E2 /* MainMenu.xib */,
 				CDF08CC41AC46E75009B3423 /* VTButton.h */,
 				CDF08CC51AC46E75009B3423 /* VTButton.m */,
 				CDA81D441A95B492009790E2 /* AppDelegate.h */,
 				CDA81D451A95B492009790E2 /* AppDelegate.m */,
 				CDA81D481A95B492009790E2 /* Consts.h */,
+				CD24F076219DF3DB0081B0E5 /* Signing.h */,
+				CD24F075219DF3DA0081B0E5 /* Signing.m */,
 				CDA81D4D1A95B492009790E2 /* Utilities.h */,
 				CDA81D4E1A95B492009790E2 /* Utilities.m */,
 				CD6095501A8329FA00E091CD /* images */,
 				1D21BC55172AF43D009D1CFD /* Supporting Files */,
+				CD585493219FE61D00A438B0 /* Assets.xcassets */,
 			);
 			name = KnockKnock;
 			path = "Lesson 53";
@@ -374,6 +391,7 @@
 				CDA81D581A95B4B4009790E2 /* KnockKnock-Info.plist */,
 				CDA81D591A95B4B4009790E2 /* KnockKnock-Prefix.pch */,
 				CDA81D5A1A95B4B4009790E2 /* main.m */,
+				CD24F072219AAC930081B0E5 /* main.h */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -506,6 +524,7 @@
 		CDA81DEF1A99B8B2009790E2 /* WhiteList */ = {
 			isa = PBXGroup;
 			children = (
+				CD24F073219D51210081B0E5 /* whitelistedKexts.json */,
 				CDA81DF01A99B8C2009790E2 /* whitelistedCommands.json */,
 				CDA81DF11A99B8C2009790E2 /* whitelistedExtensions.json */,
 				CDA81DF21A99B8C2009790E2 /* whitelistedFiles.json */,
@@ -558,6 +577,7 @@
 				1D21BC47172AF43D009D1CFD /* Sources */,
 				1D21BC48172AF43D009D1CFD /* Frameworks */,
 				1D21BC49172AF43D009D1CFD /* Resources */,
+				CD6DE4D2219E9C3A0058094E /* Copy Framework(s) */,
 			);
 			buildRules = (
 			);
@@ -574,7 +594,7 @@
 		1D21BC43172AF43D009D1CFD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Objective-See";
 				TargetAttributes = {
 					1D21BC4A172AF43D009D1CFD = {
@@ -611,6 +631,7 @@
 				CD02195E1AD39A74005148A2 /* ResultsWindow.xib in Resources */,
 				CDA81D5B1A95B4B4009790E2 /* InfoPlist.strings in Resources */,
 				CDA81D6B1A95B4E9009790E2 /* show.png in Resources */,
+				CD24F074219D51210081B0E5 /* whitelistedKexts.json in Resources */,
 				CDF08CF31ACA6864009B3423 /* browserIcon.png in Resources */,
 				CDAB98A11AEAFAFA00C75B4B /* authorizationIcon.png in Resources */,
 				CD6BBBEB1B50DF7100506D0D /* signedAppleIcon.png in Resources */,
@@ -630,6 +651,7 @@
 				CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */,
 				CDA81DCB1A9960A3009790E2 /* virusTotal.png in Resources */,
 				CDA81DF41A99B8C2009790E2 /* whitelistedExtensions.json in Resources */,
+				CD585494219FE61D00A438B0 /* Assets.xcassets in Resources */,
 				CDA81DD41A9970A0009790E2 /* unsigned.png in Resources */,
 				CD2B61442067656200BF72E9 /* eventRulesIcon.png in Resources */,
 				CD7B9FA71ACCAE5E00DF3C71 /* startScanOver.png in Resources */,
@@ -655,7 +677,6 @@
 				CDBE491F1B5B46040031FC22 /* logInOutIcon.png in Resources */,
 				CDA81D721A95B4E9009790E2 /* virus.png in Resources */,
 				CDA81DC91A9960A3009790E2 /* info.png in Resources */,
-				CDA81D741A95B4FB009790E2 /* icon.iconset in Resources */,
 				CDA81D6E1A95B4E9009790E2 /* startScan.png in Resources */,
 				CD02194F1AD34D8B005148A2 /* AboutWindow.xib in Resources */,
 				CDA81DCA1A9960A3009790E2 /* infoBG.png in Resources */,
@@ -687,7 +708,6 @@
 				CDA81E071A9AFFA7009790E2 /* LoginItems.m in Sources */,
 				CD2B613320675EEC00BF72E9 /* EventRules.m in Sources */,
 				CDA81DEA1A997BF1009790E2 /* InfoWindowController.m in Sources */,
-				CD02195C1AD38823005148A2 /* kkRowCell.m in Sources */,
 				CDA81E041A9AB89C009790E2 /* LaunchItems.m in Sources */,
 				CDF08CE61AC89FE1009B3423 /* HyperlinkTextField.m in Sources */,
 				CDA81E001A9A7D26009790E2 /* File.m in Sources */,
@@ -696,13 +716,13 @@
 				CDA81D5E1A95B4B4009790E2 /* main.m in Sources */,
 				7DE2FE2E1D3F30BE006C1438 /* Extensions.m in Sources */,
 				7DE29CA41CA7BC5600DFA6A6 /* StartupScripts.m in Sources */,
-				CD7B9F501ACB9A8400DF3C71 /* Exception.m in Sources */,
 				CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */,
 				CDA81E0A1A9B0AD8009790E2 /* BrowserExtensions.m in Sources */,
 				CDD83FD41B50C48C0037124E /* Cronjobs.m in Sources */,
 				CDAB989F1AEADE5A00C75B4B /* DylibInserts.m in Sources */,
 				CDAB98991AEAA6CB00C75B4B /* AuthorizationPlugins.m in Sources */,
 				CDA81DFE1A9A7D26009790E2 /* Command.m in Sources */,
+				CD24F077219DF3DB0081B0E5 /* Signing.m in Sources */,
 				CD0219531AD34D9A005148A2 /* AboutWindowController.m in Sources */,
 				CDA81E011A9A7D26009790E2 /* ItemBase.m in Sources */,
 				CDA81DFF1A9A7D26009790E2 /* Extension.m in Sources */,
@@ -751,11 +771,13 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
@@ -799,11 +821,13 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
@@ -832,12 +856,20 @@
 		1D21BC69172AF43D009D1CFD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
 				WRAPPER_EXTENSION = app;
@@ -847,12 +879,20 @@
 		1D21BC6A172AF43D009D1CFD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
 				WRAPPER_EXTENSION = app;

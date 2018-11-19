@@ -21,7 +21,7 @@
 @implementation CronJobs
 
 //init
-// ->set name, description, etc
+// set name, description, etc
 -(id)init
 {
     //super
@@ -47,32 +47,72 @@
     //output from crontab
     NSData* taskOutput = nil;
     
+    //cron file
+    // for now, just current user's
+    NSString* cronFile = nil;
+    
+    //root?
+    // scan all user's cron jobs
+    if(0 == geteuid())
+    {
+        //get all users
+        for(NSString* user in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:CRON_FILES_DIRECTORY error:nil])
+        {
+            //path
+            cronFile = [NSString stringWithFormat:@"%@/%@", CRON_FILES_DIRECTORY, user];
+            
+            //exec cron
+            // pass in user
+            taskOutput = execTask(CRONTAB, @[@"-l", @"-u", user]);
+            if( (nil == taskOutput) ||
+                (0 == taskOutput.length) )
+            {
+                //skip
+                continue;
+            }
+            
+            //process
+            [self processJobs:taskOutput path:cronFile];
+        }
+    }
+    
+    //no root
+    // only scan current user's
+    else
+    {
+        //init cron file to current user
+        cronFile = [NSString stringWithFormat:@"%@/%@", CRON_FILES_DIRECTORY, NSUserName()];
+        
+        //exec cron
+        // just for current user
+        taskOutput = execTask(CRONTAB, @[@"-l"]);
+        if( (nil == taskOutput) ||
+            (0 == taskOutput.length) )
+        {
+            //bail
+            goto bail;
+        }
+        
+        //process
+        [self processJobs:taskOutput path:cronFile];
+    }
+    
+bail:
+    
+    return;
+}
+
+//parse/process cron jobs
+-(void)processJobs:(NSData*)output path:(NSString*)path
+{
     //converted to string
     NSString* cronJobs = nil;
-    
-    //cron file
-    // ->for now, just current user's
-    NSString* cronFile = nil;
     
     //Command obj
     Command* commandObj = nil;
     
-    //init cron file
-    // ->for now, just path to current users & only used for path of command (not directly read, etc)
-    cronFile = [NSString stringWithFormat:@"%@/%@", CRON_FILES_DIRECTORY, NSUserName()];
-    
-    //exec cron
-    // ->just for current user
-    taskOutput = execTask(CRONTAB, @[@"-l"]);
-    if( (nil == taskOutput) ||
-        (0 == taskOutput.length) )
-    {
-        //bail
-        goto bail;
-    }
-    
     //convert to (trimmed) string
-    cronJobs = [[[NSString alloc] initWithData:taskOutput encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    cronJobs = [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     //sanity check
     // ->skip blank results
@@ -82,7 +122,7 @@
         //bail
         goto bail;
     }
-
+    
     //create Command obj for each
     //  ->and call back up into UI to add
     for(NSString* cronJob in [cronJobs componentsSeparatedByString:@"\n"])
@@ -96,7 +136,7 @@
         }
         
         //create Command object for job
-        commandObj = [[Command alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_COMMAND:cronJob, KEY_RESULT_PATH:cronFile}];
+        commandObj = [[Command alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_COMMAND:cronJob, KEY_RESULT_PATH:path}];
         
         //skip Command objects that err'd out for any reason
         if(nil == commandObj)
@@ -110,7 +150,6 @@
         [super processItem:commandObj];
     }
     
-//bail
 bail:
     
     return;

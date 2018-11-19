@@ -7,7 +7,6 @@
 //
 
 #import "ItemBase.h"
-
 #import <Foundation/Foundation.h>
 #import <CommonCrypto/CommonDigest.h>
 

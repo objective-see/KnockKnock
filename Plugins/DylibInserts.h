@@ -10,6 +10,12 @@
 
 #import "PluginBase.h"
 
+/* GLOBALS */
+
+//shared enumerator
+extern ItemEnumerator* sharedItemEnumerator;
+
+
 @interface DylibInserts : PluginBase
 {
     

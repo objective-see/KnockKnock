@@ -14,64 +14,10 @@
 #import <Security/Security.h>
 #import <Foundation/Foundation.h>
 #import <CommonCrypto/CommonDigest.h>
+#import <CoreServices/CoreServices.h>
+#import <Collaboration/Collaboration.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
-/* GLOBALS */
-
-//flag for yosemite+
-// ->needed for code-signing flags
-BOOL isYosemitePlus = NO;
-
-
-//check if OS is supported
-// ->also set's Yosemite+ flag (for signing check flags)
-BOOL isSupportedOS()
-{
-    //return
-    BOOL isSupported = NO;
-    
-    //major version
-    SInt32 versionMajor = 0;
-    
-    //minor version
-    SInt32 versionMinor = 0;
-    
-    //get major version
-    versionMajor = getVersion(gestaltSystemVersionMajor);
-    
-    //get minor version
-    versionMinor = getVersion(gestaltSystemVersionMinor);
-    
-    //sanity check
-    if( (-1 == versionMajor) ||
-        (-1 == versionMinor) )
-    {
-        //err
-        goto bail;
-    }
-    
-    //check that OS is supported
-    // ->10.8+ ?
-    if( (versionMajor == OS_MAJOR_VERSION_X) &&
-        (versionMinor >= OS_MINOR_VERSION_LION) )
-    {
-        //set flag
-        isSupported = YES;
-    }
-    
-    //also set yosemite+ flag
-    if( (versionMajor == OS_MAJOR_VERSION_X) &&
-        (versionMinor >= OS_MINOR_VERSION_YOSEMITE) )
-    {
-        //set flag
-        isYosemitePlus = YES;
-    }
-    
-//bail
-bail:
-    
-    return isSupported;
-}
 
 //get OS's major or minor version
 SInt32 getVersion(OSType selector)
@@ -90,223 +36,158 @@ SInt32 getVersion(OSType selector)
         goto bail;
     }
     
-//bail
 bail:
     
     return version;
 }
 
-//get the signing info of a file
-NSDictionary* extractSigningInfo(NSString* path)
-{
-    //info dictionary
-    NSMutableDictionary* signingStatus = nil;
-    
-    //code
-    SecStaticCodeRef staticCode = NULL;
-    
-    //status
-    OSStatus status = !STATUS_SUCCESS;
-    
-    //signing information
-    CFDictionaryRef signingInformation = NULL;
-    
-    //cert chain
-    NSArray* certificateChain = nil;
-    
-    //index
-    NSUInteger index = 0;
-    
-    //cert
-    SecCertificateRef certificate = NULL;
-    
-    //common name on chert
-    CFStringRef commonName = NULL;
-    
-    //flags
-    SecCSFlags csFlags = kSecCSDefaultFlags;
-    
-    //init signing status
-    signingStatus = [NSMutableDictionary dictionary];
-    
-    //create static code
-    status = SecStaticCodeCreateWithPath((__bridge CFURLRef)([NSURL fileURLWithPath:path]), kSecCSDefaultFlags, &staticCode);
-    
-    //save signature status
-    signingStatus[KEY_SIGNATURE_STATUS] = [NSNumber numberWithInt:status];
-    
-    //init flags
-    // ->yosemite+ can do 'stronger' checks
-    if(YES == isYosemitePlus)
-    {
-        //set
-        csFlags = kSecCSCheckNestedCode|kSecCSStrictValidate|kSecCSDoNotValidateResources;
-    }
-    
-    //check signature
-    status = SecStaticCodeCheckValidity(staticCode, csFlags, NULL);
-    
-    //(re)save signature status
-    signingStatus[KEY_SIGNATURE_STATUS] = [NSNumber numberWithInt:status];
-    if(STATUS_SUCCESS != status)
-    {
-        //bail
-        goto bail;
-    }
 
-    //grab signing authorities
-    status = SecCodeCopySigningInformation(staticCode, kSecCSSigningInformation, &signingInformation);
+//disable std err
+void disableSTDERR()
+{
+    //file handle
+    int devNull = -1;
     
-    //(re)save signature status
-    signingStatus[KEY_SIGNATURE_STATUS] = [NSNumber numberWithInt:status];
-    if(STATUS_SUCCESS != status)
-    {
-        //bail
-        goto bail;
-    }
-        
-    //determine if binary is signed by Apple
-    signingStatus[KEY_SIGNING_IS_APPLE] = [NSNumber numberWithBool:isApple(path)];
+    //open /dev/null
+    devNull = open("/dev/null", O_RDWR);
     
-    //init array for certificate names
-    signingStatus[KEY_SIGNING_AUTHORITIES] = [NSMutableArray array];
+    //dup
+    dup2(devNull, STDERR_FILENO);
     
-    //get cert chain
-    certificateChain = [(__bridge NSDictionary*)signingInformation objectForKey:(__bridge NSString*)kSecCodeInfoCertificates];
+    //close
+    close(devNull);
     
-    //handle case there is no cert chain
-    // ->adhoc? (/Library/Frameworks/OpenVPN.framework/Versions/Current/bin/openvpn-service)
-    if(0 == certificateChain.count)
-    {
-        //set
-        [signingStatus[KEY_SIGNING_AUTHORITIES] addObject:@"signed, but no signing authorities (adhoc?)"];
-    }
-    
-    //got cert chain
-    // ->add each to list
-    else
-    {
-        //get name of all certs
-        for(index = 0; index < certificateChain.count; index++)
-        {
-            //extract cert
-            certificate = (__bridge SecCertificateRef)([certificateChain objectAtIndex:index]);
-            
-            //get common name
-            status = SecCertificateCopyCommonName(certificate, &commonName);
-            
-            //skip ones that error out
-            if( (STATUS_SUCCESS != status) ||
-                (NULL == commonName))
-            {
-                //skip
-                continue;
-            }
-            
-            //save
-            [signingStatus[KEY_SIGNING_AUTHORITIES] addObject:(__bridge NSString*)commonName];
-            
-            //release name
-            CFRelease(commonName);
-        }
-    }
-    
-//bail
-bail:
-    
-    //free signing info
-    if(NULL != signingInformation)
-    {
-        //free
-        CFRelease(signingInformation);
-    }
-    
-    //free static code
-    if(NULL != staticCode)
-    {
-        //free
-        CFRelease(staticCode);
-    }
-    
-    return signingStatus;
+    return;
 }
 
-//determine if a file is signed by Apple proper
-BOOL isApple(NSString* path)
+//get name of logged in user
+NSString* getConsoleUser()
 {
-    //flag
-    BOOL isApple = NO;
+    //copy/return user
+    return CFBridgingRelease(SCDynamicStoreCopyConsoleUser(NULL, NULL, NULL));
+}
+
+//get all user
+// includes name/home directory
+NSMutableDictionary* allUsers()
+{
+    //users
+    NSMutableDictionary* users = nil;
     
-    //code
-    SecStaticCodeRef staticCode = NULL;
+    //query
+    CSIdentityQueryRef query = nil;
     
-    //signing reqs
-    SecRequirementRef requirementRef = NULL;
+    //query results
+    CFArrayRef results = NULL;
     
-    //flags
-    SecCSFlags csFlags = kSecCSDefaultFlags;
+    //error
+    CFErrorRef error = NULL;
     
-    //status
-    OSStatus status = -1;
+    //identiry
+    CBIdentity* identity = NULL;
     
-    //create static code
-    status = SecStaticCodeCreateWithPath((__bridge CFURLRef)([NSURL fileURLWithPath:path]), kSecCSDefaultFlags, &staticCode);
-    if(STATUS_SUCCESS != status)
+    //alloc dictionary
+    users = [NSMutableDictionary dictionary];
+    
+    //init query
+    query = CSIdentityQueryCreate(NULL, kCSIdentityClassUser, CSGetLocalIdentityAuthority());
+    
+    //exec query
+    if(true != CSIdentityQueryExecute(query, 0, &error))
     {
         //bail
         goto bail;
     }
     
-    //create req string w/ 'anchor apple'
-    // (3rd party: 'anchor apple generic')
-    status = SecRequirementCreateWithString(CFSTR("anchor apple"), kSecCSDefaultFlags, &requirementRef);
-    if( (STATUS_SUCCESS != status) ||
-        (requirementRef == NULL) )
-    {
-        //bail
-        goto bail;
-    }
+    //grab results
+    results = CSIdentityQueryCopyResults(query);
     
-    //init flags
-    // ->yosemite+ can do 'stronger' checks
-    if(YES == isYosemitePlus)
+    //process all results
+    // add user and home directory
+    for (int i = 0; i < CFArrayGetCount(results); ++i)
     {
-        //set
-        csFlags = kSecCSCheckNestedCode|kSecCSStrictValidate|kSecCSDoNotValidateResources;
+        //grab identity
+        identity = [CBIdentity identityWithCSIdentity:(CSIdentityRef)CFArrayGetValueAtIndex(results, i)];
+       
+        //add user
+        users[identity.uniqueIdentifier] = @{USER_NAME:identity.posixName, USER_DIRECTORY:NSHomeDirectoryForUser(identity.posixName)};
     }
 
-    //check if file is signed by apple
-    // ->i.e. it conforms to req string
-    status = SecStaticCodeCheckValidity(staticCode, csFlags, requirementRef);
-    if(STATUS_SUCCESS != status)
-    {
-        //bail
-        // ->just means app isn't signed by apple, or something didn't validate
-        goto bail;
-    }
-    
-    //ok, happy (SecStaticCodeCheckValidity() didn't fail)
-    // ->file is signed by Apple
-    isApple = YES;
-    
-//bail
 bail:
     
-    //free req reference
-    if(NULL != requirementRef)
+    //release results
+    if(NULL != results)
     {
-        //free
-        CFRelease(requirementRef);
-    }
-
-    //free static code
-    if(NULL != staticCode)
-    {
-        //free
-        CFRelease(staticCode);
+        //release
+        CFRelease(results);
     }
     
-    return isApple;
+    //release query
+    if(NULL != query)
+    {
+        //release
+        CFRelease(query);
+    }
+
+    return users;
+}
+
+//give a list of paths
+// convert any `~` to all or current user
+NSMutableArray* expandPaths(const __strong NSString* const paths[], int count)
+{
+    //expanded paths
+    NSMutableArray* expandedPaths = nil;
+    
+    //(current) path
+    const NSString* path = nil;
+    
+    //all users
+    NSMutableDictionary* users = nil;
+    
+    //grab all users
+    users = allUsers();
+    
+    //alloc list
+    expandedPaths = [NSMutableArray array];
+    
+    //iterate/expand
+    for(NSInteger i = 0; i < count; i++)
+    {
+        //grab path
+        path = paths[i];
+        
+        //no `~`?
+        // just add and continue
+        if(YES != [path hasPrefix:@"~"])
+        {
+            //add as is
+            [expandedPaths addObject:path];
+            
+            //next
+            continue;
+        }
+        
+        //handle '~' case
+        // root? add each user
+        if(0 == geteuid())
+        {
+            //add each user
+            for(NSString* user in users)
+            {
+                [expandedPaths addObject:[users[user][USER_DIRECTORY] stringByAppendingPathComponent:[path substringFromIndex:1]]];
+            }
+        }
+        //otherwise
+        // just convert to current user
+        else
+        {
+            [expandedPaths addObject:[path stringByExpandingTildeInPath]];
+        }
+        
+    }
+        
+    return expandedPaths;
 }
 
 //given a path to binary
@@ -368,13 +249,13 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle)
     NSString* iconExtension = nil;
     
     //system's document icon
-    static NSData* documentIcon = nil;
+    static NSImage* documentIcon = nil;
     
     //icon
     NSImage* icon = nil;
     
-    //if not bundle was passed in
-    // ->try find one
+    //no bundle?
+    // try find one
     if(nil == bundle)
     {
         //load bundle
@@ -382,7 +263,7 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle)
     }
     
     //for app's
-    // ->extract their icon
+    // extract their icon
     if(nil != bundle)
     {
         //get file
@@ -414,27 +295,25 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle)
         //extract icon
         icon = [[NSWorkspace sharedWorkspace] iconForFile:binary];
         
-        //load system document icon
-        // ->static var, so only load once
         if(nil == documentIcon)
         {
             //load
-            documentIcon = [[[NSWorkspace sharedWorkspace] iconForFileType:
-                         NSFileTypeForHFSTypeCode(kGenericDocumentIcon)] TIFFRepresentation];
+            documentIcon = [[NSWorkspace sharedWorkspace] iconForFileType:
+                            NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
         }
         
         //if 'iconForFile' method doesn't find and icon, it returns the system 'document' icon
         // ->the system 'application' icon seems more applicable, so use that here...
-        if(YES == [[icon TIFFRepresentation] isEqual:documentIcon])
+        if(YES == [icon isEqual:documentIcon])
         {
             //set icon to system 'applicaiton' icon
             icon = [[NSWorkspace sharedWorkspace]
-                         iconForFileType: NSFileTypeForHFSTypeCode(kGenericApplicationIcon)];
+                    iconForFileType: NSFileTypeForHFSTypeCode(kGenericApplicationIcon)];
         }
         
         //'iconForFileType' returns small icons
-        // ->so set size to 64
-        [icon setSize:NSMakeSize(64, 64)];
+        // so set size to 64 @2x
+        [icon setSize:NSMakeSize(128, 128)];
     }
     
     return icon;
@@ -1187,35 +1066,22 @@ bail:
 }
 
 //check if a file is an executable
-BOOL isURLExecutable(NSURL* file)
+BOOL isExecutable(NSString* file)
 {
     //return
     BOOL isExecutable = NO;
     
-    //bundle url
-    CFURLRef bundleURL = NULL;
-    
     //architecture ref
     CFArrayRef archArrayRef = NULL;
     
-    //create bundle
-    bundleURL = CFURLCreateFromFileSystemRepresentation(NULL, (uint8_t*)[[file path] UTF8String], strlen((const char *)(uint8_t*)[[file path] UTF8String]), true);
-    
     //get executable arch's
-    archArrayRef = CFBundleCopyExecutableArchitecturesForURL(bundleURL);
+    archArrayRef = CFBundleCopyExecutableArchitecturesForURL((__bridge CFURLRef)[NSURL fileURLWithPath:file]);
     
     //check arch for i386/x6_64
     if(NULL != archArrayRef)
     {
         //set flag
         isExecutable = [(__bridge NSArray*)archArrayRef containsObject:[NSNumber numberWithInt:kCFBundleExecutableArchitectureX86_64]] || [(__bridge NSArray*)archArrayRef containsObject:[NSNumber numberWithInt:kCFBundleExecutableArchitectureI386]];
-    }
-    
-    //free bundle url
-    if(NULL != bundleURL)
-    {
-        //free
-        CFRelease(bundleURL);
     }
     
     //free arch ref
@@ -1249,4 +1115,34 @@ id extractFromDictionary(NSDictionary* dictionary, NSString* sensitiveKey)
     }];
     
     return object;
+}
+
+//check if (full) dark mode
+// meaning, Mojave+ and dark mode enabled
+BOOL isDarkMode()
+{
+    //flag
+    BOOL darkMode = NO;
+    
+    //not mojave?
+    // bail, since not true dark mode
+    if(YES != [[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){10, 14, 0}])
+    {
+        //bail
+        goto bail;
+    }
+    
+    //not dark mode?
+    if(YES != [[[NSUserDefaults standardUserDefaults] stringForKey:@"AppleInterfaceStyle"] isEqualToString:@"Dark"])
+    {
+        //bail
+        goto bail;
+    }
+    
+    //ok, mojave dark mode it is!
+    darkMode = YES;
+    
+bail:
+    
+    return darkMode;
 }

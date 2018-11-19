@@ -15,6 +15,9 @@
     
 }
 
+//callback
+@property(copy, nonatomic) void (^callback)(ItemBase*);
+
 //name
 @property(retain, nonatomic)NSString* name;
 
@@ -45,9 +48,5 @@
 //process and item
 // ->save and report (if necessary)
 -(void)processItem:(ItemBase*)item;
-
-
-
-
 
 @end

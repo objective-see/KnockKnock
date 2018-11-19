@@ -30,7 +30,7 @@
         
         //call into filter object to check if file is known
         // ->signed or whitelisted
-        self.isTrusted = [((AppDelegate*)[[NSApplication sharedApplication] delegate]).filterObj isTrustedExtension:self];
+        self.isTrusted = [itemFilter isTrustedExtension:self];
     }
     
     return self;

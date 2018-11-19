@@ -9,16 +9,23 @@
 #ifndef KnockKnock_Utilities_h
 #define KnockKnock_Utilities_h
 
-/* METHODS */
-
-//check if OS is supported
-BOOL isSupportedOS(void);
+/* FUNCTIONS */
 
 //get OS's major or minor version
 SInt32 getVersion(OSType selector);
 
-//get the signing info of a file
-NSDictionary* extractSigningInfo(NSString* path);
+//disable std err
+void disableSTDERR(void);
+
+//get name of logged in user
+NSString* getConsoleUser(void);
+
+//get all users
+NSMutableDictionary* allUsers(void);
+
+//give a list of paths
+// convert any `~` to all or current user
+NSMutableArray* expandPaths(const __strong NSString* const paths[], int count);
 
 //if string is too long to fit into a the text field
 // ->truncate and insert ellipises before /file
@@ -45,9 +52,6 @@ NSString* getAppVersion(void);
 
 //convert a textview to a clickable hyperlink
 void makeTextViewHyperlink(NSTextField* textField, NSURL* url);
-
-//determine if a file is signed by Apple proper
-BOOL isApple(NSString* path);
 
 //set the color of an attributed string
 NSMutableAttributedString* setStringColor(NSAttributedString* string, NSColor* color);
@@ -81,10 +85,14 @@ NSString* which(NSString* processName);
 NSMutableArray* runningProcesses(void);
 
 //check if a file is an executable
-BOOL isURLExecutable(NSURL* file);
+BOOL isExecutable(NSString* file);
 
 //lookup object in dictionary
 // note: key can be case-insensitive
 id extractFromDictionary(NSDictionary* dictionary, NSString* sensitiveKey);
+
+//check if (full) dark mode
+// meaning, Mojave+ and dark mode enabled
+BOOL isDarkMode(void);
 
 #endif

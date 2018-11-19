@@ -75,7 +75,7 @@
 
 
 //process and item
-// ->save and report (if necessary)
+// save and report (if necessary)
 -(void)processItem:(ItemBase*)item
 {
     //exit if scanner (self) thread was cancelled
@@ -107,8 +107,12 @@
         }
     }
     
-    //report it to the UI
-    [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemFound:item];
+    //invoke callback
+    if(nil != self.callback)
+    {
+        //invoke
+        self.callback(item);
+    }
     
     return;
 }

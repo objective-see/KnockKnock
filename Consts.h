@@ -9,6 +9,12 @@
 #ifndef KK_Consts_h
 #define KK_Consts_h
 
+//not first run
+#define NOT_FIRST_TIME @"notFirstTime"
+
+//supported plugins
+static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"SpotlightImporters", @"StartupScripts"};
+
 //button text, start scan
 #define START_SCAN @"Start Scan"
 
@@ -45,16 +51,23 @@
 //success
 #define STATUS_SUCCESS 0
 
-//keys for signing stuff
+//signers
+enum Signer{None, Apple, AppStore, DevID, AdHoc};
+
+//signature status
 #define KEY_SIGNATURE_STATUS @"signatureStatus"
-#define KEY_SIGNING_AUTHORITIES @"signingAuthorities"
-#define KEY_SIGNING_IS_APPLE @"signedByApple"
 
-//OS version x
-#define OS_MAJOR_VERSION_X 10
+//signer
+#define KEY_SIGNATURE_SIGNER @"signatureSigner"
 
-//OS version lion
-#define OS_MINOR_VERSION_LION 8
+//signing auths
+#define KEY_SIGNATURE_AUTHORITIES @"signatureAuthorities"
+
+//code signing id
+#define KEY_SIGNATURE_IDENTIFIER @"signatureIdentifier"
+
+//entitlements
+#define KEY_SIGNATURE_ENTITLEMENTS @"signatureEntitlements"
 
 //OS version yosemite
 #define OS_MINOR_VERSION_YOSEMITE 10
@@ -97,6 +110,12 @@
 
 //dyld_ key for applications
 #define APPLICATION_DYLD_KEY @"LSEnvironment"
+
+//user name
+#define USER_NAME @"userName"
+
+//user (home) directory
+#define USER_DIRECTORY @"userDirectory"
 
 //menu
 
@@ -160,6 +179,9 @@
 //ellipis
 // ->for long paths...
 #define ELLIPIS @"..."
+
+//known kexts
+#define WHITE_LISTED_KEXTS @"whitelistedKexts"
 
 //known file hashes
 #define WHITE_LISTED_FILES @"whitelistedFiles"

@@ -16,10 +16,6 @@
 
 /* PROPERTIES */
 
-//all enabled jobs
-// ->includes (sandboxed) login items
-@property(nonatomic, retain) NSMutableArray* enabledJobs;
-
 /* (custom) METHODS */
 
 //enumerate traditional login items
@@ -29,6 +25,5 @@
 //enumerate sandboxed login items
 // ->scan /Applications for 'Contents/Library/LoginItems/' and xref w/ launchd jobs
 -(NSMutableArray*)enumSandboxItems;
-
 
 @end

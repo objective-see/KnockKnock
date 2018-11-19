@@ -10,6 +10,7 @@
 #import "File.h"
 #import "MachO.h"
 #import "Consts.h"
+#import "Signing.h"
 #import "Utilities.h"
 #import "AppDelegate.h"
 
@@ -31,6 +32,9 @@
 {
     //flag for directories
     BOOL isDirectory = NO;
+    
+    //cs flags
+    SecCSFlags flags = kSecCSDefaultFlags | kSecCSCheckNestedCode | kSecCSDoNotValidateResources | kSecCSCheckAllArchitectures;
     
     //mach-O parser
     MachO* machoParser = nil;
@@ -108,12 +112,12 @@
         //grab attributes
         self.attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.path error:nil];
         
-        //extract signing info
-        self.signingInfo = extractSigningInfo(self.path);
+        //extract signing info statically
+        self.signingInfo = extractSigningInfo(0, self.path, flags);
         
         //call into filter object to check if file is known
-        // ->apple-signed or whitelisted
-        self.isTrusted = [((AppDelegate*)[[NSApplication sharedApplication] delegate]).filterObj isTrustedFile:self];
+        // apple-signed or whitelisted (hash or signing id)
+        self.isTrusted = [itemFilter isTrustedFile:self];
         
         //alloc macho parser iVar
         // ->new instance for each file!
@@ -124,8 +128,8 @@
         if(YES == [machoParser parse:self.path classify:YES])
         {
             //unset 'packed' flag for apple signed binaries
-            // ->as apple doesn't pack binaries, but packer algo has some false positives
-            if(YES == [self.signingInfo[KEY_SIGNING_IS_APPLE] boolValue])
+            // as apple doesn't pack binaries, but packer algo has some false positives
+            if(Apple == [self.signingInfo[KEY_SIGNATURE_SIGNER] intValue])
             {
                 //unset
                 machoParser.binaryInfo[KEY_IS_PACKED] = @NO;
@@ -232,7 +236,7 @@ bail:
             prettyPrint = [NSMutableString string];//stringWithString:@"signed by:"];
             
             //add each signing auth
-            for(NSString* signingAuthority in self.signingInfo[KEY_SIGNING_AUTHORITIES])
+            for(NSString* signingAuthority in self.signingInfo[KEY_SIGNATURE_AUTHORITIES])
             {
                 //append
                 [prettyPrint appendString:[NSString stringWithFormat:@"%@, ", signingAuthority]];

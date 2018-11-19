@@ -50,9 +50,6 @@ NSString* const PERIODIC_SCRIPTS_SEARCH_DIRECTORIES[] = {@"/etc/periodic/daily",
 //scan for periodic scripts
 -(void)scan
 {
-    //periodic scripts directory
-    NSString* periodScriptDirectory = nil;
-    
     //number of search directories
     NSUInteger directoryCount = 0;
     
@@ -69,7 +66,7 @@ NSString* const PERIODIC_SCRIPTS_SEARCH_DIRECTORIES[] = {@"/etc/periodic/daily",
     directoryCount = sizeof(PERIODIC_SCRIPTS_SEARCH_DIRECTORIES)/sizeof(PERIODIC_SCRIPTS_SEARCH_DIRECTORIES[0]);
     
     //always a period script config file
-    // ->its executed by each period script, so should be reported
+    // its executed by each period script, so should be reported
     fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:PERIOD_CONFIG}];
     if(nil != fileObj)
     {
@@ -79,21 +76,18 @@ NSString* const PERIODIC_SCRIPTS_SEARCH_DIRECTORIES[] = {@"/etc/periodic/daily",
     }
     
     //iterate over all script directories
-    // ->get all script files and process them
+    // get all script files and process them
     for(NSUInteger i=0; i < directoryCount; i++)
     {
-        //extract current directory
-        periodScriptDirectory = [PERIODIC_SCRIPTS_SEARCH_DIRECTORIES[i] stringByExpandingTildeInPath];
-        
         //get all items in current directory
-        allPeriodicScripts = directoryContents(periodScriptDirectory, nil);
+        allPeriodicScripts = directoryContents(PERIODIC_SCRIPTS_SEARCH_DIRECTORIES[i], nil);
         
         //iterate over all importers
         // ->perform some sanity checks and then save
         for(NSString* periodicScript in allPeriodicScripts)
         {
             //build full path to script
-            periodScriptPathPath = [NSString stringWithFormat:@"%@/%@", periodScriptDirectory, periodicScript];
+            periodScriptPathPath = [NSString stringWithFormat:@"%@/%@", PERIODIC_SCRIPTS_SEARCH_DIRECTORIES[i], periodicScript];
             
             //create File object for script
             fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:periodScriptPathPath}];
