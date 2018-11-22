@@ -13,13 +13,11 @@
 #import "Utilities.h"
 #import "InfoWindowController.h"
 
-@interface InfoWindowController ()
-
-@end
 
 @implementation InfoWindowController
 
 @synthesize itemObj;
+@synthesize plistWindowController;
 
 //automatically invoked when window is loaded
 // ->set to white
@@ -115,8 +113,11 @@
         //set plist
         if(nil != ((File*)self.itemObj).plist)
         {
-            //set
-            [self.plist setStringValue:((File*)self.itemObj).plist];
+            //create/set attributes string
+            self.plist.attributedStringValue = [[NSMutableAttributedString alloc] initWithString:((File*)self.itemObj).plist attributes:@{NSFontAttributeName: [NSFont fontWithName:@"Menlo" size:11], NSLinkAttributeName:[NSURL URLWithString:@"#"], NSForegroundColorAttributeName:[NSColor blueColor], NSUnderlineStyleAttributeName:[NSNumber numberWithInt:NSSingleUnderlineStyle]}];
+            
+            //add click event handler
+            [self.plist addGestureRecognizer:[[NSClickGestureRecognizer alloc] initWithTarget:self action:@selector(showPlist:)]];
         }
         //no plist
         else
@@ -158,6 +159,27 @@
         //set signing info
         //[self.sign setStringValue:[(File*)self.itemObj formatSigningInfo]];
     }
+    
+    return;
+}
+
+//invoked when user clicks on plist
+// display plist window pane w/ contents
+- (void)showPlist:(id)sender
+{
+    //alloc sheet
+    self.plistWindowController = [[PlistWindowController alloc] initWithWindowNibName:@"PlistWindow"];
+    
+    //set path
+    self.plistWindowController.plist = ((File*)self.itemObj).plist;
+    
+    //show entitlements
+    [self.window beginSheet:self.plistWindowController.window completionHandler:^(NSModalResponse returnCode) {
+        
+        //unset window controller
+        self.plistWindowController = nil;
+        
+    }];
     
     return;
 }

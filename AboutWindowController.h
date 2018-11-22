@@ -1,12 +1,13 @@
 //
-//  PrefsWindowController.h
-//  KnockKnock
+//  file: AboutWindowController.h
+//  project: lulu (config)
+//  description: about window display/controller (header)
 //
-//  Created by Patrick Wardle on 2/6/15.
-//  Copyright (c) 2015 Objective-See, LLC. All rights reserved.
+//  created by Patrick Wardle
+//  copyright (c) 2018 Objective-See. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+@import Cocoa;
 
 @interface AboutWindowController : NSWindowController <NSWindowDelegate>
 {
@@ -16,12 +17,13 @@
 /* PROPERTIES */
 
 //version label/string
-@property (weak) IBOutlet NSTextField *versionLabel;
+@property (weak, atomic) IBOutlet NSTextField *versionLabel;
 
-/* METHODS */
+//patrons
+@property (unsafe_unretained, atomic) IBOutlet NSTextView *patrons;
 
-//invoked when user clicks 'more info' button
-// ->open KK's webpage
-- (IBAction)moreInfo:(id)sender;
+//'support us' button
+@property (weak, atomic) IBOutlet NSButton *supportUs;
+
 
 @end

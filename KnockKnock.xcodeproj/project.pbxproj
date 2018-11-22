@@ -31,6 +31,10 @@
 		CD2B613320675EEC00BF72E9 /* EventRules.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2B611220675EEB00BF72E9 /* EventRules.m */; };
 		CD2B61442067656200BF72E9 /* eventRulesIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD2B61432067656200BF72E9 /* eventRulesIcon.png */; };
 		CD585494219FE61D00A438B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD585493219FE61D00A438B0 /* Assets.xcassets */; };
+		CD5854D321A5FADD00A438B0 /* patrons.txt in Resources */ = {isa = PBXBuildFile; fileRef = CD5854D221A5FADD00A438B0 /* patrons.txt */; };
+		CD5854D521A60B1000A438B0 /* PlistWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD5854D421A60B0F00A438B0 /* PlistWindow.xib */; };
+		CD5854D821A60B2100A438B0 /* PlistWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5854D721A60B2000A438B0 /* PlistWindowController.m */; };
+		CD5854DB21A6103B00A438B0 /* ClickableTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5854DA21A6103A00A438B0 /* ClickableTextField.m */; };
 		CD6095731A87067D00E091CD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6095721A87067D00E091CD /* Security.framework */; };
 		CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975031B02F60400CE819B /* RFOverlayScroller.m */; };
 		CD6975071B02F60400CE819B /* RFOverlayScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975051B02F60400CE819B /* RFOverlayScrollView.m */; };
@@ -169,6 +173,12 @@
 		CD2B611320675EEB00BF72E9 /* EventRules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventRules.h; path = Plugins/EventRules.h; sourceTree = "<group>"; };
 		CD2B61432067656200BF72E9 /* eventRulesIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = eventRulesIcon.png; path = images/eventRulesIcon.png; sourceTree = SOURCE_ROOT; };
 		CD585493219FE61D00A438B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		CD5854D221A5FADD00A438B0 /* patrons.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = patrons.txt; sourceTree = SOURCE_ROOT; };
+		CD5854D421A60B0F00A438B0 /* PlistWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PlistWindow.xib; path = UI/PlistWindow.xib; sourceTree = "<group>"; };
+		CD5854D621A60B2000A438B0 /* PlistWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlistWindowController.h; sourceTree = SOURCE_ROOT; };
+		CD5854D721A60B2000A438B0 /* PlistWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlistWindowController.m; sourceTree = SOURCE_ROOT; };
+		CD5854D921A6103A00A438B0 /* ClickableTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClickableTextField.h; sourceTree = "<group>"; };
+		CD5854DA21A6103A00A438B0 /* ClickableTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClickableTextField.m; sourceTree = "<group>"; };
 		CD6095721A87067D00E091CD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CD6975021B02F60400CE819B /* RFOverlayScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RFOverlayScroller.h; path = 3rdParty/RFOverlayScroller.h; sourceTree = "<group>"; };
 		CD6975031B02F60400CE819B /* RFOverlayScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RFOverlayScroller.m; path = 3rdParty/RFOverlayScroller.m; sourceTree = "<group>"; };
@@ -310,6 +320,8 @@
 				CD6BBBEF1B52032D00506D0D /* NSApplicationKeyEvents.m */,
 				CDAB989A1AEAC95500C75B4B /* ItemEnumerator.h */,
 				CDAB989B1AEAC95500C75B4B /* ItemEnumerator.m */,
+				CD5854D921A6103A00A438B0 /* ClickableTextField.h */,
+				CD5854DA21A6103A00A438B0 /* ClickableTextField.m */,
 				CD7B9FA91AD08FA100DF3C71 /* KKRow.h */,
 				CD7B9FAA1AD08FA100DF3C71 /* KKRow.m */,
 				CDF08CE31AC89FD4009B3423 /* 3rdParty */,
@@ -366,6 +378,8 @@
 			children = (
 				CDF08CC71AC4C678009B3423 /* PrefsWindowController.h */,
 				CDF08CC81AC4C678009B3423 /* PrefsWindowController.m */,
+				CD5854D621A60B2000A438B0 /* PlistWindowController.h */,
+				CD5854D721A60B2000A438B0 /* PlistWindowController.m */,
 				CDA81D561A95B4B4009790E2 /* MainMenu.xib */,
 				CDF08CC41AC46E75009B3423 /* VTButton.h */,
 				CDF08CC51AC46E75009B3423 /* VTButton.m */,
@@ -387,6 +401,7 @@
 		1D21BC55172AF43D009D1CFD /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				CD5854D221A5FADD00A438B0 /* patrons.txt */,
 				CDA81D541A95B4B4009790E2 /* InfoPlist.strings */,
 				CDA81D581A95B4B4009790E2 /* KnockKnock-Info.plist */,
 				CDA81D591A95B4B4009790E2 /* KnockKnock-Prefix.pch */,
@@ -535,6 +550,7 @@
 		CDA81E621AA020E8009790E2 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				CD5854D421A60B0F00A438B0 /* PlistWindow.xib */,
 				CD02195D1AD39A74005148A2 /* ResultsWindow.xib */,
 				CD02194D1AD34D8B005148A2 /* AboutWindow.xib */,
 				CD02194E1AD34D8B005148A2 /* PrefsWindow.xib */,
@@ -633,6 +649,7 @@
 				CDA81D6B1A95B4E9009790E2 /* show.png in Resources */,
 				CD24F074219D51210081B0E5 /* whitelistedKexts.json in Resources */,
 				CDF08CF31ACA6864009B3423 /* browserIcon.png in Resources */,
+				CD5854D521A60B1000A438B0 /* PlistWindow.xib in Resources */,
 				CDAB98A11AEAFAFA00C75B4B /* authorizationIcon.png in Resources */,
 				CD6BBBEB1B50DF7100506D0D /* signedAppleIcon.png in Resources */,
 				CD001B391AB903040089014A /* logoApple.png in Resources */,
@@ -646,6 +663,7 @@
 				CDA81DF51A99B8C2009790E2 /* whitelistedFiles.json in Resources */,
 				CDF08CF01ACA677B009B3423 /* kernelIcon.png in Resources */,
 				CDF08CD01AC4C6E8009B3423 /* settingsBG.png in Resources */,
+				CD5854D321A5FADD00A438B0 /* patrons.txt in Resources */,
 				CD0219551AD34E4C005148A2 /* kkIcon.png in Resources */,
 				CDA81D5C1A95B4B4009790E2 /* MainMenu.xib in Resources */,
 				CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */,
@@ -707,6 +725,7 @@
 				CDF08CCA1AC4C678009B3423 /* PrefsWindowController.m in Sources */,
 				CDA81E071A9AFFA7009790E2 /* LoginItems.m in Sources */,
 				CD2B613320675EEC00BF72E9 /* EventRules.m in Sources */,
+				CD5854DB21A6103B00A438B0 /* ClickableTextField.m in Sources */,
 				CDA81DEA1A997BF1009790E2 /* InfoWindowController.m in Sources */,
 				CDA81E041A9AB89C009790E2 /* LaunchItems.m in Sources */,
 				CDF08CE61AC89FE1009B3423 /* HyperlinkTextField.m in Sources */,
@@ -714,6 +733,7 @@
 				CD6BBBF01B52032D00506D0D /* NSApplicationKeyEvents.m in Sources */,
 				CDA81D4F1A95B492009790E2 /* AppDelegate.m in Sources */,
 				CDA81D5E1A95B4B4009790E2 /* main.m in Sources */,
+				CD5854D821A60B2100A438B0 /* PlistWindowController.m in Sources */,
 				7DE2FE2E1D3F30BE006C1438 /* Extensions.m in Sources */,
 				7DE29CA41CA7BC5600DFA6A6 /* StartupScripts.m in Sources */,
 				CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */,

@@ -170,6 +170,14 @@
             continue;
         }
         
+        //don't trust 'Apple' binaries that are persisted as launch items
+        if( (YES == fileObj.isTrusted) &&
+            ((YES == [fileObj.plist hasPrefix:@"/Library/"]) || (YES == [fileObj.plist hasPrefix:@"/Users/"])) )
+        {
+            //don't trust
+            fileObj.isTrusted = NO;
+        }
+        
         //process item
         // ->save and report to UI
         [super processItem:fileObj];

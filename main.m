@@ -32,19 +32,23 @@ int main(int argc, char *argv[])
         //start crash handler
         [SentryClient.sharedClient startCrashHandlerWithError:nil];
         
+        //handle '-h' or '-help'
+        if( (YES == [[[NSProcessInfo processInfo] arguments] containsObject:@"-h"]) ||
+            (YES == [[[NSProcessInfo processInfo] arguments] containsObject:@"-help"]) )
+        {
+            //print usage
+            usage();
+            
+            //done
+            goto bail;
+        }
+        
         //handle '-scan'
         // cmdline scan without UI
         if(YES == [[[NSProcessInfo processInfo] arguments] containsObject:@"-whosthere"])
         {
             //scan
-            if(YES != cmdlineScan())
-            {
-                //err msg
-                printf("\nKNOCKKNOCK ERROR: cmdline scan failed\n\n");
-                
-                //bail
-                goto bail;
-            }
+            cmdlineScan();
             
             //happy
             status = 0;
@@ -68,17 +72,28 @@ bail:
     return status;
 }
 
+//print usage
+void usage()
+{
+    //usage
+    printf("\nKNOCKNOCK USAGE:\n");
+    printf(" -h or -help  display this usage info\n");
+    printf(" -whosthere   perform command line scan\n");
+    printf(" -pretty      during command line scan, output is 'pretty-printed'\n");
+    printf(" -apple       during command line scan, include apple/system items\n");
+    printf(" -skipVT      during command line scan, do not query VirusTotal with item hashes\n\n");
+    
+    return;
+}
+
 //perform a cmdline scan
-BOOL cmdlineScan()
+void cmdlineScan()
 {
     //virus total obj
     VirusTotal* virusTotal = nil;
     
     //virus total thread
     NSThread* virusTotalThread = nil;
-    
-    //flag
-    BOOL scanned = NO;
     
     //flag
     BOOL includeApple = NO;
@@ -215,12 +230,7 @@ BOOL cmdlineScan()
         printf("%s\n", output.UTF8String);
     }
     
-    //happy
-    scanned = YES;
-    
-bail:
-    
-    return scanned;
+    return;
 }
 
 //pretty print JSON
@@ -248,7 +258,7 @@ void prettyPrintJSON(NSString* output)
     prettyData =  [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil];
     
     //covert to pretty string
-    prettyString = [NSString stringWithUTF8String:prettyData.bytes];
+    prettyString = [[NSString alloc] initWithData:prettyData encoding:NSUTF8StringEncoding];
     
     //output
     printf("%s\n", prettyString.UTF8String);

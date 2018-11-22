@@ -28,8 +28,11 @@ ItemEnumerator* sharedItemEnumerator = nil;
 
 /* FUNCTIONS */
 
+//print usage
+void usage(void);
+
 //perform a cmdline scan
-BOOL cmdlineScan(void);
+void cmdlineScan(void);
 
 //pretty print JSON
 void prettyPrintJSON(NSString* output);

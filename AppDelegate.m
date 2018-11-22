@@ -8,13 +8,9 @@
 #import "PluginBase.h"
 #import "AppDelegate.h"
 
-
 //TODO: scan other volumes
 //TODO: support delete items
 //TODO: search in UI
-
-//TODO: better parsing of args for /sh etc? or at least don't say they are 'APPLE' (and thus filter out)
-//      or make them a cmd!
 
 @implementation AppDelegate
 

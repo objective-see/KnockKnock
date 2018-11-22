@@ -91,7 +91,7 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
         for(NSString* plist in directoryContents(launchItemDirectory, @"self ENDSWITH '.plist'"))
         {
             //build full path to item/plist and save
-            [allLaunchItems addObject:[NSString stringWithFormat:@"%@/%@", launchItemDirectory, plist]];
+            [allLaunchItems addObject:[launchItemDirectory stringByAppendingPathComponent:plist]];
         }
     }
     

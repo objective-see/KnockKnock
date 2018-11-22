@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "PlistWindowController.h"
+
 @class ItemBase;
 
 @interface InfoWindowController : NSWindowController <NSWindowDelegate>
@@ -40,6 +42,9 @@
 
 //item
 @property(nonatomic, retain)ItemBase* itemObj;
+
+//entitlements popup controller
+@property (strong) PlistWindowController* plistWindowController;
 
 /* METHODS */
 

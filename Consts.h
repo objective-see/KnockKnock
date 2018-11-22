@@ -267,6 +267,16 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //output file
 #define OUTPUT_FILE @"kkFindings.txt"
 
+//support us button tag
+#define BUTTON_SUPPORT_US 100
 
+//more info button tag
+#define BUTTON_MORE_INFO 101
+
+//patreon url
+#define PATREON_URL @"https://www.patreon.com/bePatron?c=701171"
+
+//product url
+#define PRODUCT_URL @"https://objective-see.com/products/knockknock.html"
 
 #endif

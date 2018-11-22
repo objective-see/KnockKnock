@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="PlistWindowController">
+            <connections>
+                <outlet property="contents" destination="K8r-7O-jbE" id="T7W-68-rmh"/>
+                <outlet property="entitlements" destination="K8r-7O-jbE" id="xv6-E3-nwq"/>
+                <outlet property="path" destination="RUH-k1-xgb" id="lax-vV-NHM"/>
+                <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="F0z-JX-Cv5">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="240" width="607" height="330"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <value key="minSize" type="size" width="480" height="100"/>
+            <view key="contentView" wantsLayer="YES" id="se5-gp-TjO">
+                <rect key="frame" x="0.0" y="0.0" width="607" height="330"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button verticalHuggingPriority="750" tag="100" translatesAutoresizingMaskIntoConstraints="NO" id="fjc-Vr-I97">
+                        <rect key="frame" x="521" y="2" width="83" height="32"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="71" id="FOf-mv-ue0"/>
+                            <constraint firstAttribute="height" constant="21" id="LUl-pH-Wrx"/>
+                        </constraints>
+                        <buttonCell key="cell" type="push" title="close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1Dc-km-Bwx">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" size="13" name="Menlo-Regular"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="close:" target="-2" id="0L9-dz-2IV"/>
+                        </connections>
+                    </button>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RUH-k1-xgb">
+                        <rect key="frame" x="18" y="10" width="493" height="19"/>
+                        <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" alignment="left" title="plist" id="iny-wp-VI1">
+                            <font key="font" size="13" name="Menlo-Regular"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OZ7-FI-Xua">
+                        <rect key="frame" x="-1" y="40" width="609" height="291"/>
+                        <clipView key="contentView" drawsBackground="NO" id="Vka-gz-tp4">
+                            <rect key="frame" x="1" y="1" width="607" height="289"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="K8r-7O-jbE">
+                                    <rect key="frame" x="0.0" y="-1" width="607" height="289"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="minSize" width="607" height="289"/>
+                                    <size key="maxSize" width="670" height="10000000"/>
+                                    <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                </textView>
+                            </subviews>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="6OI-BT-4B5">
+                            <rect key="frame" x="-100" y="-100" width="87" height="18"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="z1D-qd-hbO">
+                            <rect key="frame" x="592" y="1" width="16" height="289"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="RUH-k1-xgb" firstAttribute="centerY" secondItem="fjc-Vr-I97" secondAttribute="centerY" id="8aI-Eo-3E7"/>
+                    <constraint firstAttribute="trailing" secondItem="OZ7-FI-Xua" secondAttribute="trailing" constant="-1" id="FMj-Ba-WfP"/>
+                    <constraint firstAttribute="bottom" secondItem="fjc-Vr-I97" secondAttribute="bottom" constant="9" id="OO6-dy-5kW"/>
+                    <constraint firstItem="fjc-Vr-I97" firstAttribute="top" secondItem="OZ7-FI-Xua" secondAttribute="bottom" constant="10" id="T5l-RJ-PH3"/>
+                    <constraint firstItem="RUH-k1-xgb" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" id="c2i-0y-szp"/>
+                    <constraint firstItem="OZ7-FI-Xua" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="-1" id="qyX-vC-UX0"/>
+                    <constraint firstAttribute="trailing" secondItem="fjc-Vr-I97" secondAttribute="trailing" constant="9" id="rMc-tk-nAv"/>
+                    <constraint firstItem="OZ7-FI-Xua" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="-1" id="uJQ-9N-3Yq"/>
+                    <constraint firstItem="fjc-Vr-I97" firstAttribute="leading" secondItem="RUH-k1-xgb" secondAttribute="trailing" constant="18" id="wdF-6h-Ajg"/>
+                </constraints>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
+            </connections>
+            <point key="canvasLocation" x="13.5" y="177"/>
+        </window>
+    </objects>
+</document>
