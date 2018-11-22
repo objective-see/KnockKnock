@@ -14,7 +14,7 @@
 #define PLUGIN_NAME @"Browser Extensions"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"plugins/extensions hosted in the browser"
+#define PLUGIN_DESCRIPTION @"extensions hosted in the browser"
 
 //plugin icon
 #define PLUGIN_ICON @"browserIcon"

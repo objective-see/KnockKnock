@@ -13,7 +13,7 @@
 #define PLUGIN_NAME @"Authorization Plugins"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"registered custom authorization bundles"
+#define PLUGIN_DESCRIPTION @"registered authorization bundles"
 
 //plugin icon
 #define PLUGIN_ICON @"authorizationIcon"

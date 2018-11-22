@@ -32,7 +32,7 @@
 #define PLUGIN_NAME @"Library Inserts"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"dylibs inserted via *DYLD_INSERT_LIBRARIES"
+#define PLUGIN_DESCRIPTION @"libs inserted by DYLD_INSERT_LIBRARIES"
 
 //plugin icon
 #define PLUGIN_ICON @"dylibIcon"

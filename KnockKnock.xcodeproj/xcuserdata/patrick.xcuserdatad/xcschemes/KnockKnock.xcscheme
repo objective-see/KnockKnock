@@ -64,11 +64,11 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-whosthere"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-pretty"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>

@@ -11,7 +11,7 @@
 #define PLUGIN_NAME @"Kernel Extensions"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"installed modules, possibly kernel loaded"
+#define PLUGIN_DESCRIPTION @"installed kexts, likely kernel loaded"
 
 //plugin icon
 #define PLUGIN_ICON @"kernelIcon"

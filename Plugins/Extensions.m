@@ -13,7 +13,7 @@
 #define PLUGIN_NAME @"Extensions and Widgets"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"plugins that extend or customize the OS"
+#define PLUGIN_DESCRIPTION @"plugins that extend/customize the OS"
 
 //plugin icon
 #define PLUGIN_ICON @"extensionIcon"
