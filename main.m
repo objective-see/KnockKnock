@@ -251,14 +251,32 @@ void prettyPrintJSON(NSString* output)
     //covert to data
     data = [output dataUsingEncoding:NSUTF8StringEncoding];
     
-    //serialize
-    object = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    
-    //covert to pretty data
-    prettyData =  [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil];
+    //convert to JSON
+    // wrap since we are serializing JSON
+    @try
+    {
+        //serialize
+        object = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        
+        //covert to pretty data
+        prettyData =  [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil];
+    }
+    @catch(NSException *exception)
+    {
+        ;
+    }
     
     //covert to pretty string
-    prettyString = [[NSString alloc] initWithData:prettyData encoding:NSUTF8StringEncoding];
+    if(nil != prettyData)
+    {
+        //convert to string
+        prettyString = [[NSString alloc] initWithData:prettyData encoding:NSUTF8StringEncoding];
+    }
+    else
+    {
+        //error
+        prettyString = @"{\"ERROR\" : \"failed to covert output to JSON\"}";
+    }
     
     //output
     printf("%s\n", prettyString.UTF8String);

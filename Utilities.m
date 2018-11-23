@@ -108,9 +108,9 @@ NSMutableDictionary* allUsers()
     {
         //grab identity
         identity = [CBIdentity identityWithCSIdentity:(CSIdentityRef)CFArrayGetValueAtIndex(results, i)];
-       
+        
         //add user
-        users[identity.uniqueIdentifier] = @{USER_NAME:identity.posixName, USER_DIRECTORY:NSHomeDirectoryForUser(identity.posixName)};
+        users[identity.UUIDString] = @{USER_NAME:identity.posixName, USER_DIRECTORY:NSHomeDirectoryForUser(identity.posixName)};
     }
 
 bail:

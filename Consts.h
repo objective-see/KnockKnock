@@ -42,6 +42,10 @@ static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"Browse
 // ->save output
 #define PREF_SAVE_OUTPUT @"saveOutput"
 
+//prefs
+// ->no updates
+#define PREF_DISABLE_UPDATE_CHECK @"noUpdateCheck"
+
 //disabled state
 #define STATE_DISABLED 0
 
@@ -278,5 +282,8 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 
 //product url
 #define PRODUCT_URL @"https://objective-see.com/products/knockknock.html"
+
+//product version url
+#define PRODUCT_VERSIONS_URL @"https://objective-see.com/products.json"
 
 #endif

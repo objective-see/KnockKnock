@@ -4,6 +4,7 @@
 //
 
 #import "Consts.h"
+#import "Update.h"
 #import "Utilities.h"
 #import "PluginBase.h"
 #import "AppDelegate.h"
@@ -30,6 +31,7 @@
 @synthesize aboutWindowController;
 @synthesize prefsWindowController;
 @synthesize showPreferencesButton;
+@synthesize updateWindowController;
 @synthesize categoryTableController;
 @synthesize resultsWindowController;
 
@@ -83,13 +85,9 @@
         exit(0);
     }
     
-    //kick off thread to begin enumerating shared objects
-    // ->this takes awhile, so do it now/first!
-    [sharedItemEnumerator start];
-    
     //load defaults
     defaults = [NSUserDefaults standardUserDefaults];
-    
+
     //first time run?
     // show thanks to friends window!
     if(YES != [defaults boolForKey:NOT_FIRST_TIME])
@@ -107,7 +105,19 @@
             [self.friends close];
         });
     }
+    
+    //check for update
+    // unless user has turn off via prefs
+    if(YES != [defaults boolForKey:PREF_DISABLE_UPDATE_CHECK])
+    {
+        //check
+        [self check4Update];
+    }
 
+    //kick off thread to begin enumerating shared objects
+    // ->this takes awhile, so do it now/first!
+    [sharedItemEnumerator start];
+    
     //instantiate all plugins objects
     self.plugins = [self instantiatePlugins];
     
@@ -1289,6 +1299,76 @@
     }
 
     return bEnabled;
+}
+
+//call into Update obj
+// check to see if there an update?
+-(void)check4Update
+{
+    //update obj
+    Update* update = nil;
+    
+    //init update obj
+    update = [[Update alloc] init];
+    
+    //check for update
+    // ->'updateResponse newVersion:' method will be called when check is done
+    [update checkForUpdate:^(NSUInteger result, NSString* newVersion) {
+        
+        //process response
+        [self updateResponse:result newVersion:newVersion];
+        
+    }];
+    
+    return;
+}
+
+
+//process update response
+// error, no update, update/new version
+-(void)updateResponse:(NSInteger)result newVersion:(NSString*)newVersion
+{
+    //handle response
+    // new version, show popup
+    switch (result)
+    {
+        //error
+        case -1:
+        
+            break;
+            
+        //no updates
+        case 0:
+            
+            break;
+            
+        //new version
+        case 1:
+            
+            //alloc update window
+            updateWindowController = [[UpdateWindowController alloc] initWithWindowNibName:@"UpdateWindow"];
+            
+            //configure
+            [self.updateWindowController configure:[NSString stringWithFormat:@"a new version (%@) is available!", newVersion] buttonTitle:@"Update"];
+            
+            //center window
+            [[self.updateWindowController window] center];
+            
+            //show it
+            [self.updateWindowController showWindow:self];
+            
+            //invoke function in background that will make window modal
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                
+                //make modal
+                makeModal(self.updateWindowController);
+                
+            });
+            
+            break;
+    }
+    
+    return;
 }
 
 @end

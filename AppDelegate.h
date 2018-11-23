@@ -15,6 +15,7 @@
 #import "ItemTableController.h"
 #import "AboutWindowController.h"
 #import "PrefsWindowController.h"
+#import "UpdateWindowController.h"
 #import "CategoryTableController.h"
 #import "ResultsWindowController.h"
 
@@ -106,6 +107,9 @@ extern Filter* itemFilter;
 
 //constraint for status text
 @property (weak) IBOutlet NSLayoutConstraint *statusTextConstraint;
+
+//update window controller
+@property(nonatomic, retain)UpdateWindowController* updateWindowController;
 
 
 /* METHODS */

@@ -19,6 +19,7 @@
 @synthesize shouldSaveNow;
 @synthesize disableVTQueries;
 @synthesize showTrustedItems;
+@synthesize disableUpdateCheck;
 
 
 //automatically called when nib is loaded
@@ -54,6 +55,13 @@
         self.showTrustedItemsBtn.state = STATE_ENABLED;
     }
     
+    //check if 'disable update check' button should be selected
+    if(YES == self.disableUpdateCheck)
+    {
+        //set
+        self.disableUpdateCheckBtn.state = STATE_ENABLED;
+    }
+
     //check if 'disable vt queries' button should be selected
     if(YES == self.disableVTQueries)
     {
@@ -76,11 +84,11 @@
 }
 
 //register default prefs
-// ->only used if user hasn't set any
+// only used if user hasn't set any
 -(void)registerDefaults
 {
     //set defaults
-    [[NSUserDefaults standardUserDefaults] registerDefaults:@{PREF_SHOW_TRUSTED_ITEMS:@NO, PREF_DISABLE_VT_QUERIRES:@NO, PREF_SAVE_OUTPUT:@NO}];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:@{PREF_SHOW_TRUSTED_ITEMS:@NO, PREF_DISABLE_UPDATE_CHECK:@NO, PREF_DISABLE_VT_QUERIRES:@NO, PREF_SAVE_OUTPUT:@NO}];
     
     return;
 }
@@ -103,6 +111,13 @@
         {
             //save
             self.showTrustedItems = [defaults boolForKey:PREF_SHOW_TRUSTED_ITEMS];
+        }
+        
+        //load 'disable update check'
+        if(nil != [defaults objectForKey:PREF_DISABLE_UPDATE_CHECK])
+        {
+            //save
+            self.disableUpdateCheck = [defaults boolForKey:PREF_DISABLE_UPDATE_CHECK];
         }
         
         //load 'disable vt queries'
@@ -128,6 +143,9 @@
 {
     //save current state of 'include os/trusted' components
     self.showTrustedItems = self.showTrustedItemsBtn.state;
+    
+    //save current state of 'disable update checks'
+    self.disableUpdateCheck = self.disableUpdateCheckBtn.state;
     
     //save current state of 'disable VT'
     self.disableVTQueries = self.disableVTQueriesBtn.state;
@@ -163,6 +181,7 @@
     //first, any prefs changed, a 'save' set
     // ->set 'save now' flag
     if( ((self.showTrustedItems != self.showTrustedItemsBtn.state) ||
+         (self.disableUpdateCheck != self.disableUpdateCheckBtn.state) ||
          (self.disableVTQueries != self.disableVTQueriesBtn.state) ||
          (self.saveOutput != self.saveOutputBtn.state) ) &&
          (YES == self.saveOutputBtn.state) )
@@ -180,6 +199,9 @@
     //save hiding OS components flag
     self.showTrustedItems = self.showTrustedItemsBtn.state;
     
+    //save current state of 'disable update checks'
+    self.disableUpdateCheck = self.disableUpdateCheckBtn.state;
+    
     //save disabling VT flag
     self.disableVTQueries = self.disableVTQueriesBtn.state;
     
@@ -188,6 +210,9 @@
     
     //save 'show trusted items'
     [defaults setBool:self.showTrustedItems forKey:PREF_SHOW_TRUSTED_ITEMS];
+    
+    //save 'disable update checks'
+    [defaults setBool:self.disableUpdateCheck forKey:PREF_DISABLE_UPDATE_CHECK];
     
     //save 'disable vt queries'
     [defaults setBool:self.disableVTQueries forKey:PREF_DISABLE_VT_QUERIRES];

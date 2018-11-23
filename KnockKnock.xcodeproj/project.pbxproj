@@ -30,6 +30,9 @@
 		CD24F077219DF3DB0081B0E5 /* Signing.m in Sources */ = {isa = PBXBuildFile; fileRef = CD24F075219DF3DA0081B0E5 /* Signing.m */; };
 		CD2B613320675EEC00BF72E9 /* EventRules.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2B611220675EEB00BF72E9 /* EventRules.m */; };
 		CD2B61442067656200BF72E9 /* eventRulesIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD2B61432067656200BF72E9 /* eventRulesIcon.png */; };
+		CD2F219F21A8A73100F67A83 /* Update.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2F219E21A8A73100F67A83 /* Update.m */; };
+		CD2F21A121A8A7D100F67A83 /* UpdateWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD2F21A021A8A7D000F67A83 /* UpdateWindow.xib */; };
+		CD2F21A421A8A7E300F67A83 /* UpdateWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2F21A321A8A7E300F67A83 /* UpdateWindowController.m */; };
 		CD585494219FE61D00A438B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD585493219FE61D00A438B0 /* Assets.xcassets */; };
 		CD5854D321A5FADD00A438B0 /* patrons.txt in Resources */ = {isa = PBXBuildFile; fileRef = CD5854D221A5FADD00A438B0 /* patrons.txt */; };
 		CD5854D521A60B1000A438B0 /* PlistWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD5854D421A60B0F00A438B0 /* PlistWindow.xib */; };
@@ -172,6 +175,11 @@
 		CD2B611220675EEB00BF72E9 /* EventRules.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventRules.m; path = Plugins/EventRules.m; sourceTree = "<group>"; };
 		CD2B611320675EEB00BF72E9 /* EventRules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventRules.h; path = Plugins/EventRules.h; sourceTree = "<group>"; };
 		CD2B61432067656200BF72E9 /* eventRulesIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = eventRulesIcon.png; path = images/eventRulesIcon.png; sourceTree = SOURCE_ROOT; };
+		CD2F219D21A8A73000F67A83 /* Update.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Update.h; sourceTree = SOURCE_ROOT; };
+		CD2F219E21A8A73100F67A83 /* Update.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Update.m; sourceTree = SOURCE_ROOT; };
+		CD2F21A021A8A7D000F67A83 /* UpdateWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = UpdateWindow.xib; path = UI/UpdateWindow.xib; sourceTree = "<group>"; };
+		CD2F21A221A8A7E300F67A83 /* UpdateWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateWindowController.h; sourceTree = "<group>"; };
+		CD2F21A321A8A7E300F67A83 /* UpdateWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateWindowController.m; sourceTree = "<group>"; };
 		CD585493219FE61D00A438B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		CD5854D221A5FADD00A438B0 /* patrons.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = patrons.txt; sourceTree = SOURCE_ROOT; };
 		CD5854D421A60B0F00A438B0 /* PlistWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PlistWindow.xib; path = UI/PlistWindow.xib; sourceTree = "<group>"; };
@@ -376,6 +384,8 @@
 		1D21BC54172AF43D009D1CFD /* KnockKnock */ = {
 			isa = PBXGroup;
 			children = (
+				CD2F219D21A8A73000F67A83 /* Update.h */,
+				CD2F219E21A8A73100F67A83 /* Update.m */,
 				CDF08CC71AC4C678009B3423 /* PrefsWindowController.h */,
 				CDF08CC81AC4C678009B3423 /* PrefsWindowController.m */,
 				CD5854D621A60B2000A438B0 /* PlistWindowController.h */,
@@ -469,6 +479,8 @@
 			isa = PBXGroup;
 			children = (
 				CD02195F1AD39A83005148A2 /* ResultsWindowController.h */,
+				CD2F21A221A8A7E300F67A83 /* UpdateWindowController.h */,
+				CD2F21A321A8A7E300F67A83 /* UpdateWindowController.m */,
 				CD0219601AD39A83005148A2 /* ResultsWindowController.m */,
 				CD0219511AD34D9A005148A2 /* AboutWindowController.h */,
 				CD0219521AD34D9A005148A2 /* AboutWindowController.m */,
@@ -550,6 +562,7 @@
 		CDA81E621AA020E8009790E2 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				CD2F21A021A8A7D000F67A83 /* UpdateWindow.xib */,
 				CD5854D421A60B0F00A438B0 /* PlistWindow.xib */,
 				CD02195D1AD39A74005148A2 /* ResultsWindow.xib */,
 				CD02194D1AD34D8B005148A2 /* AboutWindow.xib */,
@@ -616,6 +629,11 @@
 					1D21BC4A172AF43D009D1CFD = {
 						DevelopmentTeam = VBG97UB4TA;
 						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.HardenedRuntime = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -695,6 +713,7 @@
 				CDBE491F1B5B46040031FC22 /* logInOutIcon.png in Resources */,
 				CDA81D721A95B4E9009790E2 /* virus.png in Resources */,
 				CDA81DC91A9960A3009790E2 /* info.png in Resources */,
+				CD2F21A121A8A7D100F67A83 /* UpdateWindow.xib in Resources */,
 				CDA81D6E1A95B4E9009790E2 /* startScan.png in Resources */,
 				CD02194F1AD34D8B005148A2 /* AboutWindow.xib in Resources */,
 				CDA81DCA1A9960A3009790E2 /* infoBG.png in Resources */,
@@ -732,8 +751,10 @@
 				CDA81E001A9A7D26009790E2 /* File.m in Sources */,
 				CD6BBBF01B52032D00506D0D /* NSApplicationKeyEvents.m in Sources */,
 				CDA81D4F1A95B492009790E2 /* AppDelegate.m in Sources */,
+				CD2F219F21A8A73100F67A83 /* Update.m in Sources */,
 				CDA81D5E1A95B4B4009790E2 /* main.m in Sources */,
 				CD5854D821A60B2100A438B0 /* PlistWindowController.m in Sources */,
+				CD2F21A421A8A7E300F67A83 /* UpdateWindowController.m in Sources */,
 				7DE2FE2E1D3F30BE006C1438 /* Extensions.m in Sources */,
 				7DE29CA41CA7BC5600DFA6A6 /* StartupScripts.m in Sources */,
 				CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */,
@@ -879,6 +900,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -892,6 +914,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -902,6 +925,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -915,6 +939,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

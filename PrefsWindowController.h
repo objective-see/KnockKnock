@@ -27,6 +27,9 @@
 //button for filtering out OS componets
 @property (weak) IBOutlet NSButton* showTrustedItemsBtn;
 
+//button disabling update check
+@property (weak) IBOutlet NSButton *disableUpdateCheckBtn;
+
 //button for disabling talking to VT
 @property (weak) IBOutlet NSButton* disableVTQueriesBtn;
 
@@ -38,6 +41,9 @@
 
 //filter out OS/known items
 @property BOOL showTrustedItems;
+
+//no update checks
+@property BOOL disableUpdateCheck;
 
 //disable talking to VT
 @property BOOL disableVTQueries;
