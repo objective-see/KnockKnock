@@ -21,10 +21,13 @@
 /* GLOBALS */
 
 //filter object
-Filter* itemFilter;
+Filter* itemFilter = nil;
 
 //shared item enumerator object
 ItemEnumerator* sharedItemEnumerator = nil;
+
+//cmdline flag
+BOOL cmdlineMode = NO;
 
 /* FUNCTIONS */
 

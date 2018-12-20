@@ -95,4 +95,7 @@ id extractFromDictionary(NSDictionary* dictionary, NSString* sensitiveKey);
 // meaning, Mojave+ and dark mode enabled
 BOOL isDarkMode(void);
 
+//bring an app to foreground (to get an icon in the dock) or background
+void transformProcess(ProcessApplicationTransformState location);
+
 #endif

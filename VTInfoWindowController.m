@@ -131,7 +131,7 @@
         makeTextViewHyperlink(self.analysisURL, [NSURL URLWithString:self.fileObj.vtInfo[VT_RESULTS_URL]]);
         
         //set 'submit' button text to 'rescan'
-        self.submitButton.title = @"rescan?";
+        self.submitButton.title = @"Rescan?";
     }
     //unknown file
     else
@@ -201,6 +201,9 @@
     //VT scan ID
     __block NSString* scanID = nil;
     
+    //new report
+    __block NSURL* newReport = nil;
+    
     //alloc/init VT obj
     vtObj = [[VirusTotal alloc] init];
     
@@ -229,9 +232,21 @@
     //pre-req
     [self.overlayView setWantsLayer:YES];
     
-    //set overlay's view color to white
-    self.overlayView.layer.backgroundColor = [NSColor whiteColor].CGColor;
-
+    //dark mode
+    // set overlay to light
+    if(YES == isDarkMode())
+    {
+        //set overlay's view color to gray
+        self.overlayView.layer.backgroundColor = NSColor.lightGrayColor.CGColor;
+    }
+    //light mode
+    // set overlay to gray
+    else
+    {
+        //set to gray
+        self.overlayView.layer.backgroundColor = NSColor.grayColor.CGColor;
+    }
+    
     //make it semi-transparent
     self.overlayView.alphaValue = 0.85;
     
@@ -245,7 +260,7 @@
     [self.progressIndicator startAnimation:nil];
 
     //rescan file?
-    if(YES == [((NSButton*)sender).title isEqualToString:@"rescan?"])
+    if(YES == [((NSButton*)sender).title isEqualToString:@"Rescan?"])
     {
         //set status msg
         [self.statusMsg setStringValue:[NSString stringWithFormat:@"submitting re-scan request for %@", self.fileObj.name]];
@@ -312,8 +327,19 @@
                 //nap so user can see msg
                 [NSThread sleepForTimeInterval:0.5];
                 
-                //launch browser to show rew report
-                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:result[@"permalink"]]];
+                //launch browser to show new report
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                
+                    //sanity check
+                    // then launch browser
+                    if( (nil != result[@"permalink"]) &&
+                        (nil != (newReport = [NSURL URLWithString:result[@"permalink"]])) )
+                    {
+                        //launch browser
+                        [[NSWorkspace sharedWorkspace] openURL:newReport];
+                    }
+                    
+                 });
                 
                 //wait to browser is up and happy
                 [NSThread sleepForTimeInterval:0.5];
@@ -389,9 +415,20 @@
                 //nap so user can see msg
                 [NSThread sleepForTimeInterval:0.5];
                 
-                //launch browser to show rew report
-                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:result[@"permalink"]]];
-                
+                //launch browser to show new report
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    
+                    //sanity check
+                    // then launch browser
+                    if( (nil != result[@"permalink"]) &&
+                        (nil != (newReport = [NSURL URLWithString:result[@"permalink"]])) )
+                    {
+                        //launch browser
+                        [[NSWorkspace sharedWorkspace] openURL:newReport];
+                    }
+                    
+                });
+
                 //wait to browser is up and happy
                 [NSThread sleepForTimeInterval:0.5];
                 

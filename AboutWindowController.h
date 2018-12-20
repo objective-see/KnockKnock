@@ -1,6 +1,6 @@
 //
 //  file: AboutWindowController.h
-//  project: lulu (config)
+//  project: KnockKnock
 //  description: about window display/controller (header)
 //
 //  created by Patrick Wardle

@@ -105,8 +105,8 @@
 -(IBAction)buttonHandler:(id)sender
 {
     //handle 'update' / 'more info', etc
-    // ->open LuLu's webpage, if they *didn't* click 'close'
-    if(YES != [((NSButton*)sender).title isEqualToString:@"close"])
+    // ->open KnockKnock's webpage, if they *didn't* click 'Close'
+    if(YES != [((NSButton*)sender).title isEqualToString:@"Close"])
     {
         //open URL
         // ->invokes user's default browser

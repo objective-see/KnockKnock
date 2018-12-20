@@ -94,7 +94,7 @@ NSString * const PROTECTED_DIRECTORIES[] = {@"~/Library/Application Support/Addr
     // these will be skipped, as otherwise we will generate a privacy prompt
     protectedDirectories = expandPaths(PROTECTED_DIRECTORIES, sizeof(PROTECTED_DIRECTORIES)/sizeof(PROTECTED_DIRECTORIES[0]));
         
-    //exec 'file' to get file type
+    //exec 'lsof' to get loaded libs
     results = execTask(LSOF, @[@"-Fn", @"/"]);
     if( (nil == results) ||
         (0 == results.length) )

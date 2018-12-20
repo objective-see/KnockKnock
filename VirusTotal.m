@@ -12,10 +12,15 @@
 #import "VirusTotal.h"
 #import "AppDelegate.h"
 
+/* GLOBALS */
+
+//cmdline flag
+extern BOOL cmdlineMode;
+
 @implementation VirusTotal
 
 //thread function
-// ->runs in the background to get virus total info about a plugin's items
+// runs in the background to get virus total info about a plugin's items
 -(void)getInfo:(PluginBase*)plugin
 {
     //plugin file items
@@ -154,7 +159,11 @@
     }
     
     //tell UI all plugin's items have all be processed
-    [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemsProcessed:plugin];
+    if(YES != cmdlineMode)
+    {
+        //call up into UI
+        [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemsProcessed:plugin];
+    }
 
     return;
 }

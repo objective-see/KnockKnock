@@ -106,9 +106,6 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //path for pluginkit
 #define PLUGIN_KIT @"/usr/bin/pluginkit"
 
-//path to lsof
-#define LSOF @"/usr/sbin/lsof"
-
 //dyld_ key for launch items
 #define LAUNCH_ITEM_DYLD_KEY @"EnvironmentVariables"
 
@@ -282,6 +279,10 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 
 //product url
 #define PRODUCT_URL @"https://objective-see.com/products/knockknock.html"
+
+//product name
+// ...for version check
+#define PRODUCT_NAME @"KnockKnock"
 
 //product version url
 #define PRODUCT_VERSIONS_URL @"https://objective-see.com/products.json"

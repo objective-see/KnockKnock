@@ -1,7 +1,7 @@
 //
 //  file: Update.m
-//  project: lulu (shared)
-//  description: checks for new versions of LuLu
+//  project: KnockKnock
+//  description: checks for new versions of KnockKnock
 //
 //  created by Patrick Wardle
 //  copyright (c) 2017 Objective-See. All rights reserved.
@@ -87,7 +87,7 @@
     }
     
     //extract latest version
-    latestVersion = [[productsVersionDictionary objectForKey:@"KnockKnock"] objectForKey:@"version"];
+    latestVersion = [[productsVersionDictionary objectForKey:PRODUCT_NAME] objectForKey:@"version"];
     
 bail:
     

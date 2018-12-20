@@ -30,10 +30,16 @@
                                     <action selector="showPreferences:" target="494" id="h1a-NR-0PY"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Check For Update..." tag="2" id="m5h-Zp-Y8c">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="check4Update:" target="494" id="w2B-fN-g1g"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="149">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Quit" tag="2" keyEquivalent="q" id="136">
+                            <menuItem title="Quit" tag="3" keyEquivalent="q" id="136">
                                 <connections>
                                     <action selector="terminate:" target="-3" id="449"/>
                                 </connections>
@@ -57,7 +63,7 @@
                         <rect key="frame" x="-1" y="55" width="350" height="439"/>
                         <clipView key="contentView" drawsBackground="NO" id="GbW-la-76n">
                             <rect key="frame" x="1" y="1" width="348" height="437"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" tag="99" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="66" rowSizeStyle="automatic" viewBased="YES" floatsGroupRows="NO" id="zYP-0r-U2A">
                                     <rect key="frame" x="0.0" y="0.0" width="348" height="437"/>
@@ -165,7 +171,7 @@
                         <rect key="frame" x="366" y="55" width="839" height="439"/>
                         <clipView key="contentView" drawsBackground="NO" id="LBx-qs-tgi">
                             <rect key="frame" x="1" y="1" width="837" height="437"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="66" rowSizeStyle="automatic" viewBased="YES" id="537">
                                     <rect key="frame" x="0.0" y="0.0" width="837" height="437"/>

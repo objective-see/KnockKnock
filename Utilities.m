@@ -184,7 +184,6 @@ NSMutableArray* expandPaths(const __strong NSString* const paths[], int count)
         {
             [expandedPaths addObject:[path stringByExpandingTildeInPath]];
         }
-        
     }
         
     return expandedPaths;
@@ -1145,4 +1144,24 @@ BOOL isDarkMode()
 bail:
     
     return darkMode;
+}
+
+//bring an app to foreground (to get an icon in the dock) or background
+void transformProcess(ProcessApplicationTransformState location)
+{
+    //process serial no
+    ProcessSerialNumber processSerialNo;
+    
+    //init process stuct
+    // ->high to 0
+    processSerialNo.highLongOfPSN = 0;
+    
+    //init process stuct
+    // ->low to self
+    processSerialNo.lowLongOfPSN = kCurrentProcess;
+    
+    //transform to foreground
+    TransformProcessType(&processSerialNo, location);
+    
+    return;
 }

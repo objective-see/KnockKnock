@@ -348,6 +348,12 @@
     //users
     NSMutableDictionary* users = nil;
     
+    //user name
+    NSString* user = nil;
+    
+    //home directory for user
+    NSString* userDirectory = nil;
+    
     //registered items
     NSMutableDictionary* registeredItems = nil;
     
@@ -371,8 +377,22 @@
     //just current user
     else
     {
+        //get console user
+        user = getConsoleUser();
+        
+        //get console user's home directory
+        userDirectory = NSHomeDirectoryForUser(getConsoleUser());
+        
+        //sanity check(s)
+        if( (0 == user.length) ||
+            (0 == userDirectory.length) )
+        {
+            //bail
+            goto bail;
+        }
+        
         //current
-        users[getConsoleUser()] = @{USER_NAME:getConsoleUser(), USER_DIRECTORY:NSHomeDirectoryForUser(getConsoleUser())};
+        users[user] = @{USER_NAME:user, USER_DIRECTORY:userDirectory};
     }
     
     //process all plists
@@ -415,6 +435,8 @@
             [registeredItems addEntriesFromDictionary:[self extractFromAlias:plistData]];
         }
     }
+    
+bail:
 
     return registeredItems;
 }

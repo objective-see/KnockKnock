@@ -1,7 +1,7 @@
 //
 //  file: Update.h
-//  project: lulu (shared)
-//  description: checks for new versions of LuLu (header)
+//  project: KnockKnock
+//  description: checks for new versions of KnockKnock (header)
 //
 //  created by Patrick Wardle
 //  copyright (c) 2017 Objective-See. All rights reserved.

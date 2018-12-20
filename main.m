@@ -47,6 +47,9 @@ int main(int argc, char *argv[])
         // cmdline scan without UI
         if(YES == [[[NSProcessInfo processInfo] arguments] containsObject:@"-whosthere"])
         {
+            //set flag
+            cmdlineMode = YES;
+            
             //scan
             cmdlineScan();
             
@@ -61,6 +64,12 @@ int main(int argc, char *argv[])
         // just kick off app for UI instance
         else
         {
+            //set flag
+            cmdlineMode = NO;
+            
+            //make foreground so it has an dock icon, etc
+            transformProcess(kProcessTransformToForegroundApplication);
+            
             //app away
             status = NSApplicationMain(argc, (const char **)argv);
         }

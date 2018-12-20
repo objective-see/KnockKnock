@@ -72,6 +72,13 @@
     //alloc shared item enumerator
     sharedItemEnumerator = [[ItemEnumerator alloc] init];
     
+    //toggle away
+    [[[NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.apple.loginwindow"] firstObject] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+    
+    //toggle back
+    // work-around for menu not showing since we set Application is agent(UIElement): YES
+    [[[NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.objective-see.KnockKnock"] firstObject] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+    
     //verify self
     signingStatus = verifySelf();
    
@@ -103,6 +110,7 @@
             
             //hide
             [self.friends close];
+            
         });
     }
     
@@ -111,7 +119,7 @@
     if(YES != [defaults boolForKey:PREF_DISABLE_UPDATE_CHECK])
     {
         //check
-        [self check4Update];
+        [self check4Update:nil];
     }
 
     //kick off thread to begin enumerating shared objects
@@ -1303,7 +1311,7 @@
 
 //call into Update obj
 // check to see if there an update?
--(void)check4Update
+-(IBAction)check4Update:(id)sender
 {
     //update obj
     Update* update = nil;
@@ -1316,7 +1324,7 @@
     [update checkForUpdate:^(NSUInteger result, NSString* newVersion) {
         
         //process response
-        [self updateResponse:result newVersion:newVersion];
+        [self updateResponse:result newVersion:newVersion alwaysShow:(nil != sender)];
         
     }];
     
@@ -1326,46 +1334,74 @@
 
 //process update response
 // error, no update, update/new version
--(void)updateResponse:(NSInteger)result newVersion:(NSString*)newVersion
+-(void)updateResponse:(NSInteger)result newVersion:(NSString*)newVersion alwaysShow:(BOOL)alwaysShow
 {
+    //details
+    NSString* details = nil;
+    
+    //action
+    NSString* action = nil;
+    
     //handle response
     // new version, show popup
     switch (result)
     {
-        //error
+            //error
         case -1:
-        
+            
+            //set details
+            details = @"error, failed to check for an update.";
+            
+            //set action
+            action = @"Close";
+            
             break;
             
-        //no updates
+            //no updates
         case 0:
             
+            //set details
+            details = [NSString stringWithFormat:@"you're all up to date! (v. %@)", getAppVersion()];
+            
+            //set action
+            action = @"Close";
+            
             break;
             
-        //new version
+            //new version
         case 1:
             
-            //alloc update window
-            updateWindowController = [[UpdateWindowController alloc] initWithWindowNibName:@"UpdateWindow"];
+            //set details
+            details = [NSString stringWithFormat:@"a new version (%@) is available!", newVersion];
             
-            //configure
-            [self.updateWindowController configure:[NSString stringWithFormat:@"a new version (%@) is available!", newVersion] buttonTitle:@"Update"];
-            
-            //center window
-            [[self.updateWindowController window] center];
-            
-            //show it
-            [self.updateWindowController showWindow:self];
-            
-            //invoke function in background that will make window modal
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                
-                //make modal
-                makeModal(self.updateWindowController);
-                
-            });
+            //set action
+            action = @"Update";
             
             break;
+    }
+    
+    //always show results?
+    if(YES == alwaysShow)
+    {
+        //alloc update window
+        updateWindowController = [[UpdateWindowController alloc] initWithWindowNibName:@"UpdateWindow"];
+        
+        //configure
+        [self.updateWindowController configure:details buttonTitle:action];
+        
+        //center window
+        [[self.updateWindowController window] center];
+        
+        //show it
+        [self.updateWindowController showWindow:self];
+        
+        //invoke function in background that will make window modal
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            //make modal
+            makeModal(self.updateWindowController);
+            
+        });
     }
     
     return;
