@@ -36,7 +36,6 @@
     return self;
 }
 
-
 //convert object to JSON string
 -(NSString*)toJSON
 {
@@ -44,7 +43,7 @@
     NSString *json = nil;
     
     //init json
-    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"identifier\": \"%@\", \"details\": \"%@\", \"browser\": \"%@\"", self.name, self.path, self.identifier, self.details, self.browser];
+    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"identifier\": \"%@\", \"details\": \"%@\", \"browser\": \"%@\"", self.name, self.path, self.identifier, [self.details stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""], self.browser];
     
     return json;
 }
