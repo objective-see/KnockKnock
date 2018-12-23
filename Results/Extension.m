@@ -42,8 +42,19 @@
     //json string
     NSString *json = nil;
     
+    //details
+    NSString* escapedDetails = nil;
+
+    //escape details
+    // remove newlines
+    escapedDetails = [[self.details componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
+    
+    //escape details
+    // replace " with \"
+    escapedDetails = [escapedDetails stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+    
     //init json
-    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"identifier\": \"%@\", \"details\": \"%@\", \"browser\": \"%@\"", self.name, self.path, self.identifier, [self.details stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""], self.browser];
+    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"identifier\": \"%@\", \"details\": \"%@\", \"browser\": \"%@\"", self.name, self.path, self.identifier, escapedDetails, self.browser];
     
     return json;
 }
