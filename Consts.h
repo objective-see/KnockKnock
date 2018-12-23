@@ -287,4 +287,13 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //product version url
 #define PRODUCT_VERSIONS_URL @"https://objective-see.com/products.json"
 
+//update error
+#define UPDATE_ERROR -1
+
+//update no new version
+#define UPDATE_NOTHING_NEW 0
+
+//update new version
+#define UPDATE_NEW_VERSION 1
+
 #endif

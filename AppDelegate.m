@@ -1344,10 +1344,10 @@
     
     //handle response
     // new version, show popup
-    switch (result)
+    switch(result)
     {
-            //error
-        case -1:
+        //error
+        case UPDATE_ERROR:
             
             //set details
             details = @"error, failed to check for an update.";
@@ -1357,8 +1357,8 @@
             
             break;
             
-            //no updates
-        case 0:
+        //no updates
+        case UPDATE_NOTHING_NEW:
             
             //set details
             details = [NSString stringWithFormat:@"you're all up to date! (v. %@)", getAppVersion()];
@@ -1368,8 +1368,8 @@
             
             break;
             
-            //new version
-        case 1:
+        //new version
+        case UPDATE_NEW_VERSION:
             
             //set details
             details = [NSString stringWithFormat:@"a new version (%@) is available!", newVersion];
@@ -1379,9 +1379,11 @@
             
             break;
     }
-    
-    //always show results?
-    if(YES == alwaysShow)
+
+    //new version?
+    //...or always show results?
+    if( (YES == alwaysShow) ||
+        (UPDATE_NEW_VERSION == result) )
     {
         //alloc update window
         updateWindowController = [[UpdateWindowController alloc] initWithWindowNibName:@"UpdateWindow"];
