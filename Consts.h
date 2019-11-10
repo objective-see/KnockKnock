@@ -13,7 +13,7 @@
 #define NOT_FIRST_TIME @"notFirstTime"
 
 //supported plugins
-static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"SpotlightImporters", @"StartupScripts"};
+static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"DirectoryServicesPlugins", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"QuicklookPlugins", @"SpotlightImporters", @"StartupScripts"};
 
 //button text, start scan
 #define START_SCAN @"Start Scan"
@@ -141,8 +141,11 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //pref button
 #define PREF_BUTTON_TAG 1001
 
+//pref button
+#define SAVE_BUTTON_TAG 1002
+
 //logo button
-#define LOGO_BUTTON_TAG 1002
+#define LOGO_BUTTON_TAG 1003
 
 //category table
 

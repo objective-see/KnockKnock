@@ -1,0 +1,5 @@
+*.xcscheme
+*.xcuserstate
+KnockKnock.xcodeproj/xcuserdata/*
+
+

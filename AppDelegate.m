@@ -223,7 +223,7 @@
 }
 
 //init tracking areas for buttons
-// ->provide mouse over effects
+// provides mouse over effects (i.e. image swaps)
 -(void)initTrackingAreas
 {
     //tracking area for buttons
@@ -242,6 +242,13 @@
     
     //add tracking area to pref button
     [self.showPreferencesButton addTrackingArea:trackingArea];
+    
+    //init tracking area
+    // ->for save results button
+    trackingArea = [[NSTrackingArea alloc] initWithRect:[self.saveButton bounds] options:(NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways) owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:self.saveButton.tag]}];
+    
+    //add tracking area to pref button
+    [self.saveButton addTrackingArea:trackingArea];
     
     //init tracking area
     // ->for logo button
@@ -744,15 +751,6 @@
         }
     }
     
-    //save results?
-    // ->if there was a previous scan
-    if( (nil != self.scannerThread) &&
-        (YES == self.prefsWindowController.shouldSaveNow))
-    {
-        //save
-        [self saveResults];
-    }
-   
     return;
 }
 
@@ -1063,6 +1061,14 @@
             //set
             imageName = @"settings";
         }
+        
+        //set original preferences image
+        else if(SAVE_BUTTON_TAG == tag)
+        {
+            //set
+            imageName = @"save";
+        }
+        
         //set original logo image
         else if(LOGO_BUTTON_TAG == tag)
         {
@@ -1089,13 +1095,18 @@
                 //set
                 imageName = @"startScanOver";
             }
-            
         }
         //set mouse over preferences image
         else if(PREF_BUTTON_TAG == tag)
         {
             //set
             imageName = @"settingsOver";
+        }
+        //set mouse over save image
+        else if(SAVE_BUTTON_TAG == tag)
+        {
+            //set
+            imageName = @"saveOver";
         }
         //set mouse over logo image
         else if(LOGO_BUTTON_TAG == tag)
@@ -1119,9 +1130,11 @@
     return;    
 }
 
-//show 'save file popup
+
+
+//show 'save file' popup
 // ->user clicks ok, save results (JSON) to disk
--(void)saveResults
+-(IBAction)saveResults:(id)sender
 {
     //save panel
     NSSavePanel *panel = nil;
@@ -1287,6 +1300,7 @@
 
     return;
 }
+
 
 //automatically invoked when menu is clicked
 // ->tell menu to disable 'Preferences' when scan is running

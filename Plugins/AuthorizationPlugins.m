@@ -48,7 +48,6 @@ NSString* const AUTHORIZATION_SEARCH_DIRECTORIES[] = {@"/System/Library/CoreServ
 //scan for auth plugins
 -(void)scan
 {
-
     //all auth plugins
     NSArray* allAuthPlugins = nil;
     

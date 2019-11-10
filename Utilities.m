@@ -18,7 +18,6 @@
 #import <Collaboration/Collaboration.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
-
 //get OS's major or minor version
 SInt32 getVersion(OSType selector)
 {

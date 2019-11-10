@@ -78,6 +78,9 @@ extern Filter* itemFilter;
 //show preferences button
 @property (weak) IBOutlet NSButton *showPreferencesButton;
 
+//save button
+@property (weak) IBOutlet NSButton *saveButton;
+
 //spinner
 @property (weak) IBOutlet NSProgressIndicator *progressIndicator;
 
@@ -163,9 +166,5 @@ extern Filter* itemFilter;
 //execute logic to complete scan
 // ->ensures various threads are terminated, etc
 -(void)completeScan;
-
-//show 'save file popup
-// ->user clicks ok, save results (JSON) to disk
--(void)saveResults;
 
 @end

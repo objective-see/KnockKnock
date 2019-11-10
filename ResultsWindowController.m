@@ -6,12 +6,9 @@
 //  Copyright (c) 2015 Objective-See, LLC. All rights reserved.
 //
 
-
 #import "Utilities.h"
 #import "AppDelegate.h"
-
 #import "ResultsWindowController.h"
-
 
 @implementation ResultsWindowController
 
@@ -68,20 +65,7 @@
     //make un-modal
     [[NSApplication sharedApplication] stopModal];
     
-    //when user wants to save results
-    // ->show popup once (this) window closes
-    if(YES == ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.saveOutput)
-    {
-        //save after delay
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.25f * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            
-            //save
-            [((AppDelegate*)[[NSApplication sharedApplication] delegate]) saveResults];
-        });
-    }
-
     return;
 }
-
 
 @end

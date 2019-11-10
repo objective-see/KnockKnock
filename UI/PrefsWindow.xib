@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15505"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -11,7 +11,6 @@
                 <outlet property="disableUpdateCheckBtn" destination="dJU-Ok-N6U" id="Q9b-gF-V3d"/>
                 <outlet property="disableVTQueriesBtn" destination="d54-mZ-jqy" id="Xx6-E1-yv0"/>
                 <outlet property="okButton" destination="HZZ-Es-mpy" id="GKU-Jc-ENB"/>
-                <outlet property="saveOutputBtn" destination="6la-v6-zBD" id="m3d-J9-MZg"/>
                 <outlet property="showTrustedItemsBtn" destination="4xV-kQ-iaT" id="aEg-d4-Orl"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
@@ -21,7 +20,7 @@
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="F0z-JX-Cv5">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" texturedBackground="YES"/>
             <rect key="contentRect" x="196" y="240" width="422" height="177"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="se5-gp-TjO">
                 <rect key="frame" x="0.0" y="0.0" width="422" height="177"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -46,14 +45,6 @@
                         <rect key="frame" x="101" y="110" width="303" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="disable update check" bezelStyle="regularSquare" imagePosition="left" focusRingType="none" inset="2" id="idJ-pd-k6U">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" size="13" name="Menlo-Regular"/>
-                        </buttonCell>
-                    </button>
-                    <button focusRingType="none" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6la-v6-zBD">
-                        <rect key="frame" x="101" y="51" width="160" height="19"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="save scan results" bezelStyle="regularSquare" imagePosition="left" focusRingType="none" inset="2" id="8A7-6z-flS">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" size="13" name="Menlo-Regular"/>
                         </buttonCell>
