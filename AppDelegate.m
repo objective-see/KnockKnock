@@ -36,7 +36,7 @@
 @synthesize resultsWindowController;
 
 //center window
-// ->also make front
+// also make front
 -(void)awakeFromNib
 {
     //center
@@ -44,7 +44,7 @@
     
     //make it key window
     [self.window makeKeyAndOrderFront:self];
-    
+
     //make window front
     [NSApp activateIgnoringOtherApps:YES];
     
@@ -102,14 +102,32 @@
         //set key
         [defaults setBool:YES forKey:NOT_FIRST_TIME];
         
-        //show thanks
-        [self toggleFriends:nil];
+        //set delegate
+        self.friends.delegate = self;
         
-        //close after 3 seconds
+        //show friends window
+        [self.friends makeKeyAndOrderFront:self];
+        
+        //close after a few seconds
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             
-            //hide
+            //close to hide
             [self.friends close];
+            
+        });
+    }
+    //asked for full disk access yet?
+    else if(YES != [defaults boolForKey:REQUESTED_FULL_DISK_ACCESS])
+    {
+        //set key
+        [defaults setBool:YES forKey:REQUESTED_FULL_DISK_ACCESS];
+        
+        //request access
+        // delay, so UI completes rendering
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
+            
+            //request access
+            [self requestFullDiskAcces];
             
         });
     }
@@ -171,26 +189,83 @@
     return;
 }
 
-//toggle friends view
-- (IBAction)toggleFriends:(id)sender
+//close 'friends' window
+-(IBAction)closeFriendsWindow:(id)sender
 {
-    //hide
-    if(YES == self.friends.visible)
-    {
-        //close to hide
-        [self.friends close];
-    }
-    //show
-    else
-    {
-        [self.friends makeKeyAndOrderFront:self];
-        [NSApp activateIgnoringOtherApps:YES];
-    }
-    
+    //close to hide
+    [self.friends close];
 
     return;
 }
 
+//window close handler
+-(void)windowWillClose:(NSNotification *)notification {
+    
+    //closing friends window?
+    // request full disk access
+    if(self.friends == notification.object)
+    {
+        //request access
+        // delay ensures (friends) window will close
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (100 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
+            
+            //request access
+            [self requestFullDiskAcces];
+            
+        });
+    }
+    
+    return;
+}
+
+//automatically close when user closes last window
+-(BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
+{
+    return YES;
+}
+
+//request full disk access
+-(void)requestFullDiskAcces
+{
+    //request
+    __block NSAlert* infoAlert = nil;
+    
+    //once
+    static dispatch_once_t once;
+    
+    //show request once
+    dispatch_once(&once, ^
+    {
+        //on request on 10.14+
+        if(@available(macOS 10.14, *))
+        {
+            //alloc alert
+            infoAlert = [[NSAlert alloc] init];
+            
+            //main text
+            infoAlert.messageText = @"Open 'System Preferences' to give KnockKnock Full Disk Access?";
+            
+            //detailed test
+            infoAlert.informativeText = @"This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ click the 🔒 to authenticate\r ▪ click the ➕ to add KnockKnock.app\n";
+            
+            //ok button
+            [infoAlert addButtonWithTitle:@"OK"];
+            
+            //alert button
+            [infoAlert addButtonWithTitle:@"Cancel"];
+            
+            //show 'alert' and capture user response
+            // user clicked 'OK'? -> open System Preferences
+            if(NSAlertFirstButtonReturn == [infoAlert runModal])
+            {
+                //open System Preferences
+                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"]];
+            }
+        }
+    });
+    
+    return;
+}
 
 //display alert about OS not being supported
 -(void)showUnsupportedAlert
@@ -247,9 +322,9 @@
     // ->for save results button
     trackingArea = [[NSTrackingArea alloc] initWithRect:[self.saveButton bounds] options:(NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways) owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:self.saveButton.tag]}];
     
-    //add tracking area to pref button
+    //add tracking area to save button
     [self.saveButton addTrackingArea:trackingArea];
-    
+
     //init tracking area
     // ->for logo button
     trackingArea = [[NSTrackingArea alloc] initWithRect:[self.logoButton bounds] options:(NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways) owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:self.logoButton.tag]}];
@@ -988,16 +1063,6 @@
     
     return;
 } 
- 
-//automatically invoked when window is closing
-// ->tell OS that we are done with window so it can (now) be freed
--(void)windowWillClose:(NSNotification *)notification
-{
-    //exit
-    [NSApp terminate:self];
-    
-    return;
-}
 
 //automatically invoked when mouse entered
 -(void)mouseEntered:(NSEvent*)theEvent
@@ -1153,6 +1218,9 @@
     
     //create panel
     panel = [NSSavePanel savePanel];
+    
+    //default to desktop
+    panel.directoryURL = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains (NSDesktopDirectory, NSUserDomainMask, YES) firstObject]];
     
     //suggest file name
     [panel setNameFieldStringValue:OUTPUT_FILE];

@@ -12,6 +12,9 @@
 //not first run
 #define NOT_FIRST_TIME @"notFirstTime"
 
+//asked for full disk access
+#define REQUESTED_FULL_DISK_ACCESS @"requestedFullDiskAccess"
+
 //supported plugins
 static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"DirectoryServicesPlugins", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"QuicklookPlugins", @"SpotlightImporters", @"StartupScripts"};
 
@@ -269,7 +272,7 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 #define VT_RESULTS_SCANID @"scan_id"
 
 //output file
-#define OUTPUT_FILE @"kkFindings.txt"
+#define OUTPUT_FILE @"kkResults.txt"
 
 //support us button tag
 #define BUTTON_SUPPORT_US 100

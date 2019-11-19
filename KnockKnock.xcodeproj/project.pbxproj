@@ -526,10 +526,10 @@
 		CDA81D861A96F429009790E2 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				CD890F4023778F7B00029D99 /* DirectoryServicesPlugins.h */,
-				CD890F4123778F7B00029D99 /* DirectoryServicesPlugins.m */,
 				CD2B611320675EEB00BF72E9 /* EventRules.h */,
 				CD2B611220675EEB00BF72E9 /* EventRules.m */,
+				CD890F4023778F7B00029D99 /* DirectoryServicesPlugins.h */,
+				CD890F4123778F7B00029D99 /* DirectoryServicesPlugins.m */,
 				7D44F4C31DAAEDE40085859C /* DylibProxies.h */,
 				7D44F4C41DAAEDE40085859C /* DylibProxies.m */,
 				7DE2FE2C1D3F30BE006C1438 /* Extensions.h */,

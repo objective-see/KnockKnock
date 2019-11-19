@@ -93,7 +93,7 @@ NSString* const DIRECTORY_SERVICES_SEARCH_DIRECTORIES[] = {@"/System/Library/Fra
             [super processItem:fileObj];
         }
         
-    }//auth plugin directories
+    }//dir services plugin directories
     
     return;
 }
