@@ -870,6 +870,9 @@
     //disable gear (show prefs) button
     self.showPreferencesButton.enabled = NO;
     
+    //disable save button
+    self.saveButton.enabled = NO;
+    
     return;
 }
 
@@ -946,8 +949,11 @@
     // ->'Start Scan'
     [self.scanButtonLabel setStringValue:START_SCAN];
     
-    //re-enable gear (show prefs) button
+    //(re)enable gear (show prefs) button
     self.showPreferencesButton.enabled = YES;
+    
+    //(re)enable save button
+    self.saveButton.enabled = YES;
     
     //only show scan stats for completed scan
     if(YES == [statusMsg isEqualToString:SCAN_MSG_COMPLETE])
