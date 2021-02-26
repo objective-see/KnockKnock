@@ -337,7 +337,7 @@
 -(NSMutableDictionary*)enumRegisteredItems
 {
     //flag
-    BOOL bookmarkFormat = NO;
+    BOOL aliasFormat = NO;
     
     //plist file
     NSString* plist = nil;
@@ -365,7 +365,8 @@
     
     //set flag
     // pre-10.13, did not use bookmark format
-    bookmarkFormat = (13 < getVersion(gestaltSystemVersionMinor));
+    aliasFormat = ( (getVersion(gestaltSystemVersionMajor) < 11) &&
+                    (getVersion(gestaltSystemVersionMinor) < 13) );
     
     //root?
     // can scan all users
@@ -398,27 +399,9 @@
     //process all plists
     for(NSString* userID in users)
     {
-        //new format?
-        // use new plist
-        if(YES == bookmarkFormat)
-        {
-            //new plist
-            plist = [users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[LOGIN_ITEM_PLIST_NEW substringFromIndex:1]];
-            
-            //load plist data
-            plistData = [NSDictionary dictionaryWithContentsOfFile:plist];
-            if(0 == plistData.count)
-            {
-                //skip
-                continue;
-            }
-            
-            //extract login items
-            [registeredItems addEntriesFromDictionary:[self extractFromBookmark:plistData]];
-        }
         //old format
-        // use old plist
-        else
+        // use old plist/alias
+        if(YES == aliasFormat)
         {
             //old plist
             plist = [users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[LOGIN_ITEM_PLIST_OLD substringFromIndex:1]];
@@ -433,6 +416,25 @@
             
             //extract login items
             [registeredItems addEntriesFromDictionary:[self extractFromAlias:plistData]];
+        }
+        
+        //new format?
+        // use new plist/bookmark data
+        else
+        {
+            //new plist
+            plist = [users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[LOGIN_ITEM_PLIST_NEW substringFromIndex:1]];
+            
+            //load plist data
+            plistData = [NSDictionary dictionaryWithContentsOfFile:plist];
+            if(0 == plistData.count)
+            {
+                //skip
+                continue;
+            }
+            
+            //extract login items
+            [registeredItems addEntriesFromDictionary:[self extractFromBookmark:plistData]];
         }
     }
     
