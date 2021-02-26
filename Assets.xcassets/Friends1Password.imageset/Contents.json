@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "mac",
-      "filename" : "malwarebytes.pdf"
+      "filename" : "darkMode.png"
     },
     {
       "idiom" : "mac",
-      "filename" : "malwarebytesLight.pdf",
+      "filename" : "lightMode.png",
       "appearances" : [
         {
           "appearance" : "luminosity",
@@ -16,7 +16,7 @@
     },
     {
       "idiom" : "mac",
-      "filename" : "malwarebytesDark.pdf",
+      "filename" : "darkMode.png",
       "appearances" : [
         {
           "appearance" : "luminosity",

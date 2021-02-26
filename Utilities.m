@@ -318,75 +318,6 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle)
 }
 
 
-//if string is too long to fit into a the text field
-// ->truncate and insert ellipises before /file
-NSString* stringByTruncatingString(NSTextField* textField, NSString* string, float width)
-{
-    //trucated string (with ellipis)
-    NSMutableString *truncatedString = nil;
-    
-    //offset of last '/'
-    NSRange lastSlash = {};
-    
-    //make copy of string
-    truncatedString = [string mutableCopy];
-    
-    //sanity check
-    // ->make sure string needs truncating
-    if([string sizeWithAttributes: @{NSFontAttributeName: textField.font}].width < width)
-    {
-        //bail
-        goto bail;
-    }
-    
-    //find instance of last '/
-    lastSlash = [string rangeOfString:@"/" options:NSBackwardsSearch];
-    
-    //sanity check
-    // ->make sure found a '/'
-    if(NSNotFound == lastSlash.location)
-    {
-        //bail
-        goto bail;
-    }
-    
-    //account for added ellipsis
-    width -= [ELLIPIS sizeWithAttributes: @{NSFontAttributeName: textField.font}].width;
-    
-    //delete characters until string will fit into specified size
-    while([truncatedString sizeWithAttributes: @{NSFontAttributeName: textField.font}].width > width)
-    {
-        //sanity check
-        // ->make sure we don't run off the front
-        if(0 == lastSlash.location)
-        {
-            //bail
-            goto bail;
-        }
-        
-        //skip back
-        lastSlash.location--;
-        
-        //delete char
-        [truncatedString deleteCharactersInRange:lastSlash];
-    }
-    
-    //set length of range
-    lastSlash.length = ELLIPIS.length;
-    
-    //back up location
-    lastSlash.location -= ELLIPIS.length;
-    
-    //add in ellipis
-    [truncatedString replaceCharactersInRange:lastSlash withString:ELLIPIS];
-    
-    
-//bail
-bail:
-    
-    return truncatedString;
-}
-
 //given a directory and a filter predicate
 // ->return all matches
 NSArray* directoryContents(NSString* directory, NSString* predicate)
@@ -620,11 +551,8 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments)
     //grab any left over data
     [output appendData:[readHandle readDataToEndOfFile]];
     
-    
-//bail
 bail:
     
-    //return output as string
     return output;
 }
 
@@ -632,28 +560,33 @@ bail:
 // ->then make it modal
 void makeModal(NSWindowController* windowController)
 {
+    //flag
+    __block BOOL madeModal = NO;
+    
     //wait up to 1 second window to be non-nil
     // ->then make modal
     for(int i=0; i<20; i++)
     {
-        //can make it modal once we have a window
-        if(nil != windowController.window)
-        {
-            //make modal on main thread
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                
+        //nap
+        [NSThread sleepForTimeInterval:0.05f];
+        
+        //make modal on main thread
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            
+            //can make it modal once we have a window
+            if(nil != windowController.window)
+            {
                 //modal
                 [[NSApplication sharedApplication] runModalForWindow:windowController.window];
         
-            });
-            
-            //all done
-            break;
-        }
+                //set flag
+                madeModal = YES;
+            }
+        });
         
-        //nap
-        [NSThread sleepForTimeInterval:0.05f];
-
+        //done?
+        if(YES == madeModal) break;
+        
     }//until 1 second
     
     return;

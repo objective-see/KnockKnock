@@ -1,5 +1,5 @@
 //
-//  PrefsWindowController.h
+//  ResultsWindowController.h
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 2/6/15.

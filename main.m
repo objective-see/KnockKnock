@@ -20,17 +20,11 @@ int main(int argc, char *argv[])
         // sentry dumps to this, and we want only JSON to output...
         disableSTDERR();
         
-        //sentry client
-        SentryClient *client = nil;
-        
-        //init sentry client
-        client = [[SentryClient alloc] initWithDsn:@"https://ba5d094e87014a529b25d90bae010b1c@sentry.io/1321683" didFailWithError:nil];
-        
-        //set shared client
-        SentryClient.sharedClient = client;
-        
-        //start crash handler
-        [SentryClient.sharedClient startCrashHandlerWithError:nil];
+        //init crash reporting
+        [SentrySDK startWithConfigureOptions:^(SentryOptions *options) {
+            options.dsn = SENTRY_DSN;
+            options.debug = YES;
+        }];
         
         //handle '-h' or '-help'
         if( (YES == [[[NSProcessInfo processInfo] arguments] containsObject:@"-h"]) ||

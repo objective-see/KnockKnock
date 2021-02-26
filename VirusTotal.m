@@ -161,8 +161,14 @@ extern BOOL cmdlineMode;
     //tell UI all plugin's items have all be processed
     if(YES != cmdlineMode)
     {
-        //call up into UI
-        [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemsProcessed:plugin];
+        //on main thread
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            
+            //call up into UI
+            [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemsProcessed:plugin];
+            
+        });
+        
     }
 
     return;

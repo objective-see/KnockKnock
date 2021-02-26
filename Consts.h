@@ -18,6 +18,9 @@
 //supported plugins
 static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"DirectoryServicesPlugins", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"QuicklookPlugins", @"SpotlightImporters", @"StartupScripts"};
 
+//sentry crash reporting URL
+#define SENTRY_DSN @"https://ba5d094e87014a529b25d90bae010b1c@sentry.io/1321683"
+
 //button text, start scan
 #define START_SCAN @"Start Scan"
 
@@ -25,13 +28,13 @@ static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"Browse
 #define STOP_SCAN @"Stop Scan"
 
 //status msg
-#define SCAN_MSG_STARTED @"scanning started"
+#define SCAN_MSG_STARTED @"Scanning Started"
 
 //status msg
-#define SCAN_MSG_STOPPED @"scan stopped"
+#define SCAN_MSG_STOPPED @"Scan Stopped"
 
 //status msg
-#define SCAN_MSG_COMPLETE @"scan complete"
+#define SCAN_MSG_COMPLETE @"Scan Complete"
 
 //prefs
 // ->filter out OS/known
@@ -182,10 +185,6 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 
 //id (tag) for 'show' button
 #define TABLE_ROW_SHOW_BUTTON 107
-
-//ellipis
-// ->for long paths...
-#define ELLIPIS @"..."
 
 //known kexts
 #define WHITE_LISTED_KEXTS @"whitelistedKexts"

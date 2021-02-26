@@ -1,5 +1,5 @@
 //
-//  LaunchItems.m
+//  BrowserExtensions.m
 //  KnockKnock
 //
 
@@ -28,6 +28,9 @@
 
 //name account for safari extensions
 #define SAFARI_KEYCHAIN_ACCOUNT "Safari"
+
+//safari's default location
+#define SAFARI_DEFAULT_LOCATION @"/Applications/Safari.app"
 
 //google chrome's base directory
 #define CHROME_BASE_PROFILE_DIRECTORY @"~/Library/Application Support/Google/Chrome/"
@@ -160,163 +163,129 @@
     {
         //release
         CFRelease(browserIDs);
+        browserIDs = nil;
     }
     
     return browsers;
 }
 
 //scan for Safari extensions
-// note: on Mojave+ this will just silently fail :(
+// invokes pluginkit to enumerate extensions...
 -(void)scanExtensionsSafari:(NSString*)browserPath
 {
-    //status
-    OSStatus status = !noErr;
+    //output from pluginkit
+    NSData* taskOutput = nil;
     
-    //keychain data
-    // ->binary plist of extensions
-    void *keychainData = NULL;
-    
-    //item ref
-    SecKeychainItemRef keychainItemRef = NULL;
-    
-    //length of keychain data
-    UInt32 keychainDataLength = 0;
-    
-    //dictionary of extensions info
-    NSDictionary* extensions = nil;
-    
-    //extension path
-    NSString* path = nil;
-    
-    //extension id
-    NSString* extensionID = nil;
-    
+    //exec pluginkit for each type
+    // then invoke helper to parse/create extension objects
+    for(NSString* match in @[@"com.apple.Safari.extension", @"com.apple.Safari.content-blocker"])
+    {
+        //enumerate via pluginkit
+        taskOutput = execTask(PLUGIN_KIT, @[@"-mAvv", @"-p", match]);
+        if(0 != taskOutput.length)
+        {
+            //parse output
+            [self parseSafariExtensions:taskOutput browserPath:browserPath];
+        }
+    }
+
+    return;
+}
+
+//parse the output from pluginkit
+// create extension objects for any/all
+-(void)parseSafariExtensions:(NSData*)extensions browserPath:(NSString*)browserPath
+{
     //extension info
     NSMutableDictionary* extensionInfo = nil;
     
     //Extension object
     Extension* extensionObj = nil;
     
-    //query keychain to get safari extensions
-    status = SecKeychainFindGenericPassword(NULL, (UInt32)strlen(SAFARI_KEYCHAIN_SERVICE), SAFARI_KEYCHAIN_SERVICE, (UInt32)strlen(SAFARI_KEYCHAIN_ACCOUNT), SAFARI_KEYCHAIN_ACCOUNT, &keychainDataLength, &keychainData, &keychainItemRef);
-    
-    //on success
-    // ->convert binary plist keychain data (extensions) into dictionary
-    if(errSecSuccess == status)
+    //split each time
+    // and parse, extracing name, path, etc...
+    for(NSString* line in [[[NSString alloc] initWithData:extensions encoding:NSUTF8StringEncoding] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]])
     {
-        //convert
-        extensions = [NSPropertyListSerialization propertyListWithData: [NSData dataWithBytes:keychainData length:keychainDataLength] options:0 format:NULL error:NULL];
-    }
-    
-    //some versions/instances of Safari don't store their extensions in the keychain
-    // ->so manually load from extensions plist file
-    if( (errSecItemNotFound == status) ||
-        (0 == [extensions[@"Installed Extensions"] count]) )
-    {
-        //try load from extensions plist file
-        extensions = [NSDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", [SAFARI_EXTENSION_DIRECTORY stringByExpandingTildeInPath], @"Extensions.plist"]];
-    }
-    
-    //make sure extensions were found
-    // bail if nothing was found/parsed
-    if(nil == extensions)
-    {
-        //bail
-        goto bail;
-    }
-    
-    //iterate over all installed extensions
-    // save/report enabled ones
-    for(NSDictionary* extension in extensions[@"Installed Extensions"])
-    {
-        //alloc extension info
-        extensionInfo = [NSMutableDictionary dictionary];
+        //key
+        NSString* key = nil;
+        
+        //value
+        NSString* value = nil;
+        
+        //components
+        NSArray* components = nil;
+        
+        //details
+        NSString* details = nil;
+        
+        //split
+        components = [[line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] componentsSeparatedByString:@"="];
+        
+        //init
+        if(nil == extensionInfo)
+        {
+            //init
+            extensionInfo = [NSMutableDictionary dictionary];
             
-        //skip disable ones
-        if(YES != [extension[@"Enabled"] boolValue])
-        {
-            //skip
-            continue;
+            //save plugin
+            extensionInfo[KEY_RESULT_PLUGIN] = self;
+            
+            //save browser path (i.e. Safari)
+            extensionInfo[KEY_EXTENSION_BROWSER] = browserPath;
         }
         
-        //skip extensions without paths or names
-        if( (nil == extension[@"Archive File Name"]) ||
-            (nil == extension[@"Bundle Directory Name"]) )
+        //grab key
+        key = [components.firstObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+        //grab value
+        value = [components.lastObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+        //name
+        if(YES == [key isEqualToString:@"Display Name"])
         {
-            //skip
-            continue;
+            //save
+            extensionInfo[KEY_RESULT_NAME] = value;
         }
         
-        //save name
-        extensionInfo[KEY_RESULT_NAME] = extension[@"Bundle Directory Name"];
-        
-        //extract path component
-        // ...and build full path
-        path = [NSString stringWithFormat:@"%@/%@", [SAFARI_EXTENSION_DIRECTORY stringByExpandingTildeInPath], extension[@"Archive File Name"]];
-        
-        //skip extensions w/ invalid paths
-        if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])
+        //path
+        else if(YES == [key isEqualToString:@"Path"])
         {
-            //skip
-            continue;
+            //save
+            extensionInfo[KEY_RESULT_PATH] = value;
+        }
+        //uuid
+        else if(YES == [key isEqualToString:@"UUID"])
+        {
+            //save
+            extensionInfo[KEY_EXTENSION_ID] = value;
         }
         
-        //save plugin
-        extensionInfo[KEY_RESULT_PLUGIN] = self;
-        
-        //save path
-        extensionInfo[KEY_RESULT_PATH] = path;
-        
-        //extract id
-        extensionID = extension[@"Bundle Identifier"];
-        
-        //provide default value for nil ids
-        if(nil == extensionID)
+        //have all three?
+        if( (nil != extensionInfo[KEY_RESULT_NAME]) &&
+            (nil != extensionInfo[KEY_RESULT_PATH]) &&
+            (nil != extensionInfo[KEY_EXTENSION_ID]) )
         {
-            //default
-            extensionID = @"unknown";
+            //grab details
+            // found in Info.plist -> 'NSHumanReadableDescription'
+            details = [NSDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"%@/Contents/Info.plist", extensionInfo[KEY_RESULT_PATH]]][@"NSHumanReadableDescription"];
+            if(nil != details)
+            {
+                //add
+                extensionInfo[KEY_EXTENSION_DETAILS] = details;
+            }
+            
+            //create extension object
+            if(nil != (extensionObj = [[Extension alloc] initWithParams:extensionInfo]))
+            {
+                //process item
+                // save and report to UI
+                [super processItem:extensionObj];
+            }
+            
+            //unset
+            // ...for next
+            extensionInfo = nil;
         }
-        
-        //save identifier
-        extensionInfo[KEY_EXTENSION_ID] = extensionID;
-        
-        //save browser path (i.e. Safari)
-        extensionInfo[KEY_EXTENSION_BROWSER] = browserPath;
-        
-        //create Extension object for launch item
-        // ->skip those that err out for any reason
-        if(nil == (extensionObj = [[Extension alloc] initWithParams:extensionInfo]))
-        {
-            //skip
-            continue;
-        }
-        
-        //process item
-        // ->save and report to UI
-        [super processItem:extensionObj];
-    }
-    
-//bail
-bail:
-    
-    //release password data
-    if(NULL != keychainData)
-    {
-        //release
-        SecKeychainItemFreeContent(NULL, keychainData);
-        
-        //reset
-        keychainData = NULL;
-    }
-    
-    //release keychain item reference
-    if(NULL != keychainItemRef)
-    {
-        //release
-        CFRelease(keychainItemRef);
-        
-        //reset
-        keychainItemRef = NULL;
     }
     
     return;
@@ -539,7 +508,6 @@ bail:
 
     }//for all profile files
     
-
 bail:
     
     return;
@@ -946,7 +914,6 @@ bail:
         
     }//for all extensions
     
-//bail
 bail:
     
     return;

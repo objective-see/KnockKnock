@@ -526,40 +526,40 @@
 		CDA81D861A96F429009790E2 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				CD2B611320675EEB00BF72E9 /* EventRules.h */,
-				CD2B611220675EEB00BF72E9 /* EventRules.m */,
-				CD890F4023778F7B00029D99 /* DirectoryServicesPlugins.h */,
-				CD890F4123778F7B00029D99 /* DirectoryServicesPlugins.m */,
-				7D44F4C31DAAEDE40085859C /* DylibProxies.h */,
-				7D44F4C41DAAEDE40085859C /* DylibProxies.m */,
-				7DE2FE2C1D3F30BE006C1438 /* Extensions.h */,
-				7DE2FE2D1D3F30BE006C1438 /* Extensions.m */,
-				7DE29CA31CA7BC5600DFA6A6 /* StartupScripts.h */,
-				7DE29CA21CA7BC5600DFA6A6 /* StartupScripts.m */,
-				7D0DAB841CA752AE0049BAFF /* PeriodicScrips.h */,
-				7D0DAB851CA752AE0049BAFF /* PeriodicScrips.m */,
-				CDBE491B1B5B44BB0031FC22 /* LogInOutHooks.h */,
-				CDBE491C1B5B44BB0031FC22 /* LogInOutHooks.m */,
-				CDD83FD21B50C48C0037124E /* Cronjobs.h */,
-				CDD83FD31B50C48C0037124E /* Cronjobs.m */,
-				CDAB989D1AEADE5A00C75B4B /* DylibInserts.h */,
-				CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */,
-				CDD1837D23774DF000BA6B86 /* QuicklookPlugins.h */,
-				CDD1837E23774DF100BA6B86 /* QuicklookPlugins.m */,
 				CDAB98971AEAA6CB00C75B4B /* AuthorizationPlugins.h */,
 				CDAB98981AEAA6CB00C75B4B /* AuthorizationPlugins.m */,
-				CD7B9F511ACBAE2900DF3C71 /* SpotlightImporters.h */,
-				CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */,
 				CDA81E081A9B0AD8009790E2 /* BrowserExtensions.h */,
 				CDA81E091A9B0AD8009790E2 /* BrowserExtensions.m */,
-				CDA81E051A9AFFA7009790E2 /* LoginItems.h */,
-				CDA81E061A9AFFA7009790E2 /* LoginItems.m */,
-				CDA81E021A9AB89C009790E2 /* LaunchItems.h */,
-				CDA81E031A9AB89C009790E2 /* LaunchItems.m */,
+				CDD83FD21B50C48C0037124E /* Cronjobs.h */,
+				CDD83FD31B50C48C0037124E /* Cronjobs.m */,
+				CD890F4023778F7B00029D99 /* DirectoryServicesPlugins.h */,
+				CD890F4123778F7B00029D99 /* DirectoryServicesPlugins.m */,
+				CDAB989D1AEADE5A00C75B4B /* DylibInserts.h */,
+				CDAB989E1AEADE5A00C75B4B /* DylibInserts.m */,
+				7D44F4C31DAAEDE40085859C /* DylibProxies.h */,
+				7D44F4C41DAAEDE40085859C /* DylibProxies.m */,
+				CD2B611320675EEB00BF72E9 /* EventRules.h */,
+				CD2B611220675EEB00BF72E9 /* EventRules.m */,
+				7DE2FE2C1D3F30BE006C1438 /* Extensions.h */,
+				7DE2FE2D1D3F30BE006C1438 /* Extensions.m */,
 				CDA81D8A1A96F557009790E2 /* Kexts.h */,
 				CDA81D8B1A96F557009790E2 /* Kexts.m */,
+				CDA81E021A9AB89C009790E2 /* LaunchItems.h */,
+				CDA81E031A9AB89C009790E2 /* LaunchItems.m */,
+				CDA81E051A9AFFA7009790E2 /* LoginItems.h */,
+				CDA81E061A9AFFA7009790E2 /* LoginItems.m */,
+				CDBE491B1B5B44BB0031FC22 /* LogInOutHooks.h */,
+				CDBE491C1B5B44BB0031FC22 /* LogInOutHooks.m */,
+				7D0DAB841CA752AE0049BAFF /* PeriodicScrips.h */,
+				7D0DAB851CA752AE0049BAFF /* PeriodicScrips.m */,
 				CDA81D8C1A96F557009790E2 /* PluginBase.h */,
 				CDA81D8D1A96F557009790E2 /* PluginBase.m */,
+				CDD1837D23774DF000BA6B86 /* QuicklookPlugins.h */,
+				CDD1837E23774DF100BA6B86 /* QuicklookPlugins.m */,
+				CD7B9F511ACBAE2900DF3C71 /* SpotlightImporters.h */,
+				CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */,
+				7DE29CA31CA7BC5600DFA6A6 /* StartupScripts.h */,
+				7DE29CA21CA7BC5600DFA6A6 /* StartupScripts.m */,
 			);
 			name = Plugins;
 			sourceTree = "<group>";
@@ -923,7 +923,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.1.0;
+				CURRENT_PROJECT_VERSION = 2.2.0;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -934,7 +934,9 @@
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 2.1.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MARKETING_VERSION = 2.2.0;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -950,7 +952,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.1.0;
+				CURRENT_PROJECT_VERSION = 2.2.0;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -961,7 +963,9 @@
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 2.1.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MARKETING_VERSION = 2.2.0;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
 				PROVISIONING_PROFILE_SPECIFIER = "";

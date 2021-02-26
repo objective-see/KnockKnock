@@ -117,7 +117,7 @@
         self.noItemsLabel.hidden = NO;
         
         //set string
-        self.noItemsLabel.stringValue = [NSString stringWithFormat:@"no %@ found", [selectedPluginObj.name lowercaseString]];
+        self.noItemsLabel.stringValue = [NSString stringWithFormat:@"No %@ found", [selectedPluginObj.name lowercaseString]];
     }
     
     //there *are* items

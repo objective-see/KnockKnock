@@ -108,6 +108,9 @@
         //show friends window
         [self.friends makeKeyAndOrderFront:self];
         
+        //then make action button first responder
+        [self.friends makeFirstResponder:self.closeButton];
+        
         //close after a few seconds
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             
@@ -246,7 +249,7 @@
             infoAlert.messageText = @"Open 'System Preferences' to give KnockKnock Full Disk Access?";
             
             //detailed test
-            infoAlert.informativeText = @"This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ click the 🔒 to authenticate\r ▪ click the ➕ to add KnockKnock.app\n";
+            infoAlert.informativeText = @"This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n";
             
             //ok button
             [infoAlert addButtonWithTitle:@"OK"];
@@ -481,7 +484,7 @@
             self.statusText.hidden = NO;
             
             //update
-            [self.statusText setStringValue:[NSString stringWithFormat:@"scanning %@", plugin.name]];
+            [self.statusText setStringValue:[NSString stringWithFormat:@"Scanning: %@", plugin.name]];
             
         });
         
@@ -694,28 +697,18 @@
     // ->reload category table (to trigger title turning red)
     if(0 != plugin.flaggedItems.count)
     {
-        //execute on main (UI) thread
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            
-            //reload category table
-            [self.categoryTableController customReload];
-            
-        });
+        //reload category table
+        [self.categoryTableController customReload];
     }
 
     //check if active plugin matches
     if(plugin == self.selectedPlugin)
     {
-        //execute on main (UI) thread
-        dispatch_sync(dispatch_get_main_queue(), ^{
-        
-            //scroll to top of item table
-            [self.itemTableController scrollToTop];
+        //scroll to top of item table
+        [self.itemTableController scrollToTop];
             
-            //reload item table
-            [self.itemTableController.itemTableView reloadData];
-
-        });
+        //reload item table
+        [self.itemTableController.itemTableView reloadData];
     }
     
     return;
@@ -931,7 +924,7 @@
     [self.progressIndicator stopAnimation:nil];
     
     //hide progress indicator
-    self.progressIndicator.hidden = YES;
+    //self.progressIndicator.hidden = YES;
     
     //shift over status msg
     self.statusTextConstraint.constant = 10;
@@ -992,7 +985,7 @@
             flaggedItemCount += plugin.flaggedItems.count;
             
             //init detailed msg
-            details = [NSMutableString stringWithFormat:@"■ found %lu items", (unsigned long)itemCount];
+            details = [NSMutableString stringWithFormat:@"■ Found %lu items", (unsigned long)itemCount];
         }
         //otherwise just unknown items
         else
@@ -1013,7 +1006,7 @@
             }
             
             //init detailed msg
-            details = [NSMutableString stringWithFormat:@"■ found %lu non-OS items", (unsigned long)itemCount];
+            details = [NSMutableString stringWithFormat:@"■ Found %lu non-OS items", (unsigned long)itemCount];
         }
     }
 
@@ -1026,7 +1019,7 @@
         if(YES != self.isConnected)
         {
             //add disconnected msg
-            [details appendFormat:@" \r\n■ unable to query VirusTotal (network)"];
+            [details appendFormat:@" \r\n■ Unable to query VirusTotal (network)"];
         }
         //otherwise
         // ->add details about # of flagged items

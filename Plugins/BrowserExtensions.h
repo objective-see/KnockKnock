@@ -1,5 +1,5 @@
 //
-//  Kexts.h
+//  BrowserExtensions.h
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 2/19/15.
@@ -30,7 +30,5 @@
 
 //scan for Firefox extensions
 -(void)scanExtensionsFirefox:(NSString*)browserPath;
-
-
 
 @end

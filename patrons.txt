@@ -1,5 +1,5 @@
 Patrons (2^6+):
-Halo Privacy, Ash Morgan, Nando Mendonca, Geoffrey Weber, Randy Wong, Aaron Kiemele, Beau Galbraith, Stuart Ashenbrenner, whiskerz, Gamer_Bot
+Jan Koum, Christian Blümlein, MikeyH
 
 Friends of Objective-See:
-Digita Security, Sophos, Malwarebytes, SmugMug, Guardian Mobile Firewall, SecureMac
+1Password, Jamf, SmugMug, Guardian Mobile Firewall, SecureMac, iVerify, Halo Privacy

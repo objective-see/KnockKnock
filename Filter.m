@@ -154,31 +154,25 @@ bail:
     // either list of hashes, or dev id
     id whitelistInfo = nil;
     
+    //ignore any signing issues
+    if(noErr != [file.signingInfo[KEY_SIGNATURE_STATUS] intValue]) goto bail;
+    
     //lookup based on name
     whitelistInfo = self.trustedKexts[file.path];
 
-    //hashes?
-    if( (YES == [whitelistInfo isKindOfClass:[NSArray class]]) &&
-        (YES == [whitelistInfo containsObject:[file.hashes[KEY_HASH_MD5] lowercaseString]]) )
-    {
-        //got match
-        isTrusted = YES;
-        
-        //bail
-        goto bail;
-    }
-    
     //dev id?
-    // note: these are only for kexts that ship with macOS!
-     if( (YES == [whitelistInfo isKindOfClass:[NSString class]]) &&
-         (YES == [[file.signingInfo[KEY_SIGNATURE_AUTHORITIES] lastObject] isEqualToString:@"Apple Root CA"]) &&
-         (YES == [file.signingInfo[KEY_SIGNATURE_AUTHORITIES] containsObject:whitelistInfo]) )
+    if( (YES == [((NSArray*)whitelistInfo).firstObject hasPrefix:@"Developer ID Application"]) &&
+        (YES == [[file.signingInfo[KEY_SIGNATURE_AUTHORITIES] lastObject] isEqualToString:@"Apple Root CA"]) )
     {
-        //got match
-        isTrusted = YES;
-        
-        //bail
-        goto bail;
+        //check
+        isTrusted = [whitelistInfo containsObject:[file.signingInfo[KEY_SIGNATURE_AUTHORITIES] firstObject]];
+        if(YES == isTrusted) goto bail;
+    }
+    //hash
+    else
+    {
+        isTrusted = [whitelistInfo containsObject:[file.hashes[KEY_HASH_MD5] lowercaseString]];
+        if(YES == isTrusted) goto bail;
     }
     
     //check for apple signature

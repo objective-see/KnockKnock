@@ -39,7 +39,10 @@ extern Filter* itemFilter;
 /* PROPERTIES */
 
 //friends
-@property (weak) IBOutlet NSWindow *friends;
+@property (weak) IBOutlet NSWindow* friends;
+
+//close button
+@property (weak) IBOutlet NSButton* closeButton;
 
 //flag for secondary scan
 // ->need to restart shared enumerator 

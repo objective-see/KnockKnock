@@ -113,25 +113,25 @@
         vtDetectionRatio = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)[self.fileObj.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[self.fileObj.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
         
         //set name
-        [self.fileName setStringValue:self.fileObj.name];
+        self.fileName.stringValue = self.fileObj.name;
         
         //set color
         self.fileName.textColor = textColor;
         
         //detection ratio
-        [self.detectionRatio setStringValue:vtDetectionRatio];
+        self.detectionRatio.stringValue = vtDetectionRatio;
         
         //set color
         self.detectionRatio.textColor = textColor;
         
         //analysis url
-        [self.analysisURL setStringValue:@"VirusTotal report"];
+        self.analysisURL.stringValue = @"VirusTotal Report";
         
         //make analysis url a hyperlink
         makeTextViewHyperlink(self.analysisURL, [NSURL URLWithString:self.fileObj.vtInfo[VT_RESULTS_URL]]);
         
-        //set 'submit' button text to 'rescan'
-        self.submitButton.title = @"Rescan?";
+        //disable scan button
+        self.submitButton.enabled = NO;
     }
     //unknown file
     else
@@ -185,8 +185,8 @@
     return;
 }
 
-//automatically invoked when user clicks 'rescan'/'submit'
-// ->rescan or upload to VT!
+//invoked when user clicks 'submit'
+// upload file to VT, open VT scan, etc...
 -(IBAction)vtButtonHandler:(id)sender
 {
     //VT object
@@ -197,10 +197,7 @@
     
     //analyis URL
     NSMutableAttributedString* hyperlinkString = nil;
-    
-    //VT scan ID
-    __block NSString* scanID = nil;
-    
+        
     //new report
     __block NSURL* newReport = nil;
     
@@ -226,7 +223,7 @@
     [hyperlinkString endEditing];
     
     //set text
-    // ->will look the same, but the URL will be disabled!
+    // will look the same, but the URL will be disabled!
     [self.analysisURL setAttributedStringValue:hyperlinkString];
     
     //pre-req
@@ -259,208 +256,93 @@
     //animate it
     [self.progressIndicator startAnimation:nil];
 
-    //rescan file?
-    if(YES == [((NSButton*)sender).title isEqualToString:@"Rescan?"])
-    {
-        //set status msg
-        [self.statusMsg setStringValue:[NSString stringWithFormat:@"submitting re-scan request for %@", self.fileObj.name]];
+    //set status msg
+    self.statusMsg.stringValue = [NSString stringWithFormat:@"submitting %@", self.fileObj.name];
+        
+    //show status msg
+    self.statusMsg.hidden = NO;
+    
+    //submit rescan request in background
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+        //submit file to VT
+        result = [vtObj submit:self.fileObj];
+        
+        //got response
+        // ->requery VT to get scan results
+        if( (nil != result) &&
+            (nil != result[VT_RESULTS_SCANID]) )
+        {
+            //reset file's VT info
+            self.fileObj.vtInfo = nil;
+        
+            //kick off task to re-query VT
+            // ->pass in scan result ID
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [vtObj getInfoForItem:self.fileObj scanID:result[VT_RESULTS_SCANID]];
+            });
+        
+            //ask app delegate to update item in table
+            // ->will change the item's VT status to ... (pending)
+            [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj];
             
-        //show status msg
-        self.statusMsg.hidden = NO;
-
-        //submit rescan request in background
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
-            //make request to VT
-            result = [vtObj reScan:self.fileObj];
-            
-            //got result
-            // ->update UI and launch browswer to show report
-            if(nil != result)
-            {
-                //grab scan ID
-                // ->need this for (re)queries
-                scanID = result[VT_RESULTS_SCANID];
+            //update status msg
+            dispatch_sync(dispatch_get_main_queue(), ^{
                 
-                //if file was flagged
-                // ->remove it from list of plugin's flagged
-                if(0 != [self.fileObj.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue])
+                //update
+                [self.statusMsg setStringValue:@"file submitted"];
+                
+            });
+            
+            //nap
+            // allows msg to show up, and give VT some time
+            [NSThread sleepForTimeInterval:2.0];
+            
+            //launch browser to show new report
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                
+                //sanity check
+                // then launch browser
+                if( (nil != result[@"permalink"]) &&
+                    (nil != (newReport = [NSURL URLWithString:result[@"permalink"]])) )
                 {
-                    //sync
-                    // ->since array will be reset if user clicks 'stop' scan
-                    @synchronized(self.fileObj.plugin.flaggedItems)
-                    {
-                        //remove
-                        [self.fileObj.plugin.flaggedItems removeObject:self.fileObj];
-                    }
+                    //launch browser
+                    [[NSWorkspace sharedWorkspace] openURL:newReport];
                 }
                 
-                //remove file's VT info (since it'd now out of date)
-                self.fileObj.vtInfo = nil;
+            });
+
+            //wait to browser is up and happy
+            [NSThread sleepForTimeInterval:0.5];
+            
+            //close window
+            dispatch_sync(dispatch_get_main_queue(), ^{
                 
-                //with a scan id can re-query VT
-                // ->will update VT button in UI once results are retrieved
-                if(nil != scanID)
-                {
-                    //kick off task to re-query VT
-                    // ->wait 60 seconds though to give VT servers some time to process
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        [vtObj getInfoForItem:self.fileObj scanID:scanID];
-                    });
-                }
+                //close
+                [self.window close];
                 
-                //ask app delegate to update item in table
-                // ->will change the item's VT status to ... (pending)
-                [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj];
-                
-                //nap so user can see msg 'submitting' msg
-                [NSThread sleepForTimeInterval:0.5];
+            });
+        
+        }//got result
+        
+        //error
+        else
+        {
+            //show error msg
+            dispatch_sync(dispatch_get_main_queue(), ^{
                 
                 //update status msg
-                dispatch_sync(dispatch_get_main_queue(), ^{
-
-                    //update
-                    [self.statusMsg setStringValue:@"request submitted"];
-                    
-                });
-                    
-                //nap so user can see msg
-                [NSThread sleepForTimeInterval:0.5];
+                [self.statusMsg setStringValue:@"failed to submit request :("];
                 
-                //launch browser to show new report
-                dispatch_sync(dispatch_get_main_queue(), ^{
+                //stop activity indicator
+                [self.progressIndicator stopAnimation:nil];
                 
-                    //sanity check
-                    // then launch browser
-                    if( (nil != result[@"permalink"]) &&
-                        (nil != (newReport = [NSURL URLWithString:result[@"permalink"]])) )
-                    {
-                        //launch browser
-                        [[NSWorkspace sharedWorkspace] openURL:newReport];
-                    }
-                    
-                 });
-                
-                //wait to browser is up and happy
-                [NSThread sleepForTimeInterval:0.5];
-                
-                //close window
-                dispatch_sync(dispatch_get_main_queue(), ^{
-
-                    //close
-                    [self.window close];
-                    
-                });
-            }
-            
-            //error
-            else
-            {
-                //show error msg
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    //update status msg
-                    [self.statusMsg setStringValue:@"failed to submit request :("];
-                    
-                    //stop activity indicator
-                    [self.progressIndicator stopAnimation:nil];
-
-                });
-            }
-            
-        });
-    }
-    
-    //submit file
-    else
-    {
-        //set status msg
-        [self.statusMsg setStringValue:[NSString stringWithFormat:@"submitting %@", self.fileObj.name]];
-            
-        //show status msg
-        self.statusMsg.hidden = NO;
+            });
+        }
         
-        //submit rescan request in background
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-            //submit file to VT
-            result = [vtObj submit:self.fileObj];
-            
-            //got response
-            // ->requery VT to get scan results
-            if( (nil != result) &&
-                (nil != result[VT_RESULTS_SCANID]) )
-            {
-                //reset file's VT info
-                self.fileObj.vtInfo = nil;
-            
-                //kick off task to re-query VT
-                // ->pass in scan result ID
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [vtObj getInfoForItem:self.fileObj scanID:result[VT_RESULTS_SCANID]];
-                });
-            
-                //ask app delegate to update item in table
-                // ->will change the item's VT status to ... (pending)
-                [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj];
-                
-                //update status msg
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    
-                    //update
-                    [self.statusMsg setStringValue:@"file submitted"];
-                    
-                });
-                
-                //nap so user can see msg
-                [NSThread sleepForTimeInterval:0.5];
-                
-                //launch browser to show new report
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    
-                    //sanity check
-                    // then launch browser
-                    if( (nil != result[@"permalink"]) &&
-                        (nil != (newReport = [NSURL URLWithString:result[@"permalink"]])) )
-                    {
-                        //launch browser
-                        [[NSWorkspace sharedWorkspace] openURL:newReport];
-                    }
-                    
-                });
-
-                //wait to browser is up and happy
-                [NSThread sleepForTimeInterval:0.5];
-                
-                //close window
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    
-                    //close
-                    [self.window close];
-                    
-                });
-            
-            }//got result
-            
-            //error
-            else
-            {
-                //show error msg
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    
-                    //update status msg
-                    [self.statusMsg setStringValue:@"failed to submit request :("];
-                    
-                    //stop activity indicator
-                    [self.progressIndicator stopAnimation:nil];
-                    
-                });
-            }
-            
-        });
-    }
+    });
     
-//bail
+
 bail:
     
     return;

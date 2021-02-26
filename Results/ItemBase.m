@@ -54,11 +54,8 @@
     return self.path;
 }
 
-//return
-
 
 /* OPTIONAL METHODS */
-
 
 
 /* REQUIRED METHODS */

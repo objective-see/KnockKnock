@@ -24,7 +24,7 @@
     if(self.selectionHighlightStyle != NSTableViewSelectionHighlightStyleNone)
     {
         //make selection rect
-        selectionRect = NSInsetRect(self.bounds, 2.5, 2.5);
+        selectionRect = NSInsetRect(self.bounds, 10.0, 1.0);
         
         //dark mode highlight
         if(YES == isDarkMode())
