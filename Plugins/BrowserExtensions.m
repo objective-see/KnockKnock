@@ -23,12 +23,6 @@
 // ->safari
 #define SAFARI_EXTENSION_DIRECTORY @"~/Library/Safari/Extensions/"
 
-//name of service for safari extensions
-#define SAFARI_KEYCHAIN_SERVICE "Extended Preferences"
-
-//name account for safari extensions
-#define SAFARI_KEYCHAIN_ACCOUNT "Safari"
-
 //safari's default location
 #define SAFARI_DEFAULT_LOCATION @"/Applications/Safari.app"
 
