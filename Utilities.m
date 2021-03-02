@@ -85,6 +85,9 @@ NSMutableDictionary* allUsers()
     //identiry
     CBIdentity* identity = NULL;
     
+    //home directory for user
+    NSString* userDirectory = nil;
+    
     //alloc dictionary
     users = [NSMutableDictionary dictionary];
     
@@ -108,8 +111,16 @@ NSMutableDictionary* allUsers()
         //grab identity
         identity = [CBIdentity identityWithCSIdentity:(CSIdentityRef)CFArrayGetValueAtIndex(results, i)];
         
+        //skip blank users
+        if(0 == identity.posixName.length) continue;
+        
+        //get user's home directory
+        // skip any that are blank/nil
+        userDirectory = NSHomeDirectoryForUser(identity.posixName);
+        if(0 == userDirectory.length) continue;
+        
         //add user
-        users[identity.UUIDString] = @{USER_NAME:identity.posixName, USER_DIRECTORY:NSHomeDirectoryForUser(identity.posixName)};
+        users[identity.UUIDString] = @{USER_NAME:identity.posixName, USER_DIRECTORY:userDirectory};
     }
 
 bail:

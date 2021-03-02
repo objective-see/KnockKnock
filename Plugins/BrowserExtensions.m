@@ -288,8 +288,14 @@
 //scan for Chrome extensions
 -(void)scanExtensionsChrome:(NSString*)browserPath
 {
+    //console user
+    NSString* currentUser = nil;
+    
     //all users
     NSMutableDictionary* users = nil;
+    
+    //home directory for user
+    NSString* userDirectory = nil;
     
     //preference files
     NSMutableArray* preferenceFiles = nil;
@@ -337,8 +343,17 @@
     //just current user
     else
     {
-        //current
-        users[getConsoleUser()] = @{USER_NAME:getConsoleUser(), USER_DIRECTORY:NSHomeDirectoryForUser(getConsoleUser())};
+        //get current/console user
+        currentUser = getConsoleUser();
+        
+        //get their home directory
+        userDirectory = NSHomeDirectoryForUser(currentUser);
+        if( (0 != currentUser.length) &&
+            (0 != userDirectory.length) )
+        {
+            //current
+            users[currentUser] = @{USER_NAME:currentUser, USER_DIRECTORY:NSHomeDirectoryForUser(userDirectory)};
+        }
     }
     
     //get profile files for all users
@@ -510,8 +525,14 @@ bail:
 //scan for Firefox extensions
 -(void)scanExtensionsFirefox:(NSString*)browserPath
 {
+    //console user
+    NSString* currentUser = nil;
+    
     //users
     NSMutableDictionary* users = nil;
+    
+    //home directory for user
+    NSString* userDirectory = nil;
     
     //Firefox profiles
     NSArray* profiles = nil;
@@ -556,8 +577,17 @@ bail:
     //just current user
     else
     {
-        //current
-        users[getConsoleUser()] = @{USER_NAME:getConsoleUser(), USER_DIRECTORY:NSHomeDirectoryForUser(getConsoleUser())};
+        //get current/console user
+        currentUser = getConsoleUser();
+        
+        //get their home directory
+        userDirectory = NSHomeDirectoryForUser(currentUser);
+        if( (0 != currentUser.length) &&
+            (0 != userDirectory.length) )
+        {
+            //current
+            users[currentUser] = @{USER_NAME:currentUser, USER_DIRECTORY:NSHomeDirectoryForUser(userDirectory)};
+        }
     }
     
     //get profile files for all users

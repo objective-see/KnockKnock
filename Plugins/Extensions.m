@@ -42,9 +42,12 @@
 }
 
 //get list of installed extensions
-// ->for now, done via exec'ing pluginkit
+// for now, done via exec'ing pluginkit
 -(NSMutableArray*)enumExtensions
 {
+    //console user
+    NSString* currentUser = nil;
+    
     //all extensions
     NSMutableArray* extensions = nil;
     
@@ -69,8 +72,16 @@
     //process output
     [extensions addObjectsFromArray:[self parseExtensions:[[[NSString alloc] initWithData:taskOutput encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]]];
     
+    //get current/console user
+    currentUser = getConsoleUser();
+    if(0 == currentUser.length)
+    {
+        //bail
+        goto bail;
+    }
+    
     //load finder syncs from plist
-    finderSyncs = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectoryForUser(getConsoleUser()) stringByAppendingPathComponent:[FINDER_SYNCS substringFromIndex:1]]];
+    finderSyncs = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectoryForUser(currentUser) stringByAppendingPathComponent:[FINDER_SYNCS substringFromIndex:1]]];
     if( (nil == finderSyncs) ||
         (nil == finderSyncs[@"displayOrder"]) )
     {
