@@ -16,7 +16,7 @@
 #define REQUESTED_FULL_DISK_ACCESS @"requestedFullDiskAccess"
 
 //supported plugins
-static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"DirectoryServicesPlugins", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"QuicklookPlugins", @"SpotlightImporters", @"StartupScripts"};
+static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"CronJobs", @"DirectoryServicesPlugins", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"QuicklookPlugins", @"SpotlightImporters", @"StartupScripts", @"SystemExtensions"};
 
 //sentry crash reporting URL
 #define SENTRY_DSN @"https://ba5d094e87014a529b25d90bae010b1c@sentry.io/1321683"

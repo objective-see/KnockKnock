@@ -246,9 +246,6 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle)
     //icon's path extension
     NSString* iconExtension = nil;
     
-    //system's document icon
-    static NSImage* documentIcon = nil;
-    
     //icon
     NSImage* icon = nil;
     
@@ -285,32 +282,16 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle)
         icon = [[NSImage alloc] initWithContentsOfFile:iconPath];
     }
     
-    //process is not an app or couldn't get icon
-    // ->try to get it via shared workspace
+    //process not app or couldn't get icon
+    // try to get it via shared workspace...
     if( (nil == bundle) ||
         (nil == icon) )
     {
         //extract icon
         icon = [[NSWorkspace sharedWorkspace] iconForFile:binary];
         
-        if(nil == documentIcon)
-        {
-            //load
-            documentIcon = [[NSWorkspace sharedWorkspace] iconForFileType:
-                            NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
-        }
-        
-        //if 'iconForFile' method doesn't find and icon, it returns the system 'document' icon
-        // ->the system 'application' icon seems more applicable, so use that here...
-        if(YES == [icon isEqual:documentIcon])
-        {
-            //set icon to system 'applicaiton' icon
-            icon = [[NSWorkspace sharedWorkspace]
-                    iconForFileType: NSFileTypeForHFSTypeCode(kGenericApplicationIcon)];
-        }
-        
         //'iconForFileType' returns small icons
-        // so set size to 64 @2x
+        //  so set size to 64 @2x
         [icon setSize:NSMakeSize(128, 128)];
     }
     

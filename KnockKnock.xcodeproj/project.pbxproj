@@ -34,6 +34,8 @@
 		CD2F21A121A8A7D100F67A83 /* UpdateWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD2F21A021A8A7D000F67A83 /* UpdateWindow.xib */; };
 		CD2F21A421A8A7E300F67A83 /* UpdateWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2F21A321A8A7E300F67A83 /* UpdateWindowController.m */; };
 		CD36CDB8237785180089FC34 /* quicklookIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD36CDB7237785180089FC34 /* quicklookIcon.png */; };
+		CD3B99B925EC94D60020AF50 /* SystemExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CD3B99B725EC94D60020AF50 /* SystemExtensions.m */; };
+		CD3B99D325EDE9F90020AF50 /* systemExtensionIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD3B99D225EDE9F90020AF50 /* systemExtensionIcon.png */; };
 		CD585494219FE61D00A438B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD585493219FE61D00A438B0 /* Assets.xcassets */; };
 		CD5854D321A5FADD00A438B0 /* patrons.txt in Resources */ = {isa = PBXBuildFile; fileRef = CD5854D221A5FADD00A438B0 /* patrons.txt */; };
 		CD5854D521A60B1000A438B0 /* PlistWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD5854D421A60B0F00A438B0 /* PlistWindow.xib */; };
@@ -185,6 +187,9 @@
 		CD2F21A221A8A7E300F67A83 /* UpdateWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateWindowController.h; sourceTree = "<group>"; };
 		CD2F21A321A8A7E300F67A83 /* UpdateWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateWindowController.m; sourceTree = "<group>"; };
 		CD36CDB7237785180089FC34 /* quicklookIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = quicklookIcon.png; path = images/quicklookIcon.png; sourceTree = SOURCE_ROOT; };
+		CD3B99B725EC94D60020AF50 /* SystemExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SystemExtensions.m; path = Plugins/SystemExtensions.m; sourceTree = "<group>"; };
+		CD3B99B825EC94D60020AF50 /* SystemExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SystemExtensions.h; path = Plugins/SystemExtensions.h; sourceTree = "<group>"; };
+		CD3B99D225EDE9F90020AF50 /* systemExtensionIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = systemExtensionIcon.png; path = images/systemExtensionIcon.png; sourceTree = SOURCE_ROOT; };
 		CD585493219FE61D00A438B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		CD5854D221A5FADD00A438B0 /* patrons.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = patrons.txt; sourceTree = SOURCE_ROOT; };
 		CD5854D421A60B0F00A438B0 /* PlistWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PlistWindow.xib; path = UI/PlistWindow.xib; sourceTree = "<group>"; };
@@ -434,55 +439,56 @@
 		CD6095501A8329FA00E091CD /* images */ = {
 			isa = PBXGroup;
 			children = (
-				CD890F43237790D400029D99 /* directoryServicesIcon.png */,
-				CD36CDB7237785180089FC34 /* quicklookIcon.png */,
-				CD2B61432067656200BF72E9 /* eventRulesIcon.png */,
-				7D44F4C61DAAEF3E0085859C /* proxyIcon.png */,
-				7DE2FE2F1D3F3228006C1438 /* extensionIcon.png */,
-				7DE29CA51CA7C10500DFA6A6 /* startupScriptsIcon.png */,
-				7D0DAB871CA758790049BAFF /* periodicIcon.png */,
-				CDBE491E1B5B46040031FC22 /* logInOutIcon.png */,
-				CD6BBBEC1B51C62B00506D0D /* unknown.png */,
-				CD6BBBEA1B50DF7100506D0D /* signedAppleIcon.png */,
-				CD6BBBE81B50D67A00506D0D /* binaryIcon.icns */,
-				CDD83FD51B50C76F0037124E /* cronIcon.png */,
-				CDAB98A21AEB413C00C75B4B /* dylibIcon.png */,
 				CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */,
-				CD0219541AD34E4C005148A2 /* kkIcon.png */,
-				CD7B9FA51ACCAE5E00DF3C71 /* startScanOver.png */,
-				CD7B9FA61ACCAE5E00DF3C71 /* stopScanOver.png */,
-				CD7B9FA31ACBCFAD00DF3C71 /* spotlightIcon.png */,
-				CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */,
+				CD6BBBE81B50D67A00506D0D /* binaryIcon.icns */,
 				CDF08CF11ACA6864009B3423 /* browserIcon.png */,
-				CDF08CF21ACA6864009B3423 /* loginIcon.png */,
-				CDF08CED1ACA677B009B3423 /* launchIcon.png */,
-				CDF08CEE1ACA677B009B3423 /* kernelIcon.png */,
-				CDF08CE71AC8A35C009B3423 /* vtLogo.png */,
-				CDF08CCC1AC4C6E8009B3423 /* settingsOver.png */,
-				CDF08CCD1AC4C6E8009B3423 /* settingsBG.png */,
-				CDF08CCE1AC4C6E8009B3423 /* settings.png */,
-				CDF08CC21AC3E98D009B3423 /* infoOver.png */,
-				CDF08CC01AC3E8B0009B3423 /* showOver.png */,
-				CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */,
-				CD001B341AB903040089014A /* kkText.png */,
-				CD001B351AB903040089014A /* logo.png */,
-				CD001B361AB903040089014A /* logoApple.png */,
-				CDA81DD11A9970A0009790E2 /* signed.png */,
-				CDA81DD21A9970A0009790E2 /* unsigned.png */,
+				CDA81D5F1A95B4E9009790E2 /* bug.png */,
+				CDD83FD51B50C76F0037124E /* cronIcon.png */,
+				CD890F43237790D400029D99 /* directoryServicesIcon.png */,
+				CDAB98A21AEB413C00C75B4B /* dylibIcon.png */,
+				CD2B61432067656200BF72E9 /* eventRulesIcon.png */,
+				7DE2FE2F1D3F3228006C1438 /* extensionIcon.png */,
 				CDA81DC51A9960A3009790E2 /* info.png */,
 				CDA81DC61A9960A3009790E2 /* infoBG.png */,
-				CDA81DC71A9960A3009790E2 /* virusTotal.png */,
-				CDA81DC81A9960A3009790E2 /* virusTotalBG.png */,
-				CDA81D5F1A95B4E9009790E2 /* bug.png */,
+				CDF08CC21AC3E98D009B3423 /* infoOver.png */,
+				CDF08CEE1ACA677B009B3423 /* kernelIcon.png */,
+				CD0219541AD34E4C005148A2 /* kkIcon.png */,
+				CD001B341AB903040089014A /* kkText.png */,
+				CDF08CED1ACA677B009B3423 /* launchIcon.png */,
+				CDF08CF21ACA6864009B3423 /* loginIcon.png */,
+				CDBE491E1B5B46040031FC22 /* logInOutIcon.png */,
+				CD001B351AB903040089014A /* logo.png */,
+				CD001B361AB903040089014A /* logoApple.png */,
+				CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */,
+				CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */,
 				CDA81D601A95B4E9009790E2 /* mainIcon.png */,
+				7D0DAB871CA758790049BAFF /* periodicIcon.png */,
+				7D44F4C61DAAEF3E0085859C /* proxyIcon.png */,
+				CD36CDB7237785180089FC34 /* quicklookIcon.png */,
+				CDA81D631A95B4E9009790E2 /* scanIcon.png */,
+				CDF08CCE1AC4C6E8009B3423 /* settings.png */,
+				CDF08CCD1AC4C6E8009B3423 /* settingsBG.png */,
+				CDF08CCC1AC4C6E8009B3423 /* settingsOver.png */,
 				CDA81D611A95B4E9009790E2 /* show.png */,
 				CDA81D621A95B4E9009790E2 /* showBG.png */,
-				CDA81D631A95B4E9009790E2 /* scanIcon.png */,
+				CDF08CC01AC3E8B0009B3423 /* showOver.png */,
+				CDA81DD11A9970A0009790E2 /* signed.png */,
+				CD6BBBEA1B50DF7100506D0D /* signedAppleIcon.png */,
+				CD7B9FA31ACBCFAD00DF3C71 /* spotlightIcon.png */,
 				CDA81D641A95B4E9009790E2 /* startScan.png */,
 				CDA81D651A95B4E9009790E2 /* startScanBG.png */,
+				CD7B9FA51ACCAE5E00DF3C71 /* startScanOver.png */,
+				7DE29CA51CA7C10500DFA6A6 /* startupScriptsIcon.png */,
 				CDA81D661A95B4E9009790E2 /* stopScan.png */,
 				CDA81D671A95B4E9009790E2 /* stopScanBG.png */,
+				CD7B9FA61ACCAE5E00DF3C71 /* stopScanOver.png */,
+				CD3B99D225EDE9F90020AF50 /* systemExtensionIcon.png */,
+				CD6BBBEC1B51C62B00506D0D /* unknown.png */,
+				CDA81DD21A9970A0009790E2 /* unsigned.png */,
 				CDA81D681A95B4E9009790E2 /* virus.png */,
+				CDA81DC71A9960A3009790E2 /* virusTotal.png */,
+				CDA81DC81A9960A3009790E2 /* virusTotalBG.png */,
+				CDF08CE71AC8A35C009B3423 /* vtLogo.png */,
 			);
 			name = images;
 			sourceTree = "<group>";
@@ -560,6 +566,8 @@
 				CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */,
 				7DE29CA31CA7BC5600DFA6A6 /* StartupScripts.h */,
 				7DE29CA21CA7BC5600DFA6A6 /* StartupScripts.m */,
+				CD3B99B825EC94D60020AF50 /* SystemExtensions.h */,
+				CD3B99B725EC94D60020AF50 /* SystemExtensions.m */,
 			);
 			name = Plugins;
 			sourceTree = "<group>";
@@ -737,6 +745,7 @@
 				CDA81DCA1A9960A3009790E2 /* infoBG.png in Resources */,
 				CDF08CD11AC4C6E8009B3423 /* settings.png in Resources */,
 				7DE2FE301D3F3228006C1438 /* extensionIcon.png in Resources */,
+				CD3B99D325EDE9F90020AF50 /* systemExtensionIcon.png in Resources */,
 				CDA81DD31A9970A0009790E2 /* signed.png in Resources */,
 				CDD83FD61B50C76F0037124E /* cronIcon.png in Resources */,
 				CDA81E661AA020FD009790E2 /* FileInfoWindow.xib in Resources */,
@@ -785,6 +794,7 @@
 				CDAB98991AEAA6CB00C75B4B /* AuthorizationPlugins.m in Sources */,
 				CDA81DFE1A9A7D26009790E2 /* Command.m in Sources */,
 				CD24F077219DF3DB0081B0E5 /* Signing.m in Sources */,
+				CD3B99B925EC94D60020AF50 /* SystemExtensions.m in Sources */,
 				CD0219531AD34D9A005148A2 /* AboutWindowController.m in Sources */,
 				CDA81E011A9A7D26009790E2 /* ItemBase.m in Sources */,
 				CDA81DFF1A9A7D26009790E2 /* Extension.m in Sources */,
@@ -923,7 +933,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.2.1;
+				CURRENT_PROJECT_VERSION = 2.3.0;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -935,7 +945,7 @@
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 2.2.1;
+				MARKETING_VERSION = 2.3.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
@@ -952,7 +962,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.2.1;
+				CURRENT_PROJECT_VERSION = 2.3.0;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -964,7 +974,7 @@
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 2.2.1;
+				MARKETING_VERSION = 2.3.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
