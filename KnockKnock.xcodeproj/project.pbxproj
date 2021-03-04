@@ -399,25 +399,25 @@
 		1D21BC54172AF43D009D1CFD /* KnockKnock */ = {
 			isa = PBXGroup;
 			children = (
-				CD2F219D21A8A73000F67A83 /* Update.h */,
-				CD2F219E21A8A73100F67A83 /* Update.m */,
-				CDF08CC71AC4C678009B3423 /* PrefsWindowController.h */,
-				CDF08CC81AC4C678009B3423 /* PrefsWindowController.m */,
-				CD5854D621A60B2000A438B0 /* PlistWindowController.h */,
-				CD5854D721A60B2000A438B0 /* PlistWindowController.m */,
-				CDA81D561A95B4B4009790E2 /* MainMenu.xib */,
-				CDF08CC41AC46E75009B3423 /* VTButton.h */,
-				CDF08CC51AC46E75009B3423 /* VTButton.m */,
 				CDA81D441A95B492009790E2 /* AppDelegate.h */,
 				CDA81D451A95B492009790E2 /* AppDelegate.m */,
+				CD585493219FE61D00A438B0 /* Assets.xcassets */,
 				CDA81D481A95B492009790E2 /* Consts.h */,
+				CD6095501A8329FA00E091CD /* images */,
+				CDA81D561A95B4B4009790E2 /* MainMenu.xib */,
+				CD5854D621A60B2000A438B0 /* PlistWindowController.h */,
+				CD5854D721A60B2000A438B0 /* PlistWindowController.m */,
+				CDF08CC71AC4C678009B3423 /* PrefsWindowController.h */,
+				CDF08CC81AC4C678009B3423 /* PrefsWindowController.m */,
 				CD24F076219DF3DB0081B0E5 /* Signing.h */,
 				CD24F075219DF3DA0081B0E5 /* Signing.m */,
+				1D21BC55172AF43D009D1CFD /* Supporting Files */,
+				CD2F219D21A8A73000F67A83 /* Update.h */,
+				CD2F219E21A8A73100F67A83 /* Update.m */,
 				CDA81D4D1A95B492009790E2 /* Utilities.h */,
 				CDA81D4E1A95B492009790E2 /* Utilities.m */,
-				CD6095501A8329FA00E091CD /* images */,
-				1D21BC55172AF43D009D1CFD /* Supporting Files */,
-				CD585493219FE61D00A438B0 /* Assets.xcassets */,
+				CDF08CC41AC46E75009B3423 /* VTButton.h */,
+				CDF08CC51AC46E75009B3423 /* VTButton.m */,
 			);
 			name = KnockKnock;
 			path = "Lesson 53";

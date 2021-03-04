@@ -664,7 +664,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="767" height="288"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <userGuides>
-                    <userLayoutGuide location="153" affinity="minY"/>
+                    <userLayoutGuide location="152" affinity="minY"/>
                 </userGuides>
                 <subviews>
                     <button verticalHuggingPriority="750" fixedFrame="YES" tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="eD8-BN-Z1D">
