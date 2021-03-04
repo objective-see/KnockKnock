@@ -53,7 +53,7 @@
         <window title="KnockKnock" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371" userLabel="Main Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="1295" height="671"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="3440" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1055"/>
             <value key="minSize" type="size" width="1000" height="597"/>
             <value key="maxSize" type="size" width="2500" height="1000"/>
             <view key="contentView" id="372">

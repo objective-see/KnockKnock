@@ -519,7 +519,7 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             
             //update
-            [self.statusText setStringValue:[NSString stringWithFormat:@"awaiting VirusTotal results"]];
+            [self.statusText setStringValue:[NSString stringWithFormat:@"Awaiting VirusTotal results"]];
             
         });
         

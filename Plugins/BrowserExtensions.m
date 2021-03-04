@@ -348,11 +348,13 @@
         
         //get their home directory
         userDirectory = NSHomeDirectoryForUser(currentUser);
+        
+        //save
         if( (0 != currentUser.length) &&
             (0 != userDirectory.length) )
         {
             //current
-            users[currentUser] = @{USER_NAME:currentUser, USER_DIRECTORY:NSHomeDirectoryForUser(userDirectory)};
+            users[currentUser] = @{USER_NAME:currentUser, USER_DIRECTORY:userDirectory};
         }
     }
     
@@ -582,11 +584,13 @@ bail:
         
         //get their home directory
         userDirectory = NSHomeDirectoryForUser(currentUser);
+        
+        //save
         if( (0 != currentUser.length) &&
             (0 != userDirectory.length) )
         {
             //current
-            users[currentUser] = @{USER_NAME:currentUser, USER_DIRECTORY:NSHomeDirectoryForUser(userDirectory)};
+            users[currentUser] = @{USER_NAME:currentUser, USER_DIRECTORY:userDirectory};
         }
     }
     

@@ -48,6 +48,9 @@
     //console user
     NSString* currentUser = nil;
     
+    //home directory for user
+    NSString* userDirectory = nil;
+    
     //all extensions
     NSMutableArray* extensions = nil;
     
@@ -74,14 +77,20 @@
     
     //get current/console user
     currentUser = getConsoleUser();
-    if(0 == currentUser.length)
+    
+    //get their home directory
+    userDirectory = NSHomeDirectoryForUser(currentUser);
+    
+    //sanity check(s)
+    if( (0 == currentUser.length) ||
+        (0 == userDirectory.length) )
     {
         //bail
         goto bail;
     }
     
     //load finder syncs from plist
-    finderSyncs = [NSDictionary dictionaryWithContentsOfFile:[NSHomeDirectoryForUser(currentUser) stringByAppendingPathComponent:[FINDER_SYNCS substringFromIndex:1]]];
+    finderSyncs = [NSDictionary dictionaryWithContentsOfFile:[userDirectory stringByAppendingPathComponent:[FINDER_SYNCS substringFromIndex:1]]];
     if( (nil == finderSyncs) ||
         (nil == finderSyncs[@"displayOrder"]) )
     {
