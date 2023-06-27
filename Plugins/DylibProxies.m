@@ -4,7 +4,7 @@
 //
 
 #import "File.h"
-#import "MachO.h"
+#import "MachO/MachO.h"
 #import "Utilities.h"
 #import "DylibProxies.h"
 

@@ -12,7 +12,6 @@
 		7D0DAB881CA758790049BAFF /* periodicIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D0DAB871CA758790049BAFF /* periodicIcon.png */; };
 		7D44F4C51DAAEDE40085859C /* DylibProxies.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D44F4C41DAAEDE40085859C /* DylibProxies.m */; };
 		7D44F4C71DAAEF3E0085859C /* proxyIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D44F4C61DAAEF3E0085859C /* proxyIcon.png */; };
-		7DAA77FD1B8C5786004840B9 /* MachO.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DAA77FC1B8C5786004840B9 /* MachO.m */; };
 		7DE29CA41CA7BC5600DFA6A6 /* StartupScripts.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE29CA21CA7BC5600DFA6A6 /* StartupScripts.m */; };
 		7DE29CA61CA7C10500DFA6A6 /* startupScriptsIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DE29CA51CA7C10500DFA6A6 /* startupScriptsIcon.png */; };
 		7DE2FE2E1D3F30BE006C1438 /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE2FE2D1D3F30BE006C1438 /* Extensions.m */; };
@@ -106,6 +105,11 @@
 		CDBE491A1B5B25E30031FC22 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDBE49191B5B25E30031FC22 /* SystemConfiguration.framework */; };
 		CDBE491D1B5B44BB0031FC22 /* LogInOutHooks.m in Sources */ = {isa = PBXBuildFile; fileRef = CDBE491C1B5B44BB0031FC22 /* LogInOutHooks.m */; };
 		CDBE491F1B5B46040031FC22 /* logInOutIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDBE491E1B5B46040031FC22 /* logInOutIcon.png */; };
+		CDBFE3992A49B8B9005A9819 /* libDumpBTM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDBFE3942A49B8B9005A9819 /* libDumpBTM.a */; };
+		CDBFE39A2A49B8BA005A9819 /* MachO.m in Sources */ = {isa = PBXBuildFile; fileRef = CDBFE3972A49B8B9005A9819 /* MachO.m */; };
+		CDBFE39D2A49B9F8005A9819 /* BTM.m in Sources */ = {isa = PBXBuildFile; fileRef = CDBFE39C2A49B9F8005A9819 /* BTM.m */; };
+		CDBFE3A12A4AEC80005A9819 /* btmIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDBFE3A02A4AEC80005A9819 /* btmIcon.png */; };
+		CDCA2C212A49B71500E8DD57 /* libDumpBTM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDCA2C202A49B71500E8DD57 /* libDumpBTM.a */; };
 		CDD1837F23774DF100BA6B86 /* QuicklookPlugins.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD1837E23774DF100BA6B86 /* QuicklookPlugins.m */; };
 		CDD83FD41B50C48C0037124E /* Cronjobs.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD83FD31B50C48C0037124E /* Cronjobs.m */; };
 		CDD83FD61B50C76F0037124E /* cronIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDD83FD51B50C76F0037124E /* cronIcon.png */; };
@@ -155,8 +159,6 @@
 		7D44F4C31DAAEDE40085859C /* DylibProxies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DylibProxies.h; path = Plugins/DylibProxies.h; sourceTree = "<group>"; };
 		7D44F4C41DAAEDE40085859C /* DylibProxies.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DylibProxies.m; path = Plugins/DylibProxies.m; sourceTree = "<group>"; };
 		7D44F4C61DAAEF3E0085859C /* proxyIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = proxyIcon.png; path = images/proxyIcon.png; sourceTree = SOURCE_ROOT; };
-		7DAA77FB1B8C5786004840B9 /* MachO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachO.h; path = ../MachO/MachOParser/MachO.h; sourceTree = "<group>"; };
-		7DAA77FC1B8C5786004840B9 /* MachO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MachO.m; path = ../MachO/MachOParser/MachO.m; sourceTree = "<group>"; };
 		7DE29CA21CA7BC5600DFA6A6 /* StartupScripts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StartupScripts.m; path = Plugins/StartupScripts.m; sourceTree = "<group>"; };
 		7DE29CA31CA7BC5600DFA6A6 /* StartupScripts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StartupScripts.h; path = Plugins/StartupScripts.h; sourceTree = "<group>"; };
 		7DE29CA51CA7C10500DFA6A6 /* startupScriptsIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = startupScriptsIcon.png; path = images/startupScriptsIcon.png; sourceTree = SOURCE_ROOT; };
@@ -290,6 +292,14 @@
 		CDBE491B1B5B44BB0031FC22 /* LogInOutHooks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogInOutHooks.h; path = Plugins/LogInOutHooks.h; sourceTree = "<group>"; };
 		CDBE491C1B5B44BB0031FC22 /* LogInOutHooks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LogInOutHooks.m; path = Plugins/LogInOutHooks.m; sourceTree = "<group>"; };
 		CDBE491E1B5B46040031FC22 /* logInOutIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logInOutIcon.png; path = images/logInOutIcon.png; sourceTree = SOURCE_ROOT; };
+		CDBFE3942A49B8B9005A9819 /* libDumpBTM.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libDumpBTM.a; sourceTree = "<group>"; };
+		CDBFE3952A49B8B9005A9819 /* dumpBTM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dumpBTM.h; sourceTree = "<group>"; };
+		CDBFE3972A49B8B9005A9819 /* MachO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MachO.m; sourceTree = "<group>"; };
+		CDBFE3982A49B8B9005A9819 /* MachO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MachO.h; sourceTree = "<group>"; };
+		CDBFE39B2A49B9F8005A9819 /* BTM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTM.h; path = Plugins/BTM.h; sourceTree = "<group>"; };
+		CDBFE39C2A49B9F8005A9819 /* BTM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTM.m; path = Plugins/BTM.m; sourceTree = "<group>"; };
+		CDBFE3A02A4AEC80005A9819 /* btmIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btmIcon.png; path = images/btmIcon.png; sourceTree = "<group>"; };
+		CDCA2C202A49B71500E8DD57 /* libDumpBTM.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libDumpBTM.a; path = Libraries/BTM/libDumpBTM.a; sourceTree = "<group>"; };
 		CDD1837D23774DF000BA6B86 /* QuicklookPlugins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QuicklookPlugins.h; path = Plugins/QuicklookPlugins.h; sourceTree = "<group>"; };
 		CDD1837E23774DF100BA6B86 /* QuicklookPlugins.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QuicklookPlugins.m; path = Plugins/QuicklookPlugins.m; sourceTree = "<group>"; };
 		CDD83FD21B50C48C0037124E /* Cronjobs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cronjobs.h; path = Plugins/Cronjobs.h; sourceTree = "<group>"; };
@@ -324,8 +334,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDCA2C212A49B71500E8DD57 /* libDumpBTM.a in Frameworks */,
 				CDBE491A1B5B25E30031FC22 /* SystemConfiguration.framework in Frameworks */,
 				CD6DE4D1219E9AD30058094E /* Sentry.framework in Frameworks */,
+				CDBFE3992A49B8B9005A9819 /* libDumpBTM.a in Frameworks */,
 				CDDBC2301B04771100B021E0 /* ServiceManagement.framework in Frameworks */,
 				CDF08CEA1AC8D97B009B3423 /* Quartz.framework in Frameworks */,
 				CD6095731A87067D00E091CD /* Security.framework in Frameworks */,
@@ -339,6 +351,7 @@
 		1D21BC42172AF43D009D1CFD = {
 			isa = PBXGroup;
 			children = (
+				CDBFE3922A49B89A005A9819 /* Libraries */,
 				CDF08CE31AC89FD4009B3423 /* 3rdParty */,
 				CD5854D921A6103A00A438B0 /* ClickableTextField.h */,
 				CD5854DA21A6103A00A438B0 /* ClickableTextField.m */,
@@ -350,7 +363,6 @@
 				CD7B9FA91AD08FA100DF3C71 /* KKRow.h */,
 				CD7B9FAA1AD08FA100DF3C71 /* KKRow.m */,
 				1D21BC54172AF43D009D1CFD /* KnockKnock */,
-				CDF08CD81AC881F9009B3423 /* MachOParser */,
 				CD6BBBEE1B52032D00506D0D /* NSApplicationKeyEvents.h */,
 				CD6BBBEF1B52032D00506D0D /* NSApplicationKeyEvents.m */,
 				CDA81D861A96F429009790E2 /* Plugins */,
@@ -375,6 +387,7 @@
 		1D21BC4D172AF43D009D1CFD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CDCA2C202A49B71500E8DD57 /* libDumpBTM.a */,
 				CD6DE4D0219E9AD30058094E /* Sentry.framework */,
 				CDBE49191B5B25E30031FC22 /* SystemConfiguration.framework */,
 				CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */,
@@ -420,7 +433,6 @@
 				CDF08CC51AC46E75009B3423 /* VTButton.m */,
 			);
 			name = KnockKnock;
-			path = "Lesson 53";
 			sourceTree = "<group>";
 		};
 		1D21BC55172AF43D009D1CFD /* Supporting Files */ = {
@@ -440,6 +452,7 @@
 			isa = PBXGroup;
 			children = (
 				CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */,
+				CDBFE3A02A4AEC80005A9819 /* btmIcon.png */,
 				CD6BBBE81B50D67A00506D0D /* binaryIcon.icns */,
 				CDF08CF11ACA6864009B3423 /* browserIcon.png */,
 				CDA81D5F1A95B4E9009790E2 /* bug.png */,
@@ -532,6 +545,8 @@
 		CDA81D861A96F429009790E2 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				CDBFE39B2A49B9F8005A9819 /* BTM.h */,
+				CDBFE39C2A49B9F8005A9819 /* BTM.m */,
 				CDAB98971AEAA6CB00C75B4B /* AuthorizationPlugins.h */,
 				CDAB98981AEAA6CB00C75B4B /* AuthorizationPlugins.m */,
 				CDA81E081A9B0AD8009790E2 /* BrowserExtensions.h */,
@@ -598,13 +613,31 @@
 			name = UI;
 			sourceTree = "<group>";
 		};
-		CDF08CD81AC881F9009B3423 /* MachOParser */ = {
+		CDBFE3922A49B89A005A9819 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				7DAA77FB1B8C5786004840B9 /* MachO.h */,
-				7DAA77FC1B8C5786004840B9 /* MachO.m */,
+				CDBFE3932A49B8B9005A9819 /* BTM */,
+				CDBFE3962A49B8B9005A9819 /* MachO */,
 			);
-			name = MachOParser;
+			path = Libraries;
+			sourceTree = "<group>";
+		};
+		CDBFE3932A49B8B9005A9819 /* BTM */ = {
+			isa = PBXGroup;
+			children = (
+				CDBFE3942A49B8B9005A9819 /* libDumpBTM.a */,
+				CDBFE3952A49B8B9005A9819 /* dumpBTM.h */,
+			);
+			path = BTM;
+			sourceTree = "<group>";
+		};
+		CDBFE3962A49B8B9005A9819 /* MachO */ = {
+			isa = PBXGroup;
+			children = (
+				CDBFE3972A49B8B9005A9819 /* MachO.m */,
+				CDBFE3982A49B8B9005A9819 /* MachO.h */,
+			);
+			path = MachO;
 			sourceTree = "<group>";
 		};
 		CDF08CE31AC89FD4009B3423 /* 3rdParty */ = {
@@ -690,6 +723,7 @@
 				7D0DAB881CA758790049BAFF /* periodicIcon.png in Resources */,
 				CD02195E1AD39A74005148A2 /* ResultsWindow.xib in Resources */,
 				CDA81D5B1A95B4B4009790E2 /* InfoPlist.strings in Resources */,
+				CDBFE3A12A4AEC80005A9819 /* btmIcon.png in Resources */,
 				CDA81D6B1A95B4E9009790E2 /* show.png in Resources */,
 				CD24F074219D51210081B0E5 /* whitelistedKexts.json in Resources */,
 				CDF08CF31ACA6864009B3423 /* browserIcon.png in Resources */,
@@ -760,9 +794,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DAA77FD1B8C5786004840B9 /* MachO.m in Sources */,
 				CD83887F1AACCEDF000EB098 /* VirusTotal.m in Sources */,
 				7D0DAB861CA752AE0049BAFF /* PeriodicScrips.m in Sources */,
+				CDBFE39A2A49B8BA005A9819 /* MachO.m in Sources */,
+				CDBFE39D2A49B9F8005A9819 /* BTM.m in Sources */,
 				CDF08CDF1AC886F2009B3423 /* VTInfoWindowController.m in Sources */,
 				CD0219611AD39A83005148A2 /* ResultsWindowController.m in Sources */,
 				CDA81DEE1A99B5F8009790E2 /* Filter.m in Sources */,
@@ -933,7 +968,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.3.0;
+				CURRENT_PROJECT_VERSION = 2.4.0;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -942,10 +977,15 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Libraries/**";
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Libraries/BTM",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.4.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
@@ -962,7 +1002,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.3.0;
+				CURRENT_PROJECT_VERSION = 2.4.0;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -971,10 +1011,15 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Libraries/**";
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Libraries/BTM",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.4.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;

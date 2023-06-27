@@ -348,7 +348,7 @@
             
             //set plist
             [((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PLIST_LABEL]) setStringValue:((File*)item).plist];
-            
+             
             //show
             [((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PLIST_LABEL]) setHidden:NO];
         }

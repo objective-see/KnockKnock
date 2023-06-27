@@ -40,9 +40,8 @@ bail:
     return version;
 }
 
-
 //disable std err
-void disableSTDERR()
+void disableSTDERR(void)
 {
     //file handle
     int devNull = -1;
@@ -717,7 +716,7 @@ NSLayoutConstraint* findConstraint(NSView* view, NSString* constraintName)
 
 //check if app is pristine
 // ->that is to say, nobody modified on-disk image/resources (white lists!, etc)
-OSStatus verifySelf()
+OSStatus verifySelf(void)
 {
     //status
     OSStatus status = !noErr;

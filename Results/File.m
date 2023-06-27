@@ -8,7 +8,7 @@
 
 
 #import "File.h"
-#import "MachO.h"
+#import "MachO/MachO.h"
 #import "Consts.h"
 #import "Signing.h"
 #import "Utilities.h"

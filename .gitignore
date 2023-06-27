@@ -3,3 +3,4 @@
 KnockKnock.xcodeproj/xcuserdata/*
 Carthage/Build
 Carthage/Checkouts
+.DS_Store
