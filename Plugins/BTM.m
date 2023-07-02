@@ -48,7 +48,6 @@
     //only available on macOS 13+
     if(@available(macOS 13, *))
     {
-        
         //contents
         NSDictionary* contents = nil;
         
@@ -61,9 +60,6 @@
         //paths (for dups)
         NSMutableSet* paths = nil;
         
-        //parents
-        NSMutableArray* parents = nil;
-        
         //parse BTM db
         contents = parseBTM(nil);
         if(noErr != [contents[KEY_BTM_ERROR] integerValue])
@@ -74,10 +70,7 @@
         
         //init
         items = [NSMutableDictionary dictionary];
-        
-        //init
-        parents = [NSMutableArray array];
-        
+    
         //init
         paths = [NSMutableSet set];
         
@@ -91,8 +84,8 @@
                 //File obj
                 File* fileObj = nil;
                 
-                //type
-                NSUInteger type = 0;
+                //params to init file object
+                NSMutableDictionary* parameters = nil;
                 
                 //path
                 NSString* path = nil;
@@ -100,99 +93,52 @@
                 //plist
                 NSString* plist = nil;
                 
-                //parent identifier
-                NSString* parentID = nil;
-                
-                //extract type
-                type = [item[KEY_BTM_ITEM_TYPE] unsignedIntegerValue];
+                //params
+                parameters = [NSMutableDictionary dictionary];
                 
                 //ignore any items that have "embeddded item ids"
-                // these seems to be parents, and not the actual items persisted
+                // these seem to be parents, and not the actual items persisted
                 if(nil != item[KEY_BTM_ITEM_EMBEDDED_IDS])
                 {
                     //skip
                     continue;
                 }
                 
-                //agent / daemon
-                if( (type & 0x8) ||
-                   (type & 0x10) )
+                //executable path
+                path = item[KEY_BTM_ITEM_EXE_PATH];
+                if(nil == path)
                 {
-                    //path
-                    path = item[KEY_BTM_ITEM_EXE_PATH];
-                    
-                    //plist
-                    plist = [item[KEY_BTM_ITEM_URL] path];
-                }
-                
-                //login item
-                // don't have full path, so construct via parent
-                else if(type & 0x4)
-                {
-                    //parent id
-                    parentID = item[KEY_BTM_ITEM_PARENT_ID];
-                    
-                    //find parent
-                    for(NSDictionary* parent in contents[KEY_BTM_ITEMS_BY_USER_ID][uuid])
-                    {
-                        //no match?
-                        if(YES != [parent[KEY_BTM_ITEM_ID] isEqualToString:parentID])
-                        {
-                            //skip
-                            continue;
-                        }
-                        
-                        //path = parent URL + login item URL
-                        path = [NSString stringWithFormat:@"%@%@", [parent[KEY_BTM_ITEM_URL] path], [item[KEY_BTM_ITEM_URL] path]];
-                        
-                        //update path from app's bundle to executable
-                        path = [[NSBundle bundleWithPath:path] executablePath];
-                        
-                        //save parent uuid
-                        [parents addObject:parent[KEY_BTM_ITEM_UUID]];
-                        
-                        //done
-                        break;
-                    }
-                }
-                
-                //app
-                else if(type & 0x2)
-                {
-                    //extract path
-                    path = [item[KEY_BTM_ITEM_URL] path];
-                    
-                    //update path from app's bundle to executable
-                    path = [[NSBundle bundleWithPath:path] executablePath];
-                }
-                
-                //sanity check
-                if( (nil == path) &&
-                   (nil == plist) )
-                {
-                    //next
+                    //no path
+                    // skip item
                     continue;
                 }
                 
-                //plist nil
-                // ...will for non agents/daemons
-                if(nil == plist)
+                //(optional) plist
+                plist = item[KEY_BTM_ITEM_PLIST_PATH];
+                
+                //init params w/ self
+                parameters[KEY_RESULT_PLUGIN] = self;
+                
+                //init params w/ path
+                parameters[KEY_RESULT_PATH] = path;
+                
+                //got plist?
+                if(nil != plist)
                 {
-                    //init w/o plist
-                    fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:path}];
-                }
-                else
-                {
-                    fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:path, KEY_RESULT_PLIST:plist}];
+                    //init params w/ plist
+                    parameters[KEY_RESULT_PLIST] = plist;
                 }
                 
-                //error in init?
+                //init file obj with params (path, etc)
+                fileObj = [[File alloc] initWithParams:parameters];
                 if(nil == fileObj)
                 {
+                    //error
+                    // skip item
                     continue;
                 }
                 
-                //new
+                //new?
                 // save
                 if(YES != [paths containsObject:fileObj.path])
                 {
@@ -202,15 +148,7 @@
                     //save
                     items[item[KEY_BTM_ITEM_UUID]] = fileObj;
                 }
-                
             }
-        }
-        
-        //remove all parents
-        for(NSString* key in parents)
-        {
-            //remove
-            [items removeObjectForKey:key];
         }
         
         //sort by name

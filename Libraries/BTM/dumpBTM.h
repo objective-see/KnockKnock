@@ -24,18 +24,16 @@
 #define KEY_BTM_ITEM_DISPOSITION_DETAILS @"dispositionDetails"
 #define KEY_BTM_ITEM_ID @"id"
 #define KEY_BTM_ITEM_URL @"url"
-#define KEY_BTM_ITEM_EXE_PATH @"exePath"
 #define KEY_BTM_ITEM_GENERATION @"generation"
 #define KEY_BTM_ITEM_BUNDLE_ID @"bundleID"
 #define KEY_BTM_ITEM_ASSOCIATED_IDS @"associatedBundleIDs"
 #define KEY_BTM_ITEM_PARENT_ID @"parentID"
 #define KEY_BTM_ITEM_EMBEDDED_IDS @"embeddedIDs"
 
+#define KEY_BTM_ITEM_PLIST_PATH @"plistPath"
+#define KEY_BTM_ITEM_EXE_PATH @"executablePath"
+
 //APIs
 // note: path is optional
 NSInteger dumpBTM(NSURL* path);
 NSDictionary* parseBTM(NSURL* path);
-
-
-
-
