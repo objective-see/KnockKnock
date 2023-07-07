@@ -47,8 +47,6 @@
 		CD6BBBEB1B50DF7100506D0D /* signedAppleIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD6BBBEA1B50DF7100506D0D /* signedAppleIcon.png */; };
 		CD6BBBED1B51C62B00506D0D /* unknown.png in Resources */ = {isa = PBXBuildFile; fileRef = CD6BBBEC1B51C62B00506D0D /* unknown.png */; };
 		CD6BBBF01B52032D00506D0D /* NSApplicationKeyEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6BBBEF1B52032D00506D0D /* NSApplicationKeyEvents.m */; };
-		CD6DE4D1219E9AD30058094E /* Sentry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6DE4D0219E9AD30058094E /* Sentry.framework */; };
-		CD6DE4D3219E9C560058094E /* Sentry.framework in Copy Framework(s) */ = {isa = PBXBuildFile; fileRef = CD6DE4D0219E9AD30058094E /* Sentry.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */; };
 		CD7B9F531ACBAE2900DF3C71 /* SpotlightImporters.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */; };
 		CD7B9FA41ACBCFAD00DF3C71 /* spotlightIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9FA31ACBCFAD00DF3C71 /* spotlightIcon.png */; };
@@ -140,7 +138,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CD6DE4D3219E9C560058094E /* Sentry.framework in Copy Framework(s) */,
 			);
 			name = "Copy Framework(s)";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -209,7 +206,6 @@
 		CD6BBBEC1B51C62B00506D0D /* unknown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = unknown.png; path = images/unknown.png; sourceTree = SOURCE_ROOT; };
 		CD6BBBEE1B52032D00506D0D /* NSApplicationKeyEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSApplicationKeyEvents.h; sourceTree = "<group>"; };
 		CD6BBBEF1B52032D00506D0D /* NSApplicationKeyEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSApplicationKeyEvents.m; sourceTree = "<group>"; };
-		CD6DE4D0219E9AD30058094E /* Sentry.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sentry.framework; path = Carthage/Build/Mac/Sentry.framework; sourceTree = "<group>"; };
 		CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoAppleOver.png; path = images/logoAppleOver.png; sourceTree = SOURCE_ROOT; };
 		CD7B9F511ACBAE2900DF3C71 /* SpotlightImporters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpotlightImporters.h; path = Plugins/SpotlightImporters.h; sourceTree = "<group>"; };
 		CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SpotlightImporters.m; path = Plugins/SpotlightImporters.m; sourceTree = "<group>"; };
@@ -336,7 +332,6 @@
 			files = (
 				CDCA2C212A49B71500E8DD57 /* libDumpBTM.a in Frameworks */,
 				CDBE491A1B5B25E30031FC22 /* SystemConfiguration.framework in Frameworks */,
-				CD6DE4D1219E9AD30058094E /* Sentry.framework in Frameworks */,
 				CDBFE3992A49B8B9005A9819 /* libDumpBTM.a in Frameworks */,
 				CDDBC2301B04771100B021E0 /* ServiceManagement.framework in Frameworks */,
 				CDF08CEA1AC8D97B009B3423 /* Quartz.framework in Frameworks */,
@@ -388,7 +383,6 @@
 			isa = PBXGroup;
 			children = (
 				CDCA2C202A49B71500E8DD57 /* libDumpBTM.a */,
-				CD6DE4D0219E9AD30058094E /* Sentry.framework */,
 				CDBE49191B5B25E30031FC22 /* SystemConfiguration.framework */,
 				CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */,
 				CDF08CE91AC8D97B009B3423 /* Quartz.framework */,
@@ -968,7 +962,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.4.1;
+				CURRENT_PROJECT_VERSION = 2.4.2;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -985,7 +979,7 @@
 					"$(PROJECT_DIR)/Libraries/BTM",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 2.4.1;
+				MARKETING_VERSION = 2.4.2;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
@@ -1002,7 +996,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.4.1;
+				CURRENT_PROJECT_VERSION = 2.4.2;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1019,7 +1013,7 @@
 					"$(PROJECT_DIR)/Libraries/BTM",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 2.4.1;
+				MARKETING_VERSION = 2.4.2;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;

@@ -40,26 +40,9 @@ bail:
     return version;
 }
 
-//disable std err
-void disableSTDERR(void)
-{
-    //file handle
-    int devNull = -1;
-    
-    //open /dev/null
-    devNull = open("/dev/null", O_RDWR);
-    
-    //dup
-    dup2(devNull, STDERR_FILENO);
-    
-    //close
-    close(devNull);
-    
-    return;
-}
 
 //get name of logged in user
-NSString* getConsoleUser()
+NSString* getConsoleUser(void)
 {
     //copy/return user
     return CFBridgingRelease(SCDynamicStoreCopyConsoleUser(NULL, NULL, NULL));
@@ -67,7 +50,7 @@ NSString* getConsoleUser()
 
 //get all user
 // includes name/home directory
-NSMutableDictionary* allUsers()
+NSMutableDictionary* allUsers(void)
 {
     //users
     NSMutableDictionary* users = nil;
