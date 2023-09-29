@@ -13,7 +13,7 @@
 #define PLUGIN_NAME @"Dock Tiles Plugins"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"embedded application plugins"
+#define PLUGIN_DESCRIPTION @"bundles hosted by a Dock XPC service"
 
 //plugin icon
 #define PLUGIN_ICON @"dockTileIcon"
@@ -45,12 +45,9 @@
 }
 
 //scan installed applications
-// looking for plists that contain 'NSDockTilePlugIn'
+// looking for app plists that contain 'NSDockTilePlugIn'
 -(void)scan
 {
-    //dbg msg
-    //NSLog(@"%@: scanning", PLUGIN_NAME);
-    
     //installed apps
     NSArray* installedApps = nil;
         
@@ -85,13 +82,6 @@
         
     }//try up to 5 minutes?
     
-    //make sure installed apps were found
-    if(nil == installedApps)
-    {
-        //bail
-        goto bail;
-    }
-    
     //iterate over all install apps
     for(NSDictionary* installedApp in installedApps)
     {
@@ -102,10 +92,8 @@
             continue;
         }
         
-        //try grab app's bundle
+        //grab app's bundle
         appBundle = [NSBundle bundleWithPath:installedApp[@"path"]];
-        
-        //skip apps w/o info dictionary
         if( (nil == appBundle) ||
             (nil == appBundle.infoDictionary) )
         {
@@ -113,8 +101,8 @@
             continue;
         }
         
-        //grab dock tile plugin path
-        // note: this is relative to app's bundle
+        //grab dock tile plugin path from 'NSDockTilePlugIn'
+        // note: this path is relative (within) application's bundle
         relativePath = appBundle.infoDictionary[INFO_PLIST_DOCK_TILE_KEY];
         if(nil == relativePath)
         {
@@ -123,9 +111,9 @@
         }
         
         //build full path
-        fullPath = [NSString pathWithComponents:@[installedApp[@"path"], @"Contents", @"Plugins", relativePath]];
+        fullPath = [NSString pathWithComponents:@[installedApp[@"path"], @"Contents", @"PlugIns", relativePath]];
         
-        //create File object for injected dylib
+        //create File object from bundle
         // skip those that err out for any reason
         if(nil == (fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:fullPath}]))
         {
@@ -134,7 +122,7 @@
         }
         
         //process item
-        // ->save and report to UI
+        // save & report to UI
         [super processItem:fileObj];
     }
     
