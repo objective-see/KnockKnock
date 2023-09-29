@@ -112,6 +112,8 @@
 		CDD83FD41B50C48C0037124E /* Cronjobs.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD83FD31B50C48C0037124E /* Cronjobs.m */; };
 		CDD83FD61B50C76F0037124E /* cronIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDD83FD51B50C76F0037124E /* cronIcon.png */; };
 		CDDBC2301B04771100B021E0 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */; };
+		CDE2D3A72AC6E20500261224 /* DockTiles.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE2D3A62AC6E20500261224 /* DockTiles.m */; };
+		CDE2D3A92AC6E90600261224 /* dockTileIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDE2D3A82AC6E90600261224 /* dockTileIcon.png */; };
 		CDF08CBF1AC3DE25009B3423 /* logoAppleBG.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */; };
 		CDF08CC11AC3E8B0009B3423 /* showOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CC01AC3E8B0009B3423 /* showOver.png */; };
 		CDF08CC31AC3E98D009B3423 /* infoOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CC21AC3E98D009B3423 /* infoOver.png */; };
@@ -302,6 +304,9 @@
 		CDD83FD31B50C48C0037124E /* Cronjobs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Cronjobs.m; path = Plugins/Cronjobs.m; sourceTree = "<group>"; };
 		CDD83FD51B50C76F0037124E /* cronIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cronIcon.png; path = images/cronIcon.png; sourceTree = SOURCE_ROOT; };
 		CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
+		CDE2D3A52AC6E20500261224 /* DockTiles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DockTiles.h; path = Plugins/DockTiles.h; sourceTree = "<group>"; };
+		CDE2D3A62AC6E20500261224 /* DockTiles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DockTiles.m; path = Plugins/DockTiles.m; sourceTree = "<group>"; };
+		CDE2D3A82AC6E90600261224 /* dockTileIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dockTileIcon.png; path = images/dockTileIcon.png; sourceTree = "<group>"; };
 		CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoAppleBG.png; path = images/logoAppleBG.png; sourceTree = SOURCE_ROOT; };
 		CDF08CC01AC3E8B0009B3423 /* showOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = showOver.png; path = images/showOver.png; sourceTree = SOURCE_ROOT; };
 		CDF08CC21AC3E98D009B3423 /* infoOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = infoOver.png; path = images/infoOver.png; sourceTree = SOURCE_ROOT; };
@@ -445,6 +450,7 @@
 		CD6095501A8329FA00E091CD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				CDE2D3A82AC6E90600261224 /* dockTileIcon.png */,
 				CDAB98A01AEAFAFA00C75B4B /* authorizationIcon.png */,
 				CDBFE3A02A4AEC80005A9819 /* btmIcon.png */,
 				CD6BBBE81B50D67A00506D0D /* binaryIcon.icns */,
@@ -539,6 +545,8 @@
 		CDA81D861A96F429009790E2 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				CDE2D3A52AC6E20500261224 /* DockTiles.h */,
+				CDE2D3A62AC6E20500261224 /* DockTiles.m */,
 				CDBFE39B2A49B9F8005A9819 /* BTM.h */,
 				CDBFE39C2A49B9F8005A9819 /* BTM.m */,
 				CDAB98971AEAA6CB00C75B4B /* AuthorizationPlugins.h */,
@@ -730,6 +738,7 @@
 				CD6BBBED1B51C62B00506D0D /* unknown.png in Resources */,
 				CDA81E651AA020FD009790E2 /* ExtensionInfoWindow.xib in Resources */,
 				CD7B9FA81ACCAE5E00DF3C71 /* stopScanOver.png in Resources */,
+				CDE2D3A92AC6E90600261224 /* dockTileIcon.png in Resources */,
 				7DE29CA61CA7C10500DFA6A6 /* startupScriptsIcon.png in Resources */,
 				CDA81D701A95B4E9009790E2 /* stopScan.png in Resources */,
 				CDA81DF51A99B8C2009790E2 /* whitelistedFiles.json in Resources */,
@@ -829,6 +838,7 @@
 				CDA81DFF1A9A7D26009790E2 /* Extension.m in Sources */,
 				CDF08CC61AC46E75009B3423 /* VTButton.m in Sources */,
 				CDBE491D1B5B44BB0031FC22 /* LogInOutHooks.m in Sources */,
+				CDE2D3A72AC6E20500261224 /* DockTiles.m in Sources */,
 				CDA81D8F1A96F557009790E2 /* PluginBase.m in Sources */,
 				CDAB989C1AEAC95500C75B4B /* ItemEnumerator.m in Sources */,
 				CDA81D771A95B7C1009790E2 /* CategoryTableController.m in Sources */,
@@ -962,7 +972,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.4.2;
+				CURRENT_PROJECT_VERSION = 2.5.0;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -979,7 +989,7 @@
 					"$(PROJECT_DIR)/Libraries/BTM",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 2.4.2;
+				MARKETING_VERSION = 2.5.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
@@ -996,7 +1006,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.4.2;
+				CURRENT_PROJECT_VERSION = 2.5.0;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1013,7 +1023,7 @@
 					"$(PROJECT_DIR)/Libraries/BTM",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 2.4.2;
+				MARKETING_VERSION = 2.5.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;

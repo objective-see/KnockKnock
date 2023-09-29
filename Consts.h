@@ -16,7 +16,7 @@
 #define REQUESTED_FULL_DISK_ACCESS @"requestedFullDiskAccess"
 
 //supported plugins
-static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"BTM", @"CronJobs", @"DirectoryServicesPlugins", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"QuicklookPlugins", @"SpotlightImporters", @"StartupScripts", @"SystemExtensions"};
+static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"BTM", @"CronJobs", @"DirectoryServicesPlugins", @"DockTiles", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"QuicklookPlugins", @"SpotlightImporters", @"StartupScripts", @"SystemExtensions"};
 
 //button text, start scan
 #define START_SCAN @"Start Scan"
