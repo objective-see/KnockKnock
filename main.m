@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
     @autoreleasepool
     {
         //handle '-h' or '-help'
-        if( (YES == [[[NSProcessInfo processInfo] arguments] containsObject:@"-h"]) ||
-            (YES == [[[NSProcessInfo processInfo] arguments] containsObject:@"-help"]) )
+        if( (YES == [NSProcessInfo.processInfo.arguments containsObject:@"-h"]) ||
+            (YES == [NSProcessInfo.processInfo.arguments containsObject:@"-help"]) )
         {
             //print usage
             usage();
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
         
         //handle '-scan'
         // cmdline scan without UI
-        if(YES == [[[NSProcessInfo processInfo] arguments] containsObject:@"-whosthere"])
+        if(YES == [NSProcessInfo.processInfo.arguments containsObject:@"-whosthere"])
         {
             //set flag
             cmdlineMode = YES;
@@ -65,7 +65,7 @@ bail:
 }
 
 //print usage
-void usage()
+void usage(void)
 {
     //usage
     printf("\nKNOCKNOCK USAGE:\n");
@@ -79,7 +79,7 @@ void usage()
 }
 
 //perform a cmdline scan
-void cmdlineScan()
+void cmdlineScan(void)
 {
     //virus total obj
     VirusTotal* virusTotal = nil;
@@ -116,15 +116,15 @@ void cmdlineScan()
     
     //set flag
     // include apple items?
-    includeApple = [[[NSProcessInfo processInfo] arguments] containsObject:@"-apple"];
+    includeApple = [NSProcessInfo.processInfo.arguments containsObject:@"-apple"];
     
     //set flag
     // skip virus total?
-    skipVirusTotal = [[[NSProcessInfo processInfo] arguments] containsObject:@"-skipVT"];
+    skipVirusTotal = [NSProcessInfo.processInfo.arguments containsObject:@"-skipVT"];
     
     //set flag
     // pretty print json?
-    prettyPrint = [[[NSProcessInfo processInfo] arguments] containsObject:@"-pretty"];
+    prettyPrint = [NSProcessInfo.processInfo.arguments containsObject:@"-pretty"];
     
     //init output string
     output = [NSMutableString string];
