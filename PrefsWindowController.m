@@ -69,6 +69,13 @@
         self.disableVTQueriesBtn.state = STATE_ENABLED;
     }
     
+    //check if 'scan at launch' button should be selected
+	if(YES == self.scanAtLaunch)
+    {
+        //set
+		self.scanAtLaunchBtn.state = STATE_ENABLED;
+    }
+    
     //check if 'save output' button should be selected
     if(YES == self.saveOutput)
     {
@@ -133,6 +140,13 @@
             //save
             self.saveOutput = [defaults boolForKey:PREF_SAVE_OUTPUT];
         }
+        
+        //load 'scan at launch'
+		if(nil != [defaults objectForKey:PREF_SCAN_AT_LAUNCH])
+        {
+            //save
+			self.scanAtLaunch = [defaults boolForKey:PREF_SCAN_AT_LAUNCH];
+        }
     }
     
     return;
@@ -152,6 +166,9 @@
     
     //save current state of 'save' button
     self.saveOutput = self.saveOutputBtn.state;
+    
+    //save current state of 'scan at launch' button
+	self.saveOutput = self.scanAtLaunchBtn.state;
     
     return;
 }
@@ -183,6 +200,7 @@
     if( ((self.showTrustedItems != self.showTrustedItemsBtn.state) ||
          (self.disableUpdateCheck != self.disableUpdateCheckBtn.state) ||
          (self.disableVTQueries != self.disableVTQueriesBtn.state) ||
+		 (self.scanAtLaunch != self.scanAtLaunchBtn.state) ||
          (self.saveOutput != self.saveOutputBtn.state) ) &&
          (YES == self.saveOutputBtn.state) )
     {
@@ -205,6 +223,9 @@
     //save disabling VT flag
     self.disableVTQueries = self.disableVTQueriesBtn.state;
     
+    //scan at launch flag
+	self.scanAtLaunch = self.scanAtLaunchBtn.state;
+    
     //save save output flag
     self.saveOutput = self.saveOutputBtn.state;
     
@@ -216,6 +237,9 @@
     
     //save 'disable vt queries'
     [defaults setBool:self.disableVTQueries forKey:PREF_DISABLE_VT_QUERIRES];
+    
+    //save 'scan at launch'
+	[defaults setBool:self.scanAtLaunch forKey:PREF_SCAN_AT_LAUNCH];
     
     //save 'save output'
     [defaults setBool:self.saveOutput forKey:PREF_SAVE_OUTPUT];

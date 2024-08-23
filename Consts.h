@@ -49,6 +49,10 @@ static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"Browse
 // ->no updates
 #define PREF_DISABLE_UPDATE_CHECK @"noUpdateCheck"
 
+//prefs
+// ->scan at launch
+#define PREF_SCAN_AT_LAUNCH @"scanAtLaunch"
+
 //disabled state
 #define STATE_DISABLED 0
 

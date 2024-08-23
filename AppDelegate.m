@@ -189,6 +189,13 @@
     //load prefs
     [self.prefsWindowController loadPreferences];
 
+	//check for scan at launch
+	if(YES == [defaults boolForKey:PREF_SCAN_AT_LAUNCH])
+	{
+		//start scanning
+		[self scanButtonHandler:self];
+	}
+	
     return;
 }
 
