@@ -36,6 +36,9 @@
 //button for saving output
 @property (weak) IBOutlet NSButton* saveOutputBtn;
 
+//button for scan at launch
+@property (weak) IBOutlet NSButton* scanAtLaunchBtn;
+
 //button for ok/close
 @property (weak) IBOutlet NSButton *okButton;
 
@@ -50,6 +53,9 @@
 
 //save results (at end of scan)
 @property BOOL saveOutput;
+
+//scan at launch
+@property BOOL scanAtLaunch;
 
 //save results now
 @property BOOL shouldSaveNow;
