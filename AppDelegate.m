@@ -878,7 +878,7 @@
     [self.progressIndicator stopAnimation:nil];
     
     //hide progress indicator
-    //self.progressIndicator.hidden = YES;
+    self.progressIndicator.hidden = YES;
     
     //shift over status msg
     self.statusTextConstraint.constant = 10;
@@ -1158,7 +1158,7 @@
     NSSavePanel *panel = nil;
     
     //save results popup
-    __block NSAlert* saveResultPopup = nil;
+    __block NSAlert* alert = nil;
     
     //output
     __block NSMutableString* output = nil;
@@ -1252,22 +1252,32 @@
             [output appendString:@"}"];
             
             //save JSON to disk
-            // ->on error will show err msg in popup
-            if(YES != [output writeToURL:[panel URL] atomically:YES encoding:NSUTF8StringEncoding error:&error])
+            if(YES == [output writeToURL:[panel URL] atomically:YES encoding:NSUTF8StringEncoding error:&error])
+            {
+                //activate Finder and select file
+                [NSWorkspace.sharedWorkspace selectFile:panel.URL.path inFileViewerRootedAtPath:@""];
+            }
+            //error saving file
+            else
             {
                 //err msg
                 NSLog(@"OBJECTIVE-SEE ERROR: saving output to %@ failed with %@", [panel URL], error);
                 
-                //init popup w/ error msg
-                saveResultPopup = [NSAlert alertWithMessageText:NSLocalizedString(@"ERROR: failed to save output", @"ERROR: failed to save output") defaultButton:NSLocalizedString(@"Ok",@"Ok") alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"details: %@", @"details: %@"), error];
+                //init alert
+                alert = [[NSAlert alloc] init];
+                [alert addButtonWithTitle:@"Ok"];
+                
+                //error msg
+                alert.messageText = NSLocalizedString(@"ERROR: failed to save output", @"ERROR: failed to save output");
+                
+                //error details
+                alert.informativeText = [NSString stringWithFormat:NSLocalizedString(@"Details: %@", @"Details: %@"), error];
+                
+                //show popup
+                [alert runModal];
 
             }
             
-            //TODO: show in Finder
-             
-            //show popup
-            [saveResultPopup runModal];
-             
          }//clicked 'ok' (to save)
     
      }]; //panel callback

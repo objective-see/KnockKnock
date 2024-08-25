@@ -43,8 +43,8 @@
     "daemons and agents loaded by launchd" : {
       "comment" : "daemons and agents loaded by launchd"
     },
-    "details: %@" : {
-      "comment" : "details: %@"
+    "Details: %@" : {
+      "comment" : "Details: %@"
     },
     "dylibs that proxy other libraries" : {
       "comment" : "dylibs that proxy other libraries"
@@ -72,9 +72,6 @@
     },
     "libs inserted by DYLD_INSERT_LIBRARIES" : {
       "comment" : "libs inserted by DYLD_INSERT_LIBRARIES"
-    },
-    "Ok" : {
-      "comment" : "Ok"
     },
     "OK" : {
       "comment" : "OK"
