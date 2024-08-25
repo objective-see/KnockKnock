@@ -13,7 +13,7 @@
 #define PLUGIN_NAME @"System Extensions"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"plugins that extend OS functionality"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"user-mode 'drivers' extending OS functionality", @"user-mode 'drivers' extending OS functionality")
 
 //plugin icon
 #define PLUGIN_ICON @"systemExtensionIcon"

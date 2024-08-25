@@ -68,10 +68,6 @@ NSString* escapeString(NSString* unescapedString);
 //find a constraint (by name) of a view
 NSLayoutConstraint* findConstraint(NSView* view, NSString* constraintName);
 
-//check if app is pristine
-// ->that is to say, nobody modified on-disk image/resources (white lists!, etc)
-OSStatus verifySelf(void);
-
 //given a 'short' path or process name
 // ->find the full path by scanning $PATH
 NSString* which(NSString* processName);
@@ -80,8 +76,8 @@ NSString* which(NSString* processName);
 // ->returns an array of process paths
 NSMutableArray* runningProcesses(void);
 
-//check if a file is an executable
-BOOL isExecutable(NSString* file);
+//check if a file is a binary
+BOOL isBinary(NSString* file);
 
 //lookup object in dictionary
 // note: key can be case-insensitive

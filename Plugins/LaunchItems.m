@@ -12,7 +12,7 @@
 #define PLUGIN_NAME @"Launch Items"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"daemons and agents loaded by launchd"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"daemons and agents loaded by launchd", @"daemons and agents loaded by launchd")
 
 //plugin icon
 #define PLUGIN_ICON @"launchIcon"

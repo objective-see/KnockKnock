@@ -14,7 +14,7 @@
 #define PLUGIN_NAME @"Browser Extensions"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"extensions hosted in the browser"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"extensions hosted in the browser", "extensions hosted in the browser")
 
 //plugin icon
 #define PLUGIN_ICON @"browserIcon"
@@ -117,8 +117,7 @@
     return;
 }
 
-//get all disabled launch items
-// ->specified in various overrides.plist files
+//get list of install browsers
 -(NSArray*)getInstalledBrowsers
 {
     //installed browser
@@ -133,31 +132,47 @@
     //alloc browsers array
     browsers = [NSMutableArray array];
     
-    //get IDs of all installed browsers
-    // ->or things that can handle HTTPS
-    browserIDs = LSCopyAllHandlersForURLScheme(CFSTR("https"));
-    
-    //iterate of all browser IDs
-    // ->resolve ID to browser path
-    for(NSString* browserID in (__bridge NSArray *)browserIDs)
-    {
-        //resolve browser URL
-        if(STATUS_SUCCESS != LSFindApplicationForInfo(kLSUnknownCreator, (__bridge CFStringRef)(browserID), NULL, NULL, &browserURL))
-        {
-            //skip
-            continue;
-        }
+    //get list of browers
+    // macOS 12+ can use 'URLsForApplicationsToOpenURL'
+    if (@available(macOS 12.0, *)) {
         
-        //save browser URL
-        [browsers addObject:[(__bridge NSURL *)browserURL path]];
+        //add each browser
+        for(NSURL* browser in [NSWorkspace.sharedWorkspace URLsForApplicationsToOpenURL:[NSURL URLWithString:PRODUCT_URL]])
+        {
+            //add
+            [browsers addObject:browser.path];
+        }
     }
     
-    //release browser IDs
-    if(nil != browserIDs)
-    {
-        //release
-        CFRelease(browserIDs);
-        browserIDs = nil;
+    //get list of browers
+    // pre-macOS 12, use 'LSCopyAllHandlersForURLScheme' & 'LSFindApplicationForInfo'
+    else {
+        
+        //get IDs of all installed browsers
+        // (or, well, things that can handle HTTPS)
+        browserIDs = LSCopyAllHandlersForURLScheme(CFSTR("https"));
+        
+        //resolve browser ID to browser path
+        for(NSString* browserID in (__bridge NSArray *)browserIDs)
+        {
+            //resolve browser URL
+            if(STATUS_SUCCESS != LSFindApplicationForInfo(kLSUnknownCreator, (__bridge CFStringRef)(browserID), NULL, NULL, &browserURL))
+            {
+                //skip
+                continue;
+            }
+            
+            //save browser URL
+            [browsers addObject:[(__bridge NSURL *)browserURL path]];
+        }
+        
+        //release browser IDs
+        if(nil != browserIDs)
+        {
+            //release
+            CFRelease(browserIDs);
+            browserIDs = nil;
+        }
     }
     
     return browsers;

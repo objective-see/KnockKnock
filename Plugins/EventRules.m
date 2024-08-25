@@ -14,7 +14,7 @@
 #define PLUGIN_NAME @"Event Rules"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"actions executed by emond"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"actions executed by emond", @"actions executed by emond")
 
 //plugin icon
 #define PLUGIN_ICON @"eventRulesIcon"

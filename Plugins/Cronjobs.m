@@ -13,7 +13,7 @@
 #define PLUGIN_NAME @"Cron Jobs"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"current user's cron jobs"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"current user's cron jobs", @"current user's cron jobs")
 
 //plugin icon
 #define PLUGIN_ICON @"cronIcon"

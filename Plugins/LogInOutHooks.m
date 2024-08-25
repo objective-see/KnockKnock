@@ -18,7 +18,7 @@
 #define PLUGIN_NAME @"Login/Logout Hooks"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"items executed upon login or logout"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"items executed upon login or logout", @"items executed upon login or logout")
 
 //plugin icon
 #define PLUGIN_ICON @"logInOutIcon"

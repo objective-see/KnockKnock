@@ -106,20 +106,14 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
 // ->save into iVar, 'applications'
 -(void)enumerateApplications
 {
-    //installed apps
-    NSMutableArray* installedApplications = nil;
-    
     //output from system profiler task
     NSData* taskOutput = nil;
     
     //serialized task output
     NSArray* serializedOutput = nil;
     
-    //alloc array for installed apps
-    installedApplications = [NSMutableArray array];
-    
     //exec system profiler
-    taskOutput = execTask(SYSTEM_PROFILER, @[@"SPApplicationsDataType", @"-xml",  @"-detailLevel", @"mini"]);
+    taskOutput = execTask(SYSTEM_PROFILER, @[@"SPApplicationsDataType", @"-xml", @"-detailLevel", @"mini"]);
     if( (nil == taskOutput) ||
         (0 == taskOutput.length) )
     {

@@ -1,0 +1,42 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "bBK-v0-ypq.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"results...\"; ObjectID = \"bBK-v0-ypq\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "results..."
+          }
+        }
+      }
+    },
+    "J9x-sM-h9S.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"OK\"; ObjectID = \"J9x-sM-h9S\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "viG-9e-1Nj.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Scan Complete\"; ObjectID = \"viG-9e-1Nj\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Scan Complete"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

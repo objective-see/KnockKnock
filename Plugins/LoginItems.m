@@ -13,7 +13,7 @@
 #define PLUGIN_NAME @"Login Items"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"items started when the user logs in"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"items started when the user logs in", @"items started when the user logs in")
 
 //plugin icon
 #define PLUGIN_ICON @"loginIcon"

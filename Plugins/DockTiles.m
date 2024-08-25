@@ -13,7 +13,7 @@
 #define PLUGIN_NAME @"Dock Tiles Plugins"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"bundles hosted by a Dock XPC service"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"bundles hosted by a Dock XPC service", @"bundles hosted by a Dock XPC service")
 
 //plugin icon
 #define PLUGIN_ICON @"dockTileIcon"

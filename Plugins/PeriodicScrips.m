@@ -13,7 +13,7 @@
 #define PLUGIN_NAME @"Periodic Scripts"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"scripts that are executed periodically"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"scripts that are executed periodically", @"scripts that are executed periodically")
 
 //plugin icon
 #define PLUGIN_ICON @"periodicIcon"

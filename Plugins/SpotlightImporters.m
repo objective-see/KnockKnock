@@ -11,7 +11,7 @@
 #define PLUGIN_NAME @"Spotlight Importers"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"bundles loaded by Spotlight (mdworker)"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"bundles loaded by Spotlight (mdworker)", @"bundles loaded by Spotlight (mdworker)")
 
 //plugin icon
 #define PLUGIN_ICON @"spotlightIcon"

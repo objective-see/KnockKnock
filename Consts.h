@@ -280,14 +280,14 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 #define PATREON_URL @"https://www.patreon.com/bePatron?c=701171"
 
 //product url
-#define PRODUCT_URL @"https://objective-see.com/products/knockknock.html"
+#define PRODUCT_URL @"https://objective-see.org/products/knockknock.html"
 
 //product name
 // ...for version check
 #define PRODUCT_NAME @"KnockKnock"
 
 //product version url
-#define PRODUCT_VERSIONS_URL @"https://objective-see.com/products.json"
+#define PRODUCT_VERSIONS_URL @"https://objective-see.org/products.json"
 
 //update error
 #define UPDATE_ERROR -1

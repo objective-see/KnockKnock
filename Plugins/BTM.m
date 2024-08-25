@@ -14,7 +14,7 @@
 #define PLUGIN_NAME @"Background Managed Tasks"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"agents, daemons, & login items managed by BTM"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"background agents, daemons, & login items", @"background agents, daemons, & login items")
 
 //plugin icon
 #define PLUGIN_ICON @"btmIcon"

@@ -14,7 +14,7 @@
 #define PLUGIN_NAME @"Quicklook Plugins"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"registered quicklook bundles"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"registered quicklook bundles", @"registered quicklook bundles")
 
 //plugin icon
 #define PLUGIN_ICON @"quicklookIcon"

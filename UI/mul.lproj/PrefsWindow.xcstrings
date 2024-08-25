@@ -1,0 +1,66 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "F0z-JX-Cv5.title" : {
+      "comment" : "Class = \"NSWindow\"; title = \"Preferences\"; ObjectID = \"F0z-JX-Cv5\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Preferences"
+          }
+        }
+      }
+    },
+    "gXW-vY-Aj1.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Disable VirusTotal integration.\"; ObjectID = \"gXW-vY-Aj1\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Disable VirusTotal integration."
+          }
+        }
+      }
+    },
+    "idJ-pd-k6U.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Disable automatic update check.\"; ObjectID = \"idJ-pd-k6U\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Disable automatic update check."
+          }
+        }
+      }
+    },
+    "J9x-sM-h9S.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"OK\"; ObjectID = \"J9x-sM-h9S\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "WN8-cQ-8xh.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Include macOS/known items.\"; ObjectID = \"WN8-cQ-8xh\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Include macOS/known items."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

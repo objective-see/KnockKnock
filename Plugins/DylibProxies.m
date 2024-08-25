@@ -12,7 +12,7 @@
 #define PLUGIN_NAME @"Library Proxies"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"dylibs that proxy other libraries"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"dylibs that proxy other libraries", @"dylibs that proxy other libraries")
 
 //plugin icon
 #define PLUGIN_ICON @"proxyIcon"
@@ -161,7 +161,7 @@ NSString * const PROTECTED_DIRECTORIES[] = {@"~/Library/Application Support/Addr
         
         //skip 'non files' / non-executable files
         if( (YES != [[NSFileManager defaultManager] fileExistsAtPath:filePath]) ||
-            (YES != isExecutable(filePath)) )
+            (YES != isBinary(filePath)) )
         {
             //skip
             continue;
@@ -190,17 +190,13 @@ bail:
 }
      
 //enum dylibs statically referenced by all running procs
--(NSMutableArray*)enumLinkedDylibs:(NSArray*)runningProcs
+-(NSArray*)enumLinkedDylibs:(NSArray*)runningProcs
 {
     //dylibs
     NSMutableArray* dylibs = nil;
     
     //macho parser
     MachO* machoParser = nil;
-    
-    //pool
-    @autoreleasepool
-    {
     
     //alloc array
     dylibs = [NSMutableArray array];
@@ -226,12 +222,8 @@ bail:
         [dylibs addObjectsFromArray:machoParser.binaryInfo[KEY_LC_LOAD_WEAK_DYLIBS]];
     }
     
-    //remove duplicates
-    dylibs = [[[NSSet setWithArray:dylibs] allObjects] mutableCopy];
-        
-    } //pool
-    
-    return dylibs;
+    //remove dups and return
+    return [[NSSet setWithArray:dylibs] allObjects];
 }
 
 //process dylibs

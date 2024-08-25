@@ -14,7 +14,7 @@
 #define PLUGIN_NAME @"Dir. Services Plugins"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"registered directory services bundles"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"registered directory services bundles", @"registered directory services bundles")
 
 //plugin icon
 #define PLUGIN_ICON @"directoryServicesIcon"

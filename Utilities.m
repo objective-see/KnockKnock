@@ -405,7 +405,7 @@ bail:
 
 //get app's version
 // ->extracted from Info.plist
-NSString* getAppVersion()
+NSString* getAppVersion(void)
 {
     //read and return 'CFBundleVersion' from bundle
     return [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
@@ -568,7 +568,7 @@ void makeModal(NSWindowController* windowController)
 
 
 //check if computer has network connection
-BOOL isNetworkConnected()
+BOOL isNetworkConnected(void)
 {
     //flag
     BOOL isConnected = NO;
@@ -695,45 +695,6 @@ NSLayoutConstraint* findConstraint(NSView* view, NSString* constraintName)
     }
     
     return constraint;
-}
-
-//check if app is pristine
-// ->that is to say, nobody modified on-disk image/resources (white lists!, etc)
-OSStatus verifySelf(void)
-{
-    //status
-    OSStatus status = !noErr;
-    
-    //sec ref (for self)
-    SecCodeRef secRef = NULL;
-    
-    //get sec ref to self
-    status = SecCodeCopySelf(kSecCSDefaultFlags, &secRef);
-    if(noErr != status)
-    {
-        //bail
-        goto bail;
-    }
-   
-    //validate
-    status = SecStaticCodeCheckValidity(secRef, kSecCSDefaultFlags, NULL);
-    if(noErr != status)
-    {
-        //bail
-        goto bail;
-    }
-    
-//bail
-bail:
-    
-    //release sec ref
-    if(NULL != secRef)
-    {
-        //release
-        CFRelease(secRef);
-    }
-    
-    return status;
 }
 
 //given a 'short' path or process name
@@ -900,7 +861,7 @@ bail:
 
 //get array of running procs
 // ->returns an array of process paths
-NSMutableArray* runningProcesses()
+NSMutableArray* runningProcesses(void)
 {
     //running procs
     NSMutableArray* processes = nil;
@@ -970,33 +931,56 @@ bail:
     return processes;
 }
 
-//check if a file is an executable
-BOOL isExecutable(NSString* file)
+//check if a file is a binary
+BOOL isBinary(NSString* file)
 {
-    //return
-    BOOL isExecutable = NO;
-    
     //architecture ref
-    CFArrayRef archArrayRef = NULL;
+    CFArrayRef architectures = NULL;
+    
+    //once
+    static dispatch_once_t once;
+    
+    //architectures
+    static NSMutableArray* supportedArchitectures = nil;
+    
+    //match
+    NSNumber* matchedArchitecture = nil;
+    
+    //init architecture array
+    dispatch_once(&once, ^ {
+        
+        //init with i386 & x6_64
+        supportedArchitectures = [@[[NSNumber numberWithInt:kCFBundleExecutableArchitectureI386], [NSNumber numberWithInt:kCFBundleExecutableArchitectureX86_64]] mutableCopy];
+        
+        //add arm on newer
+        if(@available(macOS 11, *))
+        {
+            [supportedArchitectures addObject:[NSNumber numberWithInt:kCFBundleExecutableArchitectureARM64]];
+        }
+    });
     
     //get executable arch's
-    archArrayRef = CFBundleCopyExecutableArchitecturesForURL((__bridge CFURLRef)[NSURL fileURLWithPath:file]);
-    
-    //check arch for i386/x6_64
-    if(NULL != archArrayRef)
+    architectures = CFBundleCopyExecutableArchitecturesForURL((__bridge CFURLRef)[NSURL fileURLWithPath:file]);
+    if( (NULL == architectures) ||
+        (CFArrayGetCount(architectures) == 0) )
     {
-        //set flag
-        isExecutable = [(__bridge NSArray*)archArrayRef containsObject:[NSNumber numberWithInt:kCFBundleExecutableArchitectureX86_64]] || [(__bridge NSArray*)archArrayRef containsObject:[NSNumber numberWithInt:kCFBundleExecutableArchitectureI386]];
+        //bail
+        goto bail;
     }
+    
+    //check for match
+    matchedArchitecture = [(__bridge NSArray*)architectures firstObjectCommonWithArray:supportedArchitectures];
+    
+bail:
     
     //free arch ref
-    if(NULL != archArrayRef)
+    if(NULL != architectures)
     {
         //free
-        CFRelease(archArrayRef);
+        CFRelease(architectures);
     }
     
-    return isExecutable;
+    return nil != matchedArchitecture;
 }
 
 //lookup object in dictionary
@@ -1024,7 +1008,7 @@ id extractFromDictionary(NSDictionary* dictionary, NSString* sensitiveKey)
 
 //check if (full) dark mode
 // meaning, Mojave+ and dark mode enabled
-BOOL isDarkMode()
+BOOL isDarkMode(void)
 {
     //flag
     BOOL darkMode = NO;

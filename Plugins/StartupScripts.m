@@ -13,7 +13,7 @@
 #define PLUGIN_NAME @"Startup Scripts"
 
 //plugin description
-#define PLUGIN_DESCRIPTION @"scripts executed during OS startup"
+#define PLUGIN_DESCRIPTION NSLocalizedString(@"scripts executed during OS startup", @"scripts executed during OS startup")
 
 //plugin icon
 #define PLUGIN_ICON @"startupScriptsIcon"

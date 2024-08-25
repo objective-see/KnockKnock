@@ -35,7 +35,7 @@
     if(0 == self.contents.string.length)
     {
         //display error
-        self.contents.string = [NSString stringWithFormat:@"failed to load contents of %@", self.plist];
+        self.contents.string = [NSString stringWithFormat:NSLocalizedString(@"failed to load contents of %@", @"failed to load contents of %@"), self.plist];
     }
 
     return;

@@ -57,9 +57,6 @@
     //defaults
     NSUserDefaults* defaults = nil;
     
-    //app's (self) signing status
-    OSStatus signingStatus = -1;
-    
     //init filter object
     itemFilter = [[Filter alloc] init];
     
@@ -78,19 +75,6 @@
     //toggle back
     // work-around for menu not showing since we set Application is agent(UIElement): YES
     [[[NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.objective-see.KnockKnock"] firstObject] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
-    
-    //verify self
-    signingStatus = verifySelf();
-   
-    //show error if app (self) cannot be verified
-    if(noErr != signingStatus)
-    {
-        //show alert
-        [self showUnverifiedAlert:signingStatus];
-        
-        //exit
-        exit(0);
-    }
     
     //load defaults
     defaults = [NSUserDefaults standardUserDefaults];
@@ -171,7 +155,7 @@
     [self.scanButtonLabel setStringValue:START_SCAN];
     
     //set version info
-    [self.versionString setStringValue:[NSString stringWithFormat:@"version: %@", getAppVersion()]];
+    [self.versionString setStringValue:[NSString stringWithFormat:NSLocalizedString(@"version: %@", @"version: %@"), getAppVersion()]];
     
     //init tracking areas
     [self initTrackingAreas];
@@ -246,16 +230,16 @@
             infoAlert = [[NSAlert alloc] init];
             
             //main text
-            infoAlert.messageText = @"Open 'System Preferences' to give KnockKnock Full Disk Access?";
+            infoAlert.messageText = NSLocalizedString(@"Open 'System Preferences' to give KnockKnock Full Disk Access?", @"Open 'System Preferences' to give KnockKnock Full Disk Access?");
             
             //detailed test
-            infoAlert.informativeText = @"This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n";
+            infoAlert.informativeText = NSLocalizedString(@"This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n", @"This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n");
             
             //ok button
-            [infoAlert addButtonWithTitle:@"OK"];
+            [infoAlert addButtonWithTitle:NSLocalizedString(@"OK", @"OK")];
             
             //alert button
-            [infoAlert addButtonWithTitle:@"Cancel"];
+            [infoAlert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
             
             //show 'alert' and capture user response
             // user clicked 'OK'? -> open System Preferences
@@ -266,36 +250,6 @@
             }
         }
     });
-    
-    return;
-}
-
-//display alert about OS not being supported
--(void)showUnsupportedAlert
-{
-    //alert box
-    NSAlert* unsupportedAlert = nil;
-    
-    //alloc/init alert
-    unsupportedAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"OS X %@ is not supported", [[NSProcessInfo processInfo] operatingSystemVersionString]] defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"sorry for the inconvenience!"];
-    
-    //show it
-    [unsupportedAlert runModal];
-    
-    return;
-}
-
-//display alert about app being unverifable
--(void)showUnverifiedAlert:(OSStatus)signingError
-{
-    //alert box
-    NSAlert* modifiedAlert = nil;
-    
-    //alloc/init alert
-    modifiedAlert = [NSAlert alertWithMessageText:@"ERROR: application could not be verified" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"code: %d\nplease re-download, and run again", signingError];
-    
-    //show it
-    [modifiedAlert runModal];
     
     return;
 }
@@ -380,7 +334,7 @@
     for(NSUInteger i=0; i < pluginCount; i++)
     {
         //init plugin
-        pluginObj = [(PluginBase*)([NSClassFromString(SUPPORTED_PLUGINS[i]) alloc]) init];
+        pluginObj = [[NSClassFromString(SUPPORTED_PLUGINS[i]) alloc] init];
         
         //save it
         [pluginObjects addObject:pluginObj];
@@ -484,7 +438,7 @@
             self.statusText.hidden = NO;
             
             //update
-            [self.statusText setStringValue:[NSString stringWithFormat:@"Scanning: %@", plugin.name]];
+            [self.statusText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Scanning: %@", @"Scanning: %@"), plugin.name]];
             
         });
         
@@ -519,7 +473,7 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             
             //update
-            [self.statusText setStringValue:[NSString stringWithFormat:@"Awaiting VirusTotal results"]];
+            [self.statusText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Awaiting VirusTotal results", @"Awaiting VirusTotal results")]];
             
         });
         
@@ -626,7 +580,7 @@
 {
     //open URL
     // ->invokes user's default browser
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://objective-see.com"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://objective-see.org"]];
     
     return;
 }
@@ -985,7 +939,7 @@
             flaggedItemCount += plugin.flaggedItems.count;
             
             //init detailed msg
-            details = [NSMutableString stringWithFormat:@"■ Found %lu items", (unsigned long)itemCount];
+            details = [NSMutableString stringWithFormat:NSLocalizedString(@"■ Found %lu items", @"■ Found %lu items"), (unsigned long)itemCount];
         }
         //otherwise just unknown items
         else
@@ -1006,7 +960,7 @@
             }
             
             //init detailed msg
-            details = [NSMutableString stringWithFormat:@"■ Found %lu non-OS items", (unsigned long)itemCount];
+            details = [NSMutableString stringWithFormat:NSLocalizedString(@"■ Found %lu non-OS items", @"■ Found %lu non-OS items"), (unsigned long)itemCount];
         }
     }
 
@@ -1019,14 +973,14 @@
         if(YES != self.isConnected)
         {
             //add disconnected msg
-            [details appendFormat:@" \r\n■ Unable to query VirusTotal (network)"];
+            [details appendFormat:NSLocalizedString(@" \r\n■ Unable to query VirusTotal (network)", @" \r\n■ Unable to query VirusTotal (network)")];
         }
         //otherwise
         // ->add details about # of flagged items
         else
         {
             //add flagged items
-            [details appendFormat:@" \r\n■ %lu item(s) flagged by VirusTotal", flaggedItemCount];
+            [details appendFormat:NSLocalizedString(@" \r\n■ %lu item(s) flagged by VirusTotal", @" \r\n■ %lu item(s) flagged by VirusTotal"), flaggedItemCount];
         }
     }
     
@@ -1105,7 +1059,7 @@
         if(SCAN_BUTTON_TAG == tag)
         {
             //scan running?
-            if(YES == [self.scanButtonLabel.stringValue isEqualToString:@"Stop Scan"])
+            if(YES == [self.scanButtonLabel.stringValue isEqualToString:NSLocalizedString(@"Stop Scan", @"Stop Scan")])
             {
                 //set
                 imageName = @"stopScan";
@@ -1147,7 +1101,7 @@
         if(SCAN_BUTTON_TAG == tag)
         {
             //scan running
-            if(YES == [self.scanButtonLabel.stringValue isEqualToString:@"Stop Scan"])
+            if(YES == [self.scanButtonLabel.stringValue isEqualToString:NSLocalizedString(@"Stop Scan", @"Stop Scan")])
             {
                 //set
                 imageName = @"stopScanOver";
@@ -1305,17 +1259,12 @@
                 NSLog(@"OBJECTIVE-SEE ERROR: saving output to %@ failed with %@", [panel URL], error);
                 
                 //init popup w/ error msg
-                saveResultPopup = [NSAlert alertWithMessageText:@"ERROR: failed to save output" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"details: %@", error];
+                saveResultPopup = [NSAlert alertWithMessageText:NSLocalizedString(@"ERROR: failed to save output", @"ERROR: failed to save output") defaultButton:NSLocalizedString(@"Ok",@"Ok") alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"details: %@", @"details: %@"), error];
 
             }
-            //happy
-            // ->set result msg
-            else
-            {
-                //init popup w/ msg
-                saveResultPopup = [NSAlert alertWithMessageText:@"Succesfully saved output" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"file: %s", [[panel URL] fileSystemRepresentation]];
-            }
-                 
+            
+            //TODO: show in Finder
+             
             //show popup
             [saveResultPopup runModal];
              
@@ -1431,10 +1380,10 @@
         case UPDATE_ERROR:
             
             //set details
-            details = @"error, failed to check for an update.";
+            details = NSLocalizedString(@"error, failed to check for an update.", @"error, failed to check for an update.");
             
             //set action
-            action = @"Close";
+            action = NSLocalizedString(@"Close", @"Close");
             
             break;
             
@@ -1442,10 +1391,10 @@
         case UPDATE_NOTHING_NEW:
             
             //set details
-            details = [NSString stringWithFormat:@"you're all up to date! (v. %@)", getAppVersion()];
+            details = [NSString stringWithFormat:NSLocalizedString(@"you're all up to date! (v. %@)", @"you're all up to date! (v. %@)"), getAppVersion()];
             
             //set action
-            action = @"Close";
+            action = NSLocalizedString(@"Close", @"Close");
             
             break;
             
@@ -1453,10 +1402,10 @@
         case UPDATE_NEW_VERSION:
             
             //set details
-            details = [NSString stringWithFormat:@"a new version (%@) is available!", newVersion];
+            details = [NSString stringWithFormat:NSLocalizedString(@"a new version (%@) is available!", @"a new version (%@) is available!"), newVersion];
             
             //set action
-            action = @"Update";
+            action = NSLocalizedString(@"Update", @"Update");
             
             break;
     }

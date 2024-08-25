@@ -1,0 +1,126 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    " \r\n■ %lu item(s) flagged by VirusTotal" : {
+      "comment" : " \r\n■ %lu item(s) flagged by VirusTotal"
+    },
+    " \r\n■ Unable to query VirusTotal (network)" : {
+      "comment" : " \r\n■ Unable to query VirusTotal (network)"
+    },
+    "■ Found %lu items" : {
+      "comment" : "■ Found %lu items"
+    },
+    "■ Found %lu non-OS items" : {
+      "comment" : "■ Found %lu non-OS items"
+    },
+    "a new version (%@) is available!" : {
+      "comment" : "a new version (%@) is available!"
+    },
+    "actions executed by emond" : {
+      "comment" : "actions executed by emond"
+    },
+    "Awaiting VirusTotal results" : {
+      "comment" : "Awaiting VirusTotal results"
+    },
+    "background agents, daemons, & login items" : {
+      "comment" : "background agents, daemons, & login items"
+    },
+    "bundles hosted by a Dock XPC service" : {
+      "comment" : "bundles hosted by a Dock XPC service"
+    },
+    "bundles loaded by Spotlight (mdworker)" : {
+      "comment" : "bundles loaded by Spotlight (mdworker)"
+    },
+    "Cancel" : {
+      "comment" : "Cancel"
+    },
+    "Close" : {
+      "comment" : "Close"
+    },
+    "current user's cron jobs" : {
+      "comment" : "current user's cron jobs"
+    },
+    "daemons and agents loaded by launchd" : {
+      "comment" : "daemons and agents loaded by launchd"
+    },
+    "details: %@" : {
+      "comment" : "details: %@"
+    },
+    "dylibs that proxy other libraries" : {
+      "comment" : "dylibs that proxy other libraries"
+    },
+    "error, failed to check for an update." : {
+      "comment" : "error, failed to check for an update."
+    },
+    "ERROR: failed to save output" : {
+      "comment" : "ERROR: failed to save output"
+    },
+    "extensions hosted in the browser" : {
+      "comment" : "extensions hosted in the browser"
+    },
+    "failed to load contents of %@" : {
+      "comment" : "failed to load contents of %@"
+    },
+    "installed kexts, likely kernel loaded" : {
+      "comment" : "installed kexts, likely kernel loaded"
+    },
+    "items executed upon login or logout" : {
+      "comment" : "items executed upon login or logout"
+    },
+    "items started when the user logs in" : {
+      "comment" : "items started when the user logs in"
+    },
+    "libs inserted by DYLD_INSERT_LIBRARIES" : {
+      "comment" : "libs inserted by DYLD_INSERT_LIBRARIES"
+    },
+    "Ok" : {
+      "comment" : "Ok"
+    },
+    "OK" : {
+      "comment" : "OK"
+    },
+    "Open 'System Preferences' to give KnockKnock Full Disk Access?" : {
+      "comment" : "Open 'System Preferences' to give KnockKnock Full Disk Access?"
+    },
+    "plugins that extend/customize the OS" : {
+      "comment" : "plugins that extend/customize the OS"
+    },
+    "registered authorization bundles" : {
+      "comment" : "registered authorization bundles"
+    },
+    "registered directory services bundles" : {
+      "comment" : "registered directory services bundles"
+    },
+    "registered quicklook bundles" : {
+      "comment" : "registered quicklook bundles"
+    },
+    "Scanning: %@" : {
+      "comment" : "Scanning: %@"
+    },
+    "scripts executed during OS startup" : {
+      "comment" : "scripts executed during OS startup"
+    },
+    "scripts that are executed periodically" : {
+      "comment" : "scripts that are executed periodically"
+    },
+    "Stop Scan" : {
+      "comment" : "Stop Scan"
+    },
+    "This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n" : {
+      "comment" : "This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n"
+    },
+    "Update" : {
+      "comment" : "Update"
+    },
+    "user-mode 'drivers' extending OS functionality" : {
+      "comment" : "user-mode 'drivers' extending OS functionality"
+    },
+    "version: %@" : {
+      "comment" : "version: %@"
+    },
+    "you're all up to date! (v. %@)" : {
+      "comment" : "you're all up to date! (v. %@)"
+    }
+  },
+  "version" : "1.0"
+}
