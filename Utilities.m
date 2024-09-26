@@ -559,7 +559,7 @@ void makeModal(NSWindowController* windowController)
         [NSThread sleepForTimeInterval:0.05f];
         
         //make modal on main thread
-        dispatch_sync(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             
             //can make it modal once we have a window
             if(nil != windowController.window)

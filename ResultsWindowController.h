@@ -21,13 +21,34 @@
 //details of results label/string
 @property(weak) IBOutlet NSTextField* detailsLabel;
 
-//'ok' button
-@property (weak) IBOutlet NSButton* okButton;
+//unknown items
+@property(nonatomic, retain)NSMutableArray* unknownItems;
+
+//unknown itmes details
+@property(nonatomic, retain)NSString* vtDetails;
+
+//unknown items
+@property (weak) IBOutlet NSTextField *vtDetailsLabel;
+
+//submit to VT button
+@property (weak) IBOutlet NSButton *submitToVT;
+
+//activity indicator
+@property (weak) IBOutlet NSProgressIndicator *submissionActivityIndicator;
+
+//submission status
+@property (weak) IBOutlet NSTextField *submissionStatus;
+
+
+//'close' button
+@property (weak) IBOutlet NSButton* closeButton;
 
 /* METHODS */
 
-//invoked when user clicks 'more info' button
-// ->open KK's webpage
-- (IBAction)close:(id)sender;
+//close
+-(IBAction)close:(id)sender;
+
+//submit (unknown) items to VT
+-(IBAction)submitToVT:(id)sender;
 
 @end

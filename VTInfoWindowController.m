@@ -282,12 +282,11 @@
                 [vtObj getInfoForItem:self.fileObj scanID:result[VT_RESULTS_SCANID]];
             });
         
-            //ask app delegate to update item in table
-            // ->will change the item's VT status to ... (pending)
-            [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj];
-            
             //update status msg
-            dispatch_sync(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                //set item's VT status in UI to pending (...)
+                [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj];
                 
                 //update
                 [self.statusMsg setStringValue:@"file submitted"];
@@ -299,7 +298,7 @@
             [NSThread sleepForTimeInterval:2.0];
             
             //launch browser to show new report
-            dispatch_sync(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 
                 //sanity check
                 // then launch browser
@@ -316,7 +315,7 @@
             [NSThread sleepForTimeInterval:0.5];
             
             //close window
-            dispatch_sync(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 
                 //close
                 [self.window close];
@@ -329,7 +328,7 @@
         else
         {
             //show error msg
-            dispatch_sync(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 
                 //update status msg
                 [self.statusMsg setStringValue:@"failed to submit request :("];
@@ -342,7 +341,6 @@
         
     });
     
-
 bail:
     
     return;

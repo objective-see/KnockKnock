@@ -3,6 +3,7 @@
   "strings" : {
     " \r\n■ %lu item(s) flagged by VirusTotal" : {
       "comment" : " \r\n■ %lu item(s) flagged by VirusTotal",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -14,6 +15,7 @@
     },
     " \r\n■ Unable to query VirusTotal (network)" : {
       "comment" : " \r\n■ Unable to query VirusTotal (network)",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -25,6 +27,7 @@
     },
     "■ Found %lu items" : {
       "comment" : "■ Found %lu items",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -36,6 +39,7 @@
     },
     "■ Found %lu non-OS items" : {
       "comment" : "■ Found %lu non-OS items",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -226,6 +230,12 @@
           }
         }
       }
+    },
+    "Found %lu persistent (non-OS) items" : {
+      "comment" : "Found %lu persistent (non-OS) items"
+    },
+    "Found %lu persistent items" : {
+      "comment" : "Found %lu persistent items"
     },
     "installed kexts, likely kernel loaded" : {
       "comment" : "installed kexts, likely kernel loaded",
@@ -446,6 +456,20 @@
           }
         }
       }
+    },
+    "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)" : {
+      "comment" : "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "VirusTotal:\r\n %1$lu flagged item(s)\r\n %2$lu unknown item(s)"
+          }
+        }
+      }
+    },
+    "VirusTotal: Unable to query VirusTotal (network)" : {
+      "comment" : "VirusTotal: Unable to query VirusTotal (network)"
     },
     "you're all up to date! (v. %@)" : {
       "comment" : "you're all up to date! (v. %@)",

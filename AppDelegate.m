@@ -434,7 +434,7 @@
         }
         
         //update scanner msg
-        dispatch_sync(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             
             //show
             self.statusText.hidden = NO;
@@ -472,7 +472,7 @@
         (YES == self.isConnected) )
     {
         //update scanner msg
-        dispatch_sync(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             
             //update
             [self.statusText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Awaiting VirusTotal results", @"Awaiting VirusTotal results")]];
@@ -481,7 +481,7 @@
         
         //nap
         // ->VT threads take some time to spawn/process
-        [NSThread sleepForTimeInterval:5.0f];
+        [NSThread sleepForTimeInterval:3.0f];
         
         //wait for all VT threads to exit
         while(YES)
@@ -540,7 +540,7 @@
 
         //stop ui & show informational alert
         // ->executed on main thread
-        dispatch_sync(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             
             //update the UI
             // ->reflect the stopped state
@@ -617,7 +617,7 @@
         }
         //reload category table (on main thread)
         // ->this will result in the 'total' being updated
-        dispatch_sync(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             
             //begin updates
             [self.itemTableController.itemTableView beginUpdates];
@@ -679,41 +679,30 @@
     //current items
     __block NSArray* tableItems = nil;
     
-    //reload category table (on main thread)
-    // ->ensures correct title color (red, or reset)
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        
-        //reload category table
-        [self.categoryTableController customReload];
-        
-    });
-
+    //reload category table
+    [self.categoryTableController customReload];
+    
     //check if active plugin matches
     if(fileObj.plugin == self.selectedPlugin)
     {
-        //execute on main (UI) thread
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            
-            //get current items
-            tableItems = [self.itemTableController getTableItems];
-            
-            //find index of item
-            rowIndex = [tableItems indexOfObject:fileObj];
-            
-            //reload row
-            if(NSNotFound != rowIndex)
-            {
-                //start table updates
-                [self.itemTableController.itemTableView beginUpdates];
-            
-                //update
-                [self.itemTableController.itemTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:rowIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
-            
-                //end table updates
-                [self.itemTableController.itemTableView endUpdates];
-            }
-            
-        });
+        //get current items
+        tableItems = [self.itemTableController getTableItems];
+        
+        //find index of item
+        rowIndex = [tableItems indexOfObject:fileObj];
+        
+        //reload row
+        if(NSNotFound != rowIndex)
+        {
+            //start table updates
+            [self.itemTableController.itemTableView beginUpdates];
+        
+            //update
+            [self.itemTableController.itemTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:rowIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+        
+            //end table updates
+            [self.itemTableController.itemTableView endUpdates];
+        }
     }
     
     return;
@@ -918,96 +907,108 @@
 //shows alert stating that that scan is complete (w/ stats)
 -(void)displayScanStats
 {
-    //detailed scan msg
+    //detailed results msg
     NSMutableString* details = nil;
     
+    //unknown items message
+    NSString* vtDetails = nil;
+    
     //item count
-    NSUInteger itemCount = 0;
+    NSUInteger items = 0;
     
     //flagged item count
-    NSUInteger flaggedItemCount =  0;
+    NSUInteger flaggedItems =  0;
+    
+    //unknown items
+    NSMutableArray* unknownItems = nil;
+    
+    //init
+    unknownItems = [NSMutableArray array];
     
     //iterate over all plugins
-    // ->sum up their item counts and flag items count
+    // sum up their item counts and flag items count
     for(PluginBase* plugin in self.plugins)
     {
-        //when showing all findings
-        // ->sum em all up!
+        //when showing all (including OS) findings
         if(YES == self.prefsWindowController.showTrustedItems)
         {
             //add up
-            itemCount += plugin.allItems.count;
+            items += plugin.allItems.count;
             
             //add plugin's flagged items
-            flaggedItemCount += plugin.flaggedItems.count;
+            flaggedItems += plugin.flaggedItems.count;
             
+            //add unknown items
+            [unknownItems addObjectsFromArray:plugin.unknownItems];
+    
             //init detailed msg
-            details = [NSMutableString stringWithFormat:NSLocalizedString(@"■ Found %lu items", @"■ Found %lu items"), (unsigned long)itemCount];
+            details = [NSMutableString stringWithFormat:NSLocalizedString(@"Found %lu persistent items", @"Found %lu persistent items"), (unsigned long)items];
         }
-        //otherwise just unknown items
+        //not showing OS files
         else
         {
             //add up
-            itemCount += plugin.untrustedItems.count;
+            items += plugin.untrustedItems.count;
             
-            //manually check if each unknown item is flagged
-            // ->gotta do this since flaggedItems includes all items
+            //manually check if each untrusted item is flagged/unknown
             for(ItemBase* item in plugin.untrustedItems)
             {
-                //check if item it flagged
+                //check if item is flagged
                 if(YES == [plugin.flaggedItems containsObject:item])
                 {
                     //inc
-                    flaggedItemCount++;
+                    flaggedItems++;
+                }
+                
+                //check if item is unknown
+                if(YES == [plugin.unknownItems containsObject:item])
+                {
+                    //add
+                    [unknownItems addObject:item];
                 }
             }
             
             //init detailed msg
-            details = [NSMutableString stringWithFormat:NSLocalizedString(@"■ Found %lu non-OS items", @"■ Found %lu non-OS items"), (unsigned long)itemCount];
+            details = [NSMutableString stringWithFormat:NSLocalizedString(@"Found %lu persistent (non-OS) items", @"Found %lu persistent (non-OS) items"), (unsigned long)items];
         }
     }
 
     //when VT integration is enabled
-    // ->add flagged items
+    // add flagged and unknown items
     if(YES != self.prefsWindowController.disableVTQueries)
     {
         //when network is down
         // ->add msg about not being able to query VT
         if(YES != self.isConnected)
         {
-            //add disconnected msg
-            [details appendFormat:NSLocalizedString(@" \r\n■ Unable to query VirusTotal (network)", @" \r\n■ Unable to query VirusTotal (network)")];
+            //VT issues
+            vtDetails = NSLocalizedString(@"VirusTotal: Unable to query VirusTotal (network)", @"VirusTotal: Unable to query VirusTotal (network)");
         }
         //otherwise
-        // ->add details about # of flagged items
+        // ->add details about # of flagged and untrusted items
         else
         {
             //add flagged items
-            [details appendFormat:NSLocalizedString(@" \r\n■ %lu item(s) flagged by VirusTotal", @" \r\n■ %lu item(s) flagged by VirusTotal"), flaggedItemCount];
+            vtDetails = [NSString stringWithFormat:NSLocalizedString(@"VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)", @"VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)"), flaggedItems, unknownItems.count];
         }
     }
     
-    //alloc/init results window
-    if(nil == self.resultsWindowController)
-    {
-        //alloc/init
-        resultsWindowController = [[ResultsWindowController alloc] initWithWindowNibName:@"ResultsWindow"];
+    //alloc/init
+    resultsWindowController = [[ResultsWindowController alloc] initWithWindowNibName:@"ResultsWindow"];
         
-        //set details
-        self.resultsWindowController.details = details;
-    }
+    //set details
+    self.resultsWindowController.details = details;
+        
+    //set vt details
+    self.resultsWindowController.vtDetails = vtDetails;
     
-    //subsequent times
-    // ->set details directly
-    if(nil != self.resultsWindowController.detailsLabel)
-    {
-        //set
-        self.resultsWindowController.detailsLabel.stringValue = details;
-    }
+    //set unknown items
+    self.resultsWindowController.unknownItems = unknownItems;
     
     //show it
     [self.resultsWindowController showWindow:self];
     
+    /*
     //invoke function in background that will make window modal
     // ->waits until window is non-nil
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -1016,6 +1017,7 @@
         makeModal(self.resultsWindowController);
         
     });
+    */
     
     return;
 } 

@@ -72,7 +72,7 @@
                         </textFieldCell>
                     </textField>
                     <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tM6-Nq-1Rh">
-                        <rect key="frame" x="57" y="51" width="125" height="19"/>
+                        <rect key="frame" x="99" y="51" width="83" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="More Info:" id="U3V-A7-jO8">
                             <font key="font" size="13" name="Menlo-Bold"/>

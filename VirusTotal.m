@@ -8,6 +8,7 @@
 
 #import "File.h"
 #import "ItemBase.h"
+#import "Utilities.h"
 #import "PluginBase.h"
 #import "VirusTotal.h"
 #import "AppDelegate.h"
@@ -41,6 +42,9 @@ extern BOOL cmdlineMode;
     
     //results
     NSDictionary* results = nil;
+    
+    //http response
+    NSURLResponse* httpResponse = nil;
     
     //alloc dictionary for plugin file items
     uniqueItems = [NSMutableDictionary dictionary];
@@ -85,6 +89,12 @@ extern BOOL cmdlineMode;
     // ->create item dictionary (JSON), and add it to list
     for(NSString* itemKey in uniqueItems)
     {
+        //sanitized path
+        NSString* sanitizedPath = nil;
+        
+        //current user
+        NSString* currentUser = nil;
+        
         //alloc item data
         itemData = [NSMutableDictionary dictionary];
         
@@ -96,6 +106,12 @@ extern BOOL cmdlineMode;
             [NSThread exit];
         }
         
+        //get current user
+        currentUser = getConsoleUser();
+        
+        //sanitize path
+        sanitizedPath = [sanitizedPath stringByReplacingOccurrencesOfString:currentUser withString:@"user"];
+        
         //extract item
         item = uniqueItems[itemKey];
         
@@ -106,7 +122,7 @@ extern BOOL cmdlineMode;
         itemData[@"autostart_entry"] = item.name;
         
         //set item path
-        itemData[@"image_path"] = item.path;
+        itemData[@"image_path"] = sanitizedPath;
         
         //set hash
         itemData[@"hash"] = item.hashes[KEY_HASH_SHA1];
@@ -126,7 +142,7 @@ extern BOOL cmdlineMode;
         }
         
         //make query to VT
-        results = [self postRequest:queryURL parameters:items];
+        results = [self postRequest:queryURL parameters:items httpResponse:httpResponse];
         if(nil != results)
         {
             //process results
@@ -142,7 +158,7 @@ extern BOOL cmdlineMode;
     if(0 != items.count)
     {
         //query virus total
-        results = [self postRequest:queryURL parameters:items];
+        results = [self postRequest:queryURL parameters:items httpResponse:httpResponse];
         if(nil != results)
         {
             //process results
@@ -162,7 +178,7 @@ extern BOOL cmdlineMode;
     if(YES != cmdlineMode)
     {
         //on main thread
-        dispatch_sync(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             
             //call up into UI
             [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemsProcessed:plugin];
@@ -176,13 +192,19 @@ extern BOOL cmdlineMode;
 
 //get VT info for a single item
 // ->will then callback into AppDelegate to reload item in UI
--(void)getInfoForItem:(File*)fileObj scanID:(NSString*)scanID
+-(BOOL)getInfoForItem:(File*)fileObj scanID:(NSString*)scanID
 {
+    //result
+    BOOL gotInfo = NO;
+    
     //VT query URL
     NSURL* queryURL = nil;
     
     //results
     NSDictionary* results = nil;
+    
+    //http response
+    NSURLResponse* httpResponse = nil;
     
     //init query URL
     queryURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?apikey=%@&resource=%@", VT_REQUERY_URL, VT_API_KEY, scanID]];
@@ -191,7 +213,13 @@ extern BOOL cmdlineMode;
     while(YES)
     {
         //make query to VT
-        results = [self postRequest:queryURL parameters:nil];
+        results = [self postRequest:queryURL parameters:nil httpResponse:httpResponse];
+        
+        //http error
+        if(200 != (long)[(NSHTTPURLResponse *)httpResponse statusCode])
+        {
+            break;
+        }
         
         //check if scan is complete
         if( (nil != results) &&
@@ -211,7 +239,6 @@ extern BOOL cmdlineMode;
                     [fileObj.plugin.flaggedItems addObject:fileObj];
                 }
             }
-            
             //if its unknown save
             if(nil == results[VT_RESULTS_URL])
             {
@@ -224,22 +251,30 @@ extern BOOL cmdlineMode;
                 }
             }
             
-            //callback up into UI to reload item
-            [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:fileObj];
+            //update status msg
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                //callback up into UI to reload item
+                [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:fileObj];
+                
+            });
             
+            //happy
+            gotInfo = YES;
+
             //exit loop
             break;
         }
         
         //nap
-        [NSThread sleepForTimeInterval:30.0f];
+        [NSThread sleepForTimeInterval:10.0f];
     }
     
-    return;
+    return gotInfo;
 }
 
 //make the (POST)query to VT
--(NSDictionary*)postRequest:(NSURL*)url parameters:(id)params
+-(NSDictionary*)postRequest:(NSURL*)url parameters:(id)params httpResponse:(NSURLResponse*)httpResponse
 {
     //results
     NSDictionary* results = nil;
@@ -256,9 +291,6 @@ extern BOOL cmdlineMode;
     
     //data from VT
     NSData* vtData = nil;
-    
-    //response (HTTP) from VT
-    NSURLResponse* httpResponse = nil;
 
     //alloc/init request
     request = [[NSMutableURLRequest alloc] initWithURL:url];
@@ -497,11 +529,14 @@ bail:
     //scan url
     NSURL* reScanURL = nil;
     
+    //http response
+    NSURLResponse* httpResponse = nil;
+    
     //init scan url
     reScanURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?apikey=%@&resource=%@", VT_RESCAN_URL, VT_API_KEY, fileObj.hashes[KEY_HASH_MD5]]];
     
     //make request to VT
-    result = [self postRequest:reScanURL parameters:nil];
+    result = [self postRequest:reScanURL parameters:nil httpResponse:httpResponse];
     if(nil == result)
     {
         //err msg
@@ -556,6 +591,17 @@ bail:
                     {
                         //save
                         [item.plugin.flaggedItems addObject:item];
+                    }
+                }
+                //if its unknown save
+                if(nil == results[VT_RESULTS_URL])
+                {
+                    //sync
+                    // ->since array will be reset if user clicks 'stop' scan
+                    @synchronized(item.plugin.unknownItems)
+                    {
+                        //save
+                        [item.plugin.unknownItems addObject:item];
                     }
                 }
             }

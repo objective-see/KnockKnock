@@ -13,7 +13,6 @@
 @implementation ResultsWindowController
 
 @synthesize details;
-@synthesize okButton;
 @synthesize detailsLabel;
 
 //automatically called when nib is loaded
@@ -24,8 +23,10 @@
     [self.window center];
 }
 
-//automatically invoked when window is loaded
-// ->set to white
+//TODO: update patrons
+//TODO: disable buttons during scan!
+
+//initialize window
 -(void)windowDidLoad
 {
     //super
@@ -42,10 +43,208 @@
     //set details
     self.detailsLabel.stringValue = self.details;
     
-    //make 'ok' button active
-    [self.window makeFirstResponder:okButton];
+    //set unknown items
+    self.vtDetailsLabel.stringValue = self.vtDetails;
+    
+    //toggle 'Submit' button
+    self.submitToVT.hidden = !(self.unknownItems.count);
+    
+    //make 'close' button active
+    [self.window makeFirstResponder:self.closeButton];
     
     return;
+}
+
+//callback into app delegate to submit
+-(IBAction)submitToVT:(id)sender
+{
+    //disable submit
+    self.submitToVT.enabled = NO;
+    
+    //disable close
+    self.closeButton.enabled = NO;
+    
+    //start spinner
+    [self.submissionActivityIndicator startAnimation:nil];
+    
+    //set message
+    self.submissionStatus.stringValue = [NSString stringWithFormat:@"Submitting %lu unknown items to VirusTotal...", self.unknownItems.count];
+    
+    //show it
+    self.submissionStatus.hidden = NO;
+    
+    //submit in background
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        //nap for UI messages
+        sleep(1);
+        
+        //submit
+        [self submit];
+        
+    });
+    
+    return;
+}
+
+//update UI now that submission is done
+-(void)submissionComplete:(NSUInteger)successes
+{
+    //enable close
+    self.closeButton.enabled = YES;
+    
+    //stop spinner
+    [self.submissionActivityIndicator stopAnimation:nil];
+    
+    //success
+    if(successes == self.unknownItems.count)
+    {
+        //update message
+        self.submissionStatus.stringValue = [NSString stringWithFormat:@"Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed)."];
+    }
+    else
+    {
+        //update message
+        self.submissionStatus.stringValue = [NSString stringWithFormat:@"Submissions complete, though errors were encountered"];
+    }
+    
+    return;
+}
+
+//submit unknown items to VT
+// note: runs in background!
+-(void)submit
+{
+    //VT object
+    VirusTotal* vtObj = nil;
+    
+    //result (from VT)
+    NSDictionary* result = nil;
+    
+    //scan ids
+    NSMutableDictionary* scanIDs = nil;
+    
+    //successful scans
+    NSUInteger successes = 0;
+    
+    //alloc/init VT obj
+    vtObj = [[VirusTotal alloc] init];
+    
+    //alloc
+    scanIDs = [NSMutableDictionary dictionary];
+    
+    //submit all unknown items
+    for(ItemBase* item in self.unknownItems)
+    {
+        //scan id from VT
+        NSString* scanID = nil;
+        
+        //skip non-file items
+        if(YES != [item isKindOfClass:[File class]])
+        {
+            //skip
+            continue;
+        }
+        
+        //skip item's without hashes
+        // ...not sure how this could ever happen
+        if(nil == ((File*)item).hashes[KEY_HASH_SHA1])
+        {
+            //skip
+            continue;
+        }
+        
+        //submit file to VT
+        result = [vtObj submit:(File*)item];
+        
+        //extract scan id
+        scanID = result[VT_RESULTS_SCANID];
+        if(nil == scanID)
+        {
+            //err msg
+            NSLog(@"KNOCKKNOCK ERROR: failed to submit %@", item.path);
+            
+            //update UI
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                //update
+                self.submissionStatus.stringValue = [NSString stringWithFormat:@"Failed to submit '%@'", ((File*)item).name];
+            });
+            
+            //nap (for UI)
+            sleep(1);
+            
+            continue;
+        }
+        
+        //reset file's VT info
+        // as we've just submittted
+        ((File*)item).vtInfo = nil;
+        
+        //update UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            //update
+            self.submissionStatus.stringValue = [NSString stringWithFormat:@"Submitted '%@'", ((File*)item).path];
+            
+            //set item's VT status in UI to pending (...)
+            [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:(File*)item];
+        
+        });
+        
+        //save
+        scanIDs[scanID] = item;
+    }
+    
+    //only continue if there were submissions
+    if(0 != scanIDs.count)
+    {
+        //nap for VT to process
+        sleep(5);
+        
+        //update UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            //update
+            self.submissionStatus.stringValue = [NSString stringWithFormat:@"Awaiting results..."];
+        });
+        
+        //nap more VT to process
+        sleep(5);
+        
+        //get VT results
+        for(NSString* scanID in scanIDs.allKeys)
+        {
+            //get results for item
+            // waits until recieved (and updates UI on success)
+            if(YES != [vtObj getInfoForItem:(File*)scanIDs[scanID] scanID:scanID])
+            {
+                //update UI
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    //update
+                    self.submissionStatus.stringValue = [NSString stringWithFormat:@"Failed to get results for '%@'", ((File*)scanIDs[scanID]).name];
+                });
+                
+                //nap for UI
+                sleep(1);
+            }
+            //happy
+            // results will show up in UI
+            successes++;
+        }
+    }
+    
+    //tell UI all is done
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        //complete
+        [self submissionComplete:successes];
+        
+    });
+    
+    return;
+
 }
 
 //automatically invoked when user clicks 'OK'

@@ -21,7 +21,7 @@
 -(void)getInfo:(PluginBase*)plugin;
 
 //make the (POST)query to VT
--(NSDictionary*)postRequest:(NSURL*)url parameters:(id)params;
+-(NSDictionary*)postRequest:(NSURL*)url parameters:(id)params httpResponse:(NSURLResponse*)httpResponse;
 
 //submit a file to VT
 -(NSDictionary*)submit:(File*)fileObj;
@@ -34,7 +34,7 @@
 -(void)processResults:(NSArray*)items results:(NSDictionary*)results;
 
 //get info for a single item
-// ->will callback into AppDelegate to reload plugin
--(void)getInfoForItem:(File*)fileObj scanID:(NSString*)scanID;
+// will callback into AppDelegate to reload plugin
+-(BOOL)getInfoForItem:(File*)fileObj scanID:(NSString*)scanID;
 
 @end

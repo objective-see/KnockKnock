@@ -1,37 +1,73 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "bBK-v0-ypq.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"results...\"; ObjectID = \"bBK-v0-ypq\";",
+    "71T-dO-S3a.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Submit Unknown\"; ObjectID = \"71T-dO-S3a\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "results..."
+            "value" : "Submit Unknown"
+          }
+        }
+      }
+    },
+    "bBK-v0-ypq.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Submission Results...\"; ObjectID = \"bBK-v0-ypq\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Submission Results..."
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "resultados..."
           }
         }
       }
     },
-    "J9x-sM-h9S.title" : {
-      "comment" : "Class = \"NSButtonCell\"; title = \"OK\"; ObjectID = \"J9x-sM-h9S\";",
+    "c7T-S9-D47.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Results...\"; ObjectID = \"c7T-S9-D47\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "OK"
+            "value" : "Results..."
+          }
+        }
+      }
+    },
+    "ivf-fv-SFp.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"VirusTotal:\"; ObjectID = \"ivf-fv-SFp\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "VirusTotal:"
+          }
+        }
+      }
+    },
+    "J9x-sM-h9S.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Close\"; ObjectID = \"J9x-sM-h9S\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Close"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "OK"
           }
         }
