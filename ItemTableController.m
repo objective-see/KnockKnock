@@ -107,7 +107,7 @@
             [self.noItemsLabel addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[noItemsLabel(==20)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(noItemsLabel)]];
             
             //set top padding constraint
-            [self.noItemsLabel.superview addConstraint:[NSLayoutConstraint constraintWithItem:self.noItemsLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.noItemsLabel.superview attribute:NSLayoutAttributeTop multiplier:1.0f constant:25.0f]];
+            [self.noItemsLabel.superview addConstraint:[NSLayoutConstraint constraintWithItem:self.noItemsLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.noItemsLabel.superview attribute:NSLayoutAttributeTop multiplier:1.0f constant:35.0f]];
             
             //set center constraint
             [self.noItemsLabel.superview addConstraint:[NSLayoutConstraint constraintWithItem:self.noItemsLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.noItemsLabel.superview attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
