@@ -2,13 +2,13 @@
   "sourceLanguage" : "en",
   "strings" : {
     "71T-dO-S3a.title" : {
-      "comment" : "Class = \"NSButtonCell\"; title = \"Submit Unknown\"; ObjectID = \"71T-dO-S3a\";",
+      "comment" : "Class = \"NSButtonCell\"; title = \"Submit (Unknown) Items\"; ObjectID = \"71T-dO-S3a\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Submit Unknown"
+            "value" : "Submit (Unknown) Items"
           }
         }
       }

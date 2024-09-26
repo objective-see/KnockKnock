@@ -243,7 +243,7 @@ extern BOOL cmdlineMode;
             if(nil == results[VT_RESULTS_URL])
             {
                 //sync
-                // ->since array will be reset if user clicks 'stop' scan
+                // since array will be reset if user clicks 'stop' scan
                 @synchronized(fileObj.plugin.unknownItems)
                 {
                     //save
@@ -594,7 +594,7 @@ bail:
                     }
                 }
                 //if its unknown save
-                if(nil == results[VT_RESULTS_URL])
+                if(nil == result[VT_RESULTS_URL])
                 {
                     //sync
                     // ->since array will be reset if user clicks 'stop' scan

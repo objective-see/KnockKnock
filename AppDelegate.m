@@ -938,9 +938,14 @@
             //add plugin's flagged items
             flaggedItems += plugin.flaggedItems.count;
             
-            //add unknown items
-            [unknownItems addObjectsFromArray:plugin.unknownItems];
-    
+            //add unknown file items
+            // plugins will only have one type, so can just check first
+            if(YES == [[plugin.unknownItems firstObject] isKindOfClass:[File class]])
+            {
+                //add
+                [unknownItems addObjectsFromArray:plugin.unknownItems];
+            }
+        
             //init detailed msg
             details = [NSMutableString stringWithFormat:NSLocalizedString(@"Found %lu persistent items", @"Found %lu persistent items"), (unsigned long)items];
         }
@@ -961,10 +966,15 @@
                 }
                 
                 //check if item is unknown
-                if(YES == [plugin.unknownItems containsObject:item])
+                // but has to be a File* object
+                if(YES == [item isKindOfClass:[File class]])
                 {
-                    //add
-                    [unknownItems addObject:item];
+                    //is unknown?
+                    if(YES == [plugin.unknownItems containsObject:item])
+                    {
+                        //add
+                        [unknownItems addObject:item];
+                    }
                 }
             }
             
@@ -993,6 +1003,9 @@
         }
     }
     
+    //remove any dups from unknown items
+    [self removeDuplicates:unknownItems];
+
     //alloc/init
     resultsWindowController = [[ResultsWindowController alloc] initWithWindowNibName:@"ResultsWindow"];
         
@@ -1008,19 +1021,29 @@
     //show it
     [self.resultsWindowController showWindow:self];
     
-    /*
-    //invoke function in background that will make window modal
-    // ->waits until window is non-nil
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-        //make modal
-        makeModal(self.resultsWindowController);
-        
-    });
-    */
-    
     return;
-} 
+}
+
+//remove duplicate file objects
+// note: key is "path"
+-(void)removeDuplicates:(NSMutableArray<File *>*)files
+{
+    NSMutableSet *uniquePaths = [NSMutableSet set];
+    
+    //interate backwards to remove in place
+    for (NSInteger i = files.count - 1; i >= 0; i--)
+    {
+        File *file = files[i];
+        if ([uniquePaths containsObject:file.path]) {
+            [files removeObjectAtIndex:i];
+        }
+        else
+        {
+            [uniquePaths addObject:file.path];
+        }
+    }
+    return;
+}
 
 //automatically invoked when mouse entered
 -(void)mouseEntered:(NSEvent*)theEvent
@@ -1330,14 +1353,8 @@
     //show it
     [self.prefsWindowController showWindow:self];
     
-    //invoke function in background that will make window modal
-    // ->waits until window is non-nil
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
-        //make modal
-        makeModal(self.prefsWindowController);
-        
-    });
+    //make modal
+    [[NSApplication sharedApplication] runModalForWindow:self.prefsWindowController.window];
 
     return;
 }

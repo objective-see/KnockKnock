@@ -69,9 +69,9 @@
                         </textFieldCell>
                     </textField>
                     <button hidden="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Czs-Di-8Qw">
-                        <rect key="frame" x="381" y="113" width="163" height="32"/>
+                        <rect key="frame" x="337" y="113" width="207" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="push" title="Submit Unknown" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="71T-dO-S3a">
+                        <buttonCell key="cell" type="push" title="Submit (Unknown) Items" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="71T-dO-S3a">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" size="13" name="Menlo-Regular"/>
                         </buttonCell>

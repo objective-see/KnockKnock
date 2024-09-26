@@ -176,7 +176,4 @@ extern Filter* itemFilter;
 // ->ensures various threads are terminated, etc
 -(void)completeScan;
 
-//submit all unknown items to VT
--(void)submitUnknownItems:(NSMutableArray*)unknownItems;
-
 @end
