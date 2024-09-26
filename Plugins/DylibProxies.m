@@ -95,7 +95,7 @@ NSString * const PROTECTED_DIRECTORIES[] = {@"~/Library/Application Support/Addr
     protectedDirectories = expandPaths(PROTECTED_DIRECTORIES, sizeof(PROTECTED_DIRECTORIES)/sizeof(PROTECTED_DIRECTORIES[0]));
         
     //exec 'lsof' to get loaded libs
-    results = execTask(LSOF, @[@"-Fn", @"/"]);
+    results = execTask(LSOF, @[@"-Fn", @"/"], NULL);
     if( (nil == results) ||
         (0 == results.length) )
     {

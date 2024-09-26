@@ -1,6 +1,6 @@
 //
 //  PlistWindowController.h
-//  WhatsYourSignExt
+//  KnockKnock
 //
 //  Created by Patrick Wardle on 12/19/17.
 //  Copyright (c) 2016 Objective-See. All rights reserved.

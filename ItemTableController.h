@@ -49,7 +49,4 @@
 // ->get items array (either all or just unknown)
 -(NSArray*)getTableItems;
 
-
-
-
 @end

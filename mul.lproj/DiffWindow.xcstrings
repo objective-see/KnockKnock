@@ -1,0 +1,30 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "cvj-Jf-F5t.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Close\"; ObjectID = \"cvj-Jf-F5t\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Close"
+          }
+        }
+      }
+    },
+    "QvC-M9-y7g.title" : {
+      "comment" : "Class = \"NSWindow\"; title = \"Differences\"; ObjectID = \"QvC-M9-y7g\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Differences"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

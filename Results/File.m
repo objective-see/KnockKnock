@@ -366,5 +366,11 @@ bail:
     return json;
 }
 
+//description
+-(NSString*)description
+{
+    return [NSString stringWithFormat:@"name: %@, path: %@, plist: %@, hashes: %@, signature(s): %@, VT detection: %@", self.name, self.path, self.plist, self.hashes, self.signingInfo, self.vtInfo];;
+}
+
 
 @end

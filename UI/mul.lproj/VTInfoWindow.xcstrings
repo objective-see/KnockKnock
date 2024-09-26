@@ -10,6 +10,12 @@
             "state" : "new",
             "value" : "unknown file"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "archivo desconocido"
+          }
         }
       }
     },
@@ -21,6 +27,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "file name"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nombre de archivo"
           }
         }
       }
@@ -34,6 +46,12 @@
             "state" : "new",
             "value" : "VirusTotal Information"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Información de VirusTotal"
+          }
         }
       }
     },
@@ -45,6 +63,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "File Name:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de Archivo:"
           }
         }
       }
@@ -58,6 +82,12 @@
             "state" : "new",
             "value" : "report url"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reportar url"
+          }
         }
       }
     },
@@ -69,6 +99,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Detection:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detección:"
           }
         }
       }
@@ -82,6 +118,12 @@
             "state" : "new",
             "value" : "Submit?"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Enviar?"
+          }
         }
       }
     },
@@ -93,6 +135,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "status msg"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mensaje de estado"
           }
         }
       }
@@ -106,6 +154,12 @@
             "state" : "new",
             "value" : "Close"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
+          }
         }
       }
     },
@@ -118,6 +172,12 @@
             "state" : "new",
             "value" : "More Info:"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más Info:"
+          }
         }
       }
     },
@@ -128,6 +188,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "ratio"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "ratio"
           }
         }

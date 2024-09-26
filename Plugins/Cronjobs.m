@@ -63,7 +63,7 @@
             
             //exec cron
             // pass in user
-            taskOutput = execTask(CRONTAB, @[@"-l", @"-u", user]);
+            taskOutput = execTask(CRONTAB, @[@"-l", @"-u", user], NULL);
             if( (nil == taskOutput) ||
                 (0 == taskOutput.length) )
             {
@@ -85,7 +85,7 @@
         
         //exec cron
         // just for current user
-        taskOutput = execTask(CRONTAB, @[@"-l"]);
+        taskOutput = execTask(CRONTAB, @[@"-l"], NULL);
         if( (nil == taskOutput) ||
             (0 == taskOutput.length) )
         {

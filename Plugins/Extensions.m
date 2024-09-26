@@ -64,7 +64,7 @@
     extensions = [NSMutableArray array];
     
     //exec 'pluginkit -vmA'
-    taskOutput = execTask(PLUGIN_KIT, @[@"-vmA"]);
+    taskOutput = execTask(PLUGIN_KIT, @[@"-vmA"], NULL);
     if( (nil == taskOutput) ||
         (0 == taskOutput.length) )
     {
@@ -103,7 +103,7 @@
     for(NSString* finderSync in finderSyncs[@"displayOrder"])
     {
         //exec pluginkit
-        taskOutput = execTask(PLUGIN_KIT, @[@"-mi", finderSync, @"-v"]);
+        taskOutput = execTask(PLUGIN_KIT, @[@"-mi", finderSync, @"-v"], NULL);
         if( (nil == taskOutput) ||
             (0 == taskOutput.length) )
         {

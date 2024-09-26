@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PlistWindowController">
             <connections>
                 <outlet property="contents" destination="K8r-7O-jbE" id="T7W-68-rmh"/>
-                <outlet property="entitlements" destination="K8r-7O-jbE" id="xv6-E3-nwq"/>
                 <outlet property="path" destination="RUH-k1-xgb" id="lax-vV-NHM"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
@@ -20,18 +19,14 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="607" height="330"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="3440" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1512" height="944"/>
             <value key="minSize" type="size" width="480" height="100"/>
             <view key="contentView" wantsLayer="YES" id="se5-gp-TjO">
                 <rect key="frame" x="0.0" y="0.0" width="607" height="330"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" tag="100" translatesAutoresizingMaskIntoConstraints="NO" id="fjc-Vr-I97">
+                    <button tag="100" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fjc-Vr-I97">
                         <rect key="frame" x="520" y="2" width="85" height="33"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="71" id="FOf-mv-ue0"/>
-                            <constraint firstAttribute="height" constant="21" id="LUl-pH-Wrx"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1Dc-km-Bwx">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" size="13" name="Menlo-Regular"/>
@@ -39,11 +34,15 @@
 Gw
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="71" id="FOf-mv-ue0"/>
+                            <constraint firstAttribute="height" constant="21" id="LUl-pH-Wrx"/>
+                        </constraints>
                         <connections>
                             <action selector="close:" target="-2" id="0L9-dz-2IV"/>
                         </connections>
                     </button>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RUH-k1-xgb">
+                    <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RUH-k1-xgb">
                         <rect key="frame" x="18" y="12" width="493" height="15"/>
                         <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" alignment="left" title="plist" id="iny-wp-VI1">
                             <font key="font" size="13" name="Menlo-Regular"/>

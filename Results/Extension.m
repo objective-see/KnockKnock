@@ -65,4 +65,10 @@
     return json;
 }
 
+//description
+-(NSString*)description
+{
+    return [NSString stringWithFormat:@"name: %@, path: %@, identifier: %@, details: %@, browser: %@", self.name, self.path, self.identifier, self.details, self.browser];
+}
+
 @end

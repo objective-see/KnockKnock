@@ -33,6 +33,9 @@ int main(int argc, char *argv[])
             //set flag
             cmdlineMode = YES;
             
+            //set flag
+            isVerbose = [NSProcessInfo.processInfo.arguments containsObject:@"-verbose"];
+            
             //scan
             cmdlineScan();
             
@@ -71,9 +74,10 @@ void usage(void)
     printf("\nKNOCKNOCK USAGE:\n");
     printf(" -h or -help  display this usage info\n");
     printf(" -whosthere   perform command line scan\n");
-    printf(" -pretty      during command line scan, output is 'pretty-printed'\n");
-    printf(" -apple       during command line scan, include apple/system items\n");
-    printf(" -skipVT      during command line scan, do not query VirusTotal with item hashes\n\n");
+    printf(" -verbose     display detailed output\n");
+    printf(" -pretty      final output is 'pretty-printed'\n");
+    printf(" -apple       include apple/system items\n");
+    printf(" -skipVT      do not query VirusTotal with item hashes\n\n");
     
     return;
 }
@@ -87,6 +91,15 @@ void cmdlineScan(void)
     //virus total thread
     NSThread* virusTotalThread = nil;
     
+    //start time
+    NSDate* startTime = nil;
+    
+    //total items
+    NSUInteger items = 0;
+    
+    //flagged items
+    NSUInteger flaggedItems = 0;
+    
     //flag
     BOOL includeApple = NO;
     
@@ -96,11 +109,15 @@ void cmdlineScan(void)
     //flag
     BOOL prettyPrint = NO;
     
+    
     //output
     NSMutableString* output = nil;
     
     //plugin object
     PluginBase* plugin = nil;
+    
+    //init
+    startTime = [NSDate date];
     
     //init filter object
     itemFilter = [[Filter alloc] init];
@@ -113,6 +130,13 @@ void cmdlineScan(void)
     
     //start shared enumerator
     [sharedItemEnumerator start];
+    
+    //dbg msg
+    if(YES == isVerbose)
+    {
+        //msg
+        printf("starting scan...\n");
+    }
     
     //set flag
     // include apple items?
@@ -147,13 +171,41 @@ void cmdlineScan(void)
         //no callback needed
         plugin.callback = nil;
         
+        //dbg msg
+        if(YES == isVerbose)
+        {
+            //msg
+            printf("\n%s\n now scanning...\n", plugin.name.uppercaseString.UTF8String);
+        }
+        
         //scan
         [plugin scan];
         
-        //query VT
-        // unless user explicity says otherwise
-        if(YES != skipVirusTotal)
+        //add up
+        items += plugin.allItems.count;
+        
+        //add plugin's flagged items
+        flaggedItems += plugin.flaggedItems.count;
+        
+        //dbg msg
+        if(YES == isVerbose)
         {
+            //msg
+            printf(" found %lu %s\n", (unsigned long)plugin.allItems.count, plugin.name.UTF8String);
+        }
+        
+        //query VT
+        // unless no items or user explicity says otherwise
+        if( (YES != skipVirusTotal) &&
+            (0 != plugin.allItems.count) )
+        {
+            //dbg msg
+            if(YES == isVerbose)
+            {
+                //msg
+                printf(" scanning via Virus Total\n");
+            }
+            
             //alloc thread
             // will query virus total to get info about all detected items
             virusTotalThread = [[NSThread alloc] initWithTarget:virusTotal selector:@selector(getInfo:) object:plugin];
@@ -168,7 +220,7 @@ void cmdlineScan(void)
                 [NSThread sleepForTimeInterval:1.0];
             }
         }
-    
+        
         //append plugin name to output
         [output appendString:[NSString stringWithFormat:@"\"%@\":[", plugin.name]];
         
@@ -209,6 +261,19 @@ void cmdlineScan(void)
 
     //terminate list
     [output appendString:@"}"];
+    
+    //dbg msg
+    if(YES == isVerbose)
+    {
+        //compute duration
+        NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:startTime];
+        int minutes = (int)(timeInterval / 60);
+        int seconds = (int)(timeInterval - (minutes * 60));
+        
+        //msg
+        printf("\nscan completed in %02d minutes, %02d seconds\n\n", minutes, seconds);
+        printf("RESULTS:\n %lu persistent items\n %lu flagged items\n\n", (unsigned long)items, (unsigned long)flaggedItems);
+    }
     
     //pretty print?
     if(YES == prettyPrint)

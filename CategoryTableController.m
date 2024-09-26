@@ -94,14 +94,14 @@
     else
     {
         //set count
-        itemsInCategory = plugin.unknownItems.count;
+        itemsInCategory = plugin.untrustedItems.count;
         
         //check if any item is flagged
         if(YES != ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries)
         {
             //manually check if any unknown item is flagged
             // ->gotta do this since flaggedItems includes all items
-            for(ItemBase* item in plugin.unknownItems)
+            for(ItemBase* item in plugin.untrustedItems)
             {
                 //check if item it flagged
                 if(YES == [plugin.flaggedItems containsObject:item])

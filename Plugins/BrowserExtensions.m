@@ -190,7 +190,7 @@
     for(NSString* match in @[@"com.apple.Safari.extension", @"com.apple.Safari.content-blocker"])
     {
         //enumerate via pluginkit
-        taskOutput = execTask(PLUGIN_KIT, @[@"-mAvv", @"-p", match]);
+        taskOutput = execTask(PLUGIN_KIT, @[@"-mAvv", @"-p", match], NULL);
         if(0 != taskOutput.length)
         {
             //parse output

@@ -10,6 +10,12 @@
             "state" : "new",
             "value" : "Preferences"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferencias"
+          }
         }
       }
     },
@@ -21,6 +27,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Disable VirusTotal integration."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deshabilitar la integración con VirusTotal."
           }
         }
       }
@@ -34,6 +46,12 @@
             "state" : "new",
             "value" : "Disable automatic update check."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deshabilitar la comprobación automática de actualizaciones."
+          }
         }
       }
     },
@@ -44,6 +62,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "OK"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "OK"
           }
         }
@@ -57,6 +81,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Include macOS/known items."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incluir ítems de macOS/conocidos."
           }
         }
       }

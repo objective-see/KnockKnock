@@ -43,7 +43,7 @@
 //item
 @property(nonatomic, retain)ItemBase* itemObj;
 
-//entitlements popup controller
+//plist popup controller
 @property (strong) PlistWindowController* plistWindowController;
 
 /* METHODS */

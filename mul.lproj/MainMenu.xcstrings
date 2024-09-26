@@ -10,6 +10,12 @@
             "state" : "new",
             "value" : "show file info"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mostrar información del documento"
+          }
         }
       }
     },
@@ -22,6 +28,12 @@
             "state" : "new",
             "value" : "Close"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
+          }
         }
       }
     },
@@ -32,6 +44,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "▪ ▪ ▪"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "▪ ▪ ▪"
           }
         }
@@ -46,6 +64,48 @@
             "state" : "new",
             "value" : "show"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mostrar"
+          }
+        }
+      }
+    },
+    "3Oy-Jc-lEj.ibShadowedToolTip" : {
+      "comment" : "Class = \"NSButton\"; ibShadowedToolTip = \"Show settings\"; ObjectID = \"3Oy-Jc-lEj\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Show settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar configuración"
+          }
+        }
+      }
+    },
+    "3Vf-uL-OZX.ibShadowedToolTip" : {
+      "comment" : "Class = \"NSButton\"; ibShadowedToolTip = \"Save results\"; ObjectID = \"3Vf-uL-OZX\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Save results"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Guardar resultados"
+          }
         }
       }
     },
@@ -57,6 +117,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Item Category Description"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descripción de Categoría de Ítem"
           }
         }
       }
@@ -70,6 +136,12 @@
             "state" : "new",
             "value" : "Categories:"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categorías:"
+          }
         }
       }
     },
@@ -82,6 +154,12 @@
             "state" : "new",
             "value" : "AMainMenu"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menú Principal"
+          }
         }
       }
     },
@@ -92,6 +170,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "virustotal"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "virustotal"
           }
         }
@@ -106,6 +190,12 @@
             "state" : "new",
             "value" : "KnockKnock"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KnockKnock"
+          }
         }
       }
     },
@@ -116,6 +206,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "KnockKnock"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "KnockKnock"
           }
         }
@@ -130,6 +226,12 @@
             "state" : "new",
             "value" : "Command"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command"
+          }
         }
       }
     },
@@ -141,6 +243,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "About"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca"
           }
         }
       }
@@ -154,6 +262,12 @@
             "state" : "new",
             "value" : "Quit"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salir"
+          }
         }
       }
     },
@@ -166,17 +280,11 @@
             "state" : "new",
             "value" : "KnockKnock"
           }
-        }
-      }
-    },
-    "544.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Text Cell\"; ObjectID = \"544\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
+        },
+        "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Text Cell"
+            "state" : "translated",
+            "value" : "KnockKnock"
           }
         }
       }
@@ -190,6 +298,12 @@
             "state" : "new",
             "value" : "Item Name"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de Ítem"
+          }
         }
       }
     },
@@ -201,6 +315,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "show in finder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mostrar en el buscador"
           }
         }
       }
@@ -214,6 +334,12 @@
             "state" : "new",
             "value" : "status..."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "estatus..."
+          }
         }
       }
     },
@@ -225,6 +351,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Start Scan"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empezar Escaneo"
           }
         }
       }
@@ -238,6 +370,12 @@
             "state" : "new",
             "value" : "Items:"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ítems:"
+          }
         }
       }
     },
@@ -249,6 +387,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Preferences"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferencias"
           }
         }
       }
@@ -262,6 +406,12 @@
             "state" : "new",
             "value" : "Item Category"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categoría de Ítem"
+          }
         }
       }
     },
@@ -273,6 +423,30 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "show in finder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mostrar en el buscador"
+          }
+        }
+      }
+    },
+    "Ht2-cP-nAC.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Save\"; ObjectID = \"Ht2-cP-nAC\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Save"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
           }
         }
       }
@@ -286,6 +460,30 @@
             "state" : "new",
             "value" : "000"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "000"
+          }
+        }
+      }
+    },
+    "JbU-ET-kri.ibShadowedToolTip" : {
+      "comment" : "Class = \"NSButton\"; ibShadowedToolTip = \"Compare a previous scan, with the current one\"; ObjectID = \"JbU-ET-kri\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Compare a previous scan, with the current one"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Guardar resultados"
+          }
         }
       }
     },
@@ -297,6 +495,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "show virustotal info"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mostrar información de virustotal"
           }
         }
       }
@@ -310,17 +514,11 @@
             "state" : "new",
             "value" : "Mahalo to the \"Friends of Objective-See\""
           }
-        }
-      }
-    },
-    "KxO-Jf-gyu.title" : {
-      "comment" : "Class = \"NSBox\"; title = \"Box\"; ObjectID = \"KxO-Jf-gyu\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
+        },
+        "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Box"
+            "state" : "translated",
+            "value" : "Mahalo a los \"Friends de Objective-See\""
           }
         }
       }
@@ -334,6 +532,12 @@
             "state" : "new",
             "value" : "Check For Update..."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar Actualizaciones..."
+          }
         }
       }
     },
@@ -346,6 +550,12 @@
             "state" : "new",
             "value" : "item path"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ruta de ítem"
+          }
         }
       }
     },
@@ -356,6 +566,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "info"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "info"
           }
         }
@@ -370,6 +586,12 @@
             "state" : "new",
             "value" : "show"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mostrar"
+          }
         }
       }
     },
@@ -381,6 +603,30 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "version x.x.x"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "versión x.x.x"
+          }
+        }
+      }
+    },
+    "txx-sZ-lfZ.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Settings\"; ObjectID = \"txx-sZ-lfZ\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración"
           }
         }
       }
@@ -394,17 +640,11 @@
             "state" : "new",
             "value" : "item path"
           }
-        }
-      }
-    },
-    "WyP-Ci-amT.title" : {
-      "comment" : "Class = \"NSBox\"; title = \"Box\"; ObjectID = \"WyP-Ci-amT\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
+        },
+        "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Box"
+            "state" : "translated",
+            "value" : "ruta de ítem"
           }
         }
       }
@@ -418,17 +658,11 @@
             "state" : "new",
             "value" : "item plist"
           }
-        }
-      }
-    },
-    "Ybp-gD-hTK.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Text Cell\"; ObjectID = \"Ybp-gD-hTK\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
+        },
+        "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Text Cell"
+            "state" : "translated",
+            "value" : "plist de ítem"
           }
         }
       }
@@ -441,6 +675,30 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "categories"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "categorías"
+          }
+        }
+      }
+    },
+    "zIq-ye-U6O.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Compare\"; ObjectID = \"zIq-ye-U6O\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Compare"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparar"
           }
         }
       }

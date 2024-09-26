@@ -2,121 +2,461 @@
   "sourceLanguage" : "en",
   "strings" : {
     " \r\n■ %lu item(s) flagged by VirusTotal" : {
-      "comment" : " \r\n■ %lu item(s) flagged by VirusTotal"
+      "comment" : " \r\n■ %lu item(s) flagged by VirusTotal",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " \r\n■ %lu ítem(s) marcado(s) por VirusTotal"
+          }
+        }
+      }
     },
     " \r\n■ Unable to query VirusTotal (network)" : {
-      "comment" : " \r\n■ Unable to query VirusTotal (network)"
+      "comment" : " \r\n■ Unable to query VirusTotal (network)",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " \r\n■ No se puede consultar a VirusTotal (red)"
+          }
+        }
+      }
     },
     "■ Found %lu items" : {
-      "comment" : "■ Found %lu items"
+      "comment" : "■ Found %lu items",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "■ Encontrados %lu ítems"
+          }
+        }
+      }
     },
     "■ Found %lu non-OS items" : {
-      "comment" : "■ Found %lu non-OS items"
+      "comment" : "■ Found %lu non-OS items",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "■ Encontrados %lu ítems que no son del SO"
+          }
+        }
+      }
     },
     "a new version (%@) is available!" : {
-      "comment" : "a new version (%@) is available!"
+      "comment" : "a new version (%@) is available!",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Una nueva versión (%@) está disponible!"
+          }
+        }
+      }
     },
     "actions executed by emond" : {
-      "comment" : "actions executed by emond"
+      "comment" : "actions executed by emond",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "acciones ejecutadas por emond"
+          }
+        }
+      }
     },
     "Awaiting VirusTotal results" : {
-      "comment" : "Awaiting VirusTotal results"
+      "comment" : "Awaiting VirusTotal results",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esperando resultados de VirusTotal"
+          }
+        }
+      }
     },
     "background agents, daemons, & login items" : {
-      "comment" : "background agents, daemons, & login items"
+      "comment" : "background agents, daemons, & login items",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "agentes en segundo plano, daemons & ítems de inicio de sesión"
+          }
+        }
+      }
     },
     "bundles hosted by a Dock XPC service" : {
-      "comment" : "bundles hosted by a Dock XPC service"
+      "comment" : "bundles hosted by a Dock XPC service",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "paquetes alojados por un servicio XPC del Dock"
+          }
+        }
+      }
     },
     "bundles loaded by Spotlight (mdworker)" : {
-      "comment" : "bundles loaded by Spotlight (mdworker)"
+      "comment" : "bundles loaded by Spotlight (mdworker)",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "paquetes cargados por Spotlight (mdworker)"
+          }
+        }
+      }
     },
     "Cancel" : {
-      "comment" : "Cancel"
+      "comment" : "Cancel",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        }
+      }
     },
     "Close" : {
-      "comment" : "Close"
+      "comment" : "Close",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
+          }
+        }
+      }
     },
     "current user's cron jobs" : {
-      "comment" : "current user's cron jobs"
+      "comment" : "current user's cron jobs",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tareas cron del usuario actual"
+          }
+        }
+      }
     },
     "daemons and agents loaded by launchd" : {
-      "comment" : "daemons and agents loaded by launchd"
+      "comment" : "daemons and agents loaded by launchd",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "daemons y agentes cargados por launchd"
+          }
+        }
+      }
     },
     "Details: %@" : {
-      "comment" : "Details: %@"
+      "comment" : "Details: %@",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalles: %@"
+          }
+        }
+      }
     },
     "dylibs that proxy other libraries" : {
-      "comment" : "dylibs that proxy other libraries"
+      "comment" : "dylibs that proxy other libraries",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "dylibs que actúan como proxy para otras bibliotecas"
+          }
+        }
+      }
+    },
+    "errno value: %d" : {
+      "comment" : "errno value: %d"
     },
     "error, failed to check for an update." : {
-      "comment" : "error, failed to check for an update."
+      "comment" : "error, failed to check for an update.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "error, falló la comprobación de actualización."
+          }
+        }
+      }
+    },
+    "ERROR:\nfailed to open %@" : {
+      "comment" : "ERROR:\nfailed to open %@"
     },
     "ERROR: failed to save output" : {
-      "comment" : "ERROR: failed to save output"
+      "comment" : "ERROR: failed to save output",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR: falló al guardar la salida"
+          }
+        }
+      }
     },
     "extensions hosted in the browser" : {
-      "comment" : "extensions hosted in the browser"
+      "comment" : "extensions hosted in the browser",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "extensiones alojadas en el navegador"
+          }
+        }
+      }
     },
     "failed to load contents of %@" : {
-      "comment" : "failed to load contents of %@"
+      "comment" : "failed to load contents of %@",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "falló al cargar el contenido de %@"
+          }
+        }
+      }
     },
     "installed kexts, likely kernel loaded" : {
-      "comment" : "installed kexts, likely kernel loaded"
+      "comment" : "installed kexts, likely kernel loaded",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kexts instalados, probablemente cargados en el kernel"
+          }
+        }
+      }
     },
     "items executed upon login or logout" : {
-      "comment" : "items executed upon login or logout"
+      "comment" : "items executed upon login or logout",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ítems ejecutados al iniciar o cerrar sesión"
+          }
+        }
+      }
     },
     "items started when the user logs in" : {
-      "comment" : "items started when the user logs in"
+      "comment" : "items started when the user logs in",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ítems iniciados cuando el usuario inicia sesión"
+          }
+        }
+      }
     },
     "libs inserted by DYLD_INSERT_LIBRARIES" : {
-      "comment" : "libs inserted by DYLD_INSERT_LIBRARIES"
+      "comment" : "libs inserted by DYLD_INSERT_LIBRARIES",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "libs insertadas por DYLD_INSERT_LIBRARIES"
+          }
+        }
+      }
+    },
+    "No '%@' found" : {
+      "comment" : "No %@ found",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No %@ encontrados"
+          }
+        }
+      }
     },
     "OK" : {
-      "comment" : "OK"
+      "comment" : "OK",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
     },
     "Open 'System Preferences' to give KnockKnock Full Disk Access?" : {
-      "comment" : "Open 'System Preferences' to give KnockKnock Full Disk Access?"
+      "comment" : "Open 'System Preferences' to give KnockKnock Full Disk Access?",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Abrir 'Preferencias del Sistema' para dar a KnockKnock acceso total al disco?"
+          }
+        }
+      }
     },
     "plugins that extend/customize the OS" : {
-      "comment" : "plugins that extend/customize the OS"
+      "comment" : "plugins that extend/customize the OS",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "plugins que amplían/personalizan el SO"
+          }
+        }
+      }
     },
     "registered authorization bundles" : {
-      "comment" : "registered authorization bundles"
+      "comment" : "registered authorization bundles",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "paquetes de autorización registrados"
+          }
+        }
+      }
     },
     "registered directory services bundles" : {
-      "comment" : "registered directory services bundles"
+      "comment" : "registered directory services bundles",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "paquetes de servicios de directorio registrados"
+          }
+        }
+      }
     },
     "registered quicklook bundles" : {
-      "comment" : "registered quicklook bundles"
+      "comment" : "registered quicklook bundles",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "paquetes de quickLook registrados"
+          }
+        }
+      }
     },
     "Scanning: %@" : {
-      "comment" : "Scanning: %@"
+      "comment" : "Scanning: %@",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escaneando: %@"
+          }
+        }
+      }
     },
     "scripts executed during OS startup" : {
-      "comment" : "scripts executed during OS startup"
+      "comment" : "scripts executed during OS startup",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "scripts ejecutados durante el inicio del SO"
+          }
+        }
+      }
     },
     "scripts that are executed periodically" : {
-      "comment" : "scripts that are executed periodically"
+      "comment" : "scripts that are executed periodically",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "scripts que se ejecutan periódicamente"
+          }
+        }
+      }
+    },
+    "Start Scan" : {
+      "comment" : "Start Scan",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar Escaneo"
+          }
+        }
+      }
     },
     "Stop Scan" : {
-      "comment" : "Stop Scan"
+      "comment" : "Stop Scan",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detener Escaneo"
+          }
+        }
+      }
     },
     "This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n" : {
-      "comment" : "This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n"
+      "comment" : "This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto permite que la aplicación realice un escaneo completo.\n\nEn Preferencias del Sistema: ▪ Haz clic en el 🔒 para autenticarte ▪ Haz clic en el ➕ para añadir KnockKnock.app"
+          }
+        }
+      }
     },
     "Update" : {
-      "comment" : "Update"
+      "comment" : "Update",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizar"
+          }
+        }
+      }
     },
     "user-mode 'drivers' extending OS functionality" : {
-      "comment" : "user-mode 'drivers' extending OS functionality"
+      "comment" : "user-mode 'drivers' extending OS functionality",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'drivers' del modo usuario que amplían la funcionalidad del SO"
+          }
+        }
+      }
     },
     "version: %@" : {
-      "comment" : "version: %@"
+      "comment" : "version: %@",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "versión: %@"
+          }
+        }
+      }
     },
     "you're all up to date! (v. %@)" : {
-      "comment" : "you're all up to date! (v. %@)"
+      "comment" : "you're all up to date! (v. %@)",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡estás actualizado! (v. %@)"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -117,7 +117,7 @@
         self.noItemsLabel.hidden = NO;
         
         //set string
-        self.noItemsLabel.stringValue = [NSString stringWithFormat:@"No %@ found", [selectedPluginObj.name lowercaseString]];
+        self.noItemsLabel.stringValue = [NSString stringWithFormat:NSLocalizedString(@"No '%@' found",@"No %@ found"), [selectedPluginObj.name lowercaseString]];
     }
     
     //there *are* items
@@ -730,15 +730,13 @@ bail:
     else
     {
         //set count
-        tableItems = selectedPluginObj.unknownItems;
+        tableItems = selectedPluginObj.untrustedItems;
     }
     
     return tableItems;
 }
 
-
-//automatically invoked when user clicks the 'show in finder' icon
-// ->open Finder to show item
+//show item in Finder
 -(IBAction)showInFinder:(id)sender
 {
     //array backing table
@@ -776,7 +774,7 @@ bail:
     if(YES != [[NSWorkspace sharedWorkspace] selectFile:[selectedItem pathForFinder] inFileViewerRootedAtPath:@""])
     {
         //alloc/init alert
-        errorAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"ERROR:\nfailed to open %@", [selectedItem pathForFinder]] defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"errno value: %d", errno];
+        errorAlert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"ERROR:\nfailed to open %@", @"ERROR:\nfailed to open %@"), [selectedItem pathForFinder]] defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"errno value: %d",@"errno value: %d"), errno];
         
         //show it
         [errorAlert runModal];

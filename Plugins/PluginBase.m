@@ -18,7 +18,7 @@
 @synthesize description;
 @synthesize flaggedItems;
 @synthesize unknownItems;
-
+@synthesize untrustedItems;
 
 //init method
 -(id)init
@@ -27,13 +27,16 @@
     self = [super init];
     if(nil != self)
     {
-        //alloc items array
+        //alloc
         allItems = [NSMutableArray array];
         
-        //alloc unknown items array
+        //alloc
+        untrustedItems = [NSMutableArray array];
+        
+        //alloc
         unknownItems = [NSMutableArray array];
         
-        //alloc flagged items array
+        //alloc
         flaggedItems = [NSMutableArray array];
     }
     
@@ -55,12 +58,20 @@
     
     //sync
     // ->VT threads might still be accessing
-    @synchronized(self.unknownItems)
+    @synchronized(self.untrustedItems)
     {
         //remove unknown items
-        [self.unknownItems removeAllObjects];
+        [self.untrustedItems removeAllObjects];
         
     }//sync
+    
+    //sync
+    // ->VT threads might still be accessing
+    @synchronized(self.unknownItems)
+    {
+        //remove flagged items
+        [self.unknownItems removeAllObjects];
+    }
     
     //sync
     // ->VT threads might still be accessing
@@ -100,10 +111,10 @@
     {
         //sync
         // ->just to be safe
-        @synchronized(self.unknownItems)
+        @synchronized(self.untrustedItems)
         {
             //save
-            [self.unknownItems addObject:item];
+            [self.untrustedItems addObject:item];
         }
     }
     

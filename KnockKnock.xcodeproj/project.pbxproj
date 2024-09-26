@@ -22,6 +22,7 @@
 		CD0219531AD34D9A005148A2 /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD0219521AD34D9A005148A2 /* AboutWindowController.m */; };
 		CD0219551AD34E4C005148A2 /* kkIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD0219541AD34E4C005148A2 /* kkIcon.png */; };
 		CD0219611AD39A83005148A2 /* ResultsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD0219601AD39A83005148A2 /* ResultsWindowController.m */; };
+		CD19A7ED2CA4236B00F17FF3 /* DiffWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD19A7EC2CA4236B00F17FF3 /* DiffWindow.xib */; };
 		CD24F074219D51210081B0E5 /* whitelistedKexts.json in Resources */ = {isa = PBXBuildFile; fileRef = CD24F073219D51210081B0E5 /* whitelistedKexts.json */; };
 		CD24F077219DF3DB0081B0E5 /* Signing.m in Sources */ = {isa = PBXBuildFile; fileRef = CD24F075219DF3DA0081B0E5 /* Signing.m */; };
 		CD2B613320675EEC00BF72E9 /* EventRules.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2B611220675EEB00BF72E9 /* EventRules.m */; };
@@ -59,6 +60,7 @@
 		CD7B9FA81ACCAE5E00DF3C71 /* stopScanOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9FA61ACCAE5E00DF3C71 /* stopScanOver.png */; };
 		CD7B9FAB1AD08FA100DF3C71 /* KKRow.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9FAA1AD08FA100DF3C71 /* KKRow.m */; };
 		CD83887F1AACCEDF000EB098 /* VirusTotal.m in Sources */ = {isa = PBXBuildFile; fileRef = CD83887E1AACCEDF000EB098 /* VirusTotal.m */; };
+		CD8641272CA05D6B00803551 /* KnockKnock-InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CD8641252CA05D6B00803551 /* KnockKnock-InfoPlist.strings */; };
 		CD890F4223778F7B00029D99 /* DirectoryServicesPlugins.m in Sources */ = {isa = PBXBuildFile; fileRef = CD890F4123778F7B00029D99 /* DirectoryServicesPlugins.m */; };
 		CD890F44237790D400029D99 /* directoryServicesIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD890F43237790D400029D99 /* directoryServicesIcon.png */; };
 		CDA81D4F1A95B492009790E2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D451A95B492009790E2 /* AppDelegate.m */; };
@@ -112,6 +114,7 @@
 		CDD83FD41B50C48C0037124E /* Cronjobs.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD83FD31B50C48C0037124E /* Cronjobs.m */; };
 		CDD83FD61B50C76F0037124E /* cronIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDD83FD51B50C76F0037124E /* cronIcon.png */; };
 		CDDBC2301B04771100B021E0 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */; };
+		CDE241AB2C8556A40099F82B /* DiffWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE241AA2C8556A40099F82B /* DiffWindowController.m */; };
 		CDE2D3A72AC6E20500261224 /* DockTiles.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE2D3A62AC6E20500261224 /* DockTiles.m */; };
 		CDE2D3A92AC6E90600261224 /* dockTileIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDE2D3A82AC6E90600261224 /* dockTileIcon.png */; };
 		CDF08CBF1AC3DE25009B3423 /* logoAppleBG.png in Resources */ = {isa = PBXBuildFile; fileRef = CDF08CBE1AC3DE25009B3423 /* logoAppleBG.png */; };
@@ -171,6 +174,8 @@
 		CD0219541AD34E4C005148A2 /* kkIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kkIcon.png; path = images/kkIcon.png; sourceTree = SOURCE_ROOT; };
 		CD02195F1AD39A83005148A2 /* ResultsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultsWindowController.h; sourceTree = "<group>"; };
 		CD0219601AD39A83005148A2 /* ResultsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultsWindowController.m; sourceTree = "<group>"; };
+		CD19A7EB2CA4236B00F17FF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/DiffWindow.xib; sourceTree = "<group>"; };
+		CD19A7EE2CA4236B00F17FF3 /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/DiffWindow.xcstrings; sourceTree = "<group>"; };
 		CD24F072219AAC930081B0E5 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = SOURCE_ROOT; };
 		CD24F073219D51210081B0E5 /* whitelistedKexts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = whitelistedKexts.json; path = WhiteList/whitelistedKexts.json; sourceTree = "<group>"; };
 		CD24F075219DF3DA0081B0E5 /* Signing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Signing.m; sourceTree = SOURCE_ROOT; };
@@ -231,6 +236,7 @@
 		CD7B9FAA1AD08FA100DF3C71 /* KKRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KKRow.m; sourceTree = "<group>"; };
 		CD83887D1AACCEDF000EB098 /* VirusTotal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VirusTotal.h; sourceTree = "<group>"; };
 		CD83887E1AACCEDF000EB098 /* VirusTotal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VirusTotal.m; sourceTree = "<group>"; };
+		CD8641262CA05D6B00803551 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = "es.lproj/KnockKnock-InfoPlist.strings"; sourceTree = "<group>"; };
 		CD890F4023778F7B00029D99 /* DirectoryServicesPlugins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryServicesPlugins.h; path = Plugins/DirectoryServicesPlugins.h; sourceTree = "<group>"; };
 		CD890F4123778F7B00029D99 /* DirectoryServicesPlugins.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectoryServicesPlugins.m; path = Plugins/DirectoryServicesPlugins.m; sourceTree = "<group>"; };
 		CD890F43237790D400029D99 /* directoryServicesIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = directoryServicesIcon.png; path = images/directoryServicesIcon.png; sourceTree = SOURCE_ROOT; };
@@ -313,6 +319,8 @@
 		CDD83FD31B50C48C0037124E /* Cronjobs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Cronjobs.m; path = Plugins/Cronjobs.m; sourceTree = "<group>"; };
 		CDD83FD51B50C76F0037124E /* cronIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cronIcon.png; path = images/cronIcon.png; sourceTree = SOURCE_ROOT; };
 		CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
+		CDE241A92C8556A40099F82B /* DiffWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiffWindowController.h; sourceTree = "<group>"; };
+		CDE241AA2C8556A40099F82B /* DiffWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiffWindowController.m; sourceTree = "<group>"; };
 		CDE2D3A52AC6E20500261224 /* DockTiles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DockTiles.h; path = Plugins/DockTiles.h; sourceTree = "<group>"; };
 		CDE2D3A62AC6E20500261224 /* DockTiles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DockTiles.m; path = Plugins/DockTiles.m; sourceTree = "<group>"; };
 		CDE2D3A82AC6E90600261224 /* dockTileIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dockTileIcon.png; path = images/dockTileIcon.png; sourceTree = "<group>"; };
@@ -429,6 +437,8 @@
 				CD5854D721A60B2000A438B0 /* PlistWindowController.m */,
 				CDF08CC71AC4C678009B3423 /* PrefsWindowController.h */,
 				CDF08CC81AC4C678009B3423 /* PrefsWindowController.m */,
+				CDE241A92C8556A40099F82B /* DiffWindowController.h */,
+				CDE241AA2C8556A40099F82B /* DiffWindowController.m */,
 				CD24F076219DF3DB0081B0E5 /* Signing.h */,
 				CD24F075219DF3DA0081B0E5 /* Signing.m */,
 				1D21BC55172AF43D009D1CFD /* Supporting Files */,
@@ -447,6 +457,7 @@
 			children = (
 				CD5854D221A5FADD00A438B0 /* patrons.txt */,
 				CDA81D581A95B4B4009790E2 /* KnockKnock-Info.plist */,
+				CD8641252CA05D6B00803551 /* KnockKnock-InfoPlist.strings */,
 				CDA81D591A95B4B4009790E2 /* KnockKnock-Prefix.pch */,
 				CDA81D5A1A95B4B4009790E2 /* main.m */,
 				CD24F072219AAC930081B0E5 /* main.h */,
@@ -516,20 +527,20 @@
 		CDA81D781A95B939009790E2 /* UIControllers */ = {
 			isa = PBXGroup;
 			children = (
-				CD02195F1AD39A83005148A2 /* ResultsWindowController.h */,
-				CD2F21A221A8A7E300F67A83 /* UpdateWindowController.h */,
-				CD2F21A321A8A7E300F67A83 /* UpdateWindowController.m */,
-				CD0219601AD39A83005148A2 /* ResultsWindowController.m */,
 				CD0219511AD34D9A005148A2 /* AboutWindowController.h */,
 				CD0219521AD34D9A005148A2 /* AboutWindowController.m */,
-				CDF08CDC1AC886F2009B3423 /* VTInfoWindowController.h */,
-				CDF08CDD1AC886F2009B3423 /* VTInfoWindowController.m */,
-				CDA81DE71A997BF1009790E2 /* InfoWindowController.h */,
-				CDA81DE81A997BF1009790E2 /* InfoWindowController.m */,
 				CDA81D751A95B7C1009790E2 /* CategoryTableController.h */,
 				CDA81D761A95B7C1009790E2 /* CategoryTableController.m */,
+				CDA81DE71A997BF1009790E2 /* InfoWindowController.h */,
+				CDA81DE81A997BF1009790E2 /* InfoWindowController.m */,
 				CDA81D791A95D29B009790E2 /* ItemTableController.h */,
 				CDA81D7A1A95D29B009790E2 /* ItemTableController.m */,
+				CD02195F1AD39A83005148A2 /* ResultsWindowController.h */,
+				CD0219601AD39A83005148A2 /* ResultsWindowController.m */,
+				CD2F21A221A8A7E300F67A83 /* UpdateWindowController.h */,
+				CD2F21A321A8A7E300F67A83 /* UpdateWindowController.m */,
+				CDF08CDC1AC886F2009B3423 /* VTInfoWindowController.h */,
+				CDF08CDD1AC886F2009B3423 /* VTInfoWindowController.m */,
 			);
 			name = UIControllers;
 			sourceTree = "<group>";
@@ -610,14 +621,15 @@
 		CDA81E621AA020E8009790E2 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				CD6FD7B12C7AB284001C59F2 /* UpdateWindow.xib */,
-				CD6FD7B52C7AB288001C59F2 /* PlistWindow.xib */,
-				CD6FD7B92C7AB28D001C59F2 /* ResultsWindow.xib */,
 				CD6FD7BD2C7AB291001C59F2 /* AboutWindow.xib */,
-				CD6FD7C12C7AB294001C59F2 /* PrefsWindow.xib */,
-				CD6FD7C52C7AB299001C59F2 /* VTInfoWindow.xib */,
+				CD19A7EC2CA4236B00F17FF3 /* DiffWindow.xib */,
 				CD6FD7C92C7AB29F001C59F2 /* ExtensionInfoWindow.xib */,
 				CD6FD7CD2C7AB2A3001C59F2 /* FileInfoWindow.xib */,
+				CD6FD7B52C7AB288001C59F2 /* PlistWindow.xib */,
+				CD6FD7C12C7AB294001C59F2 /* PrefsWindow.xib */,
+				CD6FD7B92C7AB28D001C59F2 /* ResultsWindow.xib */,
+				CD6FD7B12C7AB284001C59F2 /* UpdateWindow.xib */,
+				CD6FD7C52C7AB299001C59F2 /* VTInfoWindow.xib */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -744,6 +756,7 @@
 				CD7B9FA41ACBCFAD00DF3C71 /* spotlightIcon.png in Resources */,
 				CD6BBBED1B51C62B00506D0D /* unknown.png in Resources */,
 				CD6FD7CA2C7AB29F001C59F2 /* ExtensionInfoWindow.xib in Resources */,
+				CD8641272CA05D6B00803551 /* KnockKnock-InfoPlist.strings in Resources */,
 				CD7B9FA81ACCAE5E00DF3C71 /* stopScanOver.png in Resources */,
 				CD6FD7AF2C7AAFE6001C59F2 /* Localizable.xcstrings in Resources */,
 				CDE2D3A92AC6E90600261224 /* dockTileIcon.png in Resources */,
@@ -776,6 +789,7 @@
 				CDA81D6C1A95B4E9009790E2 /* showBG.png in Resources */,
 				CDA81D6A1A95B4E9009790E2 /* mainIcon.png in Resources */,
 				CDA81D711A95B4E9009790E2 /* stopScanBG.png in Resources */,
+				CD19A7ED2CA4236B00F17FF3 /* DiffWindow.xib in Resources */,
 				CDF08CBF1AC3DE25009B3423 /* logoAppleBG.png in Resources */,
 				CD6FD7C62C7AB299001C59F2 /* VTInfoWindow.xib in Resources */,
 				CDA81D6F1A95B4E9009790E2 /* startScanBG.png in Resources */,
@@ -833,6 +847,7 @@
 				CD2F21A421A8A7E300F67A83 /* UpdateWindowController.m in Sources */,
 				7DE2FE2E1D3F30BE006C1438 /* Extensions.m in Sources */,
 				7DE29CA41CA7BC5600DFA6A6 /* StartupScripts.m in Sources */,
+				CDE241AB2C8556A40099F82B /* DiffWindowController.m in Sources */,
 				CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */,
 				CDA81E0A1A9B0AD8009790E2 /* BrowserExtensions.m in Sources */,
 				CDD83FD41B50C48C0037124E /* Cronjobs.m in Sources */,
@@ -860,6 +875,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		CD19A7EC2CA4236B00F17FF3 /* DiffWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CD19A7EB2CA4236B00F17FF3 /* Base */,
+				CD19A7EE2CA4236B00F17FF3 /* mul */,
+			);
+			name = DiffWindow.xib;
+			path = UI;
+			sourceTree = "<group>";
+		};
 		CD6FD7AB2C7AAD87001C59F2 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -947,6 +972,14 @@
 			);
 			name = FileInfoWindow.xib;
 			path = UI;
+			sourceTree = "<group>";
+		};
+		CD8641252CA05D6B00803551 /* KnockKnock-InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CD8641262CA05D6B00803551 /* es */,
+			);
+			name = "KnockKnock-InfoPlist.strings";
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

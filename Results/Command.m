@@ -42,5 +42,10 @@
 }
 
 
+//description
+-(NSString*)description
+{
+    return [NSString stringWithFormat:@"command: %@, file: %@", self.command, self.path];
+}
 
 @end

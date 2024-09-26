@@ -150,10 +150,9 @@
     //hide progress indicator
     self.progressIndicator.hidden = YES;
     
-    //init button label
-    // ->start scan
-    [self.scanButtonLabel setStringValue:START_SCAN];
-    
+    //set label text to 'Start Scan'
+    self.scanButtonLabel.stringValue = NSLocalizedString(@"Start Scan", @"Start Scan");
+
     //set version info
     [self.versionString setStringValue:[NSString stringWithFormat:NSLocalizedString(@"version: %@", @"version: %@"), getAppVersion()]];
     
@@ -347,9 +346,12 @@
 -(IBAction)scanButtonHandler:(id)sender
 {
     //check state
-    // ->START scan
-    if(YES == [[self.scanButtonLabel stringValue] isEqualToString:START_SCAN])
+    // START scan
+    if(YES == [self.scanButtonLabel.stringValue isEqualToString:NSLocalizedString(@"Start Scan", @"Start Scan")])
     {
+        //disable compare button
+        self.compareButton.enabled = NO;
+        
         //clear out all plugin results
         for(PluginBase* plugin in self.plugins)
         {
@@ -358,11 +360,11 @@
         }
         
         //update the UI
-        // ->reset tables/reflect the started state
+        // reset tables/reflect the started state
         [self startScanUI];
         
         //start scan
-        // ->kicks off background scanner thread
+        // kicks off background scanner thread
         [self startScan];
     }
 
@@ -611,7 +613,7 @@
         else
         {
             //set to unknown items
-            tableItems = item.plugin.unknownItems;
+            tableItems = item.plugin.untrustedItems;
         }
         //reload category table (on main thread)
         // ->this will result in the 'total' being updated
@@ -810,10 +812,9 @@
     //update button's backgroud image
     self.scanButton.alternateImage = [NSImage imageNamed:@"stopScanBG"];
     
-    //set label text
-    // ->'Stop Scan'
-    [self.scanButtonLabel setStringValue:STOP_SCAN];
-
+    //set label text to 'Stop Scan'
+    self.scanButtonLabel.stringValue = NSLocalizedString(@"Stop Scan", @"Stop Scan");
+    
     //disable gear (show prefs) button
     self.showPreferencesButton.enabled = NO;
     
@@ -892,15 +893,17 @@
     //update button's backgroud image
     self.scanButton.alternateImage = [NSImage imageNamed:@"startScanBG"];
     
-    //set label text
-    // ->'Start Scan'
-    [self.scanButtonLabel setStringValue:START_SCAN];
+    //set label text to 'Start Scan'
+    self.scanButtonLabel.stringValue = NSLocalizedString(@"Start Scan", @"Start Scan");
     
     //(re)enable gear (show prefs) button
     self.showPreferencesButton.enabled = YES;
     
     //(re)enable save button
     self.saveButton.enabled = YES;
+    
+    //enable compare button
+    self.compareButton.enabled = YES;
     
     //only show scan stats for completed scan
     if(YES == [statusMsg isEqualToString:SCAN_MSG_COMPLETE])
@@ -945,11 +948,11 @@
         else
         {
             //add up
-            itemCount += plugin.unknownItems.count;
+            itemCount += plugin.untrustedItems.count;
             
             //manually check if each unknown item is flagged
             // ->gotta do this since flaggedItems includes all items
-            for(ItemBase* item in plugin.unknownItems)
+            for(ItemBase* item in plugin.untrustedItems)
             {
                 //check if item it flagged
                 if(YES == [plugin.flaggedItems containsObject:item])
@@ -1163,9 +1166,6 @@
     //output
     __block NSMutableString* output = nil;
     
-    //plugin items
-    __block NSArray* items = nil;
-    
     //error
     __block NSError* error = nil;
     
@@ -1185,81 +1185,18 @@
          //only need to handle 'ok'
          if(NSFileHandlingPanelOKButton == result)
          {
-            //init output string
-            output = [NSMutableString string];
+             //convert scan to JSON
+             output = [self scanToJSON];
             
-            //start JSON
-            [output appendString:@"{"];
-            
-            //iterate over all plugins
-            // ->format/add items to output
-            for(PluginBase* plugin in self.plugins)
-            {
-                //set items
-                // ->all?
-                if(YES == self.prefsWindowController.showTrustedItems)
-                {
-                    //set
-                    items = plugin.allItems;
-                }
-                //set items
-                // ->just unknown items
-                else
-                {
-                    //set
-                    items = plugin.unknownItems;
-                }
-                
-                //add plugin name
-                [output appendString:[NSString stringWithFormat:@"\"%@\":[", plugin.name]];
-            
-                //sync
-                // ->since array will be reset if user clicks 'stop' scan
-                @synchronized(items)
-                {
-                
-                //iterate over all items
-                // ->convert to JSON/append to output
-                for(ItemBase* item in items)
-                {
-                    //add item
-                    [output appendFormat:@"{%@},", [item toJSON]];
-                    
-                }//all plugin items
-                    
-                }//sync
-                
-                //remove last ','
-                if(YES == [output hasSuffix:@","])
-                {
-                    //remove
-                    [output deleteCharactersInRange:NSMakeRange([output length]-1, 1)];
-                }
-                
-                //terminate list
-                [output appendString:@"],"];
-
-            }//all plugins
-            
-            //remove last ','
-            if(YES == [output hasSuffix:@","])
-            {
-                //remove
-                [output deleteCharactersInRange:NSMakeRange([output length]-1, 1)];
-            }
-            
-            //terminate list/output
-            [output appendString:@"}"];
-            
-            //save JSON to disk
-            if(YES == [output writeToURL:[panel URL] atomically:YES encoding:NSUTF8StringEncoding error:&error])
-            {
-                //activate Finder and select file
+             //save JSON to disk
+             if(YES == [output writeToURL:[panel URL] atomically:YES encoding:NSUTF8StringEncoding error:&error])
+             {
+                //activate Finder & select file
                 [NSWorkspace.sharedWorkspace selectFile:panel.URL.path inFileViewerRootedAtPath:@""];
-            }
-            //error saving file
-            else
-            {
+             }
+             //error saving file
+             else
+             {
                 //err msg
                 NSLog(@"OBJECTIVE-SEE ERROR: saving output to %@ failed with %@", [panel URL], error);
                 
@@ -1275,14 +1212,91 @@
                 
                 //show popup
                 [alert runModal];
-
-            }
+             }
             
          }//clicked 'ok' (to save)
     
      }]; //panel callback
     
     return;
+}
+
+//convert scan results to json
+-(NSMutableString*)scanToJSON
+{
+    //json
+    NSMutableString* json = nil;
+    
+    //plugin's items
+    NSArray* items = nil;
+    
+    //init
+    json = [NSMutableString string];
+    
+    //start json
+    [json appendString:@"{"];
+    
+    //iterate over all plugins
+    // ->format/add items to output
+    for(PluginBase* plugin in self.plugins)
+    {
+        //set items
+        // ->all?
+        if(YES == self.prefsWindowController.showTrustedItems)
+        {
+            //set
+            items = plugin.allItems;
+        }
+        //set items
+        // ->just unknown items
+        else
+        {
+            //set
+            items = plugin.untrustedItems;
+        }
+        
+        //add plugin name
+        [json appendString:[NSString stringWithFormat:@"\"%@\":[", plugin.name]];
+    
+        //sync
+        // ->since array will be reset if user clicks 'stop' scan
+        @synchronized(items)
+        {
+        
+        //iterate over all items
+        // ->convert to JSON/append to output
+        for(ItemBase* item in items)
+        {
+            //add item
+            [json appendFormat:@"{%@},", [item toJSON]];
+            
+        }//all plugin items
+            
+        }//sync
+        
+        //remove last ','
+        if(YES == [json hasSuffix:@","])
+        {
+            //remove
+            [json deleteCharactersInRange:NSMakeRange(json.length-1, 1)];
+        }
+        
+        //terminate list
+        [json appendString:@"],"];
+
+    }//all plugins
+    
+    //remove last ','
+    if(YES == [json hasSuffix:@","])
+    {
+        //remove
+        [json deleteCharactersInRange:NSMakeRange(json.length-1, 1)];
+    }
+    
+    //terminate list/output
+    [json appendString:@"}"];
+    
+    return json;
 }
 
 #pragma mark Menu Handler(s) #pragma mark -
@@ -1307,7 +1321,6 @@
     return;
 }
 
-
 //automatically invoked when user clicks gear icon
 // ->show preferences
 -(IBAction)showPreferences:(id)sender
@@ -1327,9 +1340,205 @@
     return;
 }
 
+//compare a past to a current scan
+-(IBAction)compareScans:(id)sender
+{
+    //error
+    NSError* error = nil;
+    
+    //previous scan
+    NSString* prevScan = nil;
+    NSDictionary* prevScanContents = nil;
+    
+    //added items
+    NSMutableArray* addedItems = nil;
+    
+    //removed items
+    NSMutableArray* removedItems = nil;
+    
+    //diff results
+    NSMutableString* differences = nil;
+    
+    //'browse' panel
+    NSOpenPanel *panel = nil;
+    
+    //init
+    differences = [NSMutableString string];
+    
+    //init panel
+    panel = [NSOpenPanel openPanel];
+    
+    //allow files
+    panel.canChooseFiles = YES;
+    
+    //disallow directories
+    panel.canChooseDirectories = NO;
+    
+    //disable multiple selections
+    panel.allowsMultipleSelection = NO;
+    
+    //can open app bundles
+    panel.treatsFilePackagesAsDirectories = YES;
+    
+    //default to desktop
+    // as this where scans are suggested to be saved
+    panel.directoryURL = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains (NSDesktopDirectory, NSUserDomainMask, YES) firstObject]];
+    
+    //show panel
+    // but bail on cancel
+    if(NSModalResponseCancel == [panel runModal])
+    {
+        //bail
+        goto bail;
+    }
+    
+    //load previous scan
+    prevScan = [NSString stringWithContentsOfURL:panel.URL encoding:NSUTF8StringEncoding error:&error];
+    if(nil == prevScan)
+    {
+        //err msg
+        //NSLog(@"OBJECTIVE-SEE ERROR: failed to load %@", panel.URL);
+        goto bail;
+    }
+    
+    //serialize json
+    prevScanContents = [NSJSONSerialization JSONObjectWithData:[prevScan dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+    if(YES != [prevScanContents isKindOfClass:[NSDictionary class]])
+    {
+        goto bail;
+    }
+    
+    //init
+    addedItems = [NSMutableArray array];
+    removedItems = [NSMutableArray array];
+    
+    //compare
+    // for now, only adds / removes
+    for(PluginBase* plugin in self.plugins)
+    {
+        //init
+        NSArray* prevItems = nil;
+        NSArray* currentItems = nil;
+        
+        NSSet *prevPaths = nil;
+        NSSet *currentPaths = nil;
+        
+        NSMutableSet *addedPaths = nil;
+        NSMutableSet *removedPaths = nil;
+        
+        NSMutableDictionary* addedItem = nil;
+        NSMutableDictionary* removedItem = nil;
+        
+        NSString* key = plugin.name;
+        
+        if(YES == self.prefsWindowController.showTrustedItems)
+        {
+            //set
+            currentItems = plugin.allItems;
+        }
+        //set items
+        // just unknown items
+        else
+        {
+            //set
+            currentItems = plugin.untrustedItems;
+        }
+        
+        prevItems = prevScanContents[key];
+        
+        prevPaths = [NSSet setWithArray:[prevItems valueForKey:@"path"]];
+        currentPaths = [NSSet setWithArray:[currentItems valueForKey:@"path"]];
+
+        addedPaths = [currentPaths mutableCopy];
+        [addedPaths minusSet:prevPaths];
+        
+        removedPaths = [prevPaths mutableCopy];
+        [removedPaths minusSet:currentPaths];
+
+        //save added items
+        for(ItemBase* currentItem in currentItems) {
+            if(YES == [addedPaths containsObject:currentItem.path])
+            {
+                //convert to dictionary
+                addedItem = [[NSJSONSerialization JSONObjectWithData:[[NSString stringWithFormat:@"{%@}", [currentItem toJSON]] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil] mutableCopy];
+                if(nil == addedItem)
+                {
+                    continue;
+                }
+                
+                //add key
+                addedItem[@"key"] = key;
+                
+                //add
+                [addedItems addObject:addedItem];
+            }
+        }
+        
+        //save removed items
+        for(NSDictionary* prevItem in prevItems) {
+            if(YES == [removedPaths containsObject:prevItem[@"path"]])
+            {
+                removedItem = [prevItem mutableCopy];
+                removedItem[@"key"] = key;
+                
+                //add
+                [removedItems addObject:removedItem];
+            }
+        }
+    }
+    
+    //any changes
+    if( (0 == addedItems.count) &&
+        (0 == removedItems.count) )
+    {
+        //no changes
+        differences = [@"No Changes Detected\r\n...scans are identical" mutableCopy];
+    }
+    
+    //any added items?
+    if(0 != addedItems.count)
+    {
+        //msg
+        [differences appendString:@"NEW ITEMS:\r\n"];
+        
+        //add each item
+        for(NSDictionary* item in addedItems)
+        {
+            //add
+            [differences appendString:[NSString stringWithFormat:@"(%@): %@\r\n", [item[@"key"] substringToIndex:[item[@"key"] length]-1], item.description]];
+        }
+    }
+    
+    //any removed items
+    if(0 != removedItems.count)
+    {
+        //msg
+        [differences appendString:@"REMOVED ITEMS:\r\n"];
+        
+        //add each item
+        for(NSDictionary* item in removedItems)
+        {
+            //add
+            [differences appendString:[NSString stringWithFormat:@"(%@): %@\r\n", [item[@"key"] substringToIndex:[item[@"key"] length]-1], item.description]];
+        }
+    }
+
+    //alloc window controller
+    self.diffWindowController = [[DiffWindowController alloc] initWithWindowNibName:@"DiffWindow"];
+    
+    //set text (differences)
+    self.diffWindowController.differences = differences;
+    
+    //show window
+    [self.diffWindowController showWindow:self];
+    
+bail:
+    
+    return;
+}
 
 //automatically invoked when menu is clicked
-// ->tell menu to disable 'Preferences' when scan is running
+// tell menu to disable 'Preferences' when scan is running
 -(BOOL)validateMenuItem:(NSMenuItem *)item
 {
     //enable
@@ -1339,7 +1548,7 @@
     if(PREF_MENU_ITEM_TAG == item.tag)
     {
         //unset enabled flag if scan is running
-        if(YES != [[self.scanButtonLabel stringValue] isEqualToString:START_SCAN])
+        if(YES != [self.scanButtonLabel.stringValue isEqualToString:NSLocalizedString(@"Start Scan", @"Start Scan")])
         {
             //disable
             bEnabled = NO;
@@ -1370,7 +1579,6 @@
     
     return;
 }
-
 
 //process update response
 // error, no update, update/new version

@@ -27,7 +27,10 @@
 //all detected items
 @property(retain, nonatomic)NSMutableArray* allItems;
 
-//unknown items
+//untrusted items
+@property(retain, nonatomic)NSMutableArray* untrustedItems;
+
+//unknown (VT) items
 @property(retain, nonatomic)NSMutableArray* unknownItems;
 
 //flagged items

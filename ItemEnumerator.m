@@ -113,7 +113,7 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
     NSArray* serializedOutput = nil;
     
     //exec system profiler
-    taskOutput = execTask(SYSTEM_PROFILER, @[@"SPApplicationsDataType", @"-xml", @"-detailLevel", @"mini"]);
+    taskOutput = execTask(SYSTEM_PROFILER, @[@"SPApplicationsDataType", @"-xml", @"-detailLevel", @"mini"], NULL);
     if( (nil == taskOutput) ||
         (0 == taskOutput.length) )
     {

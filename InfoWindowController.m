@@ -173,7 +173,7 @@
     //set path
     self.plistWindowController.plist = ((File*)self.itemObj).plist;
     
-    //show entitlements
+    //show preferences
     [self.window beginSheet:self.plistWindowController.window completionHandler:^(NSModalResponse returnCode) {
         
         //unset window controller

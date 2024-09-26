@@ -53,7 +53,7 @@ void makeTextViewHyperlink(NSTextField* textField, NSURL* url);
 NSMutableAttributedString* setStringColor(NSAttributedString* string, NSColor* color);
 
 //exec a process and grab it's output
-NSData* execTask(NSString* binaryPath, NSArray* arguments);
+NSData* execTask(NSString* binaryPath, NSArray* arguments, int* exitCode);
 
 //wait until a window is non nil
 // ->then make it modal

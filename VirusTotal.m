@@ -212,6 +212,18 @@ extern BOOL cmdlineMode;
                 }
             }
             
+            //if its unknown save
+            if(nil == results[VT_RESULTS_URL])
+            {
+                //sync
+                // ->since array will be reset if user clicks 'stop' scan
+                @synchronized(fileObj.plugin.unknownItems)
+                {
+                    //save
+                    [fileObj.plugin.unknownItems addObject:fileObj];
+                }
+            }
+            
             //callback up into UI to reload item
             [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:fileObj];
             
@@ -220,7 +232,7 @@ extern BOOL cmdlineMode;
         }
         
         //nap
-        [NSThread sleepForTimeInterval:60.0f];
+        [NSThread sleepForTimeInterval:30.0f];
     }
     
     return;

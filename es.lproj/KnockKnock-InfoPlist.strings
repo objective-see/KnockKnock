@@ -1,0 +1,6 @@
+/* Bundle name */
+"CFBundleName" = "KnockKnock";
+
+/* Copyright (human-readable) */
+"NSHumanReadableCopyright" = "Copyright © 2019 Objective-See, LLC. Todos los derechos reservados.";
+

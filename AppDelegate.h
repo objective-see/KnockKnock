@@ -13,6 +13,7 @@
 #import "VirusTotal.h"
 #import "ItemEnumerator.h"
 #import "ItemTableController.h"
+#import "DiffWindowController.h"
 #import "AboutWindowController.h"
 #import "PrefsWindowController.h"
 #import "UpdateWindowController.h"
@@ -29,7 +30,6 @@ extern ItemEnumerator* sharedItemEnumerator;
 //filter object
 extern Filter* itemFilter;
 
-
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate, NSTableViewDataSource, NSTableViewDelegate, NSMenuDelegate>
 {
    
@@ -43,6 +43,9 @@ extern Filter* itemFilter;
 
 //close button
 @property (weak) IBOutlet NSButton* closeButton;
+
+//compare button
+@property (weak) IBOutlet NSButton *compareButton;
 
 //flag for secondary scan
 // ->need to restart shared enumerator 
@@ -98,6 +101,9 @@ extern Filter* itemFilter;
 
 //array for all virus total threads
 @property(nonatomic, retain)NSMutableArray* vtThreads;
+
+//differences window controller
+@property (strong) DiffWindowController* diffWindowController;
 
 //preferences window controller
 @property(nonatomic, retain)PrefsWindowController* prefsWindowController;

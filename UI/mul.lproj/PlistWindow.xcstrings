@@ -10,17 +10,11 @@
             "state" : "new",
             "value" : "Close"
           }
-        }
-      }
-    },
-    "F0z-JX-Cv5.title" : {
-      "comment" : "Class = \"NSWindow\"; title = \"Window\"; ObjectID = \"F0z-JX-Cv5\";",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
+        },
+        "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Window"
+            "state" : "translated",
+            "value" : "Cerrar"
           }
         }
       }
@@ -32,6 +26,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "plist"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "plist"
           }
         }

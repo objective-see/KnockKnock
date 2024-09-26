@@ -464,7 +464,7 @@ NSMutableAttributedString* setStringColor(NSAttributedString* string, NSColor* c
 }
 
 //exec a process and grab it's output
-NSData* execTask(NSString* binaryPath, NSArray* arguments)
+NSData* execTask(NSString* binaryPath, NSArray* arguments, int* exitCode)
 {
     //task
     NSTask* task = nil;
@@ -477,6 +477,13 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments)
     
     //output
     NSMutableData* output = nil;
+    
+    //init
+    if(NULL != exitCode)
+    {
+        //init
+        *exitCode = -1;
+    }
     
     //init task
     task = [NSTask new];
@@ -503,7 +510,7 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments)
     [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
     
     //wrap task launch
-    // ->can throw exception if binary path not found, etc
+    // can throw exception if binary path not found, etc
     @try{
         
         //launch
@@ -525,8 +532,15 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments)
     //grab any left over data
     [output appendData:[readHandle readDataToEndOfFile]];
     
+    //save termination status
+    if(NULL != exitCode)
+    {
+        //save
+        *exitCode = task.terminationStatus;
+    }
+
 bail:
-    
+
     return output;
 }
 
@@ -879,7 +893,7 @@ NSMutableArray* runningProcesses(void)
     processes = [NSMutableArray array];
     
     //get # of procs
-    numberOfProcesses = proc_listpids(PROC_ALL_PIDS, 0, NULL, 0);
+    numberOfProcesses = proc_listallpids(NULL, 0);
     
     //alloc buffer for pids
     pids = calloc(numberOfProcesses, sizeof(pid_t));

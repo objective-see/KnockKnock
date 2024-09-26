@@ -26,8 +26,11 @@ Filter* itemFilter = nil;
 //shared item enumerator object
 ItemEnumerator* sharedItemEnumerator = nil;
 
-//cmdline flag
+//cmdline scan
 BOOL cmdlineMode = NO;
+
+//cmdline flag
+BOOL isVerbose = NO;
 
 /* FUNCTIONS */
 

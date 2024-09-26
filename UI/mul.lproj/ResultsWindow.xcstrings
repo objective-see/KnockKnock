@@ -10,6 +10,12 @@
             "state" : "new",
             "value" : "results..."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "resultados..."
+          }
         }
       }
     },
@@ -20,6 +26,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "OK"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "OK"
           }
         }
@@ -33,6 +45,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Scan Complete"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escaneo Completo"
           }
         }
       }

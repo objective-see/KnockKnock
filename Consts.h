@@ -18,12 +18,6 @@
 //supported plugins
 static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"BTM", @"CronJobs", @"DirectoryServicesPlugins", @"DockTiles", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"QuicklookPlugins", @"SpotlightImporters", @"StartupScripts", @"SystemExtensions"};
 
-//button text, start scan
-#define START_SCAN @"Start Scan"
-
-//button text, stop scan
-#define STOP_SCAN @"Stop Scan"
-
 //status msg
 #define SCAN_MSG_STARTED @"Scanning Started"
 
@@ -120,6 +114,9 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 
 //user (home) directory
 #define USER_DIRECTORY @"userDirectory"
+
+//path to diff
+#define DIFF @"/usr/bin/diff"
 
 //menu
 
