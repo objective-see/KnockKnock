@@ -580,7 +580,7 @@
                             <action selector="compareScans:" target="494" id="0Oh-bZ-RVo"/>
                         </connections>
                     </button>
-                    <button toolTip="Show settings" alphaValue="0.80000000000000004" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="3Oy-Jc-lEj" userLabel="Preferences">
+                    <button toolTip="Show settings" alphaValue="0.80000000000000004" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="3Oy-Jc-lEj" userLabel="Settings">
                         <rect key="frame" x="36" y="18" width="32" height="25"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Preferences" imagePosition="only" alignment="center" alternateImage="PreferencesAlternate" imageScaling="proportionallyDown" inset="2" id="avs-eW-Ie2">
                             <behavior key="behavior" lightByContents="YES"/>
@@ -701,8 +701,10 @@
                 <outlet property="itemTableController" destination="8VH-uv-w4O" id="zNb-sJ-msd"/>
                 <outlet property="logoButton" destination="HoI-FQ-vTI" id="bzc-wu-4Hv"/>
                 <outlet property="progressIndicator" destination="839" id="870"/>
+                <outlet property="saveButton" destination="3Vf-uL-OZX" id="VPM-js-OCL"/>
                 <outlet property="scanButton" destination="655" id="835"/>
                 <outlet property="scanButtonLabel" destination="768" id="837"/>
+                <outlet property="showSettingsButton" destination="3Oy-Jc-lEj" id="F95-oy-TC6"/>
                 <outlet property="statusText" destination="745" id="871"/>
                 <outlet property="versionString" destination="LfL-UI-usm" id="2nV-AF-olP"/>
                 <outlet property="window" destination="371" id="532"/>

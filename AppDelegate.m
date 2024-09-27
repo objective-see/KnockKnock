@@ -30,7 +30,7 @@
 @synthesize itemTableController;
 @synthesize aboutWindowController;
 @synthesize prefsWindowController;
-@synthesize showPreferencesButton;
+@synthesize showSettingsButton;
 @synthesize updateWindowController;
 @synthesize categoryTableController;
 @synthesize resultsWindowController;
@@ -269,10 +269,10 @@
 
     //init tracking area
     // ->for preference button
-    trackingArea = [[NSTrackingArea alloc] initWithRect:[self.showPreferencesButton bounds] options:(NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways) owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:self.showPreferencesButton.tag]}];
+    trackingArea = [[NSTrackingArea alloc] initWithRect:[self.showSettingsButton bounds] options:(NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways) owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:self.showSettingsButton.tag]}];
     
     //add tracking area to pref button
-    [self.showPreferencesButton addTrackingArea:trackingArea];
+    [self.showSettingsButton addTrackingArea:trackingArea];
     
     //init tracking area
     // ->for save results button
@@ -349,9 +349,6 @@
     // START scan
     if(YES == [self.scanButtonLabel.stringValue isEqualToString:NSLocalizedString(@"Start Scan", @"Start Scan")])
     {
-        //disable compare button
-        self.compareButton.enabled = NO;
-        
         //clear out all plugin results
         for(PluginBase* plugin in self.plugins)
         {
@@ -805,10 +802,13 @@
     self.scanButtonLabel.stringValue = NSLocalizedString(@"Stop Scan", @"Stop Scan");
     
     //disable gear (show prefs) button
-    self.showPreferencesButton.enabled = NO;
+    self.showSettingsButton.enabled = NO;
     
     //disable save button
     self.saveButton.enabled = NO;
+    
+    //disable compare button
+    self.compareButton.enabled = NO;
     
     return;
 }
@@ -886,7 +886,7 @@
     self.scanButtonLabel.stringValue = NSLocalizedString(@"Start Scan", @"Start Scan");
     
     //(re)enable gear (show prefs) button
-    self.showPreferencesButton.enabled = YES;
+    self.showSettingsButton.enabled = YES;
     
     //(re)enable save button
     self.saveButton.enabled = YES;

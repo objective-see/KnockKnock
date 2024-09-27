@@ -44,9 +44,6 @@ extern Filter* itemFilter;
 //close button
 @property (weak) IBOutlet NSButton* closeButton;
 
-//compare button
-@property (weak) IBOutlet NSButton *compareButton;
-
 //flag for secondary scan
 // ->need to restart shared enumerator 
 @property BOOL secondaryScan;
@@ -82,10 +79,13 @@ extern Filter* itemFilter;
 @property (weak) IBOutlet NSTextField *scanButtonLabel;
 
 //show preferences button
-@property (weak) IBOutlet NSButton *showPreferencesButton;
+@property (weak) IBOutlet NSButton *showSettingsButton;
 
 //save button
 @property (weak) IBOutlet NSButton *saveButton;
+
+//compare button
+@property (weak) IBOutlet NSButton *compareButton;
 
 //spinner
 @property (weak) IBOutlet NSProgressIndicator *progressIndicator;

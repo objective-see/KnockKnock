@@ -23,9 +23,6 @@
     [self.window center];
 }
 
-//TODO: update patrons
-//TODO: disable buttons during scan!
-
 //initialize window
 -(void)windowDidLoad
 {

@@ -1,54 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    " \r\n■ %lu item(s) flagged by VirusTotal" : {
-      "comment" : " \r\n■ %lu item(s) flagged by VirusTotal",
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " \r\n■ %lu ítem(s) marcado(s) por VirusTotal"
-          }
-        }
-      }
-    },
-    " \r\n■ Unable to query VirusTotal (network)" : {
-      "comment" : " \r\n■ Unable to query VirusTotal (network)",
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " \r\n■ No se puede consultar a VirusTotal (red)"
-          }
-        }
-      }
-    },
-    "■ Found %lu items" : {
-      "comment" : "■ Found %lu items",
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "■ Encontrados %lu ítems"
-          }
-        }
-      }
-    },
-    "■ Found %lu non-OS items" : {
-      "comment" : "■ Found %lu non-OS items",
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "■ Encontrados %lu ítems que no son del SO"
-          }
-        }
-      }
-    },
     "a new version (%@) is available!" : {
       "comment" : "a new version (%@) is available!",
       "localizations" : {
