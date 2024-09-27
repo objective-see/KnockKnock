@@ -470,7 +470,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button tag="1003" translatesAutoresizingMaskIntoConstraints="NO" id="HoI-FQ-vTI">
+                    <button tag="1004" translatesAutoresizingMaskIntoConstraints="NO" id="HoI-FQ-vTI">
                         <rect key="frame" x="633" y="10" width="29" height="32"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="logoApple" imagePosition="only" alignment="center" alternateImage="logoAppleBG" imageScaling="proportionallyDown" inset="2" id="3g8-vm-R7Z">
                             <behavior key="behavior" lightByContents="YES"/>
@@ -548,7 +548,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button toolTip="Save results" alphaValue="0.69999999999999996" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="3Vf-uL-OZX" userLabel="Save">
+                    <button toolTip="Save results" alphaValue="0.69999999999999996" tag="1002" translatesAutoresizingMaskIntoConstraints="NO" id="3Vf-uL-OZX" userLabel="Save">
                         <rect key="frame" x="107" y="18" width="32" height="25"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Save" imagePosition="overlaps" alignment="center" alternateImage="SaveAlternate" imageScaling="proportionallyDown" inset="2" id="qot-w1-c5s">
                             <behavior key="behavior" lightByContents="YES"/>
@@ -564,7 +564,7 @@
                             <action selector="saveResults:" target="494" id="80q-Wn-Exk"/>
                         </connections>
                     </button>
-                    <button toolTip="Compare a previous scan, with the current one" alphaValue="0.69999999999999996" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="JbU-ET-kri" userLabel="Compare">
+                    <button toolTip="Compare a previous scan, with the current one" alphaValue="0.69999999999999996" tag="1003" translatesAutoresizingMaskIntoConstraints="NO" id="JbU-ET-kri" userLabel="Compare">
                         <rect key="frame" x="179" y="18" width="32" height="25"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Compare" imagePosition="overlaps" alignment="center" alternateImage="CompareAlternate" enabled="NO" imageScaling="proportionallyDown" inset="2" id="wey-hs-5qb">
                             <behavior key="behavior" lightByContents="YES"/>
@@ -580,7 +580,7 @@
                             <action selector="compareScans:" target="494" id="0Oh-bZ-RVo"/>
                         </connections>
                     </button>
-                    <button toolTip="Show settings" alphaValue="0.80000000000000004" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="3Oy-Jc-lEj" userLabel="Settings">
+                    <button toolTip="Show settings" alphaValue="0.80000000000000004" tag="1001" translatesAutoresizingMaskIntoConstraints="NO" id="3Oy-Jc-lEj" userLabel="Settings">
                         <rect key="frame" x="36" y="18" width="32" height="25"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Preferences" imagePosition="only" alignment="center" alternateImage="PreferencesAlternate" imageScaling="proportionallyDown" inset="2" id="avs-eW-Ie2">
                             <behavior key="behavior" lightByContents="YES"/>

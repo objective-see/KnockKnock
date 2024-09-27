@@ -280,6 +280,13 @@
     
     //add tracking area to save button
     [self.saveButton addTrackingArea:trackingArea];
+    
+    //init tracking area
+    // ->for save results button
+    trackingArea = [[NSTrackingArea alloc] initWithRect:[self.compareButton bounds] options:(NSTrackingInVisibleRect|NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways) owner:self userInfo:@{@"tag":[NSNumber numberWithUnsignedInteger:self.compareButton.tag]}];
+    
+    //add tracking area to save button
+    [self.compareButton addTrackingArea:trackingArea];
 
     //init tracking area
     // ->for logo button
@@ -1105,14 +1112,21 @@
         else if(PREF_BUTTON_TAG == tag)
         {
             //set
-            imageName = @"settings";
+            imageName = @"Preferences";
         }
         
-        //set original preferences image
+        //set original save image
         else if(SAVE_BUTTON_TAG == tag)
         {
             //set
-            imageName = @"save";
+            imageName = @"Save";
+        }
+        
+        //set orginal compare image
+        else if(COMPARE_BUTTON_TAG == tag)
+        {
+            //set
+            imageName = @"Compare";
         }
         
         //set original logo image
@@ -1146,14 +1160,22 @@
         else if(PREF_BUTTON_TAG == tag)
         {
             //set
-            imageName = @"settingsOver";
+            imageName = @"PreferencesAlternate";
         }
         //set mouse over save image
         else if(SAVE_BUTTON_TAG == tag)
         {
             //set
-            imageName = @"saveOver";
+            imageName = @"SaveAlternate";
         }
+        
+        //set mouse over compare image
+        else if(COMPARE_BUTTON_TAG == tag)
+        {
+            //set
+            imageName = @"CompareAlternate";
+        }
+        
         //set mouse over logo image
         else if(LOGO_BUTTON_TAG == tag)
         {

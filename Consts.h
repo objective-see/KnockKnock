@@ -144,8 +144,11 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //pref button
 #define SAVE_BUTTON_TAG 1002
 
+//compare button
+#define COMPARE_BUTTON_TAG 1003
+
 //logo button
-#define LOGO_BUTTON_TAG 1003
+#define LOGO_BUTTON_TAG 1004
 
 //category table
 
