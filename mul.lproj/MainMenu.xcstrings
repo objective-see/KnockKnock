@@ -103,7 +103,7 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Guardar resultados"
           }
         }
@@ -481,8 +481,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Guardar resultados"
+            "state" : "translated",
+            "value" : "Comparar un escaneo previo con el actual"
           }
         }
       }

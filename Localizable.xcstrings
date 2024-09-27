@@ -134,7 +134,15 @@
       }
     },
     "errno value: %d" : {
-      "comment" : "errno value: %d"
+      "comment" : "errno value: %d",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "valor errno: %d"
+          }
+        }
+      }
     },
     "error, failed to check for an update." : {
       "comment" : "error, failed to check for an update.",
@@ -148,7 +156,15 @@
       }
     },
     "ERROR:\nfailed to open %@" : {
-      "comment" : "ERROR:\nfailed to open %@"
+      "comment" : "ERROR:\nfailed to open %@",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR: falló al abrirse %@"
+          }
+        }
+      }
     },
     "ERROR: failed to save output" : {
       "comment" : "ERROR: failed to save output",
@@ -184,10 +200,26 @@
       }
     },
     "Found %lu persistent (non-OS) items" : {
-      "comment" : "Found %lu persistent (non-OS) items"
+      "comment" : "Found %lu persistent (non-OS) items",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se encontraron %lu  ítems (no-OS) persistentes"
+          }
+        }
+      }
     },
     "Found %lu persistent items" : {
-      "comment" : "Found %lu persistent items"
+      "comment" : "Found %lu persistent items",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se encontraron %lu  ítems persistentes"
+          }
+        }
+      }
     },
     "installed kexts, likely kernel loaded" : {
       "comment" : "installed kexts, likely kernel loaded",
@@ -417,11 +449,25 @@
             "state" : "new",
             "value" : "VirusTotal:\r\n %1$lu flagged item(s)\r\n %2$lu unknown item(s)"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VirusTotal:\r\n %1$lu ítem(s) marcados\r\n %2$lu ítem(s) desconocidos"
+          }
         }
       }
     },
     "VirusTotal: Unable to query VirusTotal (network)" : {
-      "comment" : "VirusTotal: Unable to query VirusTotal (network)"
+      "comment" : "VirusTotal: Unable to query VirusTotal (network)",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VirusTotal: No se pudo consultar VirusTotal (red)"
+          }
+        }
+      }
     },
     "you're all up to date! (v. %@)" : {
       "comment" : "you're all up to date! (v. %@)",
