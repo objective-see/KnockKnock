@@ -74,7 +74,7 @@
         (NULL == [self.binaryData bytes]) )
     {
         //err msg
-        //NSLog(@"OBJECTIVE-SEE ERROR: failed to load %@ into memory", binaryPath);
+        //NSLog(@"ERROR: failed to load %@ into memory", binaryPath);
         
         //bail
         goto bail;
@@ -85,7 +85,7 @@
     if(YES != [self parseHeaders])
     {
         //err msg
-        //NSLog(@"OBJECTIVE-SEE ERROR: failed to find any machO headers");
+        //NSLog(@"ERROR: failed to find any machO headers");
         
         //bail
         goto bail;
@@ -96,7 +96,7 @@
     if(YES != [self parseLoadCmds])
     {
         //err msg
-        //NSLog(@"OBJECTIVE-SEE ERROR: failed to parse load commands");
+        //NSLog(@"ERROR: failed to parse load commands");
         
         //bail
         goto bail;
@@ -331,7 +331,7 @@ bail:
             default:
                 
                 //err msg
-                //NSLog(@"OBJECTIVE-SEE ERROR: unknown machO magic: %#x", *headerStart);
+                //NSLog(@"ERROR: unknown machO magic: %#x", *headerStart);
                 
                 //next
                 break;

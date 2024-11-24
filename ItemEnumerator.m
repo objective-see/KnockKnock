@@ -134,7 +134,7 @@ NSString * const LAUNCHITEM_SEARCH_DIRECTORIES[] = {@"/System/Library/LaunchDaem
     @catch (NSException *exception)
     {
         //err msg
-        //NSLog(@"OBJECTIVE-SEE ERROR: serialized output not formatted as expected");
+        //NSLog(@"ERROR: serialized output not formatted as expected");
         
         //bail
         goto bail;

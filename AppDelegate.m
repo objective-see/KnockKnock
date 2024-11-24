@@ -623,26 +623,30 @@
         // ->this will result in the 'total' being updated
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            //begin updates
-            [self.itemTableController.itemTableView beginUpdates];
-            
-            //update category table row
-            // ->this will result in the 'total' being updated
-            [self.categoryTableController.categoryTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:[self.plugins indexOfObject:item.plugin]] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
-            
-            //if this plugin is currently the selected one (in the category table)
-            // ->update the item row
-            if(self.selectedPlugin == item.plugin)
-            {
-                //first tell item table the # of items have changed
-                [self.itemTableController.itemTableView noteNumberOfRowsChanged];
+            @synchronized (self) {
                 
-                //reload just the new row
-                [self.itemTableController.itemTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:(tableItems.count-1)] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
-            }
-            
-            //end updates
-            [self.itemTableController.itemTableView endUpdates];
+                //begin updates
+                [self.itemTableController.itemTableView beginUpdates];
+                
+                //update category table row
+                // ->this will result in the 'total' being updated
+                [self.categoryTableController.categoryTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:[self.plugins indexOfObject:item.plugin]] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+                
+                //if this plugin is currently the selected one (in the category table)
+                // ->update the item row
+                if(self.selectedPlugin == item.plugin)
+                {
+                    //first tell item table the # of items have changed
+                    [self.itemTableController.itemTableView noteNumberOfRowsChanged];
+                    
+                    //reload just the new row
+                    [self.itemTableController.itemTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:(tableItems.count-1)] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+                }
+                
+                //end updates
+                [self.itemTableController.itemTableView endUpdates];
+                
+            }//sync
         });
     }
     
@@ -989,6 +993,9 @@
             details = [NSMutableString stringWithFormat:NSLocalizedString(@"Found %lu persistent (non-OS) items", @"Found %lu persistent (non-OS) items"), (unsigned long)items];
         }
     }
+    
+    //remove any dups from unknown items
+    [self removeDuplicates:unknownItems];
 
     //when VT integration is enabled
     // add flagged and unknown items
@@ -1010,9 +1017,6 @@
         }
     }
     
-    //remove any dups from unknown items
-    [self removeDuplicates:unknownItems];
-
     //alloc/init
     resultsWindowController = [[ResultsWindowController alloc] initWithWindowNibName:@"ResultsWindow"];
         
@@ -1245,7 +1249,7 @@
              else
              {
                 //err msg
-                NSLog(@"OBJECTIVE-SEE ERROR: saving output to %@ failed with %@", [panel URL], error);
+                NSLog(@"ERROR: saving output to %@ failed with %@", [panel URL], error);
                 
                 //init alert
                 alert = [[NSAlert alloc] init];
@@ -1387,6 +1391,12 @@
     //error
     NSError* error = nil;
     
+    //flag
+    BOOL errors = NO;
+    
+    //alert
+    NSAlert* alert = nil;
+    
     //previous scan
     NSString* prevScan = nil;
     NSDictionary* prevScanContents = nil;
@@ -1437,8 +1447,8 @@
     prevScan = [NSString stringWithContentsOfURL:panel.URL encoding:NSUTF8StringEncoding error:&error];
     if(nil == prevScan)
     {
-        //err msg
-        //NSLog(@"OBJECTIVE-SEE ERROR: failed to load %@", panel.URL);
+        //set
+        errors = YES;
         goto bail;
     }
     
@@ -1446,6 +1456,8 @@
     prevScanContents = [NSJSONSerialization JSONObjectWithData:[prevScan dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     if(YES != [prevScanContents isKindOfClass:[NSDictionary class]])
     {
+        //set
+        errors = YES;
         goto bail;
     }
     
@@ -1457,7 +1469,7 @@
     // for now, only adds / removes
     for(PluginBase* plugin in self.plugins)
     {
-        //init
+        //vars
         NSArray* prevItems = nil;
         NSArray* currentItems = nil;
         
@@ -1472,6 +1484,7 @@
         
         NSString* key = plugin.name;
         
+        //trusted items?
         if(YES == self.prefsWindowController.showTrustedItems)
         {
             //set
@@ -1497,34 +1510,46 @@
         [removedPaths minusSet:currentPaths];
 
         //save added items
-        for(ItemBase* currentItem in currentItems) {
-            if(YES == [addedPaths containsObject:currentItem.path])
+        for(ItemBase* currentItem in currentItems)
+        {
+            //added?
+            if(YES != [addedPaths containsObject:currentItem.path])
             {
-                //convert to dictionary
-                addedItem = [[NSJSONSerialization JSONObjectWithData:[[NSString stringWithFormat:@"{%@}", [currentItem toJSON]] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil] mutableCopy];
-                if(nil == addedItem)
-                {
-                    continue;
-                }
-                
-                //add key
-                addedItem[@"key"] = key;
-                
-                //add
-                [addedItems addObject:addedItem];
+                //skip
+                continue;
             }
+        
+            //convert to dictionary
+            addedItem = [[NSJSONSerialization JSONObjectWithData:[[NSString stringWithFormat:@"{%@}", [currentItem toJSON]] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil] mutableCopy];
+            if(nil == addedItem)
+            {
+                //skip
+                continue;
+            }
+                
+            //add key
+            addedItem[@"key"] = key;
+                
+            //add
+            [addedItems addObject:addedItem];
         }
         
         //save removed items
-        for(NSDictionary* prevItem in prevItems) {
-            if(YES == [removedPaths containsObject:prevItem[@"path"]])
+        for(NSDictionary* prevItem in prevItems)
+        {
+            //removed?
+            if(YES != [removedPaths containsObject:prevItem[@"path"]])
             {
-                removedItem = [prevItem mutableCopy];
-                removedItem[@"key"] = key;
-                
-                //add
-                [removedItems addObject:removedItem];
+                //skip
+                continue;
             }
+            
+            //make copy
+            removedItem = [prevItem mutableCopy];
+            removedItem[@"key"] = key;
+                
+            //add
+            [removedItems addObject:removedItem];
         }
     }
     
@@ -1533,14 +1558,14 @@
         (0 == removedItems.count) )
     {
         //no changes
-        differences = [@"No Changes Detected\r\n...scans are identical" mutableCopy];
+        differences = [NSLocalizedString(@"No Changes Detected", @"No Changes Detected") mutableCopy];
     }
     
     //any added items?
     if(0 != addedItems.count)
     {
         //msg
-        [differences appendString:@"NEW ITEMS:\r\n"];
+        [differences appendString:NSLocalizedString(@"NEW ITEMS:\r\n", @"NEW ITEMS:\r\n")];
         
         //add each item
         for(NSDictionary* item in addedItems)
@@ -1554,7 +1579,7 @@
     if(0 != removedItems.count)
     {
         //msg
-        [differences appendString:@"REMOVED ITEMS:\r\n"];
+        [differences appendString:NSLocalizedString(@"REMOVED ITEMS:\r\n", @"REMOVED ITEMS:\r\n")];
         
         //add each item
         for(NSDictionary* item in removedItems)
@@ -1574,6 +1599,23 @@
     [self.diffWindowController showWindow:self];
     
 bail:
+    
+    //any errors?
+    // show alert
+    if(YES == errors)
+    {
+        //init alert
+        alert = [[NSAlert alloc] init];
+       
+        //ok
+        [alert addButtonWithTitle:@"Ok"];
+        
+        //error msg
+        alert.messageText = NSLocalizedString(@"ERROR: Failed to compare scans", @"ERROR: Failed to compare scans");
+        
+        //show popup
+        [alert runModal];
+    }
     
     return;
 }

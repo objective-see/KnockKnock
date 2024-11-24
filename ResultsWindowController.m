@@ -65,7 +65,7 @@
     [self.submissionActivityIndicator startAnimation:nil];
     
     //set message
-    self.submissionStatus.stringValue = [NSString stringWithFormat:@"Submitting %lu unknown items to VirusTotal...", self.unknownItems.count];
+    self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submitting %lu item(s) to VirusTotal...", @"Submitting %lu item(s) to VirusTotal..."), self.unknownItems.count];
     
     //show it
     self.submissionStatus.hidden = NO;
@@ -85,7 +85,7 @@
 }
 
 //update UI now that submission is done
--(void)submissionComplete:(NSUInteger)successes
+-(void)submissionComplete:(NSUInteger)successes httpResponse:(NSURLResponse*)httpResponse
 {
     //enable close
     self.closeButton.enabled = YES;
@@ -97,12 +97,12 @@
     if(successes == self.unknownItems.count)
     {
         //update message
-        self.submissionStatus.stringValue = [NSString stringWithFormat:@"Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed)."];
+        self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed).", @"Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed).")];
     }
     else
     {
         //update message
-        self.submissionStatus.stringValue = [NSString stringWithFormat:@"Submissions complete, though errors were encountered"];
+        self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submissions complete, though errors were encountered (HTTP response: %ld).", @"Submissions complete, though errors were encountered (HTTP response: %ld)."), (long)[(NSHTTPURLResponse *)httpResponse statusCode]];
     }
     
     return;
@@ -165,7 +165,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 //update
-                self.submissionStatus.stringValue = [NSString stringWithFormat:@"Failed to submit '%@'", ((File*)item).name];
+                self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Failed to submit '%@'", @"Failed to submit '%@'"), ((File*)item).name];
             });
             
             //nap (for UI)
@@ -180,9 +180,6 @@
         
         //update UI
         dispatch_async(dispatch_get_main_queue(), ^{
-            
-            //update
-            self.submissionStatus.stringValue = [NSString stringWithFormat:@"Submitted '%@'", ((File*)item).path];
             
             //set item's VT status in UI to pending (...)
             [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:(File*)item];
@@ -203,7 +200,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             
             //update
-            self.submissionStatus.stringValue = [NSString stringWithFormat:@"Awaiting results..."];
+            self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Awaiting results...", @"Awaiting results...")];
         });
         
         //nap more VT to process
@@ -225,7 +222,10 @@
                 
                 //nap for UI
                 sleep(1);
+                
+                continue;
             }
+            
             //happy
             // results will show up in UI
             successes++;
@@ -236,7 +236,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         
         //complete
-        [self submissionComplete:successes];
+        [self submissionComplete:successes httpResponse:result[VT_HTTP_RESPONSE]];
         
     });
     

@@ -366,7 +366,7 @@ NSDictionary* hashFile(NSString* filePath)
     if(nil == (fileContents = [NSData dataWithContentsOfFile:filePath]))
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: couldn't load %@ to hash", filePath);
+        NSLog(@"ERROR: couldn't load %@ to hash", filePath);
         
         //bail
         goto bail;

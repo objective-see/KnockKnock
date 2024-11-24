@@ -422,7 +422,7 @@
         @catch(NSException *exception)
         {
             //err msg
-            //NSLog(@"OBJECTIVE-SEE ERROR: converting chrome pref's to JSON threw %@", exception);
+            //NSLog(@"ERROR: converting chrome pref's to JSON threw %@", exception);
             
             //skip
             continue;

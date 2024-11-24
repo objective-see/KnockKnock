@@ -267,6 +267,9 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //results scan id
 #define VT_RESULTS_SCANID @"scan_id"
 
+//HTTP response
+#define VT_HTTP_RESPONSE @"http_response"
+
 //output file
 #define OUTPUT_FILE @"kkResults.txt"
 

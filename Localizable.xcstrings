@@ -23,6 +23,9 @@
         }
       }
     },
+    "Awaiting results..." : {
+      "comment" : "Awaiting results..."
+    },
     "Awaiting VirusTotal results" : {
       "comment" : "Awaiting VirusTotal results",
       "localizations" : {
@@ -166,6 +169,12 @@
         }
       }
     },
+    "ERROR:\nFailed to submit '%@' to VirusTotal" : {
+      "comment" : "ERROR:\nFailed to submit '%@' to VirusTotal"
+    },
+    "ERROR: Failed to compare scans" : {
+      "comment" : "ERROR: Failed to compare scans"
+    },
     "ERROR: failed to save output" : {
       "comment" : "ERROR: failed to save output",
       "localizations" : {
@@ -199,6 +208,20 @@
         }
       }
     },
+    "Failed to submit '%@'" : {
+      "comment" : "Failed to submit '%@'"
+    },
+    "failed to submit '%@' to VirusTotal (HTTP response %ld)." : {
+      "comment" : "failed to submit '%@' to VirusTotal (HTTP response %ld).",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "failed to submit '%1$@' to VirusTotal (HTTP response %2$ld)."
+          }
+        }
+      }
+    },
     "Found %lu persistent (non-OS) items" : {
       "comment" : "Found %lu persistent (non-OS) items",
       "localizations" : {
@@ -220,6 +243,9 @@
           }
         }
       }
+    },
+    "HTTP reponse: %ld" : {
+      "comment" : "HTTP reponse: %ld"
     },
     "installed kexts, likely kernel loaded" : {
       "comment" : "installed kexts, likely kernel loaded",
@@ -265,6 +291,9 @@
         }
       }
     },
+    "NEW ITEMS:\r\n" : {
+      "comment" : "NEW ITEMS:\r\n"
+    },
     "No '%@' found" : {
       "comment" : "No %@ found",
       "localizations" : {
@@ -275,6 +304,12 @@
           }
         }
       }
+    },
+    "No Changes Detected" : {
+      "comment" : "No Changes Detected"
+    },
+    "No results found for '%@'" : {
+      "comment" : "No results found for '%@'"
     },
     "OK" : {
       "comment" : "OK",
@@ -342,6 +377,9 @@
         }
       }
     },
+    "REMOVED ITEMS:\r\n" : {
+      "comment" : "REMOVED ITEMS:\r\n"
+    },
     "Scanning: %@" : {
       "comment" : "Scanning: %@",
       "localizations" : {
@@ -397,6 +435,21 @@
         }
       }
     },
+    "Submissions complete, though errors were encountered (HTTP response: %ld)." : {
+      "comment" : "Submissions complete, though errors were encountered (HTTP response: %ld)."
+    },
+    "Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed)." : {
+      "comment" : "Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed)."
+    },
+    "submitted '%@'" : {
+      "comment" : "submitted '%@'"
+    },
+    "submitting '%@'" : {
+      "comment" : "submitting '%@'"
+    },
+    "Submitting %lu item(s) to VirusTotal..." : {
+      "comment" : "Submitting %lu item(s) to VirusTotal..."
+    },
     "This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n" : {
       "comment" : "This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n",
       "localizations" : {
@@ -440,6 +493,9 @@
           }
         }
       }
+    },
+    "VirusTotal Report" : {
+      "comment" : "VirusTotal Report"
     },
     "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)" : {
       "comment" : "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)",

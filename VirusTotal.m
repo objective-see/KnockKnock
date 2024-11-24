@@ -25,7 +25,7 @@ extern BOOL cmdlineMode;
 -(void)getInfo:(PluginBase*)plugin
 {
     //plugin file items
-    // ->in dictionary w/ SHA1 hash as key
+    // in dictionary w/ SHA1 hash as key
     NSMutableDictionary* uniqueItems = nil;
     
     //File object
@@ -143,14 +143,14 @@ extern BOOL cmdlineMode;
         
         //make query to VT
         results = [self postRequest:queryURL parameters:items httpResponse:httpResponse];
-        if(nil != results)
+        if(200 == (long)[(NSHTTPURLResponse *)results[VT_HTTP_RESPONSE] statusCode])
         {
             //process results
             [self processResults:plugin.allItems results:results];
         }
         
         //remove all items
-        // ->since they've been processed
+        // since they've been processed
         [items removeAllObjects];
     }
     
@@ -159,7 +159,7 @@ extern BOOL cmdlineMode;
     {
         //query virus total
         results = [self postRequest:queryURL parameters:items httpResponse:httpResponse];
-        if(nil != results)
+        if(200 == (long)[(NSHTTPURLResponse *)results[VT_HTTP_RESPONSE] statusCode])
         {
             //process results
             [self processResults:plugin.allItems results:results];
@@ -191,7 +191,7 @@ extern BOOL cmdlineMode;
 }
 
 //get VT info for a single item
-// ->will then callback into AppDelegate to reload item in UI
+// will then callback into AppDelegate to reload item in UI
 -(BOOL)getInfoForItem:(File*)fileObj scanID:(NSString*)scanID
 {
     //result
@@ -206,6 +206,9 @@ extern BOOL cmdlineMode;
     //http response
     NSURLResponse* httpResponse = nil;
     
+    //alert
+    __block NSAlert* alert = nil;
+    
     //init query URL
     queryURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?apikey=%@&resource=%@", VT_REQUERY_URL, VT_API_KEY, scanID]];
     
@@ -214,12 +217,23 @@ extern BOOL cmdlineMode;
     {
         //make query to VT
         results = [self postRequest:queryURL parameters:nil httpResponse:httpResponse];
-        
-        //http error
         if(200 != (long)[(NSHTTPURLResponse *)httpResponse statusCode])
         {
+            //update status msg
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                //alloc/init alert
+                alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"ERROR:\nFailed to submit '%@' to VirusTotal", @"ERROR:\nFailed to submit '%@' to VirusTotal"), fileObj.name] defaultButton:NSLocalizedString(@"OK", @"OK") alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"HTTP reponse: %ld", @"HTTP reponse: %ld"), [(NSHTTPURLResponse *)httpResponse statusCode]];
+                
+                //show it
+                [alert runModal];
+                
+            });
+            
             break;
         }
+        
+       
         
         //check if scan is complete
         if( (nil != results) &&
@@ -277,7 +291,7 @@ extern BOOL cmdlineMode;
 -(NSDictionary*)postRequest:(NSURL*)url parameters:(id)params httpResponse:(NSURLResponse*)httpResponse
 {
     //results
-    NSDictionary* results = nil;
+    NSMutableDictionary* results = nil;
     
     //request
     NSMutableURLRequest *request = nil;
@@ -295,14 +309,16 @@ extern BOOL cmdlineMode;
     //alloc/init request
     request = [[NSMutableURLRequest alloc] initWithURL:url];
     
+    //init
+    results = [NSMutableDictionary dictionary];
+    
     //set user agent
     [request setValue:VT_USER_AGENT forHTTPHeaderField:@"User-Agent"];
-    
+
     //serialize JSON
     if(nil != params)
     {
         //convert items to JSON'd data for POST request
-        // ->wrap since we are serializing JSON
         @try
         {
             //convert items
@@ -310,9 +326,7 @@ extern BOOL cmdlineMode;
             if(nil == postData)
             {
                 //err msg
-                NSLog(@"OBJECTIVE-SEE ERROR: failed to convert request %@ to JSON", postData);
-                
-                //bail
+                NSLog(@"ERROR: failed to convert request %@ to JSON", postData);
                 goto bail;
             }
             
@@ -320,7 +334,7 @@ extern BOOL cmdlineMode;
         //bail on exceptions
         @catch(NSException *exception)
         {
-            //bail
+            //set error
             goto bail;
         }
         
@@ -338,8 +352,11 @@ extern BOOL cmdlineMode;
     [request setHTTPMethod:@"POST"];
     
     //send request
-    // ->synchronous, so will block
+    // synchronous, so will block
     vtData = [NSURLConnection sendSynchronousRequest:request returningResponse:&httpResponse error:&error];
+    
+    //save http response
+    results[VT_HTTP_RESPONSE] = httpResponse;
     
     //sanity check(s)
     if( (nil == vtData) ||
@@ -347,26 +364,30 @@ extern BOOL cmdlineMode;
         (200 != (long)[(NSHTTPURLResponse *)httpResponse statusCode]) )
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: failed to query VirusTotal (%@, %@)", error, httpResponse);
-        
-        //bail
+        NSLog(@"ERROR: failed to query VirusTotal (%@, %@)", error, httpResponse);
         goto bail;
     }
     
     //serialize response into NSData obj
-    // ->wrap since we are serializing JSON
+    // wrap since we are serializing JSON
     @try
     {
         //serialized
-        results = [NSJSONSerialization JSONObjectWithData:vtData options:kNilOptions error:nil];
+        results = [[NSJSONSerialization JSONObjectWithData:vtData options:kNilOptions error:nil] mutableCopy];
+        if(YES != [results isKindOfClass:[NSDictionary class]])
+        {
+            //bail
+            goto bail;
+        }
+        
+        //(re)add http response
+        results[VT_HTTP_RESPONSE] = httpResponse;
     }
     //bail on any exceptions
     @catch (NSException *exception)
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: converting response %@ to JSON threw %@", vtData, exception);
-        
-        //bail
+        NSLog(@"ERROR: converting response %@ to JSON threw %@", vtData, exception);
         goto bail;
     }
     
@@ -374,9 +395,7 @@ extern BOOL cmdlineMode;
     if(nil == results)
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: failed to convert response %@ to JSON", vtData);
-        
-        //bail
+        NSLog(@"ERROR: failed to convert response %@ to JSON", vtData);
         goto bail;
     }
     
@@ -390,13 +409,13 @@ bail:
 -(NSDictionary*)submit:(File*)fileObj
 {
     //results
-    NSDictionary* results = nil;
+    NSMutableDictionary* results = nil;
     
     //submit URL
     NSURL* submitURL = nil;
     
     //request
-    NSMutableURLRequest *request = nil;
+    NSMutableURLRequest* request = nil;
     
     //body of request
     NSMutableData* body = nil;
@@ -412,6 +431,9 @@ bail:
     
     //response (HTTP) from VT
     NSURLResponse* httpResponse = nil;
+    
+    //init
+    results = [NSMutableDictionary dictionary];
 
     //init submit URL
     submitURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?apikey=%@&resource=%@", VT_SUBMIT_URL, VT_API_KEY, fileObj.hashes[KEY_HASH_MD5]]];
@@ -441,9 +463,7 @@ bail:
     if(nil == fileContents)
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: failed to load %@ into memory for submission", fileObj.path);
-        
-        //bail
+        NSLog(@"ERROR: failed to load %@ into memory for submission", fileObj.path);
         goto bail;
     }
         
@@ -472,8 +492,11 @@ bail:
     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[body length]] forHTTPHeaderField:@"Content-length"];
 
     //send request
-    // ->synchronous, so will block
+    // synchronous, so will block
     vtData = [NSURLConnection sendSynchronousRequest:request returningResponse:&httpResponse error:&error];
+    
+    //save http response
+    results[VT_HTTP_RESPONSE] = httpResponse;
     
     //sanity check(s)
     if( (nil == vtData) ||
@@ -481,9 +504,7 @@ bail:
         (200 != (long)[(NSHTTPURLResponse *)httpResponse statusCode]) )
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: failed to query VirusTotal (%@, %@)", error, httpResponse);
-        
-        //bail
+        NSLog(@"ERROR: failed to query VirusTotal (%@, %@)", error, httpResponse);
         goto bail;
     }
     
@@ -492,15 +513,21 @@ bail:
     @try
     {
         //serialize
-        results = [NSJSONSerialization JSONObjectWithData:vtData options:kNilOptions error:nil];
+        results = [[NSJSONSerialization JSONObjectWithData:vtData options:kNilOptions error:nil] mutableCopy];
+        if(YES != [results isKindOfClass:[NSDictionary class]])
+        {
+            //bail
+            goto bail;
+        }
+        
+        //(re)add http response
+        results[VT_HTTP_RESPONSE] = httpResponse;
     }
     //bail on any exceptions
     @catch (NSException *exception)
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: converting response %@ to JSON threw %@", vtData, exception);
-        
-        //bail
+        NSLog(@"ERROR: converting response %@ to JSON threw %@", vtData, exception);
         goto bail;
     }
     
@@ -508,13 +535,10 @@ bail:
     if(nil == results)
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: failed to convert response %@ to JSON", vtData);
-        
-        //bail
+        NSLog(@"ERROR: failed to convert response %@ to JSON", vtData);
         goto bail;
     }
     
-//bail
 bail:
     
     return results;
@@ -524,7 +548,7 @@ bail:
 -(NSDictionary*)reScan:(File*)fileObj
 {
     //result data
-    NSDictionary* result = nil;
+    NSDictionary* results = nil;
     
     //scan url
     NSURL* reScanURL = nil;
@@ -536,28 +560,25 @@ bail:
     reScanURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?apikey=%@&resource=%@", VT_RESCAN_URL, VT_API_KEY, fileObj.hashes[KEY_HASH_MD5]]];
     
     //make request to VT
-    result = [self postRequest:reScanURL parameters:nil httpResponse:httpResponse];
-    if(nil == result)
+    results = [self postRequest:reScanURL parameters:nil httpResponse:httpResponse];
+    if(200 != (long)[(NSHTTPURLResponse *)httpResponse statusCode])
     {
         //err msg
-        NSLog(@"OBJECTIVE-SEE ERROR: failed to re-scan %@", fileObj.name);
-        
-        //bail
+        NSLog(@"ERROR: failed to re-scan %@", fileObj.name);
         goto bail;
     }
 
-//bail
 bail:
     
-    return result;
+    return results;
 }
 
 //process results
-// ->save VT info into each File obj and all flagged files
+// save VT info into each File obj and all flagged files
 -(void)processResults:(NSArray*)items results:(NSDictionary*)results
 {
     //process all results
-    // ->save VT result dictionary into File obj
+    // save VT result dictionary into File obj
     for(NSDictionary* result in results[VT_RESULTS])
     {
         //sync

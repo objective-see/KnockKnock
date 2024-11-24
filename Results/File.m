@@ -74,7 +74,7 @@
             if(nil == (bundle = [NSBundle bundleWithPath:self.path]))
             {
                 //err msg
-                //NSLog(@"OBJECTIVE-SEE ERROR: couldn't create bundle for %@", params[KEY_RESULT_PATH]);
+                //NSLog(@"ERROR: couldn't create bundle for %@", params[KEY_RESULT_PATH]);
                 
                 //set self to nil
                 self = nil;
@@ -88,7 +88,7 @@
             if(nil == (self.path = self.bundle.executablePath))
             {
                 //err msg
-                //NSLog(@"OBJECTIVE-SEE ERROR: couldn't find executable path in bundle %@", itemPath);
+                //NSLog(@"ERROR: couldn't find executable path in bundle %@", itemPath);
                 
                 //set self to nil
                 self = nil;

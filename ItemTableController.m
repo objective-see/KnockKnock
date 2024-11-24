@@ -234,7 +234,7 @@
         //set detailed text
         // ->always item's path
         [[itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG] setStringValue:item.path];
-
+        
         //all done
         goto bail;
     }
@@ -334,6 +334,9 @@
         // ->always item's path
         [[itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG] setStringValue:item.path];
         
+        //not editable!
+        [((NSTextField *)[itemCell viewWithTag:TABLE_ROW_SUB_TEXT_TAG]) setEditable:NO];
+        
         //for files w/ plist
         // ->show plist
         if(nil != ((File*)item).plist)
@@ -351,6 +354,9 @@
              
             //show
             [((NSTextField*)[itemCell viewWithTag:TABLE_ROW_PLIST_LABEL]) setHidden:NO];
+            
+            //not editable!
+            [((NSTextField *)[itemCell viewWithTag:TABLE_ROW_PLIST_LABEL]) setEditable:NO];
         }
         
         //configure/show VT info

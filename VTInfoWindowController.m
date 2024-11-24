@@ -125,7 +125,7 @@
         self.detectionRatio.textColor = textColor;
         
         //analysis url
-        self.analysisURL.stringValue = @"VirusTotal Report";
+        self.analysisURL.stringValue = NSLocalizedString(@"VirusTotal Report", @"VirusTotal Report");
         
         //make analysis url a hyperlink
         makeTextViewHyperlink(self.analysisURL, [NSURL URLWithString:self.fileObj.vtInfo[VT_RESULTS_URL]]);
@@ -155,7 +155,7 @@
         self.analysisURL.hidden = YES;
         
         //set unknown file msg
-        [self.unknownFile setStringValue:[NSString stringWithFormat:@"no results found for '%@'", self.fileObj.name]];
+        [self.unknownFile setStringValue:[NSString stringWithFormat:NSLocalizedString(@"No results found for '%@'", @"No results found for '%@'"), self.fileObj.name]];
         
         //show 'unknown file' msg
         self.unknownFile.hidden = NO;
@@ -257,7 +257,7 @@
     [self.progressIndicator startAnimation:nil];
 
     //set status msg
-    self.statusMsg.stringValue = [NSString stringWithFormat:@"submitting %@", self.fileObj.name];
+    self.statusMsg.stringValue = [NSString stringWithFormat:NSLocalizedString(@"submitting '%@'", @"submitting '%@'"), self.fileObj.name];
         
     //show status msg
     self.statusMsg.hidden = NO;
@@ -269,9 +269,8 @@
         result = [vtObj submit:self.fileObj];
         
         //got response
-        // ->requery VT to get scan results
-        if( (nil != result) &&
-            (nil != result[VT_RESULTS_SCANID]) )
+        // requery VT to get scan results
+        if(nil != result[VT_RESULTS_SCANID])
         {
             //reset file's VT info
             self.fileObj.vtInfo = nil;
@@ -289,7 +288,7 @@
                 [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj];
                 
                 //update
-                [self.statusMsg setStringValue:@"file submitted"];
+                [self.statusMsg setStringValue:[NSString stringWithFormat:NSLocalizedString(@"submitted '%@'", @"submitted '%@'"), self.fileObj.name]];
                 
             });
             
@@ -331,7 +330,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 //update status msg
-                [self.statusMsg setStringValue:@"failed to submit request :("];
+                [self.statusMsg setStringValue:[NSString stringWithFormat:NSLocalizedString(@"failed to submit '%@' to VirusTotal (HTTP response %ld).", @"failed to submit '%@' to VirusTotal (HTTP response %ld)."), self.fileObj.name, [(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode]]];
                 
                 //stop activity indicator
                 [self.progressIndicator stopAnimation:nil];
