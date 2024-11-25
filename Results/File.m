@@ -237,6 +237,16 @@ bail:
             //init
             prettyPrint = [NSMutableString string];//stringWithString:@"signed by:"];
             
+            //adhoc
+            if(AdHoc == [self.signingInfo[KEY_SIGNATURE_SIGNER] unsignedIntValue])
+            {
+                //append to details
+                [prettyPrint appendString:NSLocalizedString(@"Ad-hoc", @"Ad-hoc")];
+                
+                //done
+                break;
+            }
+            
             //add each signing auth
             for(NSString* signingAuthority in self.signingInfo[KEY_SIGNATURE_AUTHORITIES])
             {
@@ -275,7 +285,6 @@ bail:
             break;
     }
     
-//bail
 bail:
     
     return prettyPrint;

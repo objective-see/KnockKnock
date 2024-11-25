@@ -181,6 +181,13 @@ NSMutableDictionary* extractSigningInfo(pid_t pid, NSString* path, SecCSFlags fl
         //save
         signingInfo[KEY_SIGNATURE_AUTHORITIES] = signingAuths;
     }
+    
+    //extract flags
+    if( (nil != [(__bridge NSDictionary*)signingDetails objectForKey:(__bridge NSString*)kSecCodeInfoFlags]) )
+    {
+        //extract/save
+        signingInfo[KEY_SIGNING_FLAGS] = [(__bridge NSDictionary*)signingDetails objectForKey:(__bridge NSString*)kSecCodeInfoFlags];
+    }
 
 bail:
     

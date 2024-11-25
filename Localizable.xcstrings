@@ -26,6 +26,9 @@
         }
       }
     },
+    "Ad-hoc" : {
+      "comment" : "Ad-hoc"
+    },
     "Awaiting results..." : {
       "comment" : "Awaiting results..."
     },
