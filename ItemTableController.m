@@ -181,20 +181,25 @@
     
     //get array backing table
     tableItems = [self getTableItems];
+    
+    //sync
+    @synchronized (tableItems) {
+        
+        //sanity check
+        // ->make sure there is table item for row
+        if(tableItems.count <= row)
+        {
+            //bail
+            goto bail;
+        }
+        
+        //extract plugin item for row
+        item = tableItems[row];
+        
+    } //sync
 
-    //sanity check
-    // ->make sure there is table item for row
-    if(tableItems.count <= row)
-    {
-        //bail
-        goto bail;
-    }
-    
-    //extract plugin item for row
-    item = tableItems[row];
-    
     //handle Command items
-    // ->vry basic row, bails when done
+    // basic row, bails when done
     if(YES == [item isKindOfClass:[Command class]])
     {
         //make table cell
@@ -764,16 +769,20 @@ bail:
     //grab item table items
     tableItems = [self getTableItems];
     
-    //sanity check
-    // ->make sure row has item
-    if(tableItems.count < selectedRow)
-    {
-        //bail
-        goto bail;
+    //sync
+    @synchronized (tableItems) {
+        
+        //sanity check
+        // ->make sure row has item
+        if(tableItems.count < selectedRow)
+        {
+            //bail
+            goto bail;
+        }
+        
+        //extract selected item
+        selectedItem = tableItems[selectedRow];
     }
-    
-    //extract selected item
-    selectedItem = tableItems[selectedRow];
 
     //open item in Finder
     // ->error alert shown if file open fails
@@ -812,18 +821,22 @@ bail:
     //grab item table items
     tableItems = [self getTableItems];
     
-    //sanity check
-    // ->make sure row has item
-    if(tableItems.count < selectedRow)
-    {
-        //bail
-        goto bail;
+    //sycn
+    @synchronized (tableItems) {
+        
+        //sanity check
+        // ->make sure row has item
+        if(tableItems.count < selectedRow)
+        {
+            //bail
+            goto bail;
+        }
+        
+        //extract selected item
+        // ->invoke helper function to get array backing table
+        selectedItem = tableItems[selectedRow];
     }
     
-    //extract selected item
-    // ->invoke helper function to get array backing table
-    selectedItem = tableItems[selectedRow];
-   
     //alloc/init info window
     infoWindowController = [[InfoWindowController alloc] initWithItem:selectedItem];
     
@@ -855,30 +868,34 @@ bail:
     //grab item table items
     tableItems = [self getTableItems];
     
-    //sanity check
-    // ->make sure row has item
-    if(tableItems.count < rowIndex)
-    {
-        //bail
-        goto bail;
-    }
+    @synchronized (tableItems) {
+        
+        //sanity check
+        // ->make sure row has item
+        if(tableItems.count < rowIndex)
+        {
+            //bail
+            goto bail;
+        }
 
-    //sanity check
-    if(-1 != rowIndex)
-    {
-        //extract selected item
-        // ->invoke helper function to get array backing table
-        selectedItem = tableItems[rowIndex];
+        //sanity check
+        if(-1 != rowIndex)
+        {
+            //extract selected item
+            // ->invoke helper function to get array backing table
+            selectedItem = tableItems[rowIndex];
+            
+            //alloc/init info window
+            vtWindowController = [[VTInfoWindowController alloc] initWithItem:selectedItem];
+            
+            //show it
+            [self.vtWindowController.windowController showWindow:self];
+          
+        }
         
-        //alloc/init info window
-        vtWindowController = [[VTInfoWindowController alloc] initWithItem:selectedItem];
-        
-        //show it
-        [self.vtWindowController.windowController showWindow:self];
-      
-    }
+    } //sync
     
-//bail
+
 bail:
     
     return;

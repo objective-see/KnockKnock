@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    " (Notarized: %@)" : {
+      "comment" : " (Notarized: %@)"
+    },
     "a new version (%@) is available!" : {
       "comment" : "a new version (%@) is available!",
       "localizations" : {
@@ -294,6 +297,9 @@
     "NEW ITEMS:\r\n" : {
       "comment" : "NEW ITEMS:\r\n"
     },
+    "No" : {
+      "comment" : "No"
+    },
     "No '%@' found" : {
       "comment" : "No %@ found",
       "localizations" : {
@@ -524,6 +530,9 @@
           }
         }
       }
+    },
+    "Yes" : {
+      "comment" : "Yes"
     },
     "you're all up to date! (v. %@)" : {
       "comment" : "you're all up to date! (v. %@)",

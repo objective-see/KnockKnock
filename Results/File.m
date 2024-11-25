@@ -195,6 +195,9 @@ bail:
 //format the signing info dictionary
 -(NSString*)formatSigningInfo
 {
+    //flag
+    BOOL isNotarized = NO;
+    
     //pretty print
     NSMutableString* prettyPrint = nil;
     
@@ -248,7 +251,17 @@ bail:
                 [prettyPrint deleteCharactersInRange:NSMakeRange([prettyPrint length]-2, 2)];
             }
             
-            //brk
+            //for dev id items
+            // add notarization
+            if(DevID == [self.signingInfo[KEY_SIGNATURE_SIGNER] intValue])
+            {
+                //extract
+                isNotarized = [self.signingInfo[KEY_SIGNATURE_IS_NOTARIZED] boolValue];
+                
+                //append notarization status
+                [prettyPrint appendString:[NSString stringWithFormat:NSLocalizedString(@" (Notarized: %@)", @" (Notarized: %@)"), (YES == isNotarized) ? NSLocalizedString(@"Yes",@"Yes") : NSLocalizedString(@"No",@"No")]];
+            }
+            
             break;
         }
     

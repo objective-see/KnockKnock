@@ -99,20 +99,25 @@
         //check if any item is flagged
         if(YES != ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries)
         {
-            //manually check if any unknown item is flagged
-            // ->gotta do this since flaggedItems includes all items
-            for(ItemBase* item in plugin.untrustedItems)
-            {
-                //check if item it flagged
-                if(YES == [plugin.flaggedItems containsObject:item])
+            //sync
+            @synchronized (plugin.untrustedItems) {
+                
+                //manually check if any unknown item is flagged
+                // ->gotta do this since flaggedItems includes all items
+                for(ItemBase* item in plugin.untrustedItems)
                 {
-                    //set flag
-                    hasFlaggedItem = YES;
-                    
-                    //exit loop
-                    break;
+                    //check if item it flagged
+                    if(YES == [plugin.flaggedItems containsObject:item])
+                    {
+                        //set flag
+                        hasFlaggedItem = YES;
+                        
+                        //exit loop
+                        break;
+                    }
                 }
-            }
+                
+            }//sync
         }
     }
 

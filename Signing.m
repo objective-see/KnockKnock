@@ -37,6 +37,21 @@ NSMutableDictionary* extractSigningInfo(pid_t pid, NSString* path, SecCSFlags fl
     //signing authorities
     NSMutableArray* signingAuths = nil;
     
+    //is notarized requirement
+    static SecRequirementRef isNotarized = nil;
+    
+    //token
+    static dispatch_once_t onceToken = 0;
+    
+    //only once
+    // init notarization requirements
+    dispatch_once(&onceToken, ^{
+        
+        //init
+        SecRequirementCreateWithString(CFSTR("notarized"), kSecCSDefaultFlags, &isNotarized);
+
+    });
+    
     //init signing status
     signingInfo = [NSMutableDictionary dictionary];
     
@@ -73,6 +88,17 @@ NSMutableDictionary* extractSigningInfo(pid_t pid, NSString* path, SecCSFlags fl
         // apple, app store, dev id, adhoc, etc...
         signingInfo[KEY_SIGNATURE_SIGNER] = extractSigner(dynamicCode, flags, YES);
         
+        //dev id?
+        // also check notarization
+        if(DevID == [signingInfo[KEY_SIGNATURE_SIGNER] intValue])
+        {
+            if(errSecSuccess == SecStaticCodeCheckValidity(dynamicCode, kSecCSDefaultFlags, isNotarized))
+            {
+                //notarized
+                signingInfo[KEY_SIGNATURE_IS_NOTARIZED] = [NSNumber numberWithBool:YES];
+            }
+        }
+       
         //extract signing info
         status = SecCodeCopySigningInformation(dynamicCode, kSecCSSigningInformation, &signingDetails);
         if(errSecSuccess != status)
@@ -114,6 +140,17 @@ NSMutableDictionary* extractSigningInfo(pid_t pid, NSString* path, SecCSFlags fl
         // apple, app store, dev id, adhoc, etc...
         signingInfo[KEY_SIGNATURE_SIGNER] = extractSigner(staticCode, flags, NO);
         
+        //dev id?
+        // also check notarization
+        if(DevID == [signingInfo[KEY_SIGNATURE_SIGNER] intValue])
+        {
+            if(errSecSuccess == SecStaticCodeCheckValidity(staticCode, kSecCSDefaultFlags, isNotarized))
+            {
+                //notarized
+                signingInfo[KEY_SIGNATURE_IS_NOTARIZED] = [NSNumber numberWithBool:YES];
+            }
+        }
+        
         //extract signing info
         status = SecCodeCopySigningInformation(staticCode, kSecCSSigningInformation, &signingDetails);
         if(errSecSuccess != status)
@@ -144,7 +181,7 @@ NSMutableDictionary* extractSigningInfo(pid_t pid, NSString* path, SecCSFlags fl
         //save
         signingInfo[KEY_SIGNATURE_AUTHORITIES] = signingAuths;
     }
-    
+
 bail:
     
     //free signing info
@@ -152,8 +189,6 @@ bail:
     {
         //free
         CFRelease(signingDetails);
-        
-        //unset
         signingDetails = NULL;
     }
     
@@ -162,8 +197,6 @@ bail:
     {
         //free
         CFRelease(dynamicCode);
-        
-        //unset
         dynamicCode = NULL;
     }
     
@@ -172,8 +205,6 @@ bail:
     {
         //free
         CFRelease(staticCode);
-        
-        //unset
         staticCode = NULL;
     }
     

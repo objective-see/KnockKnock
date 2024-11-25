@@ -70,6 +70,9 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //entitlements
 #define KEY_SIGNATURE_ENTITLEMENTS @"signatureEntitlements"
 
+//is notarized?
+#define KEY_SIGNATURE_IS_NOTARIZED @"notarized"
+
 //OS version yosemite
 #define OS_MINOR_VERSION_YOSEMITE 10
 

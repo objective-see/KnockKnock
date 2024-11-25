@@ -695,9 +695,14 @@
     {
         //get current items
         tableItems = [self.itemTableController getTableItems];
-        
-        //find index of item
-        rowIndex = [tableItems indexOfObject:fileObj];
+            
+        //sync
+        @synchronized (tableItems) {
+            
+            //find index of item
+            rowIndex = [tableItems indexOfObject:fileObj];
+            
+        } //sync
         
         //reload row
         if(NSNotFound != rowIndex)
@@ -966,28 +971,33 @@
             //add up
             items += plugin.untrustedItems.count;
             
-            //manually check if each untrusted item is flagged/unknown
-            for(ItemBase* item in plugin.untrustedItems)
-            {
-                //check if item is flagged
-                if(YES == [plugin.flaggedItems containsObject:item])
-                {
-                    //inc
-                    flaggedItems++;
-                }
+            //sync
+            @synchronized (plugin.untrustedItems) {
                 
-                //check if item is unknown
-                // but has to be a File* object
-                if(YES == [item isKindOfClass:[File class]])
+                //manually check if each untrusted item is flagged/unknown
+                for(ItemBase* item in plugin.untrustedItems)
                 {
-                    //is unknown?
-                    if(YES == [plugin.unknownItems containsObject:item])
+                    //check if item is flagged
+                    if(YES == [plugin.flaggedItems containsObject:item])
                     {
-                        //add
-                        [unknownItems addObject:item];
+                        //inc
+                        flaggedItems++;
+                    }
+                    
+                    //check if item is unknown
+                    // but has to be a File* object
+                    if(YES == [item isKindOfClass:[File class]])
+                    {
+                        //is unknown?
+                        if(YES == [plugin.unknownItems containsObject:item])
+                        {
+                            //add
+                            [unknownItems addObject:item];
+                        }
                     }
                 }
-            }
+                
+            } //sync
             
             //init detailed msg
             details = [NSMutableString stringWithFormat:NSLocalizedString(@"Found %lu persistent (non-OS) items", @"Found %lu persistent (non-OS) items"), (unsigned long)items];
