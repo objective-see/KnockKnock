@@ -85,7 +85,7 @@
 }
 
 //update UI now that submission is done
--(void)submissionComplete:(NSUInteger)successes httpResponse:(NSURLResponse*)httpResponse
+-(void)submissionComplete:(NSUInteger)successes httpResponses:(NSMutableArray*)httpResponses
 {
     //enable close
     self.closeButton.enabled = YES;
@@ -102,7 +102,7 @@
     else
     {
         //update message
-        self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submissions complete, though errors were encountered (HTTP response: %ld).", @"Submissions complete, though errors were encountered (HTTP response: %ld)."), (long)[(NSHTTPURLResponse *)httpResponse statusCode]];
+        self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submissions complete, though errors were encountered (HTTP response: %@).", @"Submissions complete, though errors were encountered (HTTP responses: %@)."), httpResponses];
     }
     
     return;
@@ -118,6 +118,9 @@
     //result (from VT)
     NSDictionary* result = nil;
     
+    //error code(s)
+    NSMutableArray* httpResponses = nil;
+    
     //scan ids
     NSMutableDictionary* scanIDs = nil;
     
@@ -129,6 +132,9 @@
     
     //alloc
     scanIDs = [NSMutableDictionary dictionary];
+    
+    //alloc
+    httpResponses = [NSMutableArray array];
     
     //submit all unknown items
     for(ItemBase* item in self.unknownItems)
@@ -153,6 +159,13 @@
         
         //submit file to VT
         result = [vtObj submit:(File*)item];
+        
+        //save non-200 HTTP OK codes
+        if(200 != (long)[(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode])
+        {
+            //add
+            [httpResponses addObject:[NSNumber numberWithUnsignedLong:[(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode]]];
+        }
         
         //extract scan id
         scanID = result[VT_RESULTS_SCANID];
@@ -236,7 +249,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         
         //complete
-        [self submissionComplete:successes httpResponse:result[VT_HTTP_RESPONSE]];
+        [self submissionComplete:successes httpResponses:httpResponses];
         
     });
     

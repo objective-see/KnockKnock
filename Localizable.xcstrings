@@ -2,7 +2,15 @@
   "sourceLanguage" : "en",
   "strings" : {
     " (Notarized: %@)" : {
-      "comment" : " (Notarized: %@)"
+      "comment" : " (Notarized: %@)",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Notariado: %@)"
+          }
+        }
+      }
     },
     "a new version (%@) is available!" : {
       "comment" : "a new version (%@) is available!",
@@ -27,10 +35,26 @@
       }
     },
     "Ad-hoc" : {
-      "comment" : "Ad-hoc"
+      "comment" : "Ad-hoc",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ad-hoc"
+          }
+        }
+      }
     },
     "Awaiting results..." : {
-      "comment" : "Awaiting results..."
+      "comment" : "Awaiting results...",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esperando resultados…"
+          }
+        }
+      }
     },
     "Awaiting VirusTotal results" : {
       "comment" : "Awaiting VirusTotal results",
@@ -176,10 +200,26 @@
       }
     },
     "ERROR:\nFailed to submit '%@' to VirusTotal" : {
-      "comment" : "ERROR:\nFailed to submit '%@' to VirusTotal"
+      "comment" : "ERROR:\nFailed to submit '%@' to VirusTotal",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR:\nNo se pudo enviar '%@' a VirusTotal"
+          }
+        }
+      }
     },
     "ERROR: Failed to compare scans" : {
-      "comment" : "ERROR: Failed to compare scans"
+      "comment" : "ERROR: Failed to compare scans",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR: fallo al comparar escaneos"
+          }
+        }
+      }
     },
     "ERROR: failed to save output" : {
       "comment" : "ERROR: failed to save output",
@@ -215,7 +255,15 @@
       }
     },
     "Failed to submit '%@'" : {
-      "comment" : "Failed to submit '%@'"
+      "comment" : "Failed to submit '%@'",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo enviar '%@'"
+          }
+        }
+      }
     },
     "failed to submit '%@' to VirusTotal (HTTP response %ld)." : {
       "comment" : "failed to submit '%@' to VirusTotal (HTTP response %ld).",
@@ -224,6 +272,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "failed to submit '%1$@' to VirusTotal (HTTP response %2$ld)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "falló al enviar '%1$@' a VirusTotal (respuesta HTTP %2$ld)."
           }
         }
       }
@@ -251,7 +305,15 @@
       }
     },
     "HTTP reponse: %ld" : {
-      "comment" : "HTTP reponse: %ld"
+      "comment" : "HTTP reponse: %ld",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respuesta HTTP: %ld"
+          }
+        }
+      }
     },
     "installed kexts, likely kernel loaded" : {
       "comment" : "installed kexts, likely kernel loaded",
@@ -298,10 +360,26 @@
       }
     },
     "NEW ITEMS:\r\n" : {
-      "comment" : "NEW ITEMS:\r\n"
+      "comment" : "NEW ITEMS:\r\n",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ITEMS NUEVOS:"
+          }
+        }
+      }
     },
     "No" : {
-      "comment" : "No"
+      "comment" : "No",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No"
+          }
+        }
+      }
     },
     "No '%@' found" : {
       "comment" : "No %@ found",
@@ -315,10 +393,26 @@
       }
     },
     "No Changes Detected" : {
-      "comment" : "No Changes Detected"
+      "comment" : "No Changes Detected",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Hay Cambios Detectados"
+          }
+        }
+      }
     },
     "No results found for '%@'" : {
-      "comment" : "No results found for '%@'"
+      "comment" : "No results found for '%@'",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontraron resultados para '%@'"
+          }
+        }
+      }
     },
     "OK" : {
       "comment" : "OK",
@@ -387,7 +481,15 @@
       }
     },
     "REMOVED ITEMS:\r\n" : {
-      "comment" : "REMOVED ITEMS:\r\n"
+      "comment" : "REMOVED ITEMS:\r\n",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "REMOVER ITEMS:"
+          }
+        }
+      }
     },
     "Scanning: %@" : {
       "comment" : "Scanning: %@",
@@ -444,20 +546,60 @@
         }
       }
     },
-    "Submissions complete, though errors were encountered (HTTP response: %ld)." : {
-      "comment" : "Submissions complete, though errors were encountered (HTTP response: %ld)."
+    "Submissions complete, though errors were encountered (HTTP response: %@)." : {
+      "comment" : "Submissions complete, though errors were encountered (HTTP responses: %@).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envíos completados, aunque se encontraron errores (respuesta HTTP: %@)."
+          }
+        }
+      }
     },
     "Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed)." : {
-      "comment" : "Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed)."
+      "comment" : "Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed).",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envíos completados. (A partir de ahora, en los análisis posteriores, se mostrarán los índices de detección de VT del ítem)."
+          }
+        }
+      }
     },
     "submitted '%@'" : {
-      "comment" : "submitted '%@'"
+      "comment" : "submitted '%@'",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'%@' enviado"
+          }
+        }
+      }
     },
     "submitting '%@'" : {
-      "comment" : "submitting '%@'"
+      "comment" : "submitting '%@'",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "enviando '%@'"
+          }
+        }
+      }
     },
     "Submitting %lu item(s) to VirusTotal..." : {
-      "comment" : "Submitting %lu item(s) to VirusTotal..."
+      "comment" : "Submitting %lu item(s) to VirusTotal...",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviando %lu ítem(s) a VirusTotal..."
+          }
+        }
+      }
     },
     "This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n" : {
       "comment" : "This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n",
@@ -504,7 +646,15 @@
       }
     },
     "VirusTotal Report" : {
-      "comment" : "VirusTotal Report"
+      "comment" : "VirusTotal Report",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reporte de VirusTotal"
+          }
+        }
+      }
     },
     "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)" : {
       "comment" : "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)",
@@ -535,7 +685,15 @@
       }
     },
     "Yes" : {
-      "comment" : "Yes"
+      "comment" : "Yes",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si"
+          }
+        }
+      }
     },
     "you're all up to date! (v. %@)" : {
       "comment" : "you're all up to date! (v. %@)",

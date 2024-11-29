@@ -70,6 +70,9 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //entitlements
 #define KEY_SIGNATURE_ENTITLEMENTS @"signatureEntitlements"
 
+//flags
+#define KEY_SIGNING_FLAGS @"signingFlags"
+
 //is notarized?
 #define KEY_SIGNATURE_IS_NOTARIZED @"notarized"
 
