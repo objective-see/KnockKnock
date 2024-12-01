@@ -21,7 +21,7 @@
 -(void)getInfo:(PluginBase*)plugin;
 
 //make the (POST)query to VT
--(NSDictionary*)postRequest:(NSURL*)url parameters:(id)params httpResponse:(NSURLResponse*)httpResponse;
+-(NSDictionary*)postRequest:(NSURL*)url parameters:(id)params;
 
 //submit a file to VT
 -(NSDictionary*)submit:(File*)fileObj;

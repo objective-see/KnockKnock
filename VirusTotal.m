@@ -43,9 +43,6 @@ extern BOOL cmdlineMode;
     //results
     NSDictionary* results = nil;
     
-    //http response
-    NSURLResponse* httpResponse = nil;
-    
     //alloc dictionary for plugin file items
     uniqueItems = [NSMutableDictionary dictionary];
     
@@ -110,7 +107,7 @@ extern BOOL cmdlineMode;
         currentUser = getConsoleUser();
         
         //sanitize path
-        sanitizedPath = [sanitizedPath stringByReplacingOccurrencesOfString:currentUser withString:@"user"];
+        sanitizedPath = [item.path stringByReplacingOccurrencesOfString:currentUser withString:@"user"];
         
         //extract item
         item = uniqueItems[itemKey];
@@ -142,7 +139,7 @@ extern BOOL cmdlineMode;
         }
         
         //make query to VT
-        results = [self postRequest:queryURL parameters:items httpResponse:httpResponse];
+        results = [self postRequest:queryURL parameters:items];
         if(200 == (long)[(NSHTTPURLResponse *)results[VT_HTTP_RESPONSE] statusCode])
         {
             //process results
@@ -158,7 +155,7 @@ extern BOOL cmdlineMode;
     if(0 != items.count)
     {
         //query virus total
-        results = [self postRequest:queryURL parameters:items httpResponse:httpResponse];
+        results = [self postRequest:queryURL parameters:items];
         if(200 == (long)[(NSHTTPURLResponse *)results[VT_HTTP_RESPONSE] statusCode])
         {
             //process results
@@ -190,6 +187,10 @@ extern BOOL cmdlineMode;
     return;
 }
 
+//item data
+//(NSMutableDictionary*)covertItemToRequest:(Item*)
+
+
 //get VT info for a single item
 // will then callback into AppDelegate to reload item in UI
 -(BOOL)getInfoForItem:(File*)fileObj scanID:(NSString*)scanID
@@ -203,9 +204,6 @@ extern BOOL cmdlineMode;
     //results
     NSDictionary* results = nil;
     
-    //http response
-    NSURLResponse* httpResponse = nil;
-    
     //alert
     __block NSAlert* alert = nil;
     
@@ -216,14 +214,14 @@ extern BOOL cmdlineMode;
     while(YES)
     {
         //make query to VT
-        results = [self postRequest:queryURL parameters:nil httpResponse:httpResponse];
-        if(200 != (long)[(NSHTTPURLResponse *)httpResponse statusCode])
+        results = [self postRequest:queryURL parameters:nil];
+        if(200 != (long)[(NSHTTPURLResponse *)results[VT_HTTP_RESPONSE] statusCode])
         {
             //update status msg
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 //alloc/init alert
-                alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"ERROR:\nFailed to submit '%@' to VirusTotal", @"ERROR:\nFailed to submit '%@' to VirusTotal"), fileObj.name] defaultButton:NSLocalizedString(@"OK", @"OK") alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"HTTP reponse: %ld", @"HTTP reponse: %ld"), [(NSHTTPURLResponse *)httpResponse statusCode]];
+                alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"ERROR:\nVirusTotal query for '%@' failed", @"ERROR:\nVirusTotal query for '%@' failed"), fileObj.name] defaultButton:NSLocalizedString(@"OK", @"OK") alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"HTTP reponse: %ld", @"HTTP reponse: %ld"), (long)[(NSHTTPURLResponse *)results[VT_HTTP_RESPONSE] statusCode]];
                 
                 //show it
                 [alert runModal];
@@ -288,13 +286,16 @@ extern BOOL cmdlineMode;
 }
 
 //make the (POST)query to VT
--(NSDictionary*)postRequest:(NSURL*)url parameters:(id)params httpResponse:(NSURLResponse*)httpResponse
+-(NSDictionary*)postRequest:(NSURL*)url parameters:(id)params
 {
     //results
     NSMutableDictionary* results = nil;
     
     //request
-    NSMutableURLRequest *request = nil;
+    NSMutableURLRequest* request = nil;
+    
+    //http response
+    NSURLResponse* httpResponse = nil;
     
     //post data
     // ->JSON'd items
@@ -560,7 +561,7 @@ bail:
     reScanURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@?apikey=%@&resource=%@", VT_RESCAN_URL, VT_API_KEY, fileObj.hashes[KEY_HASH_MD5]]];
     
     //make request to VT
-    results = [self postRequest:reScanURL parameters:nil httpResponse:httpResponse];
+    results = [self postRequest:reScanURL parameters:nil];
     if(200 != (long)[(NSHTTPURLResponse *)httpResponse statusCode])
     {
         //err msg

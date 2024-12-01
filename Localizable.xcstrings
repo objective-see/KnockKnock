@@ -45,17 +45,6 @@
         }
       }
     },
-    "Awaiting results..." : {
-      "comment" : "Awaiting results...",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esperando resultados…"
-          }
-        }
-      }
-    },
     "Awaiting VirusTotal results" : {
       "comment" : "Awaiting VirusTotal results",
       "localizations" : {
@@ -199,13 +188,13 @@
         }
       }
     },
-    "ERROR:\nFailed to submit '%@' to VirusTotal" : {
-      "comment" : "ERROR:\nFailed to submit '%@' to VirusTotal",
+    "ERROR:\nVirusTotal query for '%@' failed" : {
+      "comment" : "ERROR:\nVirusTotal query for '%@' failed",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ERROR:\nNo se pudo enviar '%@' a VirusTotal"
+            "value" : "ERROR:\nLa consulta de VirusTotal para '%@' falló"
           }
         }
       }
@@ -250,17 +239,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "falló al cargar el contenido de %@"
-          }
-        }
-      }
-    },
-    "Failed to submit '%@'" : {
-      "comment" : "Failed to submit '%@'",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se pudo enviar '%@'"
           }
         }
       }
@@ -546,13 +524,13 @@
         }
       }
     },
-    "Submissions complete, though errors were encountered (HTTP response: %@)." : {
-      "comment" : "Submissions complete, though errors were encountered (HTTP responses: %@).",
+    "Submissions complete, though errors were encountered (HTTP response(s): %@)." : {
+      "comment" : "Submissions complete, though errors were encountered (HTTP response(s): %@).",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Envíos completados, aunque se encontraron errores (respuesta HTTP: %@)."
+            "value" : "Envíos completados, aunque se encontraron errores (respuesta(s) HTTP: %@)."
           }
         }
       }
@@ -586,6 +564,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "enviando '%@'"
+          }
+        }
+      }
+    },
+    "Submitting '%@'" : {
+      "comment" : "Submitting '%@'",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviando '%@'"
           }
         }
       }

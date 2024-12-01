@@ -798,6 +798,13 @@
     //reset item table
     [self.itemTableController.itemTableView reloadData];
     
+    //close results window
+    if(YES == [self.resultsWindowController.window isVisible])
+    {
+        //close
+        [self.resultsWindowController.window close];
+    }
+    
     //show progress indicator
     self.progressIndicator.hidden = NO;
     
@@ -1041,6 +1048,9 @@
     
     //show it
     [self.resultsWindowController showWindow:self];
+    
+    //make front/visible
+    [self.resultsWindowController.window setLevel:NSPopUpMenuWindowLevel];
     
     return;
 }

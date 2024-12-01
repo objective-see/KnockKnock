@@ -102,7 +102,7 @@
     else
     {
         //update message
-        self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submissions complete, though errors were encountered (HTTP response: %@).", @"Submissions complete, though errors were encountered (HTTP responses: %@)."), httpResponses];
+        self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submissions complete, though errors were encountered (HTTP response(s): %@).", @"Submissions complete, though errors were encountered (HTTP response(s): %@)."), [httpResponses componentsJoinedByString:@","]];
     }
     
     return;
@@ -121,8 +121,8 @@
     //error code(s)
     NSMutableArray* httpResponses = nil;
     
-    //scan ids
-    NSMutableDictionary* scanIDs = nil;
+    //report
+    __block NSURL* newReport = nil;
     
     //successful scans
     NSUInteger successes = 0;
@@ -131,17 +131,11 @@
     vtObj = [[VirusTotal alloc] init];
     
     //alloc
-    scanIDs = [NSMutableDictionary dictionary];
-    
-    //alloc
     httpResponses = [NSMutableArray array];
     
     //submit all unknown items
     for(ItemBase* item in self.unknownItems)
     {
-        //scan id from VT
-        NSString* scanID = nil;
-        
         //skip non-file items
         if(YES != [item isKindOfClass:[File class]])
         {
@@ -157,6 +151,16 @@
             continue;
         }
         
+        //update UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            //update
+            self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submitting '%@'", @"Submitting '%@'"), ((File*)item).name];
+        });
+        
+        //nap (for UI)
+        sleep(1);
+        
         //submit file to VT
         result = [vtObj submit:(File*)item];
         
@@ -165,28 +169,14 @@
         {
             //add
             [httpResponses addObject:[NSNumber numberWithUnsignedLong:[(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode]]];
-        }
-        
-        //extract scan id
-        scanID = result[VT_RESULTS_SCANID];
-        if(nil == scanID)
-        {
-            //err msg
-            NSLog(@"KNOCKKNOCK ERROR: failed to submit %@", item.path);
             
-            //update UI
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                //update
-                self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Failed to submit '%@'", @"Failed to submit '%@'"), ((File*)item).name];
-            });
-            
-            //nap (for UI)
-            sleep(1);
-            
+            //next
             continue;
         }
         
+        //happy
+        successes++;
+    
         //reset file's VT info
         // as we've just submittted
         ((File*)item).vtInfo = nil;
@@ -199,50 +189,24 @@
         
         });
         
-        //save
-        scanIDs[scanID] = item;
-    }
-    
-    //only continue if there were submissions
-    if(0 != scanIDs.count)
-    {
-        //nap for VT to process
-        sleep(5);
+        //nap
+        // allows msg to show up, and give VT some time
+        [NSThread sleepForTimeInterval:2.0];
         
-        //update UI
+        //launch browser to show new report
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            //update
-            self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Awaiting results...", @"Awaiting results...")];
-        });
-        
-        //nap more VT to process
-        sleep(5);
-        
-        //get VT results
-        for(NSString* scanID in scanIDs.allKeys)
-        {
-            //get results for item
-            // waits until recieved (and updates UI on success)
-            if(YES != [vtObj getInfoForItem:(File*)scanIDs[scanID] scanID:scanID])
+            //launch browser with scan
+            if(nil != result[@"sha256"])
             {
-                //update UI
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    //update
-                    self.submissionStatus.stringValue = [NSString stringWithFormat:@"Failed to get results for '%@'", ((File*)scanIDs[scanID]).name];
-                });
+                //build url to scan
+                newReport = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.virustotal.com/gui/file/%@", result[@"sha256"]]];
                 
-                //nap for UI
-                sleep(1);
-                
-                continue;
+                //launch browser
+                [[NSWorkspace sharedWorkspace] openURL:newReport];
             }
             
-            //happy
-            // results will show up in UI
-            successes++;
-        }
+        });
     }
     
     //tell UI all is done

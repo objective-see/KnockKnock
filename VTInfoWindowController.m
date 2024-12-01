@@ -262,24 +262,18 @@
     //show status msg
     self.statusMsg.hidden = NO;
     
-    //submit rescan request in background
+    //submit request in background
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     
         //submit file to VT
         result = [vtObj submit:self.fileObj];
         
-        //got response
-        // requery VT to get scan results
+        //got response?
+        // launch browser to show user
         if(nil != result[VT_RESULTS_SCANID])
         {
             //reset file's VT info
             self.fileObj.vtInfo = nil;
-        
-            //kick off task to re-query VT
-            // ->pass in scan result ID
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [vtObj getInfoForItem:self.fileObj scanID:result[VT_RESULTS_SCANID]];
-            });
         
             //update status msg
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -299,11 +293,12 @@
             //launch browser to show new report
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                //sanity check
-                // then launch browser
-                if( (nil != result[@"permalink"]) &&
-                    (nil != (newReport = [NSURL URLWithString:result[@"permalink"]])) )
+                //launch browser with scan
+                if(nil != result[@"sha256"])
                 {
+                    //build url to scan
+                    newReport = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.virustotal.com/gui/file/%@", result[@"sha256"]]];
+                    
                     //launch browser
                     [[NSWorkspace sharedWorkspace] openURL:newReport];
                 }
