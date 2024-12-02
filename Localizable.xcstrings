@@ -684,13 +684,13 @@
         }
       }
     },
-    "you're all up to date! (v. %@)" : {
-      "comment" : "you're all up to date! (v. %@)",
+    "You're all up to date! (v%@)" : {
+      "comment" : "You're all up to date! (v%@)",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¡estás actualizado! (v. %@)"
+            "value" : "¡Estás actualizado! (v%@)"
           }
         }
       }

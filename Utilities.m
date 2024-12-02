@@ -544,42 +544,6 @@ bail:
     return output;
 }
 
-//wait until a window is non nil
-// ->then make it modal
-void makeModal(NSWindowController* windowController)
-{
-    //flag
-    __block BOOL madeModal = NO;
-    
-    //wait up to 1 second window to be non-nil
-    // ->then make modal
-    for(int i=0; i<20; i++)
-    {
-        //nap
-        [NSThread sleepForTimeInterval:0.05f];
-        
-        //make modal on main thread
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            //can make it modal once we have a window
-            if(nil != windowController.window)
-            {
-                //modal
-                [[NSApplication sharedApplication] runModalForWindow:windowController.window];
-        
-                //set flag
-                madeModal = YES;
-            }
-        });
-        
-        //done?
-        if(YES == madeModal) break;
-        
-    }//until 1 second
-    
-    return;
-}
-
 
 //check if computer has network connection
 BOOL isNetworkConnected(void)

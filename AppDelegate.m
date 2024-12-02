@@ -1712,7 +1712,7 @@ bail:
         case UPDATE_NOTHING_NEW:
             
             //set details
-            details = [NSString stringWithFormat:NSLocalizedString(@"you're all up to date! (v. %@)", @"you're all up to date! (v. %@)"), getAppVersion()];
+            details = [NSString stringWithFormat:NSLocalizedString(@"You're all up to date! (v%@)", @"You're all up to date! (v%@)"), getAppVersion()];
             
             //set action
             action = NSLocalizedString(@"Close", @"Close");
@@ -1748,13 +1748,8 @@ bail:
         //show it
         [self.updateWindowController showWindow:self];
         
-        //invoke function in background that will make window modal
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
-            //make modal
-            makeModal(self.updateWindowController);
-            
-        });
+        //make front/visible
+        [self.updateWindowController.window setLevel:NSPopUpMenuWindowLevel];
     }
     
     return;
