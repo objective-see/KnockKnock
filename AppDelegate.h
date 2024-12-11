@@ -21,6 +21,7 @@
 #import "ResultsWindowController.h"
 
 #import <Cocoa/Cocoa.h>
+#import <OSLog/OSLog.h>
 
 /* GLOBALS */
 

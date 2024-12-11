@@ -35,6 +35,29 @@
 @synthesize categoryTableController;
 @synthesize resultsWindowController;
 
+//exception handler
+// show alert and log error
+void uncaughtExceptionHandler(NSException* exception) {
+    
+    //alert
+    NSAlert* alert = nil;
+    
+    //alloc/init alert
+    alert = [NSAlert alertWithMessageText:NSLocalizedString(@"ERROR:\nKnockKnock Encountered a Fatal Error", @"KnockKnock Encountered a Fatal Error") defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"Exception: %@",@"Exception: %@"), exception];
+    
+    //show it
+    [alert runModal];
+    
+    //log
+    os_log_error(OS_LOG_DEFAULT, "KnockKnock crash: %{public}@", exception);
+    os_log_error(OS_LOG_DEFAULT, "KnockKnock crash (stack trace): %{public}@", [exception callStackSymbols]);
+    
+    //bye
+    exit(EXIT_FAILURE);
+    
+    return;
+}
+
 //center window
 // also make front
 -(void)awakeFromNib
@@ -56,6 +79,9 @@
 {
     //defaults
     NSUserDefaults* defaults = nil;
+    
+    //set exception handler
+    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
     //init filter object
     itemFilter = [[Filter alloc] init];

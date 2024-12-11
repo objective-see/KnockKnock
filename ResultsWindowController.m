@@ -40,8 +40,25 @@
     //set details
     self.detailsLabel.stringValue = self.details;
     
-    //set unknown items
-    self.vtDetailsLabel.stringValue = self.vtDetails;
+    //set VT results
+    if(nil != self.vtDetails)
+    {
+        //set
+        self.vtDetailsLabel.stringValue = self.vtDetails;
+    }
+    //no VT results
+    // disabled? something else?
+    else
+    {
+        if(YES == ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries)
+        {
+            self.vtDetailsLabel.stringValue = NSLocalizedString(@"VirusTotal Results: Disabled", @"VirusTotal Results: Disabled");
+        }
+        else
+        {
+            self.vtDetailsLabel.stringValue = @"VirusTotal: ?";
+        }
+    }
     
     //toggle 'Submit' button
     self.submitToVT.hidden = !(self.unknownItems.count);
@@ -87,6 +104,9 @@
 //update UI now that submission is done
 -(void)submissionComplete:(NSUInteger)successes httpResponses:(NSMutableArray*)httpResponses
 {
+    //unique responses
+    NSSet* uniqueResponses = nil;
+    
     //enable close
     self.closeButton.enabled = YES;
     
@@ -101,9 +121,15 @@
     }
     else
     {
+        //get just unique responses
+        uniqueResponses = [NSSet setWithArray:httpResponses];
+        
         //update message
-        self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submissions complete, though errors were encountered (HTTP response(s): %@).", @"Submissions complete, though errors were encountered (HTTP response(s): %@)."), [httpResponses componentsJoinedByString:@","]];
+        self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)", @"Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)"), [[uniqueResponses allObjects] componentsJoinedByString:@","]];
     }
+    
+    //then make action button first responder
+    [self.window makeFirstResponder:self.closeButton];
     
     return;
 }
