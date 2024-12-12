@@ -189,7 +189,15 @@
       }
     },
     "ERROR:\nKnockKnock Encountered a Fatal Error" : {
-      "comment" : "KnockKnock Encountered a Fatal Error"
+      "comment" : "KnockKnock Encountered a Fatal Error",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR:\nKnockKnock Encontró un Error Fatal"
+          }
+        }
+      }
     },
     "ERROR:\nVirusTotal query for '%@' failed" : {
       "comment" : "ERROR:\nVirusTotal query for '%@' failed",
@@ -225,7 +233,15 @@
       }
     },
     "Exception: %@" : {
-      "comment" : "Exception: %@"
+      "comment" : "Exception: %@",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excepción: %@"
+          }
+        }
+      }
     },
     "extensions hosted in the browser" : {
       "comment" : "extensions hosted in the browser",
@@ -530,20 +546,20 @@
         }
       }
     },
-    "Submissions complete, though errors were encountered (HTTP response(s): %@)." : {
-      "comment" : "Submissions complete, though errors were encountered (HTTP response(s): %@).",
+    "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)" : {
+      "comment" : "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)"
+    },
+    "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)." : {
+      "comment" : "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@).",
       "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Envíos completados, aunque se encontraron errores (respuesta(s) HTTP: %@)."
+            "value" : "Envíos completados, aunque se encontraron errores.\r\n(respuesta(s) HTTP: %@)."
           }
         }
       }
-    },
-    "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)." : {
-      "comment" : "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)."
     },
     "Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed)." : {
       "comment" : "Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed).",
@@ -656,7 +672,15 @@
       }
     },
     "VirusTotal Results: Disabled" : {
-      "comment" : "VirusTotal Results: Disabled"
+      "comment" : "VirusTotal Results: Disabled",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resultados de VirusTotal: Deshabilitado"
+          }
+        }
+      }
     },
     "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)" : {
       "comment" : "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)",

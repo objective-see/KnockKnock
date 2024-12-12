@@ -95,13 +95,6 @@ void uncaughtExceptionHandler(NSException* exception) {
     //alloc shared item enumerator
     sharedItemEnumerator = [[ItemEnumerator alloc] init];
     
-    //toggle away
-    [[[NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.apple.loginwindow"] firstObject] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
-    
-    //toggle back
-    // work-around for menu not showing since we set Application is agent(UIElement): YES
-    [[[NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.objective-see.KnockKnock"] firstObject] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
-    
     //load defaults
     defaults = [NSUserDefaults standardUserDefaults];
 
