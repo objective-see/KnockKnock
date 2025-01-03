@@ -31,6 +31,32 @@
                 if ([self sendAction:@selector(selectAll:) to:nil from:self])
                     return;
             }
+            
+            //+h (hide window)
+            else if([event.charactersIgnoringModifiers isEqualToString:@"h"])
+            {
+                //hide
+                if(YES == [self sendAction:@selector(hide:) to:nil from:self])
+                {
+                    return;
+                }
+            }
+            
+            //+m (minimize window)
+            else if([event.charactersIgnoringModifiers isEqualToString:@"m"])
+            {
+                //minimize
+                [NSApplication.sharedApplication.keyWindow miniaturize:nil];
+                return;
+            }
+            
+            //+w (close window)
+            else if([event.charactersIgnoringModifiers isEqualToString:@"w"])
+            {
+                //close
+                [NSApplication.sharedApplication.keyWindow close];
+                return;
+            }
         }
     }
     [super sendEvent:event];

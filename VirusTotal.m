@@ -230,9 +230,7 @@ extern BOOL cmdlineMode;
             
             break;
         }
-        
-       
-        
+
         //check if scan is complete
         if( (nil != results) &&
             (1 == [results[VT_RESULTS_RESPONSE] integerValue]) )

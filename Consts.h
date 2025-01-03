@@ -277,7 +277,7 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 #define VT_HTTP_RESPONSE @"http_response"
 
 //output file
-#define OUTPUT_FILE @"kkResults.txt"
+#define OUTPUT_FILE @"kkResults.json"
 
 //support us button tag
 #define BUTTON_SUPPORT_US 100

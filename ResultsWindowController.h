@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "UnknownItemsWindowController.h"
 
 @interface ResultsWindowController : NSWindowController <NSWindowDelegate>
 {
@@ -33,22 +34,9 @@
 //submit to VT button
 @property (weak) IBOutlet NSButton *submitToVT;
 
-//activity indicator
-@property (weak) IBOutlet NSProgressIndicator *submissionActivityIndicator;
-
-//submission status
-@property (weak) IBOutlet NSTextField *submissionStatus;
-
-
-//'close' button
-@property (weak) IBOutlet NSButton* closeButton;
+//window controller for unknown items
+@property(nonatomic, strong)UnknownItemsWindowController* unknownItemsWindowController;
 
 /* METHODS */
-
-//close
--(IBAction)close:(id)sender;
-
-//submit (unknown) items to VT
--(IBAction)submitToVT:(id)sender;
 
 @end

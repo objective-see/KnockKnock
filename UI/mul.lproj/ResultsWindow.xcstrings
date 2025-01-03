@@ -2,18 +2,18 @@
   "sourceLanguage" : "en",
   "strings" : {
     "71T-dO-S3a.title" : {
-      "comment" : "Class = \"NSButtonCell\"; title = \"Submit (Unknown) Items\"; ObjectID = \"71T-dO-S3a\";",
+      "comment" : "Class = \"NSButtonCell\"; title = \"View/Submit Items\"; ObjectID = \"71T-dO-S3a\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Submit (Unknown) Items"
+            "value" : "View/Submit Items"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Enviar ítems"
           }
         }
@@ -21,7 +21,7 @@
     },
     "bBK-v0-ypq.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Submission Results...\"; ObjectID = \"bBK-v0-ypq\";",
-      "extractionState" : "extracted_with_value",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -75,7 +75,7 @@
     },
     "J9x-sM-h9S.title" : {
       "comment" : "Class = \"NSButtonCell\"; title = \"Close\"; ObjectID = \"J9x-sM-h9S\";",
-      "extractionState" : "extracted_with_value",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

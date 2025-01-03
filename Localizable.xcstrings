@@ -546,9 +546,6 @@
         }
       }
     },
-    "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)" : {
-      "comment" : "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)"
-    },
     "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)." : {
       "comment" : "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@).",
       "extractionState" : "stale",
@@ -563,6 +560,7 @@
     },
     "Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed)." : {
       "comment" : "Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed).",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -607,6 +605,7 @@
     },
     "Submitting %lu item(s) to VirusTotal..." : {
       "comment" : "Submitting %lu item(s) to VirusTotal...",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -673,6 +672,7 @@
     },
     "VirusTotal Results: Disabled" : {
       "comment" : "VirusTotal Results: Disabled",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -681,6 +681,9 @@
           }
         }
       }
+    },
+    "VirusTotal Results: N/A (Disabled)" : {
+      "comment" : "VirusTotal Results: N/A (Disabled)"
     },
     "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)" : {
       "comment" : "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)",

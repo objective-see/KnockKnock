@@ -53,6 +53,8 @@
 		CD6FD7C62C7AB299001C59F2 /* VTInfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD6FD7C52C7AB299001C59F2 /* VTInfoWindow.xib */; };
 		CD6FD7CA2C7AB29F001C59F2 /* ExtensionInfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD6FD7C92C7AB29F001C59F2 /* ExtensionInfoWindow.xib */; };
 		CD6FD7CE2C7AB2A3001C59F2 /* FileInfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD6FD7CD2C7AB2A3001C59F2 /* FileInfoWindow.xib */; };
+		CD792FB92D252FE600167649 /* UnknownItems.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD792FB72D252FE600167649 /* UnknownItems.xib */; };
+		CD792FBC2D2530A800167649 /* UnknownItemsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD792FBB2D2530A800167649 /* UnknownItemsWindowController.m */; };
 		CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */; };
 		CD7B9F531ACBAE2900DF3C71 /* SpotlightImporters.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */; };
 		CD7B9FA41ACBCFAD00DF3C71 /* spotlightIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9FA31ACBCFAD00DF3C71 /* spotlightIcon.png */; };
@@ -226,6 +228,9 @@
 		CD6FD7CB2C7AB29F001C59F2 /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/ExtensionInfoWindow.xcstrings; sourceTree = "<group>"; };
 		CD6FD7CC2C7AB2A3001C59F2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FileInfoWindow.xib; sourceTree = "<group>"; };
 		CD6FD7CF2C7AB2A3001C59F2 /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/FileInfoWindow.xcstrings; sourceTree = "<group>"; };
+		CD792FB82D252FE600167649 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/UnknownItems.xib; sourceTree = "<group>"; };
+		CD792FBA2D2530A800167649 /* UnknownItemsWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnknownItemsWindowController.h; sourceTree = "<group>"; };
+		CD792FBB2D2530A800167649 /* UnknownItemsWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnknownItemsWindowController.m; sourceTree = "<group>"; };
 		CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoAppleOver.png; path = images/logoAppleOver.png; sourceTree = SOURCE_ROOT; };
 		CD7B9F511ACBAE2900DF3C71 /* SpotlightImporters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpotlightImporters.h; path = Plugins/SpotlightImporters.h; sourceTree = "<group>"; };
 		CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SpotlightImporters.m; path = Plugins/SpotlightImporters.m; sourceTree = "<group>"; };
@@ -431,14 +436,14 @@
 				CDA81D451A95B492009790E2 /* AppDelegate.m */,
 				CD585493219FE61D00A438B0 /* Assets.xcassets */,
 				CDA81D481A95B492009790E2 /* Consts.h */,
+				CDE241A92C8556A40099F82B /* DiffWindowController.h */,
+				CDE241AA2C8556A40099F82B /* DiffWindowController.m */,
 				CD6095501A8329FA00E091CD /* images */,
 				CD6FD7AB2C7AAD87001C59F2 /* MainMenu.xib */,
 				CD5854D621A60B2000A438B0 /* PlistWindowController.h */,
 				CD5854D721A60B2000A438B0 /* PlistWindowController.m */,
 				CDF08CC71AC4C678009B3423 /* PrefsWindowController.h */,
 				CDF08CC81AC4C678009B3423 /* PrefsWindowController.m */,
-				CDE241A92C8556A40099F82B /* DiffWindowController.h */,
-				CDE241AA2C8556A40099F82B /* DiffWindowController.m */,
 				CD24F076219DF3DB0081B0E5 /* Signing.h */,
 				CD24F075219DF3DA0081B0E5 /* Signing.m */,
 				1D21BC55172AF43D009D1CFD /* Supporting Files */,
@@ -541,6 +546,8 @@
 				CD2F21A321A8A7E300F67A83 /* UpdateWindowController.m */,
 				CDF08CDC1AC886F2009B3423 /* VTInfoWindowController.h */,
 				CDF08CDD1AC886F2009B3423 /* VTInfoWindowController.m */,
+				CD792FBA2D2530A800167649 /* UnknownItemsWindowController.h */,
+				CD792FBB2D2530A800167649 /* UnknownItemsWindowController.m */,
 			);
 			name = UIControllers;
 			sourceTree = "<group>";
@@ -621,6 +628,7 @@
 		CDA81E621AA020E8009790E2 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				CD792FB72D252FE600167649 /* UnknownItems.xib */,
 				CD6FD7BD2C7AB291001C59F2 /* AboutWindow.xib */,
 				CD19A7EC2CA4236B00F17FF3 /* DiffWindow.xib */,
 				CD6FD7C92C7AB29F001C59F2 /* ExtensionInfoWindow.xib */,
@@ -771,6 +779,7 @@
 				CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */,
 				CDA81DCB1A9960A3009790E2 /* virusTotal.png in Resources */,
 				CDA81DF41A99B8C2009790E2 /* whitelistedExtensions.json in Resources */,
+				CD792FB92D252FE600167649 /* UnknownItems.xib in Resources */,
 				CD585494219FE61D00A438B0 /* Assets.xcassets in Resources */,
 				CDA81DD41A9970A0009790E2 /* unsigned.png in Resources */,
 				CD2B61442067656200BF72E9 /* eventRulesIcon.png in Resources */,
@@ -862,6 +871,7 @@
 				CDF08CC61AC46E75009B3423 /* VTButton.m in Sources */,
 				CDBE491D1B5B44BB0031FC22 /* LogInOutHooks.m in Sources */,
 				CDE2D3A72AC6E20500261224 /* DockTiles.m in Sources */,
+				CD792FBC2D2530A800167649 /* UnknownItemsWindowController.m in Sources */,
 				CDA81D8F1A96F557009790E2 /* PluginBase.m in Sources */,
 				CDAB989C1AEAC95500C75B4B /* ItemEnumerator.m in Sources */,
 				CDA81D771A95B7C1009790E2 /* CategoryTableController.m in Sources */,
@@ -971,6 +981,15 @@
 				CD6FD7CF2C7AB2A3001C59F2 /* mul */,
 			);
 			name = FileInfoWindow.xib;
+			path = UI;
+			sourceTree = "<group>";
+		};
+		CD792FB72D252FE600167649 /* UnknownItems.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CD792FB82D252FE600167649 /* Base */,
+			);
+			name = UnknownItems.xib;
 			path = UI;
 			sourceTree = "<group>";
 		};

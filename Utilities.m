@@ -1033,3 +1033,22 @@ void transformProcess(ProcessApplicationTransformState location)
     
     return;
 }
+
+
+//set line spacing
+void setLineSpacing(NSTextField* textField, CGFloat lineSpacing)
+{
+    NSString *text = textField.stringValue;
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineSpacing = lineSpacing;
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text];
+    [attributedString addAttribute:NSParagraphStyleAttributeName
+                             value:paragraphStyle
+                             range:NSMakeRange(0, attributedString.length)];
+    
+    textField.attributedStringValue = attributedString;
+    
+    return;
+}

@@ -86,4 +86,7 @@ BOOL isDarkMode(void);
 //bring an app to foreground (to get an icon in the dock) or background
 void transformProcess(ProcessApplicationTransformState location);
 
+//set line space
+void setLineSpacing(NSTextField* textField, CGFloat lineSpacing);
+
 #endif

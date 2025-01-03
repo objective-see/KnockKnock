@@ -45,224 +45,56 @@
     {
         //set
         self.vtDetailsLabel.stringValue = self.vtDetails;
+        
+        //line spacing
+        setLineSpacing(self.vtDetailsLabel, 5.0);
+        
+        //show/hide 'unknown items' button
+        self.submitToVT.hidden = !(self.unknownItems.count);
     }
     //no VT results
     // disabled? something else?
     else
     {
+        //disabled
         if(YES == ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries)
         {
-            self.vtDetailsLabel.stringValue = NSLocalizedString(@"VirusTotal Results: Disabled", @"VirusTotal Results: Disabled");
+            self.vtDetailsLabel.stringValue = NSLocalizedString(@"VirusTotal Results: N/A (Disabled)", @"VirusTotal Results: N/A (Disabled)");
         }
+        //?
         else
         {
-            self.vtDetailsLabel.stringValue = @"VirusTotal: ?";
+            self.vtDetailsLabel.stringValue = @"VirusTotal: Error(?)";
         }
     }
-    
-    //toggle 'Submit' button
-    self.submitToVT.hidden = !(self.unknownItems.count);
-    
-    //make 'close' button active
-    [self.window makeFirstResponder:self.closeButton];
     
     return;
 }
 
-//callback into app delegate to submit
--(IBAction)submitToVT:(id)sender
+//show 'unknown items' window
+-(IBAction)viewUnknownItems:(id)sender
 {
-    //disable submit
-    self.submitToVT.enabled = NO;
+    //make normal
+    [self.window setLevel:NSNormalWindowLevel];
     
-    //disable close
-    self.closeButton.enabled = NO;
-    
-    //start spinner
-    [self.submissionActivityIndicator startAnimation:nil];
-    
-    //set message
-    self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submitting %lu item(s) to VirusTotal...", @"Submitting %lu item(s) to VirusTotal..."), self.unknownItems.count];
+    //alloc/init unknown items
+    self.unknownItemsWindowController = [[UnknownItemsWindowController alloc] initWithWindowNibName:@"UnknownItems"];
+     
+    //set unknown items
+    self.unknownItemsWindowController.items = self.unknownItems;
     
     //show it
-    self.submissionStatus.hidden = NO;
+    [self.unknownItemsWindowController showWindow:self];
     
-    //submit in background
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    //center
+    [self.unknownItemsWindowController.window center];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (100 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
         
-        //nap for UI messages
-        sleep(1);
-        
-        //submit
-        [self submit];
-        
+        //and make it first responder
+        [self.unknownItemsWindowController.window makeFirstResponder:self.unknownItemsWindowController.submit];
+    
     });
-    
-    return;
-}
-
-//update UI now that submission is done
--(void)submissionComplete:(NSUInteger)successes httpResponses:(NSMutableArray*)httpResponses
-{
-    //unique responses
-    NSSet* uniqueResponses = nil;
-    
-    //enable close
-    self.closeButton.enabled = YES;
-    
-    //stop spinner
-    [self.submissionActivityIndicator stopAnimation:nil];
-    
-    //success
-    if(successes == self.unknownItems.count)
-    {
-        //update message
-        self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed).", @"Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed).")];
-    }
-    else
-    {
-        //get just unique responses
-        uniqueResponses = [NSSet setWithArray:httpResponses];
-        
-        //update message
-        self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)", @"Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)"), [[uniqueResponses allObjects] componentsJoinedByString:@","]];
-    }
-    
-    //then make action button first responder
-    [self.window makeFirstResponder:self.closeButton];
-    
-    return;
-}
-
-//submit unknown items to VT
-// note: runs in background!
--(void)submit
-{
-    //VT object
-    VirusTotal* vtObj = nil;
-    
-    //result (from VT)
-    NSDictionary* result = nil;
-    
-    //error code(s)
-    NSMutableArray* httpResponses = nil;
-    
-    //report
-    __block NSURL* newReport = nil;
-    
-    //successful scans
-    NSUInteger successes = 0;
-    
-    //alloc/init VT obj
-    vtObj = [[VirusTotal alloc] init];
-    
-    //alloc
-    httpResponses = [NSMutableArray array];
-    
-    //submit all unknown items
-    for(ItemBase* item in self.unknownItems)
-    {
-        //skip non-file items
-        if(YES != [item isKindOfClass:[File class]])
-        {
-            //skip
-            continue;
-        }
-        
-        //skip item's without hashes
-        // ...not sure how this could ever happen
-        if(nil == ((File*)item).hashes[KEY_HASH_SHA1])
-        {
-            //skip
-            continue;
-        }
-        
-        //update UI
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            //update
-            self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submitting '%@'", @"Submitting '%@'"), ((File*)item).name];
-        });
-        
-        //nap (for UI)
-        sleep(1);
-        
-        //submit file to VT
-        result = [vtObj submit:(File*)item];
-        
-        //save non-200 HTTP OK codes
-        if(200 != (long)[(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode])
-        {
-            //add
-            [httpResponses addObject:[NSNumber numberWithUnsignedLong:[(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode]]];
-            
-            //next
-            continue;
-        }
-        
-        //happy
-        successes++;
-    
-        //reset file's VT info
-        // as we've just submittted
-        ((File*)item).vtInfo = nil;
-        
-        //update UI
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            //set item's VT status in UI to pending (...)
-            [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:(File*)item];
-        
-        });
-        
-        //nap
-        // allows msg to show up, and give VT some time
-        [NSThread sleepForTimeInterval:2.0];
-        
-        //launch browser to show new report
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            //launch browser with scan
-            if(nil != result[@"sha256"])
-            {
-                //build url to scan
-                newReport = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.virustotal.com/gui/file/%@", result[@"sha256"]]];
-                
-                //launch browser
-                [[NSWorkspace sharedWorkspace] openURL:newReport];
-            }
-            
-        });
-    }
-    
-    //tell UI all is done
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        //complete
-        [self submissionComplete:successes httpResponses:httpResponses];
-        
-    });
-    
-    return;
-
-}
-
-//automatically invoked when user clicks 'OK'
-// ->close window
--(IBAction)close:(id)sender
-{
-    //close
-    [[self window] close];
-        
-    return;
-}
-
-//automatically invoked when window is closing
-// ->make ourselves unmodal
--(void)windowWillClose:(NSNotification *)notification
-{
-    //make un-modal
-    [[NSApplication sharedApplication] stopModal];
     
     return;
 }
