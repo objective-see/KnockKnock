@@ -1,0 +1,33 @@
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "1tA-WZ-bke"; */
+"1tA-WZ-bke.title" = "Text Cell";
+
+/* Class = "NSTableColumn"; headerCell.title = "Submit?"; ObjectID = "4Yf-Xs-7Mi"; */
+"4Yf-Xs-7Mi.headerCell.title" = "Submit?";
+
+/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "4Zg-Mt-eqA"; */
+"4Zg-Mt-eqA.title" = "Table View Cell";
+
+/* Class = "NSButtonCell"; title = "View"; ObjectID = "G1q-Ag-u0M"; */
+"G1q-Ag-u0M.title" = "View";
+
+/* Class = "NSButtonCell"; title = "Submit"; ObjectID = "ORZ-Dh-wck"; */
+"ORZ-Dh-wck.title" = "Submit";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "QE4-vB-ePI"; */
+"QE4-vB-ePI.title" = "Text Cell";
+
+/* Class = "NSTableColumn"; headerCell.title = "Unknown Item"; ObjectID = "QnT-0o-QAw"; */
+"QnT-0o-QAw.headerCell.title" = "Unknown Item";
+
+/* Class = "NSTextFieldCell"; title = "Results"; ObjectID = "X4L-QK-gGw"; */
+"X4L-QK-gGw.title" = "Results";
+
+/* Class = "NSTableColumn"; headerCell.title = "Result"; ObjectID = "XoS-Yw-8k6"; */
+"XoS-Yw-8k6.headerCell.title" = "Result";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "lTj-A6-MWz"; */
+"lTj-A6-MWz.title" = "Text Cell";
+
+/* Class = "NSWindow"; title = "Unknown Items"; ObjectID = "pvW-8N-g8T"; */
+"pvW-8N-g8T.title" = "Unknown Items";

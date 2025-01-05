@@ -546,26 +546,13 @@
         }
       }
     },
-    "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@)." : {
-      "comment" : "Submissions complete, though errors were encountered.\r\n(HTTP response(s): %@).",
-      "extractionState" : "stale",
+    "Submissions complete!" : {
+      "comment" : "Submissions complete!",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Envíos completados, aunque se encontraron errores.\r\n(respuesta(s) HTTP: %@)."
-          }
-        }
-      }
-    },
-    "Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed)." : {
-      "comment" : "Submissions complete. (In subsequent scans item's VT detection ratios will now be displayed).",
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Envíos completados. (A partir de ahora, en los análisis posteriores, se mostrarán los índices de detección de VT del ítem)."
+            "value" : "Envíos completados"
           }
         }
       }
@@ -599,18 +586,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enviando '%@'"
-          }
-        }
-      }
-    },
-    "Submitting %lu item(s) to VirusTotal..." : {
-      "comment" : "Submitting %lu item(s) to VirusTotal...",
-      "extractionState" : "stale",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enviando %lu ítem(s) a VirusTotal..."
           }
         }
       }
@@ -670,9 +645,8 @@
         }
       }
     },
-    "VirusTotal Results: Disabled" : {
-      "comment" : "VirusTotal Results: Disabled",
-      "extractionState" : "stale",
+    "VirusTotal Results: N/A (Disabled)" : {
+      "comment" : "VirusTotal Results: N/A (Disabled)",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -681,9 +655,6 @@
           }
         }
       }
-    },
-    "VirusTotal Results: N/A (Disabled)" : {
-      "comment" : "VirusTotal Results: N/A (Disabled)"
     },
     "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)" : {
       "comment" : "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)",

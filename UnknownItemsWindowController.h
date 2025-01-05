@@ -29,6 +29,9 @@
 //activity indicator
 @property (weak) IBOutlet NSProgressIndicator *activityIndicator;
 
+//status label
+@property (weak) IBOutlet NSTextField *statusLabel;
+
 /* METHODS */
 
 //checkbox button handler

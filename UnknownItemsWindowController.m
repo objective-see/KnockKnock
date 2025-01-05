@@ -289,7 +289,8 @@
             continue;
         }
         
-        //self.submissionStatus.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submitting '%@'", @"Submitting '%@'"), ((File*)item).name];
+        //set status
+        self.statusLabel.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submitting '%@'", @"Submitting '%@'"), ((File*)item).name];
         
         //inc
         submittedItems++;
@@ -323,6 +324,9 @@
                     
                     //stop spinner
                     [self.activityIndicator stopAnimation:nil];
+                    
+                    //set status
+                    self.statusLabel.stringValue = NSLocalizedString(@"Submissions complete!", @"Submissions complete!");
                 }
             });
         });

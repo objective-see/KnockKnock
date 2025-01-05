@@ -32,6 +32,7 @@
 		CD36CDB8237785180089FC34 /* quicklookIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD36CDB7237785180089FC34 /* quicklookIcon.png */; };
 		CD3B99B925EC94D60020AF50 /* SystemExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CD3B99B725EC94D60020AF50 /* SystemExtensions.m */; };
 		CD3B99D325EDE9F90020AF50 /* systemExtensionIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD3B99D225EDE9F90020AF50 /* systemExtensionIcon.png */; };
+		CD49EEA72D2A1301007439CD /* UnknownItems.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD49EEA62D2A1301007439CD /* UnknownItems.xib */; };
 		CD585494219FE61D00A438B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD585493219FE61D00A438B0 /* Assets.xcassets */; };
 		CD5854D321A5FADD00A438B0 /* patrons.txt in Resources */ = {isa = PBXBuildFile; fileRef = CD5854D221A5FADD00A438B0 /* patrons.txt */; };
 		CD5854D821A60B2100A438B0 /* PlistWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5854D721A60B2000A438B0 /* PlistWindowController.m */; };
@@ -53,7 +54,6 @@
 		CD6FD7C62C7AB299001C59F2 /* VTInfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD6FD7C52C7AB299001C59F2 /* VTInfoWindow.xib */; };
 		CD6FD7CA2C7AB29F001C59F2 /* ExtensionInfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD6FD7C92C7AB29F001C59F2 /* ExtensionInfoWindow.xib */; };
 		CD6FD7CE2C7AB2A3001C59F2 /* FileInfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD6FD7CD2C7AB2A3001C59F2 /* FileInfoWindow.xib */; };
-		CD792FB92D252FE600167649 /* UnknownItems.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD792FB72D252FE600167649 /* UnknownItems.xib */; };
 		CD792FBC2D2530A800167649 /* UnknownItemsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD792FBB2D2530A800167649 /* UnknownItemsWindowController.m */; };
 		CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */ = {isa = PBXBuildFile; fileRef = CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */; };
 		CD7B9F531ACBAE2900DF3C71 /* SpotlightImporters.m in Sources */ = {isa = PBXBuildFile; fileRef = CD7B9F521ACBAE2900DF3C71 /* SpotlightImporters.m */; };
@@ -193,6 +193,8 @@
 		CD3B99B725EC94D60020AF50 /* SystemExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SystemExtensions.m; path = Plugins/SystemExtensions.m; sourceTree = "<group>"; };
 		CD3B99B825EC94D60020AF50 /* SystemExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SystemExtensions.h; path = Plugins/SystemExtensions.h; sourceTree = "<group>"; };
 		CD3B99D225EDE9F90020AF50 /* systemExtensionIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = systemExtensionIcon.png; path = images/systemExtensionIcon.png; sourceTree = SOURCE_ROOT; };
+		CD49EEA52D2A1301007439CD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/UnknownItems.xib; sourceTree = "<group>"; };
+		CD49EEA82D2A1301007439CD /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/UnknownItems.xcstrings; sourceTree = "<group>"; };
 		CD585493219FE61D00A438B0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		CD5854D221A5FADD00A438B0 /* patrons.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = patrons.txt; sourceTree = SOURCE_ROOT; };
 		CD5854D621A60B2000A438B0 /* PlistWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlistWindowController.h; sourceTree = SOURCE_ROOT; };
@@ -228,7 +230,6 @@
 		CD6FD7CB2C7AB29F001C59F2 /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/ExtensionInfoWindow.xcstrings; sourceTree = "<group>"; };
 		CD6FD7CC2C7AB2A3001C59F2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FileInfoWindow.xib; sourceTree = "<group>"; };
 		CD6FD7CF2C7AB2A3001C59F2 /* mul */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = mul; path = mul.lproj/FileInfoWindow.xcstrings; sourceTree = "<group>"; };
-		CD792FB82D252FE600167649 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/UnknownItems.xib; sourceTree = "<group>"; };
 		CD792FBA2D2530A800167649 /* UnknownItemsWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnknownItemsWindowController.h; sourceTree = "<group>"; };
 		CD792FBB2D2530A800167649 /* UnknownItemsWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnknownItemsWindowController.m; sourceTree = "<group>"; };
 		CD7B9F4C1ACB959200DF3C71 /* logoAppleOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoAppleOver.png; path = images/logoAppleOver.png; sourceTree = SOURCE_ROOT; };
@@ -628,7 +629,7 @@
 		CDA81E621AA020E8009790E2 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				CD792FB72D252FE600167649 /* UnknownItems.xib */,
+				CD49EEA62D2A1301007439CD /* UnknownItems.xib */,
 				CD6FD7BD2C7AB291001C59F2 /* AboutWindow.xib */,
 				CD19A7EC2CA4236B00F17FF3 /* DiffWindow.xib */,
 				CD6FD7C92C7AB29F001C59F2 /* ExtensionInfoWindow.xib */,
@@ -779,7 +780,7 @@
 				CD7B9F4D1ACB959200DF3C71 /* logoAppleOver.png in Resources */,
 				CDA81DCB1A9960A3009790E2 /* virusTotal.png in Resources */,
 				CDA81DF41A99B8C2009790E2 /* whitelistedExtensions.json in Resources */,
-				CD792FB92D252FE600167649 /* UnknownItems.xib in Resources */,
+				CD49EEA72D2A1301007439CD /* UnknownItems.xib in Resources */,
 				CD585494219FE61D00A438B0 /* Assets.xcassets in Resources */,
 				CDA81DD41A9970A0009790E2 /* unsigned.png in Resources */,
 				CD2B61442067656200BF72E9 /* eventRulesIcon.png in Resources */,
@@ -895,6 +896,16 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
+		CD49EEA62D2A1301007439CD /* UnknownItems.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CD49EEA52D2A1301007439CD /* Base */,
+				CD49EEA82D2A1301007439CD /* mul */,
+			);
+			name = UnknownItems.xib;
+			path = UI;
+			sourceTree = "<group>";
+		};
 		CD6FD7AB2C7AAD87001C59F2 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -981,15 +992,6 @@
 				CD6FD7CF2C7AB2A3001C59F2 /* mul */,
 			);
 			name = FileInfoWindow.xib;
-			path = UI;
-			sourceTree = "<group>";
-		};
-		CD792FB72D252FE600167649 /* UnknownItems.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CD792FB82D252FE600167649 /* Base */,
-			);
-			name = UnknownItems.xib;
 			path = UI;
 			sourceTree = "<group>";
 		};
@@ -1105,20 +1107,22 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3.0.1;
+				CURRENT_PROJECT_VERSION = 3.1.0;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Libraries/**";
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = KnockKnock;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Libraries/BTM",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 3.0.1;
+				MARKETING_VERSION = 3.1.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
@@ -1135,20 +1139,22 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3.0.1;
+				CURRENT_PROJECT_VERSION = 3.1.0;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "KnockKnock-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Libraries/**";
 				INFOPLIST_FILE = "KnockKnock-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = KnockKnock;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Libraries/BTM",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 3.0.1;
+				MARKETING_VERSION = 3.1.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;

@@ -13,26 +13,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Enviar ítems"
-          }
-        }
-      }
-    },
-    "bBK-v0-ypq.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Submission Results...\"; ObjectID = \"bBK-v0-ypq\";",
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Submission Results..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
             "state" : "translated",
-            "value" : "Enviar Resultados..."
+            "value" : "Ver/Enviar ítems"
           }
         }
       }
@@ -55,6 +37,24 @@
         }
       }
     },
+    "F0z-JX-Cv5.title" : {
+      "comment" : "Class = \"NSWindow\"; title = \"KnockKnock\"; ObjectID = \"F0z-JX-Cv5\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "KnockKnock"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KnockKnock"
+          }
+        }
+      }
+    },
     "ivf-fv-SFp.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"VirusTotal:\"; ObjectID = \"ivf-fv-SFp\";",
       "extractionState" : "extracted_with_value",
@@ -69,24 +69,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "VirusTotal:"
-          }
-        }
-      }
-    },
-    "J9x-sM-h9S.title" : {
-      "comment" : "Class = \"NSButtonCell\"; title = \"Close\"; ObjectID = \"J9x-sM-h9S\";",
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Close"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cerrar"
           }
         }
       }

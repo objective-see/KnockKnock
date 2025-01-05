@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23094" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23504" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23094"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23504"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="UnknownItemsWindowController">
             <connections>
                 <outlet property="activityIndicator" destination="YFJ-fV-od8" id="0dA-VM-qhD"/>
+                <outlet property="statusLabel" destination="cRD-QV-kp1" id="iww-ot-hR2"/>
                 <outlet property="submit" destination="p2q-DR-J4n" id="V3O-dR-GsD"/>
                 <outlet property="tableView" destination="4WG-Qw-U3m" id="n74-y3-lGx"/>
                 <outlet property="window" destination="pvW-8N-g8T" id="S6L-HM-aNi"/>
@@ -176,6 +177,14 @@
                             <action selector="submit:" target="-2" id="1pz-8y-few"/>
                         </connections>
                     </button>
+                    <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cRD-QV-kp1">
+                        <rect key="frame" x="18" y="22" width="463" height="15"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" id="on5-Un-vIc">
+                            <font key="font" size="13" name="Menlo-Regular"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="mif-DC-CkF" secondAttribute="bottom" constant="62" id="00d-ob-Zdf"/>
@@ -183,9 +192,12 @@
                     <constraint firstAttribute="bottom" secondItem="YFJ-fV-od8" secondAttribute="bottom" constant="14" id="7bI-VI-L4H"/>
                     <constraint firstAttribute="trailing" secondItem="mif-DC-CkF" secondAttribute="trailing" constant="-1" id="CVV-X1-Kle"/>
                     <constraint firstAttribute="bottom" secondItem="p2q-DR-J4n" secondAttribute="bottom" constant="20" symbolic="YES" id="L3W-cR-gQ9"/>
+                    <constraint firstItem="cRD-QV-kp1" firstAttribute="leading" secondItem="XBF-k3-Nqu" secondAttribute="leading" constant="20" symbolic="YES" id="YbQ-nC-juI"/>
                     <constraint firstAttribute="trailing" secondItem="YFJ-fV-od8" secondAttribute="trailing" constant="20" symbolic="YES" id="ajA-XG-4va"/>
                     <constraint firstItem="mif-DC-CkF" firstAttribute="leading" secondItem="XBF-k3-Nqu" secondAttribute="leading" constant="1" id="h6B-Mm-oRi"/>
                     <constraint firstAttribute="trailing" secondItem="p2q-DR-J4n" secondAttribute="trailing" constant="60" id="tgR-ZW-6jc"/>
+                    <constraint firstItem="p2q-DR-J4n" firstAttribute="leading" secondItem="cRD-QV-kp1" secondAttribute="trailing" constant="8" symbolic="YES" id="u8f-sJ-TeU"/>
+                    <constraint firstAttribute="bottom" secondItem="cRD-QV-kp1" secondAttribute="bottom" constant="22" id="xqW-6C-LUG"/>
                 </constraints>
             </view>
             <point key="canvasLocation" x="-8.5" y="28.5"/>
