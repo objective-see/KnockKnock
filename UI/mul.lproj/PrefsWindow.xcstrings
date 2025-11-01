@@ -1,19 +1,43 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "F0z-JX-Cv5.title" : {
-      "comment" : "Class = \"NSWindow\"; title = \"Settings\"; ObjectID = \"F0z-JX-Cv5\";",
+    "CMD-Kc-WiI.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"API Key:\"; ObjectID = \"CMD-Kc-WiI\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Settings"
+            "value" : "API Key:"
+          }
+        }
+      }
+    },
+    "DQk-9R-Peb.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"VirusTotal Integration:\"; ObjectID = \"DQk-9R-Peb\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "VirusTotal Integration:"
+          }
+        }
+      }
+    },
+    "F0z-JX-Cv5.title" : {
+      "comment" : "Class = \"NSWindow\"; title = \"KnockKnock Settings\"; ObjectID = \"F0z-JX-Cv5\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "KnockKnock Settings"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Configuración"
           }
         }
@@ -69,6 +93,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "Nua-Eb-VTm.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Enter your personal VirusTotal API. \\nYou can learn more about getting such a key (for free!) here:\"; ObjectID = \"Nua-Eb-VTm\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enter your personal VirusTotal API. \nYou can learn more about getting such a key (for free!) here:"
+          }
+        }
+      }
+    },
+    "rp9-45-S3R.placeholderString" : {
+      "comment" : "Class = \"NSTextFieldCell\"; placeholderString = \"Your API Key\"; ObjectID = \"rp9-45-S3R\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Your API Key"
+          }
+        }
+      }
+    },
+    "sB6-ZG-QQh.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"https://docs.virustotal.com/docs/please-give-me-an-api-key\"; ObjectID = \"sB6-ZG-QQh\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "https://docs.virustotal.com/docs/please-give-me-an-api-key"
+          }
+        }
+      }
+    },
+    "Uce-KH-7DH.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"General:\"; ObjectID = \"Uce-KH-7DH\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "General:"
           }
         }
       }

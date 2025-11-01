@@ -380,18 +380,18 @@
       }
     },
     "Cd7-Xq-jnw.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"Preferences\"; ObjectID = \"Cd7-Xq-jnw\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"Settings...\"; ObjectID = \"Cd7-Xq-jnw\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Preferences"
+            "value" : "Settings..."
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Preferencias"
           }
         }

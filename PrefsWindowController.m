@@ -11,16 +11,13 @@
 #import "AppDelegate.h"
 #import "PrefsWindowController.h"
 
-
 @implementation PrefsWindowController
 
 @synthesize okButton;
 @synthesize saveOutput;
-@synthesize shouldSaveNow;
 @synthesize disableVTQueries;
 @synthesize showTrustedItems;
 @synthesize disableUpdateCheck;
-
 
 //automatically called when nib is loaded
 // ->center window
@@ -28,6 +25,7 @@
 {
     //center
     [self.window center];
+    [self.window makeFirstResponder:self.okButton];
 }
 
 //automatically invoked when window is loaded
@@ -76,19 +74,20 @@
         self.saveOutputBtn.state = STATE_ENABLED;
     }
     
-    //capture existing prefs
-    // ->needed to trigger re-saves
-    [self captureExistingPrefs];
-    
     return;
 }
+
+-(void)windowDidBecomeKey:(NSNotification *)notification {
+    [self.window makeFirstResponder:self.okButton];
+}
+
 
 //register default prefs
 // only used if user hasn't set any
 -(void)registerDefaults
 {
     //set defaults
-    [[NSUserDefaults standardUserDefaults] registerDefaults:@{PREF_SHOW_TRUSTED_ITEMS:@NO, PREF_DISABLE_UPDATE_CHECK:@NO, PREF_DISABLE_VT_QUERIRES:@NO, PREF_SAVE_OUTPUT:@NO}];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:@{PREF_SHOW_TRUSTED_ITEMS:@NO, PREF_DISABLE_UPDATE_CHECK:@NO, PREF_DISABLE_VT_QUERIRES:@NO}];
     
     return;
 }
@@ -127,31 +126,9 @@
             self.disableVTQueries = [defaults boolForKey:PREF_DISABLE_VT_QUERIRES];
         }
         
-        //load 'save output'
-        if(nil != [defaults objectForKey:PREF_SAVE_OUTPUT])
-        {
-            //save
-            self.saveOutput = [defaults boolForKey:PREF_SAVE_OUTPUT];
-        }
     }
     
-    return;
-}
-
-//save existing prefs
--(void)captureExistingPrefs
-{
-    //save current state of 'include os/trusted' components
-    self.showTrustedItems = self.showTrustedItemsBtn.state;
-    
-    //save current state of 'disable update checks'
-    self.disableUpdateCheck = self.disableUpdateCheckBtn.state;
-    
-    //save current state of 'disable VT'
-    self.disableVTQueries = self.disableVTQueriesBtn.state;
-    
-    //save current state of 'save' button
-    self.saveOutput = self.saveOutputBtn.state;
+    //TODO: load VT API key
     
     return;
 }
@@ -177,25 +154,7 @@
     
     //init
     defaults = [NSUserDefaults standardUserDefaults];
-    
-    //first, any prefs changed, a 'save' set
-    // ->set 'save now' flag
-    if( ((self.showTrustedItems != self.showTrustedItemsBtn.state) ||
-         (self.disableUpdateCheck != self.disableUpdateCheckBtn.state) ||
-         (self.disableVTQueries != self.disableVTQueriesBtn.state) ||
-         (self.saveOutput != self.saveOutputBtn.state) ) &&
-         (YES == self.saveOutputBtn.state) )
-    {
-        //set
-        self.shouldSaveNow = YES;
-    }
-    //don't save
-    else
-    {
-        //unset
-        self.shouldSaveNow = NO;
-    }
-    
+        
     //save hiding OS components flag
     self.showTrustedItems = self.showTrustedItemsBtn.state;
     
@@ -208,6 +167,9 @@
     //save save output flag
     self.saveOutput = self.saveOutputBtn.state;
     
+    //grab API key
+    self.vtAPIKey = self.apiKey.stringValue;
+    
     //save 'show trusted items'
     [defaults setBool:self.showTrustedItems forKey:PREF_SHOW_TRUSTED_ITEMS];
     
@@ -217,8 +179,7 @@
     //save 'disable vt queries'
     [defaults setBool:self.disableVTQueries forKey:PREF_DISABLE_VT_QUERIRES];
     
-    //save 'save output'
-    [defaults setBool:self.saveOutput forKey:PREF_SAVE_OUTPUT];
+    //TODO: save VT key ...to keychain?
     
     //flush/save
     [defaults synchronize];
@@ -228,6 +189,33 @@
 
     return;
 }
+
+- (IBAction)showAPIHelp:(id)sender {
+    
+    //popover
+    NSPopover *popover = [[NSPopover alloc] init];
+        
+    //view controller
+    NSViewController *viewController = [[NSViewController alloc] init];
+    
+    //set view
+    viewController.view = self.getAPIHelp;
+    
+    //make url a hyperlink
+    makeTextViewHyperlink(self.getAPILink, [NSURL URLWithString:@"https://docs.virustotal.com/docs/please-give-me-an-api-key"]);
+    
+    //init
+    popover.contentViewController = viewController;
+    popover.behavior = NSPopoverBehaviorTransient; // Closes when you click outside
+        
+    //show relative to the button
+    [popover showRelativeToRect:[sender bounds]
+                         ofView:sender
+                  preferredEdge:NSRectEdgeMaxY];    
+    return;
+
+}
+
 
 
 //'OK' button handler

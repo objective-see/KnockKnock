@@ -89,4 +89,7 @@ void transformProcess(ProcessApplicationTransformState location);
 //set line space
 void setLineSpacing(NSTextField* textField, CGFloat lineSpacing);
 
+//check for full disk access
+BOOL hasFDA(void);
+
 #endif

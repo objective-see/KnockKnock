@@ -122,21 +122,19 @@ void uncaughtExceptionHandler(NSException* exception) {
             
         });
     }
-    //asked for full disk access yet?
-    else if(YES != [defaults boolForKey:REQUESTED_FULL_DISK_ACCESS])
-    {
-        //set key
-        [defaults setBool:YES forKey:REQUESTED_FULL_DISK_ACCESS];
+    
+    //TODO: check/ask for FDA each time we don't have it!
+    // TODO: don't run without it!
+    
+    //request access
+    // delay, so UI completes rendering
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
         
         //request access
-        // delay, so UI completes rendering
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-            
-            //request access
-            [self requestFullDiskAcces];
-            
-        });
-    }
+        [self requestFDA];
+        
+    });
+
     
     //check for update
     // unless user has turn off via prefs
@@ -215,7 +213,7 @@ void uncaughtExceptionHandler(NSException* exception) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (100 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
             
             //request access
-            [self requestFullDiskAcces];
+            [self requestFDA];
             
         });
     }
@@ -230,44 +228,48 @@ void uncaughtExceptionHandler(NSException* exception) {
 }
 
 //request full disk access
--(void)requestFullDiskAcces
+-(void)requestFDA
 {
+
     //request
     __block NSAlert* infoAlert = nil;
+
+    if(!hasFDA()) {
     
-    //once
-    static dispatch_once_t once;
-    
-    //show request once
-    dispatch_once(&once, ^
-    {
-        //on request on 10.14+
-        if(@available(macOS 10.14, *))
+        //alloc alert
+        infoAlert = [[NSAlert alloc] init];
+        
+        NSString *settingsName = nil;
+        if (@available(macOS 13.0, *))
+            settingsName = @"System Settings";
+        else
+            settingsName = @"System Preferences";
+
+        //set msg
+        infoAlert.informativeText = [NSString stringWithFormat:
+            NSLocalizedString(@"KnockKnock needs Full Disk Access to perform a complete system scan.\n\nClick 'Open' to open %@ and grant access.", nil),
+            settingsName];
+        
+        //ok button
+        [infoAlert addButtonWithTitle:NSLocalizedString(@"Open", @"Open")];
+        
+        //alert button
+        [infoAlert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
+        
+        //show 'alert' and capture user response
+        // user clicked 'OK'? -> open System Preferences
+        if(NSAlertFirstButtonReturn == [infoAlert runModal])
         {
-            //alloc alert
-            infoAlert = [[NSAlert alloc] init];
-            
-            //main text
-            infoAlert.messageText = NSLocalizedString(@"Open 'System Preferences' to give KnockKnock Full Disk Access?", @"Open 'System Preferences' to give KnockKnock Full Disk Access?");
-            
-            //detailed test
-            infoAlert.informativeText = NSLocalizedString(@"This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n", @"This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n");
-            
-            //ok button
-            [infoAlert addButtonWithTitle:NSLocalizedString(@"OK", @"OK")];
-            
-            //alert button
-            [infoAlert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
-            
-            //show 'alert' and capture user response
-            // user clicked 'OK'? -> open System Preferences
-            if(NSAlertFirstButtonReturn == [infoAlert runModal])
-            {
-                //open System Preferences
-                [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"]];
-            }
+            //open System Preferences
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"]];
         }
-    });
+        //close
+        else
+        {
+            //close
+            [NSApp terminate:nil];
+        }
+    }
     
     return;
 }

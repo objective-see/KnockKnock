@@ -348,6 +348,9 @@
         }
       }
     },
+    "KnockKnock needs Full Disk Access to perform a complete system scan.\n\nClick 'Open' to open %@ and grant access." : {
+
+    },
     "libs inserted by DYLD_INSERT_LIBRARIES" : {
       "comment" : "libs inserted by DYLD_INSERT_LIBRARIES",
       "localizations" : {
@@ -425,8 +428,12 @@
         }
       }
     },
+    "Open" : {
+      "comment" : "Open"
+    },
     "Open 'System Preferences' to give KnockKnock Full Disk Access?" : {
       "comment" : "Open 'System Preferences' to give KnockKnock Full Disk Access?",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -592,6 +599,7 @@
     },
     "This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n" : {
       "comment" : "This allows the app to perform a comprehensive scan.\n\nIn System Preferences:\r ▪ Click the 🔒 to authenticate\r ▪ Click the ➕ to add KnockKnock.app\n",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {

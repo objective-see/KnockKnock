@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "3rdParty/HyperlinkTextField.h"
 
 @interface PrefsWindowController : NSWindowController <NSWindowDelegate>
 {
@@ -45,19 +46,22 @@
 //no update checks
 @property BOOL disableUpdateCheck;
 
+//VT api key
+@property(nonatomic, retain)NSString* vtAPIKey;
+
 //disable talking to VT
 @property BOOL disableVTQueries;
 
 //save results (at end of scan)
 @property BOOL saveOutput;
 
-//save results now
-@property BOOL shouldSaveNow;
+@property (weak) IBOutlet NSTextField *apiKey;
+
+@property (strong) IBOutlet NSView *getAPIHelp;
+
+@property (weak) IBOutlet HyperlinkTextField *getAPILink;
 
 /* METHODS */
-
-//save existing prefs
--(void)captureExistingPrefs;
 
 //'OK' button handler
 // ->save prefs and close window

@@ -36,10 +36,6 @@ static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"Browse
 #define PREF_DISABLE_VT_QUERIRES @"disableVTQueries"
 
 //prefs
-// ->save output
-#define PREF_SAVE_OUTPUT @"saveOutput"
-
-//prefs
 // ->no updates
 #define PREF_DISABLE_UPDATE_CHECK @"noUpdateCheck"
 

@@ -1052,3 +1052,22 @@ void setLineSpacing(NSTextField* textField, CGFloat lineSpacing)
     
     return;
 }
+
+//full disk access check
+// no API for this, so let's just see if we can read TCC.db
+BOOL hasFDA(void) {
+    
+    BOOL fileIsReadable = NO;
+    
+    NSString *tccPath = [@"~/Library/Application Support/com.apple.TCC/TCC.db" stringByExpandingTildeInPath];
+    
+    //dbg msg
+    NSLog(@"Checking for 'Full Disk Access'");
+    
+    fileIsReadable = [NSFileManager.defaultManager isReadableFileAtPath:tccPath];
+    
+    //dbg msg
+    NSLog(@"Result: %d", fileIsReadable);
+
+    return fileIsReadable;
+}

@@ -543,12 +543,12 @@
 				CDA81D7A1A95D29B009790E2 /* ItemTableController.m */,
 				CD02195F1AD39A83005148A2 /* ResultsWindowController.h */,
 				CD0219601AD39A83005148A2 /* ResultsWindowController.m */,
+				CD792FBA2D2530A800167649 /* UnknownItemsWindowController.h */,
+				CD792FBB2D2530A800167649 /* UnknownItemsWindowController.m */,
 				CD2F21A221A8A7E300F67A83 /* UpdateWindowController.h */,
 				CD2F21A321A8A7E300F67A83 /* UpdateWindowController.m */,
 				CDF08CDC1AC886F2009B3423 /* VTInfoWindowController.h */,
 				CDF08CDD1AC886F2009B3423 /* VTInfoWindowController.m */,
-				CD792FBA2D2530A800167649 /* UnknownItemsWindowController.h */,
-				CD792FBB2D2530A800167649 /* UnknownItemsWindowController.m */,
 			);
 			name = UIControllers;
 			sourceTree = "<group>";
