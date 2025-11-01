@@ -55,11 +55,11 @@
 //save results (at end of scan)
 @property BOOL saveOutput;
 
-@property (weak) IBOutlet NSTextField *apiKey;
+@property (weak) IBOutlet NSTextField* apiTextField;
 
-@property (strong) IBOutlet NSView *getAPIHelp;
+@property (strong) IBOutlet NSView* getAPIHelp;
 
-@property (weak) IBOutlet HyperlinkTextField *getAPILink;
+@property (weak) IBOutlet HyperlinkTextField* getAPILink;
 
 /* METHODS */
 

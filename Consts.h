@@ -12,9 +12,6 @@
 //not first run
 #define NOT_FIRST_TIME @"notFirstTime"
 
-//asked for full disk access
-#define REQUESTED_FULL_DISK_ACCESS @"requestedFullDiskAccess"
-
 //supported plugins
 static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"BTM", @"CronJobs", @"DirectoryServicesPlugins", @"DockTiles", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"QuicklookPlugins", @"SpotlightImporters", @"StartupScripts", @"SystemExtensions"};
 
@@ -302,5 +299,8 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 
 //update new version
 #define UPDATE_NEW_VERSION 1
+
+//for keychaim
+#define VT_API_KEYCHAIN_ATTR @"com.objective-see.KnockKnock.vtAPIKey"
 
 #endif

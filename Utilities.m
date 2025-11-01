@@ -1071,3 +1071,49 @@ BOOL hasFDA(void) {
 
     return fileIsReadable;
 }
+
+//save (user's) VT API key to keyhain
+BOOL saveAPIKeyToKeychain(NSString* apiKey)
+{
+    OSStatus status = 0;
+    NSData *apiKeyData = [apiKey dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSDictionary *query = @{
+        (__bridge id)kSecClass: (__bridge id)kSecClassGenericPassword,
+        (__bridge id)kSecAttrService: VT_API_KEYCHAIN_ATTR,
+        (__bridge id)kSecAttrAccount: @"api_key",
+        (__bridge id)kSecValueData: apiKeyData
+    };
+    
+    //delete old
+    SecItemDelete((__bridge CFDictionaryRef)query);
+    
+    //add new
+    status = SecItemAdd((__bridge CFDictionaryRef)query, NULL);
+    
+    return status == errSecSuccess;
+}
+
+//(re)load key from
+NSString* loadAPIKeyFromKeychain(void)
+{
+    NSString* key = nil;
+    
+    NSDictionary *query = @{
+        (__bridge id)kSecClass: (__bridge id)kSecClassGenericPassword,
+        (__bridge id)kSecAttrService: VT_API_KEYCHAIN_ATTR,
+        (__bridge id)kSecAttrAccount: @"api_key",
+        (__bridge id)kSecReturnData: @YES,
+        (__bridge id)kSecMatchLimit: (__bridge id)kSecMatchLimitOne
+    };
+    
+    CFTypeRef result = NULL;
+    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, &result);
+    
+    if (status == errSecSuccess) {
+        NSData *data = (__bridge_transfer NSData *)result;
+        key = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    }
+    
+    return key;
+}

@@ -29,7 +29,7 @@
 }
 
 //automatically invoked when window is loaded
-// ->set to white
+// initialize prefs UI
 -(void)windowDidLoad
 {
     //super
@@ -73,6 +73,14 @@
         //set
         self.saveOutputBtn.state = STATE_ENABLED;
     }
+    
+    //VT API key
+    if(0 != self.vtAPIKey.length) {
+        
+        self.apiTextField.stringValue = self.vtAPIKey;
+    }
+    
+    
     
     return;
 }
@@ -128,7 +136,8 @@
         
     }
     
-    //TODO: load VT API key
+    //load API key
+    self.vtAPIKey = loadAPIKeyFromKeychain();
     
     return;
 }
@@ -168,7 +177,7 @@
     self.saveOutput = self.saveOutputBtn.state;
     
     //grab API key
-    self.vtAPIKey = self.apiKey.stringValue;
+    self.vtAPIKey = self.apiTextField.stringValue;
     
     //save 'show trusted items'
     [defaults setBool:self.showTrustedItems forKey:PREF_SHOW_TRUSTED_ITEMS];
@@ -179,7 +188,8 @@
     //save 'disable vt queries'
     [defaults setBool:self.disableVTQueries forKey:PREF_DISABLE_VT_QUERIRES];
     
-    //TODO: save VT key ...to keychain?
+    //save vt API key
+    saveAPIKeyToKeychain(self.apiTextField.stringValue);
     
     //flush/save
     [defaults synchronize];
@@ -190,6 +200,7 @@
     return;
 }
 
+//show info about API
 - (IBAction)showAPIHelp:(id)sender {
     
     //popover
@@ -215,8 +226,6 @@
     return;
 
 }
-
-
 
 //'OK' button handler
 // ->save prefs and close window

@@ -123,9 +123,6 @@ void uncaughtExceptionHandler(NSException* exception) {
         });
     }
     
-    //TODO: check/ask for FDA each time we don't have it!
-    // TODO: don't run without it!
-    
     //request access
     // delay, so UI completes rendering
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{

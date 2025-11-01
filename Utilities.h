@@ -92,4 +92,10 @@ void setLineSpacing(NSTextField* textField, CGFloat lineSpacing);
 //check for full disk access
 BOOL hasFDA(void);
 
+//save (user's) VT API key to keyhain
+BOOL saveAPIKeyToKeychain(NSString* apiKey);
+
+//(re)load key from
+NSString* loadAPIKeyFromKeychain(void);
+
 #endif

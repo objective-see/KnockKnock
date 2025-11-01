@@ -8,7 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PrefsWindowController">
             <connections>
-                <outlet property="apiKey" destination="Rid-kR-2VL" id="6Fy-9z-2c6"/>
+                <outlet property="apiTextField" destination="Rid-kR-2VL" id="6Fy-9z-2c6"/>
                 <outlet property="disableUpdateCheckBtn" destination="dJU-Ok-N6U" id="Q9b-gF-V3d"/>
                 <outlet property="disableVTQueriesBtn" destination="d54-mZ-jqy" id="Xx6-E1-yv0"/>
                 <outlet property="getAPIHelp" destination="ryf-lG-yic" id="uM6-RV-iQE"/>
