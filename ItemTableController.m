@@ -459,7 +459,7 @@
                 }
             }
         
-            //no VT results (e.g. unknown file)
+            //no VT results yet...
             else
             {
                 //set font

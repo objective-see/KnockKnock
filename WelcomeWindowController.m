@@ -1,0 +1,191 @@
+//
+//  file: WelcomeWindowController.m
+//  project: KnockKnock
+//
+//  created by Patrick Wardle
+//  copyright (c) 2017 Objective-See. All rights reserved.
+//
+
+#import "consts.h"
+#import "utilities.h"
+#import "Extension.h"
+#import "AppDelegate.h"
+
+#import "WelcomeWindowController.h"
+
+/* GLOBALS */
+
+//log handle
+extern os_log_t logHandle;
+
+//buttons
+#define SHOW_WELCOME 0
+#define SHOW_CONFIGURE 1
+#define SHOW_SUPPORT 2
+#define SUPPORT_NO 3
+#define SUPPORT_YES 4
+
+@implementation WelcomeWindowController
+
+@synthesize preferences;
+@synthesize welcomeViewController;
+
+//welcome!
+-(void)windowDidLoad {
+    
+    //super
+    [super windowDidLoad];
+    
+    //not in dark mode?
+    // make window white
+    if(YES != isDarkMode())
+    {
+        //make white
+        self.window.backgroundColor = NSColor.whiteColor;
+    }
+    
+    //when supported
+    // indicate title bar is transparent (too)
+    if(YES == [self.window respondsToSelector:@selector(titlebarAppearsTransparent)])
+    {
+        //set transparency
+        self.window.titlebarAppearsTransparent = YES;
+    }
+    
+    //set title
+    self.window.title = [NSString stringWithFormat:@"KnockKnock v%@", getAppVersion()];
+    
+    //show welcome view
+    [self showView:self.welcomeView firstResponder:SHOW_CONFIGURE];
+    
+    //make key and front
+    [self.window makeKeyAndOrderFront:self];
+    
+    //activate
+    if(@available(macOS 14.0, *)) {
+        [NSApp activate];
+    }
+    else
+    {
+        [NSApp activateIgnoringOtherApps:YES];
+    }
+    
+    //(re)make front
+    [[NSRunningApplication currentApplication] activateWithOptions:(NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
+    
+    return;
+}
+
+//button handler for all views
+// show next view, sometimes, with view specific logic
+-(IBAction)buttonHandler:(id)sender {
+    
+    //leaving prefs view?
+    // capture prefs
+    if( (SHOW_CONFIGURE+1) == ((NSToolbarItem*)sender).tag)
+    {
+        //TODO:
+        //capture
+        //self.preferences = @{PREF_ALLOW_APPLE:[NSNumber numberWithBool:self.allowApple.state], PREF_ALLOW_INSTALLED: [NSNumber numberWithBool:self.allowInstalled.state], PREF_ALLOW_DNS: [NSNumber numberWithBool:self.allowDNS.state], PREF_ALLOW_SIMULATOR:@NO, PREF_PASSIVE_MODE:@NO, PREF_PASSIVE_MODE_ACTION:@0, PREF_BLOCK_MODE:@NO, PREF_NO_ICON_MODE:@NO, PREF_NO_VT_MODE:@NO, PREF_NO_UPDATE_MODE:@NO, PREF_INSTALL_TIMESTAMP:[NSDate date]};
+    }
+    
+    //set next view
+    switch(((NSButton*)sender).tag)
+    {
+        //show configure view
+        case SHOW_CONFIGURE:
+            
+            //show
+            [self showView:self.configureView firstResponder:SHOW_SUPPORT];
+            
+            break;
+            
+        //show "support us" view
+        case SHOW_SUPPORT:
+            
+            //show support view
+            [self showView:self.supportView firstResponder:SUPPORT_YES];
+            
+            break;
+            
+            
+        //support, yes!
+        case SUPPORT_YES:
+            
+            //open patreon URL
+            // invokes user's default browser
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:PATREON_URL]];
+        
+            //fall thru as we want to close/set app state
+        
+        //support, no :(
+        case SUPPORT_NO:
+            
+            //close window
+            [self.window close];
+            
+            //TODO:
+            //kick off main (client) logic
+            //[((AppDelegate*)[[NSApplication sharedApplication] delegate]) completeInitialization:self.preferences];
+            
+            break;
+            
+            break;
+            
+        default:
+            break;
+    }
+
+    return;
+}
+
+//show a view
+// note: replaces old view and highlights specified responder
+-(void)showView:(NSView*)view firstResponder:(NSInteger)firstResponder
+{
+    //x position
+    CGFloat xPos = 0;
+    
+    //y position
+    CGFloat yPos = 0;
+    
+    //not in dark mode?
+    // make window white
+    if(YES != isDarkMode())
+    {
+        //set white
+        view.layer.backgroundColor = [NSColor whiteColor].CGColor;
+    }
+    
+    //set content view size
+    self.window.contentSize = view.frame.size;
+    
+    //update config view
+    self.window.contentView = view;
+    
+    //center x
+    xPos = NSWidth(self.window.screen.frame)/2 - NSWidth(self.window.frame)/2;
+    
+    //center y
+    yPos = NSHeight(self.window.screen.frame)/2 - NSHeight(self.window.frame)/2;
+    
+    //center window
+    [self.window setFrame:NSMakeRect(xPos, yPos, NSWidth(self.window.frame), NSHeight(self.window.frame)) display:YES];
+
+    //make 'next' button first responder
+    // calling this without a timeout, sometimes fails :/
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (100 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
+        
+        //set first responder
+        if(-1 != firstResponder)
+        {
+            //first responder
+            [self.window makeFirstResponder:[view viewWithTag:firstResponder]];
+        }
+        
+    });
+
+    return;
+}
+
+@end

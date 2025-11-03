@@ -1094,7 +1094,7 @@ BOOL saveAPIKeyToKeychain(NSString* apiKey)
     return status == errSecSuccess;
 }
 
-//(re)load key from
+//(re)load key from keychain
 NSString* loadAPIKeyFromKeychain(void)
 {
     NSString* key = nil;

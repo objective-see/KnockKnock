@@ -37,6 +37,8 @@
 		CD5854D321A5FADD00A438B0 /* patrons.txt in Resources */ = {isa = PBXBuildFile; fileRef = CD5854D221A5FADD00A438B0 /* patrons.txt */; };
 		CD5854D821A60B2100A438B0 /* PlistWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5854D721A60B2000A438B0 /* PlistWindowController.m */; };
 		CD5854DB21A6103B00A438B0 /* ClickableTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5854DA21A6103A00A438B0 /* ClickableTextField.m */; };
+		CD5A5F7A2EB95C0000F5068F /* Welcome.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD5A5F782EB95C0000F5068F /* Welcome.xib */; };
+		CD5A5F7D2EB95C0C00F5068F /* WelcomeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5A5F7C2EB95C0C00F5068F /* WelcomeWindowController.m */; };
 		CD6095731A87067D00E091CD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6095721A87067D00E091CD /* Security.framework */; };
 		CD6975061B02F60400CE819B /* RFOverlayScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975031B02F60400CE819B /* RFOverlayScroller.m */; };
 		CD6975071B02F60400CE819B /* RFOverlayScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = CD6975051B02F60400CE819B /* RFOverlayScrollView.m */; };
@@ -201,6 +203,9 @@
 		CD5854D721A60B2000A438B0 /* PlistWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlistWindowController.m; sourceTree = SOURCE_ROOT; };
 		CD5854D921A6103A00A438B0 /* ClickableTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClickableTextField.h; sourceTree = "<group>"; };
 		CD5854DA21A6103A00A438B0 /* ClickableTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClickableTextField.m; sourceTree = "<group>"; };
+		CD5A5F792EB95C0000F5068F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/Welcome.xib; sourceTree = "<group>"; };
+		CD5A5F7B2EB95C0C00F5068F /* WelcomeWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WelcomeWindowController.h; sourceTree = "<group>"; };
+		CD5A5F7C2EB95C0C00F5068F /* WelcomeWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WelcomeWindowController.m; sourceTree = "<group>"; };
 		CD6095721A87067D00E091CD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CD6975021B02F60400CE819B /* RFOverlayScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RFOverlayScroller.h; path = 3rdParty/RFOverlayScroller.h; sourceTree = "<group>"; };
 		CD6975031B02F60400CE819B /* RFOverlayScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RFOverlayScroller.m; path = 3rdParty/RFOverlayScroller.m; sourceTree = "<group>"; };
@@ -536,6 +541,8 @@
 				CD0219511AD34D9A005148A2 /* AboutWindowController.h */,
 				CD0219521AD34D9A005148A2 /* AboutWindowController.m */,
 				CDA81D751A95B7C1009790E2 /* CategoryTableController.h */,
+				CD5A5F7B2EB95C0C00F5068F /* WelcomeWindowController.h */,
+				CD5A5F7C2EB95C0C00F5068F /* WelcomeWindowController.m */,
 				CDA81D761A95B7C1009790E2 /* CategoryTableController.m */,
 				CDA81DE71A997BF1009790E2 /* InfoWindowController.h */,
 				CDA81DE81A997BF1009790E2 /* InfoWindowController.m */,
@@ -629,6 +636,7 @@
 		CDA81E621AA020E8009790E2 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				CD5A5F782EB95C0000F5068F /* Welcome.xib */,
 				CD49EEA62D2A1301007439CD /* UnknownItems.xib */,
 				CD6FD7BD2C7AB291001C59F2 /* AboutWindow.xib */,
 				CD19A7EC2CA4236B00F17FF3 /* DiffWindow.xib */,
@@ -748,6 +756,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD5A5F7A2EB95C0000F5068F /* Welcome.xib in Resources */,
 				CDF08CE81AC8A35C009B3423 /* vtLogo.png in Resources */,
 				CD890F44237790D400029D99 /* directoryServicesIcon.png in Resources */,
 				CDA81D691A95B4E9009790E2 /* bug.png in Resources */,
@@ -869,6 +878,7 @@
 				CD0219531AD34D9A005148A2 /* AboutWindowController.m in Sources */,
 				CDA81E011A9A7D26009790E2 /* ItemBase.m in Sources */,
 				CDA81DFF1A9A7D26009790E2 /* Extension.m in Sources */,
+				CD5A5F7D2EB95C0C00F5068F /* WelcomeWindowController.m in Sources */,
 				CDF08CC61AC46E75009B3423 /* VTButton.m in Sources */,
 				CDBE491D1B5B44BB0031FC22 /* LogInOutHooks.m in Sources */,
 				CDE2D3A72AC6E20500261224 /* DockTiles.m in Sources */,
@@ -904,6 +914,14 @@
 			);
 			name = UnknownItems.xib;
 			path = UI;
+			sourceTree = "<group>";
+		};
+		CD5A5F782EB95C0000F5068F /* Welcome.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CD5A5F792EB95C0000F5068F /* Base */,
+			);
+			name = Welcome.xib;
 			sourceTree = "<group>";
 		};
 		CD6FD7AB2C7AAD87001C59F2 /* MainMenu.xib */ = {

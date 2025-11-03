@@ -20,6 +20,8 @@
 #import "CategoryTableController.h"
 #import "ResultsWindowController.h"
 
+#import "WelcomeWindowController.h"
+
 #import <Cocoa/Cocoa.h>
 #import <OSLog/OSLog.h>
 
@@ -38,6 +40,9 @@ extern Filter* itemFilter;
 }
 
 /* PROPERTIES */
+
+//welcome view controller
+@property(nonatomic, retain)WelcomeWindowController* welcomeWindowController;
 
 //friends
 @property (weak) IBOutlet NSWindow* friends;

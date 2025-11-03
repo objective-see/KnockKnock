@@ -262,6 +262,77 @@
     //show status msg
     self.statusMsg.hidden = NO;
     
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [vtObj submitFile:self.fileObj.path completion:^(NSDictionary *result, NSError *error) {
+            // Completion already runs on main thread
+            if (!error) {
+                
+                NSLog(@"response: %@", result);
+                
+                //got response?
+                // launch browser to show user
+                if(nil != result[VT_RESULTS_URL])
+                {
+                    //reset file's VT info
+                    self.fileObj.vtInfo = nil;
+                    
+                    //update status msg
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        //set item's VT status in UI to pending (...)
+                        [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj];
+                        
+                        //update
+                        [self.statusMsg setStringValue:[NSString stringWithFormat:NSLocalizedString(@"submitted '%@'", @"submitted '%@'"), self.fileObj.name]];
+                        
+                    });
+                    
+                    //nap
+                    // allows msg to show up, and give VT some time
+                    [NSThread sleepForTimeInterval:2.0];
+                    
+                    //launch browser to show new report
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        //launch browser
+                        [[NSWorkspace sharedWorkspace] openURL:result[VT_RESULTS_URL]];
+                        
+                    });
+                    
+                    //wait to browser is up and happy
+                    [NSThread sleepForTimeInterval:0.5];
+                    
+                    //close window
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        //close
+                        [self.window close];
+                        
+                    });
+                    
+                }
+                
+            }
+            else {
+                
+                NSLog(@"ERROR: %@", error);
+                
+                //show error msg
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    //update status msg
+                    [self.statusMsg setStringValue:[NSString stringWithFormat:NSLocalizedString(@"failed to submit '%@' to VirusTotal (HTTP response %ld).", @"failed to submit '%@' to VirusTotal (HTTP response %ld)."), self.fileObj.name, [(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode]]];
+                    
+                    //stop activity indicator
+                    [self.progressIndicator stopAnimation:nil];
+                    
+                });
+            }
+        }];
+    });
+    
+    
+    /*
     //submit request in background
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     
@@ -334,6 +405,8 @@
         }
         
     });
+     
+    */
     
 bail:
     

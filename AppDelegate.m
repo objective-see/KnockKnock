@@ -34,6 +34,7 @@
 @synthesize updateWindowController;
 @synthesize categoryTableController;
 @synthesize resultsWindowController;
+@synthesize welcomeWindowController;
 
 //exception handler
 // show alert and log error
@@ -100,27 +101,23 @@ void uncaughtExceptionHandler(NSException* exception) {
 
     //first time run?
     // show thanks to friends window!
-    if(YES != [defaults boolForKey:NOT_FIRST_TIME])
+    //TOOD: !=
+    if(YES == [defaults boolForKey:NOT_FIRST_TIME])
     {
         //set key
         [defaults setBool:YES forKey:NOT_FIRST_TIME];
         
-        //set delegate
-        self.friends.delegate = self;
+        //dbg msg
+        //os_log_debug(logHandle, "first launch, will kick off welcome window(s)");
         
-        //show friends window
-        [self.friends makeKeyAndOrderFront:self];
+        //alloc window controller
+        welcomeWindowController = [[WelcomeWindowController alloc] initWithWindowNibName:@"Welcome"];
+    
+        //show window
+        [self.welcomeWindowController showWindow:self];
         
-        //then make action button first responder
-        [self.friends makeFirstResponder:self.closeButton];
-        
-        //close after a few seconds
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            
-            //close to hide
-            [self.friends close];
-            
-        });
+        //make front
+        [[NSRunningApplication currentApplication] activateWithOptions:(NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
     }
     
     //request access
@@ -482,7 +479,11 @@ void uncaughtExceptionHandler(NSException* exception) {
             (YES == self.isConnected) )
         {
             //do query
-            [self queryVT:plugin];
+            //[self queryVT:plugin];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [self->virusTotalObj checkFiles:plugin];
+            });
+            
         }
             
         }//pool
@@ -599,12 +600,11 @@ void uncaughtExceptionHandler(NSException* exception) {
 }
 
 //automatically invoked when user clicks logo
-// ->load objective-see's html page
+// ...load objective-see's html page
 -(IBAction)logoButtonHandler:(id)sender
 {
     //open URL
-    // ->invokes user's default browser
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://objective-see.org"]];
+    [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:@"https://objective-see.org"]];
     
     return;
 }
@@ -676,7 +676,7 @@ void uncaughtExceptionHandler(NSException* exception) {
 -(void)itemsProcessed:(PluginBase*)plugin
 {
     //if there are any flagged items
-    // ->reload category table (to trigger title turning red)
+    // reload category table (to trigger title turning red)
     if(0 != plugin.flaggedItems.count)
     {
         //reload category table
