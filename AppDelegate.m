@@ -1265,7 +1265,7 @@ void uncaughtExceptionHandler(NSException* exception) {
 -(IBAction)saveResults:(id)sender
 {
     //save panel
-    NSSavePanel *panel = nil;
+    NSSavePanel* panel = nil;
     
     //save results popup
     __block NSAlert* alert = nil;
@@ -1282,9 +1282,13 @@ void uncaughtExceptionHandler(NSException* exception) {
     //default to desktop
     panel.directoryURL = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains (NSDesktopDirectory, NSUserDomainMask, YES) firstObject]];
     
+    //formatter for file name
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+
     //suggest file name
-    [panel setNameFieldStringValue:OUTPUT_FILE];
-    
+    [panel setNameFieldStringValue:[NSString stringWithFormat:@"KnockKnock Results %@.json", [dateFormatter stringFromDate:[NSDate date]]]];
+
     //show panel
     // ->completion handler will invoked when user clicks 'ok'
     [panel beginWithCompletionHandler:^(NSInteger result)

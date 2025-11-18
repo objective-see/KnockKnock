@@ -72,7 +72,28 @@ extern BOOL cmdlineMode;
             if (httpResponse.statusCode == 401) {
                 
                 //dbg msg
-                NSLog(@"VT ERROR: API KEY");
+                NSLog(@"VT ERROR: API key %@ is not valid", vtAPIKey);
+                
+                //show alert
+                // just once though
+                static dispatch_once_t onceToken;
+                dispatch_once(&onceToken, ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        //alert
+                        NSAlert* alert = nil;
+                        
+                        //alloc/init alert
+                        alert = [NSAlert alertWithMessageText:@"ERROR: VirusTotal Responded with HTTP 401"
+                                                 defaultButton:@"OK"
+                                               alternateButton:nil
+                                                   otherButton:nil
+                                    informativeTextWithFormat:@"%@", [NSString stringWithFormat:@"API key: '%@', likely invalid.", vtAPIKey]];
+                        
+                        //show it
+                        [alert runModal];
+                    });
+                });
                 
                 return;
             }

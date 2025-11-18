@@ -199,6 +199,9 @@ extern os_log_t logHandle;
             //show
             [self showView:self.vtIntegrationView firstResponder:SHOW_SUPPORT];
             
+            //make url a hyperlink
+            makeTextViewHyperlink(self.getAPILink, [NSURL URLWithString:@"https://docs.virustotal.com/docs/please-give-me-an-api-key"]);
+            
             break;
             
         //show "support us" view
@@ -227,9 +230,7 @@ extern os_log_t logHandle;
             
             //done, so show main UI scan window
             [((AppDelegate*)NSApplication.sharedApplication.delegate) initializeForScan];
-            
-            break;
-            
+        
             break;
             
         default:

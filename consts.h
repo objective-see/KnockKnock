@@ -270,9 +270,6 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //HTTP response
 #define VT_HTTP_RESPONSE @"http_response"
 
-//output file
-#define OUTPUT_FILE @"WhoIsThere.json"
-
 //support us button tag
 #define BUTTON_SUPPORT_US 100
 

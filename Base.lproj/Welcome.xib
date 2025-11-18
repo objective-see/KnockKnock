@@ -16,6 +16,7 @@
                 <outlet property="diskAccessButton" destination="Rrc-n2-rAG" id="ztk-id-S5T"/>
                 <outlet property="enableFDAView" destination="R7i-MV-IAu" id="9Hz-iv-6FE"/>
                 <outlet property="fdaNote" destination="ikJ-0D-cGe" id="Lcf-PI-PK8"/>
+                <outlet property="getAPILink" destination="fi7-v7-obV" id="mvp-I5-Bvz"/>
                 <outlet property="nextButton" destination="xee-73-1JR" id="2xO-om-Qyw"/>
                 <outlet property="showAppleItems" destination="b0q-yl-6sv" id="Wjt-Cb-bfM"/>
                 <outlet property="supportView" destination="2qR-UH-6qk" id="04n-dJ-NKz"/>
@@ -520,9 +521,9 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fi7-v7-obV" customClass="HyperlinkTextField">
-                    <rect key="frame" x="241" y="167" width="336" height="13"/>
+                    <rect key="frame" x="241" y="167" width="389" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" lineBreakMode="clipping" title="docs.virustotal.com/docs/please-give-me-an-api-key" id="6xX-Qx-lt6">
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="https://docs.virustotal.com/docs/please-give-me-an-api-key" id="6xX-Qx-lt6">
                         <font key="font" size="11" name="Menlo-Regular"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>

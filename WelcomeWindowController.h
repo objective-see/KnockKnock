@@ -63,6 +63,7 @@
 @property (weak) IBOutlet NSButton *disableUpdateCheck;
 
 @property (weak) IBOutlet NSButton *disableVTQueries;
+@property (weak) IBOutlet HyperlinkTextField *getAPILink;
 
 //support view
 @property (strong) IBOutlet NSView *supportView;
