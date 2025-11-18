@@ -14,9 +14,6 @@
 #import "VTInfoWindowController.h"
 #import "3rdParty/HyperlinkTextField.h"
 
-
-#import <QuartzCore/QuartzCore.h>
-
 @interface VTInfoWindowController ()
 
 @end
@@ -42,7 +39,6 @@
     
     return self;
 }
-
 
 //automatically invoked
 // ->make it white
@@ -192,9 +188,6 @@
     //VT object
     VirusTotal* vtObj = nil;
     
-    //result(s) from VT
-    __block NSDictionary* result = nil;
-    
     //analyis URL
     NSMutableAttributedString* hyperlinkString = nil;
         
@@ -276,6 +269,9 @@
                     //reset file's VT info
                     self.fileObj.vtInfo = nil;
                     
+                    //new report URL
+                    newReport = [NSURL URLWithString:result[VT_RESULTS_URL]];
+                    
                     //update status msg
                     dispatch_async(dispatch_get_main_queue(), ^{
                         
@@ -295,7 +291,7 @@
                     dispatch_async(dispatch_get_main_queue(), ^{
                         
                         //launch browser
-                        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:result[VT_RESULTS_URL]]];
+                        [NSWorkspace.sharedWorkspace openURL:newReport];
                         
                     });
                     
@@ -330,83 +326,6 @@
             }
         }];
     });
-    
-    
-    /*
-    //submit request in background
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    
-        //submit file to VT
-        result = [vtObj submit:self.fileObj];
-        
-        //got response?
-        // launch browser to show user
-        if(nil != result[VT_RESULTS_SCANID])
-        {
-            //reset file's VT info
-            self.fileObj.vtInfo = nil;
-        
-            //update status msg
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                //set item's VT status in UI to pending (...)
-                [((AppDelegate*)[[NSApplication sharedApplication] delegate]) itemProcessed:self.fileObj];
-                
-                //update
-                [self.statusMsg setStringValue:[NSString stringWithFormat:NSLocalizedString(@"submitted '%@'", @"submitted '%@'"), self.fileObj.name]];
-                
-            });
-            
-            //nap
-            // allows msg to show up, and give VT some time
-            [NSThread sleepForTimeInterval:2.0];
-            
-            //launch browser to show new report
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                //launch browser with scan
-                if(nil != result[@"sha256"])
-                {
-                    //build url to scan
-                    newReport = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.virustotal.com/gui/file/%@", result[@"sha256"]]];
-                    
-                    //launch browser
-                    [[NSWorkspace sharedWorkspace] openURL:newReport];
-                }
-                
-            });
-
-            //wait to browser is up and happy
-            [NSThread sleepForTimeInterval:0.5];
-            
-            //close window
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                //close
-                [self.window close];
-                
-            });
-        
-        }//got result
-        
-        //error
-        else
-        {
-            //show error msg
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                //update status msg
-                [self.statusMsg setStringValue:[NSString stringWithFormat:NSLocalizedString(@"failed to submit '%@' to VirusTotal (HTTP response %ld).", @"failed to submit '%@' to VirusTotal (HTTP response %ld)."), self.fileObj.name, [(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode]]];
-                
-                //stop activity indicator
-                [self.progressIndicator stopAnimation:nil];
-                
-            });
-        }
-        
-    });
-     
-    */
     
 bail:
     
