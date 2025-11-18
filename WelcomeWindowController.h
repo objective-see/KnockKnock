@@ -72,6 +72,6 @@
 
 //show a view
 // note: replaces old view and highlights specified responder
--(void)showView:(NSView*)view firstResponder:(NSInteger)firstResponder;
+-(void)showView:(NSView*)view firstResponder:(NSView*)firstResponder;
 
 @end

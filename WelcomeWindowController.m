@@ -67,7 +67,7 @@ extern os_log_t logHandle;
     }
     
     //show view
-    [self showView:self.welcomeView firstResponder:self.nextButton.tag];
+    [self showView:self.welcomeView firstResponder:self.nextButton];
 
     //make key and front
     [self.window makeKeyAndOrderFront:self];
@@ -140,10 +140,7 @@ extern os_log_t logHandle;
             self.fdaNote.layer.cornerRadius = 5;
             
             //show
-            [self showView:self.enableFDAView firstResponder:-1];
-            
-            //first responder is 'open system settings' button
-            [self.window makeFirstResponder:self.diskAccessButton];
+            [self showView:self.enableFDAView firstResponder:self.diskAccessButton];
             
             //start spinner
             [self.FDAActivityIndicator startAnimation:self];
@@ -186,7 +183,7 @@ extern os_log_t logHandle;
             self.window.title = @"";
             
             //show
-            [self showView:self.configureView firstResponder:SHOW_VT_INTEGRATION];
+            [self showView:self.configureView firstResponder:[self.configureView viewWithTag:SHOW_VT_INTEGRATION]];
             
             break;
             
@@ -197,7 +194,7 @@ extern os_log_t logHandle;
             self.window.title = @"";
             
             //show
-            [self showView:self.vtIntegrationView firstResponder:SHOW_SUPPORT];
+            [self showView:self.vtIntegrationView firstResponder:self.vtAPIKey];
             
             //make url a hyperlink
             makeTextViewHyperlink(self.getAPILink, [NSURL URLWithString:@"https://docs.virustotal.com/docs/please-give-me-an-api-key"]);
@@ -208,7 +205,7 @@ extern os_log_t logHandle;
         case SHOW_SUPPORT:
             
             //show support view
-            [self showView:self.supportView firstResponder:SUPPORT_YES];
+            [self showView:self.supportView firstResponder:[self.supportView viewWithTag:SUPPORT_YES]];
             
             break;
             
@@ -242,7 +239,7 @@ extern os_log_t logHandle;
 
 //show a view
 // note: replaces old view and highlights specified responder
--(void)showView:(NSView*)view firstResponder:(NSInteger)firstResponder
+-(void)showView:(NSView*)view firstResponder:(NSView*)firstResponder
 {
     //x position
     CGFloat xPos = 0;
@@ -278,10 +275,10 @@ extern os_log_t logHandle;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (100 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
         
         //set first responder
-        if(-1 != firstResponder)
+        if(firstResponder)
         {
             //first responder
-            [self.window makeFirstResponder:[view viewWithTag:firstResponder]];
+            [self.window makeFirstResponder:firstResponder];
         }
         
     });

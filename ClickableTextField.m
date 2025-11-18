@@ -14,7 +14,7 @@
 - (void)resetCursorRects
 {
     //skip if no plist
-    if(YES == [self.stringValue hasPrefix:@"no plist"])
+    if(YES == [self.stringValue hasPrefix:@"No propertly list"])
     {
         //bail
         goto bail;

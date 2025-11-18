@@ -123,7 +123,7 @@
         else
         {
             //set
-            [self.plist setStringValue:@"No plist for item"];
+            [self.plist setStringValue:@"No propertly list"];
         }
         
         //set signing info
