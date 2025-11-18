@@ -5,7 +5,7 @@
 
 #import "File.h"
 #import "MachO/MachO.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "DylibProxies.h"
 
 //plugin name

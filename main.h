@@ -9,9 +9,9 @@
 #ifndef main_h
 #define main_h
 
-#import "Consts.h"
+#import "consts.h"
 #import "Filter.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "VirusTotal.h"
 #import "AppDelegate.h"
 #import "ItemEnumerator.h"

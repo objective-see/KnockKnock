@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Objective-See, LLC. All rights reserved.
 //
 
-#import "Utilities.h"
+#import "utilities.h"
 #import "AppDelegate.h"
 #import "ResultsWindowController.h"
 

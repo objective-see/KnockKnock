@@ -7,7 +7,7 @@
 //
 
 
-#import "Utilities.h"
+#import "utilities.h"
 #import "AppDelegate.h"
 #import "PrefsWindowController.h"
 

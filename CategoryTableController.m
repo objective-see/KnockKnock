@@ -6,7 +6,7 @@
 //
 
 
-#import "Consts.h"
+#import "consts.h"
 #import "PluginBase.h"
 #import "AppDelegate.h"
 #import "KKRow.h"

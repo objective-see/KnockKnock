@@ -5,7 +5,7 @@
 
 #import "File.h"
 #import "Kexts.h"
-#import "Utilities.h"
+#import "utilities.h"
 
 //plugin name
 #define PLUGIN_NAME @"Kernel Extensions"

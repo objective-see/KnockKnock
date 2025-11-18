@@ -8,7 +8,7 @@
 
 #import "File.h"
 #import "ItemBase.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "PluginBase.h"
 #import "VirusTotal.h"
 #import "AppDelegate.h"

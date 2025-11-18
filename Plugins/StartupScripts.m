@@ -6,7 +6,7 @@
 //         normally these scripts shouldn't exist, or are whitelisted - so any deviations, just show file
 
 #import "File.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "StartupScripts.h"
 
 //plugin name

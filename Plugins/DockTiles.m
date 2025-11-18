@@ -6,7 +6,7 @@
 
 #import "File.h"
 #import "DockTiles.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "AppDelegate.h"
 
 //plugin name

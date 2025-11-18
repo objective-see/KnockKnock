@@ -21,13 +21,13 @@ extern os_log_t logHandle;
 //buttons
 #define REQUEST_FDA 1
 #define SHOW_CONFIGURE 2
-#define SHOW_SUPPORT 3
-#define SUPPORT_NO 4
-#define SUPPORT_YES 5
+#define SHOW_VT_INTEGRATION 3
+#define SHOW_SUPPORT 4
+#define SUPPORT_NO 5
+#define SUPPORT_YES 6
 
 @implementation WelcomeWindowController
 
-@synthesize preferences;
 @synthesize welcomeViewController;
 
 //welcome!
@@ -95,13 +95,35 @@ extern os_log_t logHandle;
 // show next view, sometimes, with view specific logic
 -(IBAction)buttonHandler:(id)sender {
     
-    //leaving prefs view?
-    // capture prefs
-    if( (SHOW_CONFIGURE+1) == ((NSToolbarItem*)sender).tag)
-    {
-        //TODO:
-        //capture
-        //self.preferences = @{PREF_ALLOW_APPLE:[NSNumber numberWithBool:self.allowApple.state], PREF_ALLOW_INSTALLED: [NSNumber numberWithBool:self.allowInstalled.state], PREF_ALLOW_DNS: [NSNumber numberWithBool:self.allowDNS.state], PREF_ALLOW_SIMULATOR:@NO, PREF_PASSIVE_MODE:@NO, PREF_PASSIVE_MODE_ACTION:@0, PREF_BLOCK_MODE:@NO, PREF_NO_ICON_MODE:@NO, PREF_NO_VT_MODE:@NO, PREF_NO_UPDATE_MODE:@NO, PREF_INSTALL_TIMESTAMP:[NSDate date]};
+    //leaving configure view?
+    // capture the user's selections
+    if( (SHOW_CONFIGURE+1) == ((NSToolbarItem*)sender).tag) {
+        
+        //user defaults
+        NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+            
+        //save 'show trusted items'
+        [defaults setBool:self.showAppleItems.state forKey:PREF_SHOW_TRUSTED_ITEMS];
+        
+        //save 'show trusted items'
+        [defaults setBool:self.disableUpdateCheck.state forKey:PREF_DISABLE_UPDATE_CHECK];
+        
+    }
+    
+    //leaving vt integration view?
+    // capture the user's selections
+    if( (SHOW_VT_INTEGRATION+1) == ((NSToolbarItem*)sender).tag) {
+        
+        //user defaults
+        NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+            
+        //save 'disable VT queries'
+        [defaults setBool:self.disableVTQueries.state forKey:PREF_DISABLE_VT_QUERIRES];
+        
+        //save API key to keychain
+        if(0 != self.vtAPIKey.stringValue.length) {
+            saveAPIKeyToKeychain(self.vtAPIKey.stringValue);
+        }
     }
     
     //set next view
@@ -113,6 +135,7 @@ extern os_log_t logHandle;
             //hide title
             self.window.title = @"";
             
+            //rounded corners
             self.fdaNote.wantsLayer = true;
             self.fdaNote.layer.cornerRadius = 5;
             
@@ -128,7 +151,7 @@ extern os_log_t logHandle;
             //in background
             // wait unitl user grants us FDA
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                           ^{
+            ^{
 
                 //wait for FDA
                 do {
@@ -163,7 +186,18 @@ extern os_log_t logHandle;
             self.window.title = @"";
             
             //show
-            [self showView:self.configureView firstResponder:SHOW_SUPPORT];
+            [self showView:self.configureView firstResponder:SHOW_VT_INTEGRATION];
+            
+            break;
+            
+        //show VT integration view
+        case SHOW_VT_INTEGRATION:
+            
+            //hide title
+            self.window.title = @"";
+            
+            //show
+            [self showView:self.vtIntegrationView firstResponder:SHOW_SUPPORT];
             
             break;
             

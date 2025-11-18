@@ -7,7 +7,7 @@
 
 #import "File.h"
 #import "Command.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "LogInOutHooks.h"
 
 //for some details/examples:

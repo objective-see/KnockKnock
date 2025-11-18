@@ -1,5 +1,5 @@
 //
-//  Consts.h
+//  consts.h
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 2/4/15.
@@ -31,6 +31,7 @@ static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"Browse
 //prefs
 // ->disable VT querires
 #define PREF_DISABLE_VT_QUERIRES @"disableVTQueries"
+
 
 //prefs
 // ->no updates

@@ -1,5 +1,5 @@
 //
-//  Utilities.h
+//  utilities.h
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 2/7/15.

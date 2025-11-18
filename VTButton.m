@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
-#import "Consts.h"
+#import "consts.h"
 #import "VTButton.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "ItemTableController.h"
 
 @implementation VTButton

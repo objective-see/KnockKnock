@@ -7,7 +7,7 @@
 //
 
 #import "Command.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "EventRules.h"
 
 //plugin name

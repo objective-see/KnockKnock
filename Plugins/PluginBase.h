@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Objective-See, LLC. All rights reserved.
 //
 
-#import "Consts.h"
+#import "consts.h"
 #import "../Results/ItemBase.h"
 #import <Foundation/Foundation.h>
 

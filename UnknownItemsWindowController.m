@@ -9,8 +9,8 @@
 #define COL_RESULT 0x1
 #define COL_PATH 0x2
 
-#import "Consts.h"
-#import "Utilities.h"
+#import "consts.h"
+#import "utilities.h"
 #import "AppDelegate.h"
 #import "UnknownItemsWindowController.h"
 

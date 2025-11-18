@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
-#import "Consts.h"
-#import "Utilities.h"
+#import "consts.h"
+#import "utilities.h"
 
 #import <libproc.h>
 #import <sys/sysctl.h>

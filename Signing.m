@@ -7,9 +7,9 @@
 //  License:    Creative Commons Attribution-NonCommercial 4.0 International License
 //
 
-#import "Consts.h"
+#import "consts.h"
 #import "Signing.h"
-#import "Utilities.h"
+#import "utilities.h"
 
 #import <Security/Security.h>
 #import <SystemConfiguration/SystemConfiguration.h>

@@ -6,7 +6,7 @@
 //         example app (for testing, etc): http://www.rohos.com/2015/10/installing-rohos-logon-in-mac-os-10-11-el-capitan/
 
 #import "File.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "AuthorizationPlugins.h"
 
 //plugin name

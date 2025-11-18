@@ -7,8 +7,8 @@
 //
 
 #import "File.h"
-#import "Consts.h"
-#import "Utilities.h"
+#import "consts.h"
+#import "utilities.h"
 #import "VirusTotal.h"
 #import "AppDelegate.h"
 #import "VTInfoWindowController.h"

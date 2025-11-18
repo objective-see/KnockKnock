@@ -68,7 +68,7 @@
 		CD890F4223778F7B00029D99 /* DirectoryServicesPlugins.m in Sources */ = {isa = PBXBuildFile; fileRef = CD890F4123778F7B00029D99 /* DirectoryServicesPlugins.m */; };
 		CD890F44237790D400029D99 /* directoryServicesIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CD890F43237790D400029D99 /* directoryServicesIcon.png */; };
 		CDA81D4F1A95B492009790E2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D451A95B492009790E2 /* AppDelegate.m */; };
-		CDA81D531A95B492009790E2 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D4E1A95B492009790E2 /* Utilities.m */; };
+		CDA81D531A95B492009790E2 /* utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D4E1A95B492009790E2 /* utilities.m */; };
 		CDA81D5E1A95B4B4009790E2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA81D5A1A95B4B4009790E2 /* main.m */; };
 		CDA81D691A95B4E9009790E2 /* bug.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA81D5F1A95B4E9009790E2 /* bug.png */; };
 		CDA81D6A1A95B4E9009790E2 /* mainIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA81D601A95B4E9009790E2 /* mainIcon.png */; };
@@ -253,9 +253,9 @@
 		CD890F43237790D400029D99 /* directoryServicesIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = directoryServicesIcon.png; path = images/directoryServicesIcon.png; sourceTree = SOURCE_ROOT; };
 		CDA81D441A95B492009790E2 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = SOURCE_ROOT; };
 		CDA81D451A95B492009790E2 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = SOURCE_ROOT; };
-		CDA81D481A95B492009790E2 /* Consts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Consts.h; sourceTree = SOURCE_ROOT; };
-		CDA81D4D1A95B492009790E2 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = SOURCE_ROOT; };
-		CDA81D4E1A95B492009790E2 /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = SOURCE_ROOT; };
+		CDA81D481A95B492009790E2 /* consts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = consts.h; sourceTree = SOURCE_ROOT; };
+		CDA81D4D1A95B492009790E2 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = SOURCE_ROOT; };
+		CDA81D4E1A95B492009790E2 /* utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = utilities.m; sourceTree = SOURCE_ROOT; };
 		CDA81D581A95B4B4009790E2 /* KnockKnock-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "KnockKnock-Info.plist"; sourceTree = SOURCE_ROOT; };
 		CDA81D591A95B4B4009790E2 /* KnockKnock-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "KnockKnock-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		CDA81D5A1A95B4B4009790E2 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = SOURCE_ROOT; };
@@ -441,7 +441,7 @@
 				CDA81D441A95B492009790E2 /* AppDelegate.h */,
 				CDA81D451A95B492009790E2 /* AppDelegate.m */,
 				CD585493219FE61D00A438B0 /* Assets.xcassets */,
-				CDA81D481A95B492009790E2 /* Consts.h */,
+				CDA81D481A95B492009790E2 /* consts.h */,
 				CDE241A92C8556A40099F82B /* DiffWindowController.h */,
 				CDE241AA2C8556A40099F82B /* DiffWindowController.m */,
 				CD6095501A8329FA00E091CD /* images */,
@@ -455,8 +455,8 @@
 				1D21BC55172AF43D009D1CFD /* Supporting Files */,
 				CD2F219D21A8A73000F67A83 /* Update.h */,
 				CD2F219E21A8A73100F67A83 /* Update.m */,
-				CDA81D4D1A95B492009790E2 /* Utilities.h */,
-				CDA81D4E1A95B492009790E2 /* Utilities.m */,
+				CDA81D4D1A95B492009790E2 /* utilities.h */,
+				CDA81D4E1A95B492009790E2 /* utilities.m */,
 				CDF08CC41AC46E75009B3423 /* VTButton.h */,
 				CDF08CC51AC46E75009B3423 /* VTButton.m */,
 			);
@@ -887,7 +887,7 @@
 				CDAB989C1AEAC95500C75B4B /* ItemEnumerator.m in Sources */,
 				CDA81D771A95B7C1009790E2 /* CategoryTableController.m in Sources */,
 				CD7B9F531ACBAE2900DF3C71 /* SpotlightImporters.m in Sources */,
-				CDA81D531A95B492009790E2 /* Utilities.m in Sources */,
+				CDA81D531A95B492009790E2 /* utilities.m in Sources */,
 				CD7B9FAB1AD08FA100DF3C71 /* KKRow.m in Sources */,
 				CDA81D8E1A96F557009790E2 /* Kexts.m in Sources */,
 			);

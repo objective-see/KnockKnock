@@ -8,7 +8,7 @@
 #import "BTM.h"
 #import "File.h"
 #import "dumpBTM.h"
-#import "Utilities.h"
+#import "utilities.h"
 
 //plugin name
 #define PLUGIN_NAME @"Background Managed Tasks"

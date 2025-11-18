@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Objective-See. All rights reserved.
 //
 
-#import "Consts.h"
+#import "consts.h"
 #import "Command.h"
-#import "Utilities.h"
+#import "utilities.h"
 
 @implementation Command
 

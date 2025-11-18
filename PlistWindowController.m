@@ -6,7 +6,7 @@
 //  Copyright (c) 2016 Objective-See. All rights reserved.
 //
 
-#import "Consts.h"
+#import "consts.h"
 #import "PlistWindowController.h"
 
 

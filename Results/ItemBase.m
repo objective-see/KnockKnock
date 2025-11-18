@@ -2,7 +2,7 @@
 //  PluginBase.m
 //  KnockKnock
 
-#import "Consts.h"
+#import "consts.h"
 #import "Command.h"
 #import "ItemBase.h"
 

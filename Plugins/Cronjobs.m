@@ -7,7 +7,7 @@
 
 #import "Command.h"
 #import "Cronjobs.h"
-#import "Utilities.h"
+#import "utilities.h"
 
 //plugin name
 #define PLUGIN_NAME @"Cron Jobs"

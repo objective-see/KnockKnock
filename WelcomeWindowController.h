@@ -9,7 +9,6 @@
 @import Cocoa;
 @import OSLog;
 
-
 @interface WelcomeWindowController : NSWindowController
 
 /* PROPERTIES */
@@ -53,20 +52,20 @@
 //config view
 @property (strong) IBOutlet NSView *configureView;
 
-//allow apple bins/apps
-@property (weak) IBOutlet NSButton *allowApple;
+@property (strong) IBOutlet NSView *vtIntegrationView;
 
-//allow 3rd-party installed apps
-@property (weak) IBOutlet NSButton *allowInstalled;
+@property (weak) IBOutlet NSTextField *vtAPIKey;
 
-//allow dns traffic installed apps
-@property (weak) IBOutlet NSButton *allowDNS;
+//show apple items
+@property (weak) IBOutlet NSButton *showAppleItems;
+
+//disable update check
+@property (weak) IBOutlet NSButton *disableUpdateCheck;
+
+@property (weak) IBOutlet NSButton *disableVTQueries;
 
 //support view
 @property (strong) IBOutlet NSView *supportView;
-
-//preferences
-@property (nonatomic, retain)NSDictionary* preferences;
 
 /* METHODS */
 

@@ -7,7 +7,7 @@
 //
 
 #import "File.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "DirectoryServicesPlugins.h"
 
 //plugin name

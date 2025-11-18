@@ -10,15 +10,17 @@
             <connections>
                 <outlet property="FDAActivityIndicator" destination="yma-6U-MZX" id="4dj-PX-lFd"/>
                 <outlet property="FDAMessage" destination="gmX-7f-3dv" id="c9O-D1-ecN"/>
-                <outlet property="allowApple" destination="b0q-yl-6sv" id="Wjt-Cb-bfM"/>
-                <outlet property="allowDNS" destination="TKV-2M-L24" id="cZl-yn-ymP"/>
-                <outlet property="allowInstalled" destination="LHE-lc-cEL" id="ACY-m8-aoi"/>
                 <outlet property="configureView" destination="kOW-Us-kgD" id="zi8-DA-DXs"/>
+                <outlet property="disableUpdateCheck" destination="LHE-lc-cEL" id="ACY-m8-aoi"/>
+                <outlet property="disableVTQueries" destination="GdO-mh-Ufm" id="6vm-Ku-Ioa"/>
                 <outlet property="diskAccessButton" destination="Rrc-n2-rAG" id="ztk-id-S5T"/>
                 <outlet property="enableFDAView" destination="R7i-MV-IAu" id="9Hz-iv-6FE"/>
                 <outlet property="fdaNote" destination="ikJ-0D-cGe" id="Lcf-PI-PK8"/>
                 <outlet property="nextButton" destination="xee-73-1JR" id="2xO-om-Qyw"/>
-                <outlet property="supportView" destination="2qR-UH-6qk" id="0Pe-jK-kYJ"/>
+                <outlet property="showAppleItems" destination="b0q-yl-6sv" id="Wjt-Cb-bfM"/>
+                <outlet property="supportView" destination="2qR-UH-6qk" id="04n-dJ-NKz"/>
+                <outlet property="vtAPIKey" destination="Msu-yL-eqA" id="Rk7-qM-hwa"/>
+                <outlet property="vtIntegrationView" destination="afB-QN-4Zp" id="iNq-c6-50S"/>
                 <outlet property="welcomeView" destination="97j-sp-rBE" id="1Cx-EF-YqK"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
@@ -38,7 +40,7 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
             </connections>
-            <point key="canvasLocation" x="140" y="147"/>
+            <point key="canvasLocation" x="-39" y="-409"/>
         </window>
         <customView id="97j-sp-rBE" userLabel="Welcome">
             <rect key="frame" x="0.0" y="0.0" width="700" height="350"/>
@@ -54,7 +56,7 @@
                     <color key="fillColor" red="0.57793885469999995" green="0.75859862570000003" blue="0.2368842065" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </box>
                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="660" translatesAutoresizingMaskIntoConstraints="NO" id="NEo-Sr-1a0">
-                    <rect key="frame" x="149" y="275" width="338" height="54"/>
+                    <rect key="frame" x="149" y="290" width="338" height="54"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Welcome to" id="Qyh-uK-Afv">
                         <font key="font" size="41" name="AvenirNextCondensed-Regular"/>
@@ -74,12 +76,12 @@
                     </connections>
                 </button>
                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rNc-Xa-Jqh">
-                    <rect key="frame" x="151" y="181" width="371" height="101"/>
+                    <rect key="frame" x="151" y="196" width="371" height="101"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="kkText" id="zfH-MI-2vJ"/>
                 </imageView>
                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14w-0v-UJ5">
-                    <rect key="frame" x="15" y="202" width="128" height="128"/>
+                    <rect key="frame" x="15" y="217" width="128" height="128"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="kkIcon" id="vEL-Yw-xip"/>
                 </imageView>
@@ -87,21 +89,22 @@
                     <rect key="frame" x="18" y="86" width="664" height="87"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="eic-lg-Ln7">
-                        <font key="font" size="21" name="AvenirNextCondensed-Regular"/>
-                        <string key="title">Malware often installs itself persistently so it runs each time your Mac starts. KnockKnock checks “who’s there” by scanning all persistent software to reveal anything suspicious.</string>
+                        <font key="font" size="19" name="AvenirNextCondensed-Regular"/>
+                        <string key="title">Malware often installs itself persistently so it automatically runs each time your Mac starts. 
+KnockKnock checks “who’s there” by scanning all persistent software to reveal anything suspicious.</string>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
             </subviews>
-            <point key="canvasLocation" x="-173" y="876"/>
+            <point key="canvasLocation" x="-296" y="504"/>
         </customView>
         <customView id="R7i-MV-IAu" userLabel="Disk Access">
             <rect key="frame" x="0.0" y="0.0" width="966" height="403"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <button tag="1" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rrc-n2-rAG">
-                    <rect key="frame" x="80" y="270" width="197" height="32"/>
+                    <rect key="frame" x="80" y="272" width="197" height="32"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="push" title="Open 'System Settings'" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="aCh-Th-bAz">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -124,7 +127,7 @@
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OQh-jg-YAn">
-                    <rect key="frame" x="78" y="253" width="330" height="14"/>
+                    <rect key="frame" x="78" y="255" width="330" height="14"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="This is where you manage privacy permissions." id="y5g-ZT-ugG">
                         <font key="font" size="12" name="Menlo-Regular"/>
@@ -163,7 +166,7 @@
                     <rect key="frame" x="38" y="345" width="664" height="54"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Grant KnockKnock Full Disk Access" id="np6-Pk-2uu">
-                        <font key="font" size="32" name="AvenirNextCondensed-Regular"/>
+                        <font key="font" size="32" name="AvenirNextCondensed-Medium"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
@@ -227,21 +230,21 @@
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" image="SystemPrefs" id="Bef-Qy-itv"/>
                 </imageView>
             </subviews>
-            <point key="canvasLocation" x="334" y="277.5"/>
+            <point key="canvasLocation" x="143" y="-15"/>
         </customView>
         <customView id="kOW-Us-kgD" userLabel="Configure">
-            <rect key="frame" x="0.0" y="0.0" width="700" height="466"/>
+            <rect key="frame" x="0.0" y="0.0" width="637" height="302"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <box fixedFrame="YES" boxType="custom" borderType="none" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="f2W-Nn-YWU">
-                    <rect key="frame" x="0.0" y="0.0" width="700" height="48"/>
+                    <rect key="frame" x="0.0" y="0.0" width="637" height="48"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <view key="contentView" id="jcK-yh-GlV">
-                        <rect key="frame" x="0.0" y="0.0" width="700" height="48"/>
+                        <rect key="frame" x="0.0" y="0.0" width="637" height="48"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button tag="3" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Syw-cO-leg">
-                                <rect key="frame" x="605" y="6" width="81" height="32"/>
+                                <rect key="frame" x="536" y="8" width="81" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="Next" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xbU-XH-hYT">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -256,16 +259,25 @@
                     <color key="fillColor" red="0.57793885469999995" green="0.75859862570000003" blue="0.2368842065" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </box>
                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="660" translatesAutoresizingMaskIntoConstraints="NO" id="ikd-wz-01Q">
-                    <rect key="frame" x="31" y="412" width="664" height="54"/>
+                    <rect key="frame" x="30" y="263" width="664" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Configure KnockKnock:" id="XHD-XH-wR0">
-                        <font key="font" size="32" name="AvenirNextCondensed-Regular"/>
+                        <font key="font" size="32" name="AvenirNextCondensed-Medium"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
+                <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="445" translatesAutoresizingMaskIntoConstraints="NO" id="qME-7o-m8l">
+                    <rect key="frame" x="31" y="247" width="433" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Note: These can later be changed via KnockKnock's Settings" id="E65-cF-gfk">
+                        <font key="font" size="12" name="Menlo-Regular"/>
+                        <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b0q-yl-6sv">
-                    <rect key="frame" x="177" y="367" width="22" height="44"/>
+                    <rect key="frame" x="32" y="182" width="22" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" inset="2" id="6UN-fn-MkZ">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -273,7 +285,7 @@
                     </buttonCell>
                 </button>
                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LHE-lc-cEL">
-                    <rect key="frame" x="177" y="314" width="22" height="44"/>
+                    <rect key="frame" x="32" y="114" width="22" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" inset="2" id="aZp-4P-816">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -281,7 +293,7 @@
                     </buttonCell>
                 </button>
                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="445" translatesAutoresizingMaskIntoConstraints="NO" id="AhJ-ov-jbx">
-                    <rect key="frame" x="202" y="361" width="459" height="15"/>
+                    <rect key="frame" x="57" y="176" width="459" height="15"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Shows persistent macOS and Apple-installed components." id="r1b-Nl-Ii7">
                         <font key="font" size="12" name="Menlo-Regular"/>
@@ -289,17 +301,8 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="445" translatesAutoresizingMaskIntoConstraints="NO" id="qME-7o-m8l">
-                    <rect key="frame" x="34" y="408" width="433" height="18"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Note: these can later be changed via KnockKnock's Settings" id="E65-cF-gfk">
-                        <font key="font" size="12" name="Menlo-Regular"/>
-                        <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="445" translatesAutoresizingMaskIntoConstraints="NO" id="KHZ-VJ-JkQ">
-                    <rect key="frame" x="200" y="298" width="482" height="21"/>
+                    <rect key="frame" x="55" y="98" width="482" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Prevents the app from checking for updates automatically." id="3aO-AI-YtY">
                         <font key="font" size="12" name="Menlo-Regular"/>
@@ -308,7 +311,7 @@
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Udh-qU-3t3">
-                    <rect key="frame" x="200" y="372" width="310" height="28"/>
+                    <rect key="frame" x="55" y="187" width="310" height="28"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Include macOS components" id="zo1-a0-tPg">
                         <font key="font" size="17" name="Menlo-Bold"/>
@@ -317,7 +320,7 @@
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gf8-do-3hb">
-                    <rect key="frame" x="200" y="317" width="399" height="28"/>
+                    <rect key="frame" x="55" y="117" width="399" height="28"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Disable automatic update check" id="ymJ-tB-qiA">
                         <font key="font" size="17" name="Menlo-Bold"/>
@@ -325,97 +328,8 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TKV-2M-L24">
-                    <rect key="frame" x="179" y="83" width="22" height="44"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" inset="2" id="BDy-82-lOp">
-                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                        <font key="font" metaFont="system" size="20"/>
-                    </buttonCell>
-                </button>
-                <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="445" translatesAutoresizingMaskIntoConstraints="NO" id="yI4-k1-boN">
-                    <rect key="frame" x="179" y="77" width="503" height="14"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Prevents the app from querying VirusTotal for known malware." id="sAE-Mf-3fz">
-                        <font key="font" size="12" name="Menlo-Regular"/>
-                        <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bLF-86-77M">
-                    <rect key="frame" x="202" y="86" width="399" height="28"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Disable VirusTotal Integration " id="SWc-iv-oN4">
-                        <font key="font" size="17" name="Menlo-Bold"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XRf-pa-PDq">
-                    <rect key="frame" x="175" y="175" width="86" height="20"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" lineBreakMode="clipping" title="API Key:" id="uoG-tv-5Xm">
-                        <font key="font" size="17" name="Menlo-Bold"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YYa-Mf-VWJ">
-                    <rect key="frame" x="175" y="241" width="212" height="18"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" lineBreakMode="clipping" title="VirusTotal Integration:" id="9mL-yV-rIt">
-                        <font key="font" size="15" name="Menlo-Bold"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="445" translatesAutoresizingMaskIntoConstraints="NO" id="Pib-CW-2Jg">
-                    <rect key="frame" x="175" y="208" width="505" height="28"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="KnockKnock can check persistent items with VirusTotal’s threat database to identify known malware." id="e6b-fR-YzU">
-                        <font key="font" size="12" name="Menlo-Regular"/>
-                        <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w5j-mp-7ah">
-                    <rect key="frame" x="270" y="170" width="409" height="24"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Your VirusTotal API Key" drawsBackground="YES" id="bBa-af-3aX">
-                        <font key="font" size="13" name="Menlo-Regular"/>
-                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uxe-Pw-3lK">
-                    <rect key="frame" x="175" y="141" width="447" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" selectable="YES" title="Obtain a key (for free!) here:" id="5hV-fh-esV">
-                        <font key="font" size="11" name="Menlo-Regular"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EyT-ri-jLB" customClass="HyperlinkTextField">
-                    <rect key="frame" x="175" y="132" width="389" height="13"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <textFieldCell key="cell" lineBreakMode="clipping" title="https://docs.virustotal.com/docs/please-give-me-an-api-key" id="Fpp-x9-BI3">
-                        <font key="font" size="11" name="Menlo-Regular"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="iJa-C9-dST">
-                    <rect key="frame" x="177" y="270" width="503" height="5"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                </box>
-                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zct-RU-d1Y">
-                    <rect key="frame" x="20" y="169" width="128" height="128"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="kkIcon" id="PwK-g9-sQH"/>
-                </imageView>
             </subviews>
-            <point key="canvasLocation" x="629" y="941"/>
+            <point key="canvasLocation" x="431.5" y="502"/>
         </customView>
         <customView id="2qR-UH-6qk" userLabel="Support">
             <rect key="frame" x="0.0" y="0.0" width="812" height="454"/>
@@ -442,7 +356,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="812" height="48"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button tag="4" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Egj-dP-0oz">
+                            <button tag="5" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Egj-dP-0oz">
                                 <rect key="frame" x="14" y="6" width="81" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="No" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="QA3-Ww-PeC">
@@ -453,7 +367,7 @@
                                     <action selector="buttonHandler:" target="-2" id="wuO-3U-ypy"/>
                                 </connections>
                             </button>
-                            <button tag="5" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fw5-9c-Tyj">
+                            <button tag="6" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fw5-9c-Tyj">
                                 <rect key="frame" x="718" y="7" width="81" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="Yes!" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Re5-aD-QVR">
@@ -542,6 +456,115 @@
                 </imageView>
             </subviews>
             <point key="canvasLocation" x="685" y="1355"/>
+        </customView>
+        <customView id="afB-QN-4Zp" userLabel="Configure">
+            <rect key="frame" x="0.0" y="0.0" width="699" height="290"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <box fixedFrame="YES" boxType="custom" borderType="none" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="b9g-lW-n01">
+                    <rect key="frame" x="0.0" y="0.0" width="699" height="48"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <view key="contentView" id="ofA-lY-dxh">
+                        <rect key="frame" x="0.0" y="0.0" width="699" height="48"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button tag="4" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ahC-4V-9UW">
+                                <rect key="frame" x="598" y="8" width="81" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Next" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wgk-Ma-GMi">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="buttonHandler:" target="-2" id="HmF-zB-mkM"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                    </view>
+                    <color key="fillColor" red="0.57793885469999995" green="0.75859862570000003" blue="0.2368842065" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </box>
+                <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="660" translatesAutoresizingMaskIntoConstraints="NO" id="Fub-o3-w3r">
+                    <rect key="frame" x="30" y="251" width="664" height="44"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="VirusTotal Integration:" id="1Hq-3Y-qbJ">
+                        <font key="font" size="32" name="AvenirNextCondensed-Medium"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NOF-lL-dnS">
+                    <rect key="frame" x="30" y="193" width="86" height="20"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="API Key:" id="7SG-o8-mRZ">
+                        <font key="font" size="17" name="Menlo-Bold"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Msu-yL-eqA">
+                    <rect key="frame" x="125" y="188" width="503" height="24"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Your VirusTotal API Key" drawsBackground="YES" id="Og2-Lo-pbi">
+                        <font key="font" size="13" name="Menlo-Regular"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ucj-y5-V2I">
+                    <rect key="frame" x="31" y="159" width="447" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" selectable="YES" title="Obtain a key (for free!) here:" id="GXa-el-UVP">
+                        <font key="font" size="11" name="Menlo-Regular"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fi7-v7-obV" customClass="HyperlinkTextField">
+                    <rect key="frame" x="241" y="167" width="336" height="13"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="docs.virustotal.com/docs/please-give-me-an-api-key" id="6xX-Qx-lt6">
+                        <font key="font" size="11" name="Menlo-Regular"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="445" translatesAutoresizingMaskIntoConstraints="NO" id="uQb-VS-DuG">
+                    <rect key="frame" x="30" y="224" width="639" height="28"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Check persistent items with VirusTotal’s threat database to identify known malware." id="7ox-4I-TfC">
+                        <font key="font" size="12" name="Menlo-Regular"/>
+                        <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GdO-mh-Ufm">
+                    <rect key="frame" x="32" y="100" width="22" height="44"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" inset="2" id="5gm-6I-Af8">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system" size="20"/>
+                    </buttonCell>
+                </button>
+                <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="445" translatesAutoresizingMaskIntoConstraints="NO" id="0O9-FJ-fB9">
+                    <rect key="frame" x="55" y="93" width="503" height="14"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Prevents the app from querying VirusTotal for known malware." id="TDp-uQ-UJx">
+                        <font key="font" size="12" name="Menlo-Regular"/>
+                        <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W2v-5l-YaL">
+                    <rect key="frame" x="55" y="103" width="399" height="28"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Disable VirusTotal Integration " id="9lZ-zf-ok2">
+                        <font key="font" size="17" name="Menlo-Bold"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <point key="canvasLocation" x="309.5" y="881"/>
         </customView>
     </objects>
     <resources>

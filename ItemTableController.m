@@ -8,11 +8,11 @@
 
 
 #import "File.h"
-#import "Consts.h"
+#import "consts.h"
 #import "Command.h"
 #import "VTButton.h"
 #import "Extension.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "AppDelegate.h"
 #import "Results/ItemBase.h"
 #import "ItemTableController.h"

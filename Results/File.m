@@ -9,9 +9,9 @@
 
 #import "File.h"
 #import "MachO/MachO.h"
-#import "Consts.h"
+#import "consts.h"
 #import "Signing.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "AppDelegate.h"
 
 @implementation File

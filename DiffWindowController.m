@@ -6,7 +6,7 @@
 //  Copyright (c) 2024 Objective-See. All rights reserved.
 //
 
-#import "Consts.h"
+#import "consts.h"
 #import "DiffWindowController.h"
 
 @implementation DiffWindowController

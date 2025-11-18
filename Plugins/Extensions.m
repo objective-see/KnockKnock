@@ -6,7 +6,7 @@
 //         only for current user, since we utilized 'pluginkit' which is "for current user"
 
 #import "File.h"
-#import "Utilities.h"
+#import "utilities.h"
 #import "Extensions.h"
 
 //plugin name
