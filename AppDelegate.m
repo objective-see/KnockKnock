@@ -59,6 +59,8 @@ void uncaughtExceptionHandler(NSException* exception) {
     return;
 }
 
+/*
+
 //center window
 // also make front
 -(void)awakeFromNib
@@ -74,15 +76,46 @@ void uncaughtExceptionHandler(NSException* exception) {
     
     return;
 }
+*/
 
 //automatically invoked by OS
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
     //defaults
-    NSUserDefaults* defaults = nil;
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+
+    //first time run?
+    // show welcome/configuration screens
+    //TOOD: !=
+    if(YES == [defaults boolForKey:NOT_FIRST_TIME])
+    {
+        //set key
+        [defaults setBool:YES forKey:NOT_FIRST_TIME];
+        
+        //alloc window controller
+        welcomeWindowController = [[WelcomeWindowController alloc] initWithWindowNibName:@"Welcome"];
     
-    //set exception handler
-    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+        //show window
+        [self.welcomeWindowController showWindow:self];
+        
+        //make front
+        [[NSRunningApplication currentApplication] activateWithOptions:(NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
+    }
+    //otherwise just kick off scan initializations
+    else
+    {
+        //init
+        [self initializeForScan];
+    }
+    
+    return;
+}
+
+//init all the thingz for a scan
+-(void)initializeForScan
+{
+    //defaults
+    NSUserDefaults* defaults = nil;
     
     //init filter object
     itemFilter = [[Filter alloc] init];
@@ -96,40 +129,15 @@ void uncaughtExceptionHandler(NSException* exception) {
     //alloc shared item enumerator
     sharedItemEnumerator = [[ItemEnumerator alloc] init];
     
-    //load defaults
-    defaults = [NSUserDefaults standardUserDefaults];
-
-    //first time run?
-    // show thanks to friends window!
-    //TOOD: !=
-    if(YES == [defaults boolForKey:NOT_FIRST_TIME])
-    {
-        //set key
-        [defaults setBool:YES forKey:NOT_FIRST_TIME];
-        
-        //dbg msg
-        //os_log_debug(logHandle, "first launch, will kick off welcome window(s)");
-        
-        //alloc window controller
-        welcomeWindowController = [[WelcomeWindowController alloc] initWithWindowNibName:@"Welcome"];
-    
-        //show window
-        [self.welcomeWindowController showWindow:self];
-        
-        //make front
-        [[NSRunningApplication currentApplication] activateWithOptions:(NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
-    }
-    
     //request access
     // delay, so UI completes rendering
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-        
-        //request access
-        [self requestFDA];
-        
+            
+            //request access
+            [self requestFDA];
+            
     });
-
-    
+        
     //check for update
     // unless user has turn off via prefs
     if(YES != [defaults boolForKey:PREF_DISABLE_UPDATE_CHECK])
@@ -182,8 +190,18 @@ void uncaughtExceptionHandler(NSException* exception) {
     
     //load prefs
     [self.prefsWindowController loadPreferences];
+    
+    //center
+    [self.window center];
+    
+    //make it key window
+    [self.window makeKeyAndOrderFront:self];
 
+    //make window front
+    [NSApp activateIgnoringOtherApps:YES];
+    
     return;
+    
 }
 
 //close 'friends' window

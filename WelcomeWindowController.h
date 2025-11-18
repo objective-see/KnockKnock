@@ -20,6 +20,21 @@
 //welcome view
 @property (strong) IBOutlet NSView *welcomeView;
 
+//next
+@property (weak) IBOutlet NSButton* nextButton;
+
+//allow FDA view
+@property (strong) IBOutlet NSView *enableFDAView;
+
+@property (weak) IBOutlet NSTextField *fdaNote;
+
+@property (weak) IBOutlet NSButton *diskAccessButton;
+
+@property (weak) IBOutlet NSProgressIndicator *FDAActivityIndicator;
+
+
+@property (weak) IBOutlet NSTextField *FDAMessage;
+
 //allow extension view
 @property (strong) IBOutlet NSView *allowExtensionView;
 

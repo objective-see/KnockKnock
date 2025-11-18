@@ -21,7 +21,7 @@
     },
     "1mP-i0-2e4.title" : {
       "comment" : "Class = \"NSButtonCell\"; title = \"Close\"; ObjectID = \"1mP-i0-2e4\";",
-      "extractionState" : "extracted_with_value",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -507,7 +507,7 @@
     },
     "JSF-ba-pCy.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Mahalo to the \\\"Friends of Objective-See\\\"\"; ObjectID = \"JSF-ba-pCy\";",
-      "extractionState" : "extracted_with_value",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

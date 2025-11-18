@@ -132,6 +132,9 @@ extern Filter* itemFilter;
 
 /* METHODS */
 
+//init all the thingz for a scan
+-(void)initializeForScan;
+
 //init tracking areas for buttons
 // ->provide mouse over effects
 -(void)initTrackingAreas;

@@ -19,11 +19,11 @@
 extern os_log_t logHandle;
 
 //buttons
-#define SHOW_WELCOME 0
-#define SHOW_CONFIGURE 1
-#define SHOW_SUPPORT 2
-#define SUPPORT_NO 3
-#define SUPPORT_YES 4
+#define REQUEST_FDA 1
+#define SHOW_CONFIGURE 2
+#define SHOW_SUPPORT 3
+#define SUPPORT_NO 4
+#define SUPPORT_YES 5
 
 @implementation WelcomeWindowController
 
@@ -55,11 +55,26 @@ extern os_log_t logHandle;
     //set title
     self.window.title = [NSString stringWithFormat:@"KnockKnock v%@", getAppVersion()];
     
-    //show welcome view
-    [self showView:self.welcomeView firstResponder:SHOW_CONFIGURE];
+    //no FDA?
+    // next view should be 'request FDA'
+    if(!hasFDA()) {
+        self.nextButton.tag = REQUEST_FDA;
+    }
+    //otherwise
+    // next view should be 'configure'
+    else {
+        self.nextButton.tag = SHOW_CONFIGURE;
+    }
     
+    //show view
+    [self showView:self.welcomeView firstResponder:self.nextButton.tag];
+
     //make key and front
     [self.window makeKeyAndOrderFront:self];
+    
+    //TODO:
+    //center
+    [self.window center];
     
     //activate
     if(@available(macOS 14.0, *)) {
@@ -92,8 +107,60 @@ extern os_log_t logHandle;
     //set next view
     switch(((NSButton*)sender).tag)
     {
+        //request FDA view
+        case REQUEST_FDA:
+        {
+            //hide title
+            self.window.title = @"";
+            
+            self.fdaNote.wantsLayer = true;
+            self.fdaNote.layer.cornerRadius = 5;
+            
+            //show
+            [self showView:self.enableFDAView firstResponder:-1];
+            
+            //first responder is 'open system settings' button
+            [self.window makeFirstResponder:self.diskAccessButton];
+            
+            //start spinner
+            [self.FDAActivityIndicator startAnimation:self];
+            
+            //in background
+            // wait unitl user grants us FDA
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                           ^{
+
+                //wait for FDA
+                do {
+                    //nap
+                    [NSThread sleepForTimeInterval:0.25];
+                } while(YES != hasFDA());
+                
+                //update UI
+                dispatch_sync(dispatch_get_main_queue(),
+                              ^{
+                    //hide spinner
+                    self.FDAActivityIndicator.hidden = YES;
+                    
+                    //change fda message
+                    self.FDAMessage.stringValue = @"☑️ Full Disk Access granted!";
+                    
+                    //enable 'next' button
+                    ((NSButton*)[self.enableFDAView viewWithTag:SHOW_CONFIGURE]).enabled = YES;
+                    
+                    //make it first responder
+                    [self.window makeFirstResponder:[self.enableFDAView viewWithTag:SHOW_CONFIGURE]];
+                });
+            });
+            
+            break;
+        }
+        
         //show configure view
         case SHOW_CONFIGURE:
+            
+            //hide title
+            self.window.title = @"";
             
             //show
             [self showView:self.configureView firstResponder:SHOW_SUPPORT];
@@ -124,9 +191,8 @@ extern os_log_t logHandle;
             //close window
             [self.window close];
             
-            //TODO:
-            //kick off main (client) logic
-            //[((AppDelegate*)[[NSApplication sharedApplication] delegate]) completeInitialization:self.preferences];
+            //done, so show main UI scan window
+            [((AppDelegate*)NSApplication.sharedApplication.delegate) initializeForScan];
             
             break;
             
@@ -186,6 +252,11 @@ extern os_log_t logHandle;
     });
 
     return;
+}
+- (IBAction)openSystemSettings:(id)sender {
+    
+    //open `System Preferences`
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"]];
 }
 
 @end
