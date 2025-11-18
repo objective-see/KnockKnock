@@ -267,7 +267,7 @@
             // Completion already runs on main thread
             if (!error) {
                 
-                NSLog(@"response: %@", result);
+                //NSLog(@"response: %@", result);
                 
                 //got response?
                 // launch browser to show user
@@ -295,7 +295,7 @@
                     dispatch_async(dispatch_get_main_queue(), ^{
                         
                         //launch browser
-                        [[NSWorkspace sharedWorkspace] openURL:result[VT_RESULTS_URL]];
+                        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:result[VT_RESULTS_URL]]];
                         
                     });
                     

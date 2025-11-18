@@ -170,6 +170,7 @@ extern BOOL cmdlineMode;
             //save
             file.vtInfo = result;
             
+            //dbg msg
             NSLog(@"File: %@ - Detection ratio: %ld/%ld", file.name, (long)malicious, (long)total);
             
             //malicious?
@@ -503,10 +504,6 @@ extern BOOL cmdlineMode;
 
     return;
 }
-
-//item data
-//(NSMutableDictionary*)covertItemToRequest:(Item*)
-
 
 //get VT info for a single item
 // will then callback into AppDelegate to reload item in UI
