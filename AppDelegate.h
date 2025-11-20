@@ -172,8 +172,6 @@ extern Filter* itemFilter;
 //button handler for when settings icon (gear) is clicked
 -(IBAction)showPreferences:(id)sender;
 
-//kickoff a thread to query VT
--(void)queryVT:(PluginBase*)plugin;
 
 //button handler for logo
 -(IBAction)logoButtonHandler:(id)sender;

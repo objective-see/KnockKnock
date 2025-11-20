@@ -225,29 +225,14 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 
 /* VIRUS TOTAL */
 
-//query url
-#define VT_QUERY_URL @"https://www.virustotal.com/partners/sysinternals/file-reports?apikey="
-
-//requery url
-#define VT_REQUERY_URL @"https://www.virustotal.com/vtapi/v2/file/report"
-
-//rescan url
-#define VT_RESCAN_URL @"https://www.virustotal.com/vtapi/v2/file/rescan"
-
-//submit url
-#define VT_SUBMIT_URL @"https://www.virustotal.com/vtapi/v2/file/scan"
-
-//api key
-#define VT_API_KEY @"233f22e200ca5822bd91103043ccac138b910db79f29af5616a9afe8b6f215ad"
-
 //user agent
 #define VT_USER_AGENT @"VirusTotal"
 
-//query count
-#define VT_MAX_QUERY_COUNT 25
-
 //results
 #define VT_RESULTS @"data"
+
+//error
+#define VT_ERROR @"error"
 
 //results response code
 #define VT_RESULTS_RESPONSE @"response_code"

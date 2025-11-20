@@ -235,9 +235,6 @@
     //VT object
     VirusTotal* vtObj = nil;
     
-    //result (from VT)
-    __block NSDictionary* result = nil;
-    
     //button
     NSButton* button = nil;
     
@@ -275,16 +272,14 @@
         item = self.items[row];
         
         //skip non-file items
-        if(YES != [item isKindOfClass:[File class]])
-        {
+        if(YES != [item isKindOfClass:[File class]]) {
             //skip
             continue;
         }
         
         //skip item's without hashes
         // ...not sure how this could ever happen
-        if(nil == ((File*)item).hashes[KEY_HASH_SHA1])
-        {
+        if(nil == ((File*)item).hashes[KEY_HASH_SHA1]) {
             //skip
             continue;
         }
@@ -301,14 +296,13 @@
             //nap
             sleep(0.5);
             
-            //submit file to VT
-            result = [vtObj submit:(File*)item];
-            
-            //save results
-            self.results[@(row)] = result;
-            
-            //reload table
-            dispatch_async(dispatch_get_main_queue(), ^{
+            //submit to VT
+            [vtObj submitFile:((File*)item).path completion:^(NSDictionary *result) {
+                
+                //if(
+                
+                //save results
+                self.results[@(row)] = result;
                 
                 //dec
                 submittedItems--;
@@ -317,8 +311,8 @@
                 [self.tableView reloadData];
                 
                 //done?
-                if(0 == submittedItems)
-                {
+                if(0 == submittedItems) {
+                    
                     //(re)enable
                     self.submit.enabled = YES;
                     
@@ -328,8 +322,11 @@
                     //set status
                     self.statusLabel.stringValue = NSLocalizedString(@"Submissions complete!", @"Submissions complete!");
                 }
-            });
+                
+            }];
+            
         });
+                
     }
     
     return;

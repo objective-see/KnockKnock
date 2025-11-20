@@ -201,6 +201,7 @@
     },
     "ERROR:\nVirusTotal query for '%@' failed" : {
       "comment" : "ERROR:\nVirusTotal query for '%@' failed",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -306,6 +307,7 @@
     },
     "HTTP reponse: %ld" : {
       "comment" : "HTTP reponse: %ld",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -419,6 +421,7 @@
     },
     "OK" : {
       "comment" : "OK",
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {

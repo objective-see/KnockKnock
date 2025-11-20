@@ -256,9 +256,9 @@
     self.statusMsg.hidden = NO;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [vtObj submitFile:self.fileObj.path completion:^(NSDictionary *result, NSError *error) {
+        [vtObj submitFile:self.fileObj.path completion:^(NSDictionary *result) {
             // Completion already runs on main thread
-            if (!error) {
+            if(!result[VT_ERROR]) {
                 
                 //NSLog(@"response: %@", result);
                 
@@ -307,11 +307,10 @@
                     });
                     
                 }
-                
             }
             else {
                 
-                NSLog(@"ERROR: %@", error);
+                NSLog(@"ERROR: %@", result[VT_ERROR]);
                 
                 //show error msg
                 dispatch_async(dispatch_get_main_queue(), ^{

@@ -497,7 +497,6 @@ void uncaughtExceptionHandler(NSException* exception) {
             (YES == self.isConnected) )
         {
             //do query
-            //[self queryVT:plugin];
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [self->virusTotalObj checkFiles:plugin];
             });
@@ -594,28 +593,6 @@ void uncaughtExceptionHandler(NSException* exception) {
     return;
 }
 
-//kickoff a thread to query VT
--(void)queryVT:(PluginBase*)plugin
-{
-    //virus total thread
-    NSThread* virusTotalThread = nil;
-    
-    //alloc thread
-    // ->will query virus total to get info about all detected items
-    virusTotalThread = [[NSThread alloc] initWithTarget:virusTotalObj selector:@selector(getInfo:) object:plugin];
-    
-    //start thread
-    [virusTotalThread start];
-    
-    //sync
-    @synchronized(self.vtThreads)
-    {
-        //save it into array
-        [self.vtThreads addObject:virusTotalThread];
-    }
-    
-    return;
-}
 
 //automatically invoked when user clicks logo
 // ...load objective-see's html page
@@ -773,7 +750,6 @@ void uncaughtExceptionHandler(NSException* exception) {
     return;
 }
 
-
 //callback when user has updated prefs
 // ->reload table, etc
 -(void)applyPreferences
@@ -808,8 +784,9 @@ void uncaughtExceptionHandler(NSException* exception) {
         // ->do VT query for each
         for(PluginBase* plugin in self.plugins)
         {
-            //do query
-            [self queryVT:plugin];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [self->virusTotalObj checkFiles:plugin];
+            });
         }
     }
     

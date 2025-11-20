@@ -26,6 +26,17 @@ int main(int argc, char *argv[])
             goto bail;
         }
         
+        if(YES == [NSProcessInfo.processInfo.arguments containsObject:@"-version"])
+        {
+            //print usage
+            version();
+            
+            //done
+            goto bail;
+        }
+        
+        
+        
         //handle '-scan'
         // cmdline scan without UI
         if(YES == [NSProcessInfo.processInfo.arguments containsObject:@"-whosthere"])
@@ -67,6 +78,21 @@ bail:
     return status;
 }
 
+
+//version
+void version(void) {
+    NSDictionary* info = NSBundle.mainBundle.infoDictionary;
+    NSString* version = info[@"CFBundleVersion"];
+    if (version) {
+        printf("%s\n", version.UTF8String);
+    } else {
+        printf("unknown\n");
+    }
+    
+    return;
+}
+
+
 //print usage
 void usage(void)
 {
@@ -74,6 +100,7 @@ void usage(void)
     printf("\nKNOCKNOCK USAGE:\n");
     printf(" -h or -help  display this usage info\n");
     printf(" -whosthere   perform command line scan\n");
+    printf(" -version     display current version of\n");
     printf(" -verbose     display detailed output\n");
     printf(" -pretty      final output is 'pretty-printed'\n");
     printf(" -apple       include apple/system items\n");
@@ -87,9 +114,6 @@ void cmdlineScan(void)
 {
     //virus total obj
     VirusTotal* virusTotal = nil;
-    
-    //virus total thread
-    NSThread* virusTotalThread = nil;
     
     //start time
     NSDate* startTime = nil;
@@ -108,7 +132,6 @@ void cmdlineScan(void)
     
     //flag
     BOOL prettyPrint = NO;
-    
     
     //output
     NSMutableString* output = nil;
@@ -206,19 +229,8 @@ void cmdlineScan(void)
                 printf(" scanning via Virus Total\n");
             }
             
-            //alloc thread
-            // will query virus total to get info about all detected items
-            virusTotalThread = [[NSThread alloc] initWithTarget:virusTotal selector:@selector(getInfo:) object:plugin];
-            
-            //start thread
-            [virusTotalThread start];
-            
-            //wait until thread is done
-            while(YES != virusTotalThread.isFinished)
-            {
-                //nap
-                [NSThread sleepForTimeInterval:1.0];
-            }
+            //TODO: need API key
+            // and then scan
         }
         
         //append plugin name to output

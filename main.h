@@ -37,6 +37,9 @@ BOOL isVerbose = NO;
 //print usage
 void usage(void);
 
+//print version
+void version(void);
+
 //perform a cmdline scan
 void cmdlineScan(void);
 
