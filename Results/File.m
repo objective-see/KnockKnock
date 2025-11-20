@@ -307,10 +307,7 @@ bail:
     
     //signing info
     NSString* fileSigs = nil;
-    
-    //VT detection ratio
-    NSString* vtDetectionRatio = nil;
-    
+        
     //init file hash to default string
     // ->used when hashes are nil, or serialization fails
     fileHashes = @"\"unknown\"";
@@ -378,11 +375,15 @@ bail:
         filePlist = self.plist;
     }
     
-    //init VT detection ratio
-    vtDetectionRatio = [NSString stringWithFormat:@"%lu/%lu", (unsigned long)[self.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[self.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
-    
     //init json
-    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"plist\": \"%@\", \"hashes\": %@, \"signature(s)\": %@, \"VT detection\": \"%@\"", self.name, self.path, filePlist, fileHashes, fileSigs, vtDetectionRatio];
+    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"plist\": \"%@\", \"hashes\": %@, \"signature(s)\": %@", self.name, self.path, filePlist, fileHashes, fileSigs];
+
+    //include VT
+    if(![NSProcessInfo.processInfo.arguments containsObject:@"-skipVT"])
+    {
+        //append VT detection
+        json = [json stringByAppendingFormat:@", \"VT detection\": \"%lu/%lu\"", (unsigned long)[self.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[self.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
+    }
     
     return json;
 }
