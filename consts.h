@@ -85,11 +85,10 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //path to LSOF
 #define LSOF @"/usr/sbin/lsof"
 
-//hash key, SHA1
-#define KEY_HASH_SHA1 @"sha1"
-
-//hash key, MD5
+//hash keys
 #define KEY_HASH_MD5 @"md5"
+#define KEY_HASH_SHA1 @"sha1"
+#define KEY_HASH_SHA256 @"sha256"
 
 //path to crontab
 #define CRONTAB @"/usr/bin/crontab"

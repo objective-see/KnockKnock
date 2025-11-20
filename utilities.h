@@ -39,7 +39,7 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle);
 // ->return all matches
 NSArray* directoryContents(NSString* directory, NSString* predicate);
 
-//hash (sha1/md5) a file
+//hash a file
 NSDictionary* hashFile(NSString* filePath);
 
 //get app's version

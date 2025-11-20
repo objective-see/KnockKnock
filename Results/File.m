@@ -106,7 +106,6 @@
         self.name = [self determineName];
         
         //computes hashes
-        // ->set 'md5' and 'sha1' iVars
         self.hashes = hashFile(self.path);
         
         //grab attributes

@@ -332,27 +332,56 @@ bail:
 }
 
 //hash a file
-// ->md5 and sha1
-NSDictionary* hashFile(NSString* filePath)
+// md5/sha1/sha256
+NSDictionary* hashFile(NSString* itemPath)
 {
     //file hashes
     NSDictionary* hashes = nil;
     
+    //flag
+    BOOL isDirectory = NO;
+    
+    //bundle
+    NSBundle* bundle = nil;
+    
+    //handle
+    NSFileHandle* handle = nil;
+    
+    //path
+    // might be app's binary
+    NSString* path = nil;
+    
     //file's contents
-    NSData* fileContents = nil;
+    // per chunk (to handle big files)
+    NSData* chunk = nil;
+    
+    //md5 context
+    CC_MD5_CTX md5Context = {0};
     
     //hash digest (md5)
-    uint8_t digestMD5[CC_MD5_DIGEST_LENGTH] = {0};
+    uint8_t md5Digest[CC_MD5_DIGEST_LENGTH] = {0};
     
     //md5 hash as string
     NSMutableString* md5 = nil;
     
+    //sha1 context
+    CC_SHA1_CTX sha1Context = {0};
+    
     //hash digest (sha1)
-    uint8_t digestSHA1[CC_SHA1_DIGEST_LENGTH] = {0};
+    uint8_t sha1Digest[CC_SHA1_DIGEST_LENGTH] = {0};
     
     //sha1 hash as string
     NSMutableString* sha1 = nil;
     
+    //sha256 context
+    CC_SHA256_CTX sha256Context = {0};
+    
+    //hash digest (sha256)
+    uint8_t sha256Digest[CC_SHA256_DIGEST_LENGTH] = {0};
+    
+    //sha256 hash as string
+    NSMutableString* sha256 = nil;
+        
     //index var
     NSUInteger index = 0;
     
@@ -362,43 +391,122 @@ NSDictionary* hashFile(NSString* filePath)
     //init sha1 hash string
     sha1 = [NSMutableString string];
     
-    //load file
-    if(nil == (fileContents = [NSData dataWithContentsOfFile:filePath]))
-    {
-        //err msg
-        NSLog(@"ERROR: couldn't load %@ to hash", filePath);
+    //init sha256 string
+    sha256 = [NSMutableString string];
+    
+    //init path
+    // might be updated if app bundle
+    path = itemPath;
+    
+    //set directory flag
+    [NSFileManager.defaultManager fileExistsAtPath:itemPath isDirectory:&isDirectory];
+    
+    //directories might be bundles
+    // in that case get main binary to hash
+    if(isDirectory) {
         
-        //bail
+        //is bundle?
+        if([NSWorkspace.sharedWorkspace isFilePackageAtPath:itemPath]) {
+            
+            //load bundle
+            bundle = [NSBundle bundleWithPath:itemPath];
+            
+            //sanity check
+            // bundle w/ executable path?
+            if( (nil == bundle) ||
+                (nil == bundle.executablePath) )
+            {
+                //bail
+                goto bail;
+            }
+            
+            //update path
+            path = bundle.executablePath;
+        }
+        
+        //not bundle
+        // can't hash a directory, so bail
+        else
+        {
+            goto bail;
+        }
+    }
+    
+    //open handle to file
+    handle = [NSFileHandle fileHandleForReadingAtPath:path];
+    if(nil == handle)
+    {
         goto bail;
     }
     
-    //md5 it
-    CC_MD5(fileContents.bytes, (unsigned int)fileContents.length, digestMD5);
+    //init hash contexts
+    CC_MD5_Init(&md5Context);
+    CC_SHA1_Init(&sha1Context);
+    CC_SHA256_Init(&sha256Context);
+                 
+    //read/hash file
+    // in chunks, to handle large files
+    while(YES)
+    {
+        //wrap
+        // 'readDataOfLength' can throw
+        @try
+        {
+            //read in chunk
+            chunk = [handle readDataOfLength:1024*1024];
+            if(chunk.length == 0) break;
+        }
+        @catch(NSException* exception)
+        {
+            //bail
+            goto bail;
+        }
+        
+        //hash updates
+        CC_MD5_Update(&md5Context, (const void *)chunk.bytes, (CC_LONG)chunk.length);
+        CC_SHA1_Update(&sha1Context, (const void *)chunk.bytes, (CC_LONG)chunk.length);
+        CC_SHA256_Update(&sha256Context, (const void *)chunk.bytes, (CC_LONG)chunk.length);
+        
+    }
     
-    //convert to NSString
-    // ->iterate over each bytes in computed digest and format
+    //finalize hashes
+    CC_MD5_Final(md5Digest, &md5Context);
+    CC_SHA1_Final(sha1Digest, &sha1Context);
+    CC_SHA256_Final(sha256Digest, &sha256Context);
+    
+    //convert md5 to NSString
     for(index=0; index < CC_MD5_DIGEST_LENGTH; index++)
     {
         //format/append
-        [md5 appendFormat:@"%02lX", (unsigned long)digestMD5[index]];
+        [md5 appendFormat:@"%02lX", (unsigned long)md5Digest[index]];
     }
     
-    //sha1 it
-    CC_SHA1(fileContents.bytes, (unsigned int)fileContents.length, digestSHA1);
-    
-    //convert to NSString
-    // ->iterate over each bytes in computed digest and format
+    //convert sha1 to NSString
     for(index=0; index < CC_SHA1_DIGEST_LENGTH; index++)
     {
         //format/append
-        [sha1 appendFormat:@"%02lX", (unsigned long)digestSHA1[index]];
+        [sha1 appendFormat:@"%02lX", (unsigned long)sha1Digest[index]];
+    }
+    
+    //convert sha256 to NSString
+    for(index=0; index < CC_SHA256_DIGEST_LENGTH; index++)
+    {
+        //format/append
+        [sha256 appendFormat:@"%02lX", (unsigned long)sha256Digest[index]];
     }
     
     //init hash dictionary
-    hashes = @{KEY_HASH_MD5: md5, KEY_HASH_SHA1: sha1};
+    hashes = @{KEY_HASH_MD5:md5, KEY_HASH_SHA1:sha1, KEY_HASH_SHA256:sha256};
     
-//bail
 bail:
+
+    //close handle?
+    if(nil != handle)
+    {
+        //close
+        [handle closeFile];
+        handle = nil;
+    }
     
     return hashes;
 }

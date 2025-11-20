@@ -78,7 +78,6 @@ bail:
     return status;
 }
 
-
 //version
 void version(void) {
     NSDictionary* info = NSBundle.mainBundle.infoDictionary;
@@ -91,7 +90,6 @@ void version(void) {
     
     return;
 }
-
 
 //print usage
 void usage(void)
