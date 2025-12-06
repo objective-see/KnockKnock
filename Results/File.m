@@ -378,7 +378,8 @@ bail:
     //init json
     json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"plist\": \"%@\", \"hashes\": %@, \"signature(s)\": %@", self.name, self.path, filePlist, fileHashes, fileSigs];
 
-    //include VT
+    //include VT?
+    // append detection
     if(![NSProcessInfo.processInfo.arguments containsObject:@"-skipVT"])
     {
         //append VT detection

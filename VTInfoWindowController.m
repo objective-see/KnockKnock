@@ -310,6 +310,7 @@
             }
             else {
                 
+                //err msg
                 NSLog(@"ERROR: %@", result[VT_ERROR]);
                 
                 //show error msg

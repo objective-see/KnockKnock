@@ -717,7 +717,6 @@ bail:
             //dbg msg
             //NSLog(@"%s's entropy: %f", ((struct segment_command *)loadCommand)->segname, segmentEntropy);
             
-            //TODO: test more!
             if(segmentEntropy > 7.2f)
             {
                 //inc total

@@ -98,13 +98,13 @@
       }
     },
     "Nua-Eb-VTm.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"Enter your personal VirusTotal API. \\nYou can learn more about getting such a key (for free!) here:\"; ObjectID = \"Nua-Eb-VTm\";",
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Enter your personal VirusTotal API key. \\nYou can learn more about getting such a key (for free!) here:\"; ObjectID = \"Nua-Eb-VTm\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Enter your personal VirusTotal API. \nYou can learn more about getting such a key (for free!) here:"
+            "value" : "Enter your personal VirusTotal API key. \nYou can learn more about getting such a key (for free!) here:"
           }
         }
       }

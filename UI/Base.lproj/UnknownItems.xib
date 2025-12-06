@@ -20,7 +20,7 @@
         <window title="Unknown Items" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="pvW-8N-g8T">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="403" y="305" width="643" height="339"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="769"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="3440" height="1409"/>
             <value key="minSize" type="size" width="643" height="339"/>
             <view key="contentView" id="XBF-k3-Nqu">
                 <rect key="frame" x="0.0" y="0.0" width="643" height="339"/>

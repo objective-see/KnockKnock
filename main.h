@@ -32,6 +32,9 @@ BOOL cmdlineMode = NO;
 //cmdline flag
 BOOL isVerbose = NO;
 
+//(VT) API key for cmdline scan
+NSString* vtAPIKey = nil;
+
 /* FUNCTIONS */
 
 //print usage
@@ -41,7 +44,7 @@ void usage(void);
 void version(void);
 
 //perform a cmdline scan
-void cmdlineScan(void);
+void cmdlineScan(NSArray* args);
 
 //pretty print JSON
 void prettyPrintJSON(NSString* output);

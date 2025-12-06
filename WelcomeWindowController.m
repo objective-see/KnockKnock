@@ -57,7 +57,7 @@ extern os_log_t logHandle;
     
     //no FDA?
     // next view should be 'request FDA'
-    if(!hasFDA()) {
+    if(hasFDA()) {
         self.nextButton.tag = REQUEST_FDA;
     }
     //otherwise
@@ -69,24 +69,14 @@ extern os_log_t logHandle;
     //show view
     [self showView:self.welcomeView firstResponder:self.nextButton];
 
+    //center (before showing)
+    [self.window center];
+    
     //make key and front
     [self.window makeKeyAndOrderFront:self];
     
-    //TODO:
-    //center
-    [self.window center];
-    
     //activate
-    if(@available(macOS 14.0, *)) {
-        [NSApp activate];
-    }
-    else
-    {
-        [NSApp activateIgnoringOtherApps:YES];
-    }
-    
-    //(re)make front
-    [[NSRunningApplication currentApplication] activateWithOptions:(NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
+    [NSApp activateIgnoringOtherApps:YES];
     
     return;
 }
@@ -241,12 +231,6 @@ extern os_log_t logHandle;
 // note: replaces old view and highlights specified responder
 -(void)showView:(NSView*)view firstResponder:(NSView*)firstResponder
 {
-    //x position
-    CGFloat xPos = 0;
-    
-    //y position
-    CGFloat yPos = 0;
-    
     //not in dark mode?
     // make window white
     if(YES != isDarkMode())
@@ -261,15 +245,6 @@ extern os_log_t logHandle;
     //update config view
     self.window.contentView = view;
     
-    //center x
-    xPos = NSWidth(self.window.screen.frame)/2 - NSWidth(self.window.frame)/2;
-    
-    //center y
-    yPos = NSHeight(self.window.screen.frame)/2 - NSHeight(self.window.frame)/2;
-    
-    //center window
-    [self.window setFrame:NSMakeRect(xPos, yPos, NSWidth(self.window.frame), NSHeight(self.window.frame)) display:YES];
-
     //make 'next' button first responder
     // calling this without a timeout, sometimes fails :/
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (100 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
@@ -285,10 +260,15 @@ extern os_log_t logHandle;
 
     return;
 }
-- (IBAction)openSystemSettings:(id)sender {
+
+
+//open system settings to FDA
+-(IBAction)openSystemSettings:(id)sender {
     
-    //open `System Preferences`
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"]];
+    //show FDA view
+    [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"]];
+    
+    return;
 }
 
 @end

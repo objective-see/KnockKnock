@@ -13,11 +13,13 @@ int main(int argc, char *argv[])
     //status
     int status = -1;
     
+    NSArray* args = NSProcessInfo.processInfo.arguments;
+    
     @autoreleasepool
     {
         //handle '-h' or '-help'
-        if( (YES == [NSProcessInfo.processInfo.arguments containsObject:@"-h"]) ||
-            (YES == [NSProcessInfo.processInfo.arguments containsObject:@"-help"]) )
+        if( (YES == [args containsObject:@"-h"]) ||
+            (YES == [args containsObject:@"-help"]) )
         {
             //print usage
             usage();
@@ -26,7 +28,8 @@ int main(int argc, char *argv[])
             goto bail;
         }
         
-        if(YES == [NSProcessInfo.processInfo.arguments containsObject:@"-version"])
+        //print version
+        if(YES == [args containsObject:@"-version"])
         {
             //print usage
             version();
@@ -36,19 +39,54 @@ int main(int argc, char *argv[])
         }
         
         
-        
         //handle '-scan'
         // cmdline scan without UI
-        if(YES == [NSProcessInfo.processInfo.arguments containsObject:@"-whosthere"])
+        if(YES == [args containsObject:@"-whosthere"])
         {
+            //api key
+            NSUInteger keyIndex = NSNotFound;
+            
             //set flag
             cmdlineMode = YES;
             
             //set flag
-            isVerbose = [NSProcessInfo.processInfo.arguments containsObject:@"-verbose"];
+            isVerbose = [args containsObject:@"-verbose"];
             
+            //extract VT API key
+            keyIndex = [args indexOfObject:@"-key"];
+            if(keyIndex != NSNotFound)
+            {
+                //sanity check
+                if(keyIndex + 1 < args.count)
+                {
+                    //grab
+                    vtAPIKey = args[keyIndex + 1];
+                }
+                
+                //validate
+                if(vtAPIKey.length == 0)
+                {
+                    //usage
+                    usage();
+                    
+                    //done
+                    goto bail;
+                }
+            }
+            
+            //need FDA
+            if(!hasFDA()) {
+                
+                //err msg
+                printf("ERROR: KnockKnock requires Full Disk Access...\n\n");
+             
+                //done
+                goto bail;
+                
+            }
+                
             //scan
-            cmdlineScan();
+            cmdlineScan(args);
             
             //happy
             status = 0;
@@ -83,9 +121,9 @@ void version(void) {
     NSDictionary* info = NSBundle.mainBundle.infoDictionary;
     NSString* version = info[@"CFBundleVersion"];
     if (version) {
-        printf("%s\n", version.UTF8String);
+        printf("KnockKnock Version: %s\n", version.UTF8String);
     } else {
-        printf("unknown\n");
+        printf("KnockKnock Version: unknown\n");
     }
     
     return;
@@ -96,19 +134,20 @@ void usage(void)
 {
     //usage
     printf("\nKNOCKNOCK USAGE:\n");
-    printf(" -h or -help  display this usage info\n");
-    printf(" -whosthere   perform command line scan\n");
-    printf(" -version     display current version of\n");
-    printf(" -verbose     display detailed output\n");
-    printf(" -pretty      final output is 'pretty-printed'\n");
-    printf(" -apple       include apple/system items\n");
-    printf(" -skipVT      do not query VirusTotal with item hashes\n\n");
+    printf(" -h or -help        display this usage info\n");
+    printf(" -whosthere         perform command line scan\n");
+    printf(" -version           display current version of\n");
+    printf(" -verbose           display detailed output\n");
+    printf(" -pretty            final output is 'pretty-printed'\n");
+    printf(" -apple             include Apple/System items\n");
+    printf(" -key <API key>     your VirusTotal API key\n");
+    printf(" -skipVT            do not query VirusTotal with item hashes\n\n");
     
     return;
 }
 
 //perform a cmdline scan
-void cmdlineScan(void)
+void cmdlineScan(NSArray* args)
 {
     //virus total obj
     VirusTotal* virusTotal = nil;
@@ -131,6 +170,9 @@ void cmdlineScan(void)
     //flag
     BOOL prettyPrint = NO;
     
+    //flag
+    BOOL queryVT = NO;
+    
     //output
     NSMutableString* output = nil;
     
@@ -143,9 +185,6 @@ void cmdlineScan(void)
     //init filter object
     itemFilter = [[Filter alloc] init];
     
-    //init virus total object
-    virusTotal = [[VirusTotal alloc] init];
-   
     //alloc shared item enumerator
     sharedItemEnumerator = [[ItemEnumerator alloc] init];
     
@@ -156,20 +195,29 @@ void cmdlineScan(void)
     if(YES == isVerbose)
     {
         //msg
-        printf("starting scan...\n");
+        printf("Starting KnockKnock scan...\n");
     }
-    
+
     //set flag
     // include apple items?
-    includeApple = [NSProcessInfo.processInfo.arguments containsObject:@"-apple"];
+    includeApple = [args containsObject:@"-apple"];
     
     //set flag
     // skip virus total?
-    skipVirusTotal = [NSProcessInfo.processInfo.arguments containsObject:@"-skipVT"];
+    skipVirusTotal = [args containsObject:@"-skipVT"];
     
     //set flag
     // pretty print json?
-    prettyPrint = [NSProcessInfo.processInfo.arguments containsObject:@"-pretty"];
+    prettyPrint = [args containsObject:@"-pretty"];
+    
+    //skip VT scanning if
+    // user disabled queries, or no API key
+    queryVT = (vtAPIKey.length) && !skipVirusTotal;
+    if(queryVT)
+    {
+        //init virus total object
+        virusTotal = [[VirusTotal alloc] init];
+    }
     
     //init output string
     output = [NSMutableString string];
@@ -215,20 +263,19 @@ void cmdlineScan(void)
             printf(" found %lu %s\n", (unsigned long)plugin.allItems.count, plugin.name.UTF8String);
         }
         
-        //query VT
-        // unless no items or user explicity says otherwise
-        if( (YES != skipVirusTotal) &&
-            (0 != plugin.allItems.count) )
+        //query VT?
+        if(queryVT)
         {
             //dbg msg
             if(YES == isVerbose)
             {
                 //msg
-                printf(" scanning via Virus Total\n");
+                printf(" querying VirusTotal...\n");
             }
             
-            //TODO: need API key
-            // and then scan
+            //check all plugin's files
+            [virusTotal checkFiles:plugin apiKey:vtAPIKey uiMode:NO completion:NULL];
+            
         }
         
         //append plugin name to output
@@ -281,8 +328,8 @@ void cmdlineScan(void)
         int seconds = (int)(timeInterval - (minutes * 60));
         
         //msg
-        printf("\nscan completed in %02d minutes, %02d seconds\n\n", minutes, seconds);
-        printf("RESULTS:\n %lu persistent items\n %lu flagged items\n\n", (unsigned long)items, (unsigned long)flaggedItems);
+        printf("\nScan completed in %02d minutes, %02d seconds\n\n", minutes, seconds);
+        printf("RESULTS:\n %lu persistent items\n %lu (VT) flagged items\n\n", (unsigned long)items, (unsigned long)flaggedItems);
     }
     
     //pretty print?

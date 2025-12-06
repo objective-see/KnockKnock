@@ -16,9 +16,10 @@
 
 /* METHODS */
 
--(void)checkFiles:(PluginBase*)plugin;
+//check (all plugin's) files
+-(void)checkFiles:(PluginBase*)plugin apiKey:(NSString*)apiKey uiMode:(BOOL)uiMode completion:(void(^)(void))completion;
 
-- (void)submitFile:(NSString *)filePath completion:(void (^)(NSDictionary *result))completion;
-
+//submit a file for scanning
+-(void)submitFile:(NSString *)filePath completion:(void (^)(NSDictionary *result))completion;
 
 @end

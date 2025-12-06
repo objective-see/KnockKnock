@@ -20,12 +20,16 @@ extern BOOL cmdlineMode;
 
 @implementation VirusTotal
 
+
 //ask VT about all files for a given plugin
-// note: skips Apple binaries
--(void)checkFiles:(PluginBase*)plugin {
+// note: always skips Apple binaries, as these won't be malware, and API keys usually rate limited
+-(void)checkFiles:(PluginBase*)plugin apiKey:(NSString*)apiKey uiMode:(BOOL)uiMode completion:(void(^)(void))completion {
     
-    //load key
-    NSString* vtAPIKey = loadAPIKeyFromKeychain();
+    //sanity check
+    if(!plugin.allItems.count) {
+        if(completion) completion();
+        return;
+    }
     
     //all items in the plugin
     for(ItemBase* item in plugin.allItems) {
@@ -49,81 +53,83 @@ extern BOOL cmdlineMode;
             continue;
         }
         
+        //semaphore for synchronous request
+        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+        
         //build the API URL
         NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.virustotal.com/api/v3/files/%@", sha1]];
         
         //create the request
         NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
         [request setHTTPMethod:@"GET"];
-        [request setValue:vtAPIKey forHTTPHeaderField:@"x-apikey"];
+        [request setValue:apiKey forHTTPHeaderField:@"x-apikey"];
         
         //kick off request
         NSURLSessionDataTask* task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             
             if (error) {
-                NSLog(@"VirusTotal error: %@", error.localizedDescription);
+                NSLog(@"VirusTotal ERROR: %@", error.localizedDescription);
+                
+                //signal
+                dispatch_semaphore_signal(sema);
                 return;
             }
             
             //grab HTTP status
             NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse *)response;
             
-            //401 is API key issue :|
+            //401 is API key issue
             if (httpResponse.statusCode == 401) {
                 
-                //dbg msg
-                NSLog(@"VT ERROR: API key %@ is not valid", vtAPIKey);
-                
-                //show alert
-                // just once though
-                static dispatch_once_t onceToken;
-                dispatch_once(&onceToken, ^{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        
-                        //alert
-                        NSAlert* alert = nil;
-                        
-                        //alloc/init alert
-                        alert = [NSAlert alertWithMessageText:@"ERROR: VirusTotal Responded with HTTP 401"
-                                                 defaultButton:@"OK"
-                                               alternateButton:nil
-                                                   otherButton:nil
-                                    informativeTextWithFormat:@"%@", [NSString stringWithFormat:@"API key: '%@', likely invalid.", vtAPIKey]];
-                        
-                        //show it
-                        [alert runModal];
+                NSLog(@"VirusTotal ERROR: API key %@ is not valid", apiKey);
+
+                if(uiMode) {
+                    static dispatch_once_t onceToken;
+                    dispatch_once(&onceToken, ^{
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            NSAlert* alert = [NSAlert alertWithMessageText:@"ERROR: VirusTotal Responded with HTTP 401"
+                                                    defaultButton:@"OK"
+                                                  alternateButton:nil
+                                                      otherButton:nil
+                                        informativeTextWithFormat:@"%@", [NSString stringWithFormat:@"API key: '%@', likely invalid.", apiKey]];
+                            [alert runModal];
+                        });
                     });
-                });
+                }
                 
+                //signal
+                dispatch_semaphore_signal(sema);
                 return;
             }
             
-            //404 is (unknown) file not found
+            //404 is file not found
             if (httpResponse.statusCode == 404) {
                 
-                //dbg msg
                 NSLog(@"%@ is unknown to VirusTotal (hash: %@)", file.name, sha1);
                 
-                //add to unknown items
                 @synchronized(item.plugin.unknownItems) {
                     [item.plugin.unknownItems addObject:item];
                 }
                 
-                //save
-                // blank to indicate not found
                 file.vtInfo = @{};
                 
-                //notify UI on main thread
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [((AppDelegate*)NSApplication.sharedApplication.delegate) itemProcessed:file];
-                });
+                if(uiMode) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [((AppDelegate*)NSApplication.sharedApplication.delegate) itemProcessed:file];
+                    });
+                }
                 
+                //signal
+                dispatch_semaphore_signal(sema);
                 return;
             }
             
             //all other error(s)
             if (httpResponse.statusCode != 200) {
                 NSLog(@"VirusTotal HTTP error: %ld", (long)httpResponse.statusCode);
+                
+                //signal
+                dispatch_semaphore_signal(sema);
                 return;
             }
             
@@ -132,13 +138,15 @@ extern BOOL cmdlineMode;
             NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
             if (jsonError) {
                 NSLog(@"VirusTotal JSON error: %@", jsonError.localizedDescription);
+                
+                //signal
+                dispatch_semaphore_signal(sema);
                 return;
             }
             
             //extract
             NSDictionary* attributes = json[@"data"][@"attributes"];
             NSDictionary* stats = attributes[@"last_analysis_stats"];
-            
             NSString* itemID = json[@"data"][@"id"];
             
             NSInteger malicious = [stats[@"malicious"] integerValue];
@@ -146,15 +154,11 @@ extern BOOL cmdlineMode;
             NSInteger undetected = [stats[@"undetected"] integerValue];
             NSInteger harmless = [stats[@"harmless"] integerValue];
             
-            //(browser) report
             NSString* link = [NSString stringWithFormat:@"https://www.virustotal.com/gui/file/%@", itemID];
-            
-            //calculate total
-            //TODO: double check this
             NSInteger total = malicious + suspicious + undetected + harmless;
             
-            //create result dictionary
-            NSDictionary *result = @{
+            //save results
+            file.vtInfo = @{
                 VT_RESULTS_POSITIVES : @(malicious),
                 @"suspicious": @(suspicious),
                 @"undetected": @(undetected),
@@ -164,29 +168,34 @@ extern BOOL cmdlineMode;
                 VT_RESULTS_URL: link
             };
             
-            //save
-            file.vtInfo = result;
-            
-            //dbg msg
-            NSLog(@"File: %@ - Detection ratio: %ld/%ld", file.name, (long)malicious, (long)total);
-            
             //malicious?
-            // add to flagged items
             if (malicious > 0) {
                 @synchronized(item.plugin.flaggedItems) {
                     [item.plugin.flaggedItems addObject:item];
                 }
             }
             
-            //notify UI on main thread
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [((AppDelegate*)NSApplication.sharedApplication.delegate) itemProcessed:file];
-            });
+            //notify UI
+            if(uiMode) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [((AppDelegate*)NSApplication.sharedApplication.delegate) itemProcessed:file];
+                });
+            }
+            
+            //signal
+            dispatch_semaphore_signal(sema);
         }];
         
-        //query
         [task resume];
+        
+        //wait for this request to finish
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     }
+    
+    //all files done
+    if(completion) completion();
+    
+    return;
 }
 
 //submit a file to VT

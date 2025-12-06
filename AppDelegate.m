@@ -17,7 +17,6 @@
 
 @synthesize friends;
 @synthesize plugins;
-@synthesize vtThreads;
 @synthesize scanButton;
 @synthesize isConnected;
 @synthesize scannerThread;
@@ -122,9 +121,6 @@ void uncaughtExceptionHandler(NSException* exception) {
     
     //init virus total object
     virusTotalObj = [[VirusTotal alloc] init];
-    
-    //init array for virus total threads
-    vtThreads = [NSMutableArray array];
     
     //alloc shared item enumerator
     sharedItemEnumerator = [[ItemEnumerator alloc] init];
@@ -449,11 +445,21 @@ void uncaughtExceptionHandler(NSException* exception) {
 // ->runs in the background to execute each plugin
 -(void)scan
 {
-    //flag indicating an active VT thread
-    BOOL activeThread = NO;
+    //query VT?
+    BOOL queryVT = NO;
     
     //set scan flag
     self.isConnected = isNetworkConnected();
+    
+    //load VT API key
+    NSString* vtAPIKey = loadAPIKeyFromKeychain();
+    
+    //skip VT scanning if
+    // not connected, user disabled queries, or no API key
+    queryVT = (vtAPIKey.length) && self.isConnected && (!self.prefsWindowController.disableVTQueries);
+    
+    //create dispatch group for VT queries
+    dispatch_group_t vtGroup = dispatch_group_create();
     
     //iterate over all plugins
     // ->invoke's each scan message
@@ -490,26 +496,32 @@ void uncaughtExceptionHandler(NSException* exception) {
         //scan
         // will invoke callback as items are found
         [plugin scan];
-
-        //when 'disable VT' prefs not selected and network is reachable
-        // ->kick of thread to perform VT query in background
-        if( (YES != self.prefsWindowController.disableVTQueries) &&
-            (YES == self.isConnected) )
-        {
-            //do query
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [self->virusTotalObj checkFiles:plugin];
-            });
             
+        //should query VT?
+        // if so, do it in background
+        if(queryVT)
+        {
+            //enter group
+            dispatch_group_enter(vtGroup);
+            
+            //VT query in BG
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                
+                //check all plugin's files
+                [self->virusTotalObj checkFiles:plugin apiKey:vtAPIKey uiMode:YES completion:^{
+                    //done
+                    dispatch_group_leave(vtGroup);
+                }];
+                
+                
+            });
         }
             
         }//pool
     }
     
-    //if VT querying is enabled (default) and network is available
-    // ->wait till all VT threads are done
-    if( (YES != self.prefsWindowController.disableVTQueries) &&
-        (YES == self.isConnected) )
+    //wait till all VT threads are done
+    if(queryVT)
     {
         //update scanner msg
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -521,53 +533,10 @@ void uncaughtExceptionHandler(NSException* exception) {
         
         //nap
         // ->VT threads take some time to spawn/process
-        [NSThread sleepForTimeInterval:3.0f];
+        [NSThread sleepForTimeInterval:1.0f];
         
-        //wait for all VT threads to exit
-        while(YES)
-        {
-            //reset flag
-            activeThread = NO;
-            
-            //sync
-            @synchronized(self.vtThreads)
-            {
-                //check all threads
-                for(NSThread* vtThread in self.vtThreads)
-                {
-                    //check if still running
-                    // ->set flag & break out of loop
-                    if(YES == [vtThread isExecuting])
-                    {
-                        //set flag
-                        activeThread = YES;
-                        
-                        //bail
-                        break;
-                    }
-                }
-                
-            }//sync
-            
-            //check flag
-            if(YES != activeThread)
-            {
-                //finally no active threads
-                // ->bail
-                break;
-            }
-            
-            //exit if scanner (self) thread was cancelled
-            if(YES == [[NSThread currentThread] isCancelled])
-            {
-                //exit
-                [NSThread exit];
-            }
-            
-            //nap
-            [NSThread sleepForTimeInterval:0.5];
-            
-        }//active thread
+        //wait for all VT queries to complete
+        dispatch_group_wait(vtGroup, DISPATCH_TIME_FOREVER);
         
     }//VT scanning enabled
     
@@ -588,7 +557,7 @@ void uncaughtExceptionHandler(NSException* exception) {
             
         });
         
-    }//scan not stopped by user
+    }
     
     return;
 }
@@ -751,7 +720,6 @@ void uncaughtExceptionHandler(NSException* exception) {
 }
 
 //callback when user has updated prefs
-// ->reload table, etc
 -(void)applyPreferences
 {
     //currently selected category
@@ -769,26 +737,6 @@ void uncaughtExceptionHandler(NSException* exception) {
     
     //reload item table
     [self.itemTableController.itemTableView reloadData];
-    
-    //(re)check network connectivity
-    // ->set iVar
-    self.isConnected = isNetworkConnected();
-    
-    //if VT query was never done (e.g. scan was started w/ pref disabled) and network is available
-    // ->kick off VT queries now
-    if( (0 == self.vtThreads.count) &&
-        (YES != self.prefsWindowController.disableVTQueries) &&
-        (YES == self.isConnected) )
-    {
-        //iterate over all plugins
-        // ->do VT query for each
-        for(PluginBase* plugin in self.plugins)
-        {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [self->virusTotalObj checkFiles:plugin];
-            });
-        }
-    }
     
     return;
 }
@@ -862,24 +810,6 @@ void uncaughtExceptionHandler(NSException* exception) {
         //cancel
         [sharedItemEnumerator.enumeratorThread cancel];
     }
-    
-    //sync to cancel all VT threads
-    @synchronized(self.vtThreads)
-    {
-        //tell all VT threads to bail
-        for(NSThread* vtThread in self.vtThreads)
-        {
-            //cancel running threads
-            if(YES == [vtThread isExecuting])
-            {
-                //cancel
-                [vtThread cancel];
-            }
-        }
-    }
-    
-    //remove all VT threads
-    [self.vtThreads removeAllObjects];
     
     //when invoked from the UI (e.g. 'Stop Scan' was clicked)
     // ->cancel scanner thread

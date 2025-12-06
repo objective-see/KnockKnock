@@ -102,11 +102,8 @@ extern Filter* itemFilter;
 //non-UI thread that performs actual scan
 @property(nonatomic, strong)NSThread *scannerThread;
 
-//virus total object
+//VT object
 @property(nonatomic, retain)VirusTotal* virusTotalObj;
-
-//array for all virus total threads
-@property(nonatomic, retain)NSMutableArray* vtThreads;
 
 //differences window controller
 @property (strong) DiffWindowController* diffWindowController;
