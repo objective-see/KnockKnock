@@ -26,7 +26,7 @@ extern os_log_t logHandle;
 #define SUPPORT_NO 5
 #define SUPPORT_YES 6
 
-@implementation WelcomeWindowController
+@implementation WelcomeWindowController 
 
 @synthesize welcomeViewController;
 
@@ -186,6 +186,9 @@ extern os_log_t logHandle;
             //show
             [self showView:self.vtIntegrationView firstResponder:self.vtAPIKey];
             
+            //set delegate
+            self.vtAPIKey.delegate = self;
+            
             //make url a hyperlink
             makeTextViewHyperlink(self.getAPILink, [NSURL URLWithString:@"https://docs.virustotal.com/docs/please-give-me-an-api-key"]);
             
@@ -261,6 +264,20 @@ extern os_log_t logHandle;
     return;
 }
 
+//delegate for VT API key input
+- (void)controlTextDidEndEditing:(NSNotification *)notification {
+    
+    NSTextField *textField = notification.object;
+    
+    //only for API key field
+    if (textField == self.vtAPIKey) {
+        
+        //move focus to the support button
+        [self.window makeFirstResponder:[self.vtIntegrationView viewWithTag:SHOW_SUPPORT]];
+    }
+    
+    return;
+}
 
 //open system settings to FDA
 -(IBAction)openSystemSettings:(id)sender {

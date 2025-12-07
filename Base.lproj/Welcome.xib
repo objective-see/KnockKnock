@@ -394,6 +394,15 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     </view>
                     <color key="fillColor" red="0.57793885469999995" green="0.75859862570000003" blue="0.2368842065" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </box>
+                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" alphaValue="0.59999999999999998" id="SzT-r7-Ma4">
+                    <rect key="frame" x="299" y="139" width="233" height="29"/>
+                    <autoresizingMask key="autoresizingMask"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="Mahalo to the &quot;Friends Objective-See&quot;" id="7pD-BH-c8i">
+                        <font key="font" size="15" name="AvenirNextCondensed-Regular"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" alphaValue="0.90000000000000002" id="AM3-9J-hwR">
                     <rect key="frame" x="258" y="60" width="138" height="31"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -413,11 +422,6 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     <rect key="frame" x="724" y="62" width="73" height="25"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="FriendsiVerify" id="Qy2-wU-bbf"/>
-                </imageView>
-                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" alphaValue="0.80000000000000004" id="7sb-Zs-q5d">
-                    <rect key="frame" x="234" y="95" width="102" height="37"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="FriendsKandji" id="W0a-k0-8a1"/>
                 </imageView>
                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" alphaValue="0.90000000000000002" id="CsL-Yj-dhy">
                     <rect key="frame" x="362" y="106" width="89" height="31"/>
@@ -453,19 +457,15 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="FriendsSophos" id="ZqJ-o4-Joj"/>
                 </imageView>
                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" alphaValue="0.90000000000000002" id="fcd-Wp-myp">
-                    <rect key="frame" x="476" y="101" width="126" height="29"/>
+                    <rect key="frame" x="478" y="102" width="126" height="29"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="FriendsPANW" id="Dio-uY-kZm"/>
                 </imageView>
-                <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" alphaValue="0.59999999999999998" id="SzT-r7-Ma4">
-                    <rect key="frame" x="299" y="139" width="233" height="29"/>
-                    <autoresizingMask key="autoresizingMask"/>
-                    <textFieldCell key="cell" lineBreakMode="clipping" alignment="center" title="Mahalo to the &quot;Friends Objective-See&quot;" id="7pD-BH-c8i">
-                        <font key="font" size="15" name="AvenirNextCondensed-Regular"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" alphaValue="0.80000000000000004" id="7sb-Zs-q5d">
+                    <rect key="frame" x="263" y="106" width="67" height="29"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="FriendsKandji" id="W0a-k0-8a1"/>
+                </imageView>
             </subviews>
             <point key="canvasLocation" x="685" y="1355"/>
         </customView>
@@ -583,13 +583,13 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
     <resources>
         <image name="FriendsFleet" width="236" height="96"/>
         <image name="FriendsHuntress" width="800" height="198"/>
-        <image name="FriendsJamf" width="328" height="114"/>
-        <image name="FriendsKandji" width="1944" height="494"/>
-        <image name="FriendsMacPaw" width="2034" height="335"/>
-        <image name="FriendsMalwarebytes" width="2500" height="403"/>
+        <image name="FriendsJamf" width="162" height="56"/>
+        <image name="FriendsKandji" width="200" height="74"/>
+        <image name="FriendsMacPaw" width="1541" height="181"/>
+        <image name="FriendsMalwarebytes" width="1888" height="301"/>
         <image name="FriendsPANW" width="1312" height="240"/>
-        <image name="FriendsSophos" width="518" height="137"/>
-        <image name="FriendsiVerify" width="500" height="180"/>
+        <image name="FriendsSophos" width="1201" height="131"/>
+        <image name="FriendsiVerify" width="736" height="268"/>
         <image name="Heart" width="256" height="256"/>
         <image name="SystemPrefs" width="1445" height="543"/>
         <image name="kkIcon" width="512" height="512"/>

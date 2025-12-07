@@ -636,8 +636,6 @@
 		CDA81E621AA020E8009790E2 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				CD5A5F782EB95C0000F5068F /* Welcome.xib */,
-				CD49EEA62D2A1301007439CD /* UnknownItems.xib */,
 				CD6FD7BD2C7AB291001C59F2 /* AboutWindow.xib */,
 				CD19A7EC2CA4236B00F17FF3 /* DiffWindow.xib */,
 				CD6FD7C92C7AB29F001C59F2 /* ExtensionInfoWindow.xib */,
@@ -645,8 +643,10 @@
 				CD6FD7B52C7AB288001C59F2 /* PlistWindow.xib */,
 				CD6FD7C12C7AB294001C59F2 /* PrefsWindow.xib */,
 				CD6FD7B92C7AB28D001C59F2 /* ResultsWindow.xib */,
+				CD49EEA62D2A1301007439CD /* UnknownItems.xib */,
 				CD6FD7B12C7AB284001C59F2 /* UpdateWindow.xib */,
 				CD6FD7C52C7AB299001C59F2 /* VTInfoWindow.xib */,
+				CD5A5F782EB95C0000F5068F /* Welcome.xib */,
 			);
 			name = UI;
 			sourceTree = "<group>";

@@ -87,9 +87,10 @@ void uncaughtExceptionHandler(NSException* exception) {
     //defaults
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
+    //TODO:
     //first time run?
     // show welcome/configuration screens
-    if(![defaults boolForKey:NOT_FIRST_TIME])
+    if([defaults boolForKey:NOT_FIRST_TIME])
     {
         //set key
         [defaults setBool:YES forKey:NOT_FIRST_TIME];

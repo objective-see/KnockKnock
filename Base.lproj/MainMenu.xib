@@ -18,7 +18,7 @@
                 <menuItem title="KnockKnock" id="56">
                     <menu key="submenu" title="KnockKnock" systemMenu="apple" id="57">
                         <items>
-                            <menuItem title="About" id="134">
+                            <menuItem title="About KnockKnock" id="134">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="about:" target="494" id="1Av-a0-4RW"/>

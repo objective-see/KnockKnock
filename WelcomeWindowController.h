@@ -9,7 +9,7 @@
 @import Cocoa;
 @import OSLog;
 
-@interface WelcomeWindowController : NSWindowController
+@interface WelcomeWindowController : NSWindowController <NSTextFieldDelegate>
 
 /* PROPERTIES */
 

@@ -236,18 +236,18 @@
       }
     },
     "134.title" : {
-      "comment" : "Class = \"NSMenuItem\"; title = \"About\"; ObjectID = \"134\";",
+      "comment" : "Class = \"NSMenuItem\"; title = \"About KnockKnock\"; ObjectID = \"134\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "About"
+            "value" : "About KnockKnock"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Acerca"
           }
         }
