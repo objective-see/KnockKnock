@@ -82,9 +82,6 @@ extern NSString* scanID;
             continue;
         }
         
-        //TODO: remove
-        if(![file.name isEqualToString:@"orbit"]) continue;
-        
         //semaphore for synchronous request
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
         

@@ -98,4 +98,7 @@ BOOL saveAPIKeyToKeychain(NSString* apiKey);
 //(re)load key from
 NSString* loadAPIKeyFromKeychain(void);
 
+//file protected by SIP?
+BOOL isRestricted(const char *path);
+
 #endif

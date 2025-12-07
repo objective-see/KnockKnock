@@ -1225,3 +1225,9 @@ NSString* loadAPIKeyFromKeychain(void)
     
     return key;
 }
+
+//file protected by SIP?
+BOOL isRestricted(const char *path) {
+    struct stat sb;
+    return (stat(path, &sb) == 0) && (sb.st_flags & SF_RESTRICTED);
+}
