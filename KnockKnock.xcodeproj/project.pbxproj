@@ -448,8 +448,6 @@
 				CD6FD7AB2C7AAD87001C59F2 /* MainMenu.xib */,
 				CD5854D621A60B2000A438B0 /* PlistWindowController.h */,
 				CD5854D721A60B2000A438B0 /* PlistWindowController.m */,
-				CDF08CC71AC4C678009B3423 /* PrefsWindowController.h */,
-				CDF08CC81AC4C678009B3423 /* PrefsWindowController.m */,
 				CD24F076219DF3DB0081B0E5 /* Signing.h */,
 				CD24F075219DF3DA0081B0E5 /* Signing.m */,
 				1D21BC55172AF43D009D1CFD /* Supporting Files */,
@@ -541,13 +539,13 @@
 				CD0219511AD34D9A005148A2 /* AboutWindowController.h */,
 				CD0219521AD34D9A005148A2 /* AboutWindowController.m */,
 				CDA81D751A95B7C1009790E2 /* CategoryTableController.h */,
-				CD5A5F7B2EB95C0C00F5068F /* WelcomeWindowController.h */,
-				CD5A5F7C2EB95C0C00F5068F /* WelcomeWindowController.m */,
 				CDA81D761A95B7C1009790E2 /* CategoryTableController.m */,
 				CDA81DE71A997BF1009790E2 /* InfoWindowController.h */,
 				CDA81DE81A997BF1009790E2 /* InfoWindowController.m */,
 				CDA81D791A95D29B009790E2 /* ItemTableController.h */,
 				CDA81D7A1A95D29B009790E2 /* ItemTableController.m */,
+				CDF08CC71AC4C678009B3423 /* PrefsWindowController.h */,
+				CDF08CC81AC4C678009B3423 /* PrefsWindowController.m */,
 				CD02195F1AD39A83005148A2 /* ResultsWindowController.h */,
 				CD0219601AD39A83005148A2 /* ResultsWindowController.m */,
 				CD792FBA2D2530A800167649 /* UnknownItemsWindowController.h */,
@@ -556,6 +554,8 @@
 				CD2F21A321A8A7E300F67A83 /* UpdateWindowController.m */,
 				CDF08CDC1AC886F2009B3423 /* VTInfoWindowController.h */,
 				CDF08CDD1AC886F2009B3423 /* VTInfoWindowController.m */,
+				CD5A5F7B2EB95C0C00F5068F /* WelcomeWindowController.h */,
+				CD5A5F7C2EB95C0C00F5068F /* WelcomeWindowController.m */,
 			);
 			name = UIControllers;
 			sourceTree = "<group>";

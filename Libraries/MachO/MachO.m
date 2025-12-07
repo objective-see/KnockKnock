@@ -729,7 +729,7 @@ bail:
         //NSLog(@"final calc: %f\n", (1.0 * totalCompressedData)/fileData.length);
         
         //final calculation for architecture
-        if( ((1.0 * totalCompressedData)/fileData.length) > .2)
+        if( ((1.0 * totalCompressedData)/fileData.length) > .25)
         {
             //set
             packed = YES;

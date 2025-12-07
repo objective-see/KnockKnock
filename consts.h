@@ -239,6 +239,9 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //result url
 #define VT_RESULTS_URL @"permalink"
 
+//report was shown
+#define VT_REPORT_VIEWED @"reportViewed"
+
 //result hash
 #define VT_RESULT_HASH @"hash"
 

@@ -151,7 +151,7 @@
         self.analysisURL.hidden = YES;
         
         //set unknown file msg
-        [self.unknownFile setStringValue:[NSString stringWithFormat:NSLocalizedString(@"No results found for '%@'", @"No results found for '%@'"), self.fileObj.name]];
+        [self.unknownFile setStringValue:[NSString stringWithFormat:NSLocalizedString(@"'%@' isn't known to VirusTotal", @"'%@' isn't known to VirusTotal"), self.fileObj.name]];
         
         //show 'unknown file' msg
         self.unknownFile.hidden = NO;
@@ -312,14 +312,13 @@
             else {
                 
                 //err msg
-                NSLog(@"ERROR: %@", result[VT_ERROR]);
+                //NSLog(@"ERROR: %@", result[VT_ERROR]);
                 
                 //show error msg
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
-                    //TODO:
                     //update status msg
-                    [self.statusMsg setStringValue:[NSString stringWithFormat:NSLocalizedString(@"failed to submit '%@' to VirusTotal (HTTP response %ld).", @"failed to submit '%@' to VirusTotal (HTTP response %ld)."), self.fileObj.name, [(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode]]];
+                    [self.statusMsg setStringValue:[NSString stringWithFormat:NSLocalizedString(@"ERROR: %@", @"ERROR: %@"), result[VT_ERROR]]];
                     
                     //stop activity indicator
                     [self.progressIndicator stopAnimation:nil];

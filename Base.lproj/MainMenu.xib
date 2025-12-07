@@ -52,7 +52,7 @@
         <window title="KnockKnock" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="371" userLabel="Main Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="1295" height="671"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="769"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="3440" height="1409"/>
             <value key="minSize" type="size" width="1000" height="597"/>
             <value key="maxSize" type="size" width="2500" height="1000"/>
             <view key="contentView" id="372">
@@ -202,7 +202,7 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <imageView translatesAutoresizingMaskIntoConstraints="NO" id="577">
-                                                            <rect key="frame" x="5" y="-2" width="50" height="61"/>
+                                                            <rect key="frame" x="5" y="-2" width="50" height="60"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="50" id="kB1-L8-KFN"/>
                                                                 <constraint firstAttribute="width" constant="50" id="wxT-p0-paD"/>
@@ -452,14 +452,14 @@
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="kkText" id="r1Z-Hx-M6T"/>
                     </imageView>
                     <progressIndicator hidden="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="839">
-                        <rect key="frame" x="1255" y="10" width="32" height="32"/>
+                        <rect key="frame" x="1255" y="8" width="32" height="32"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="32" id="5xq-yG-SSJ"/>
                             <constraint firstAttribute="height" constant="32" id="aeM-9z-lBy"/>
                         </constraints>
                     </progressIndicator>
                     <textField hidden="YES" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="745">
-                        <rect key="frame" x="1160" y="16" width="75" height="18"/>
+                        <rect key="frame" x="1160" y="13" width="75" height="18"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="18" id="1aa-3i-5H9"/>
                         </constraints>
@@ -672,11 +672,11 @@
                     <constraint firstItem="3Vf-uL-OZX" firstAttribute="leading" secondItem="372" secondAttribute="leading" constant="107" id="YFa-JP-po1"/>
                     <constraint firstAttribute="bottom" secondItem="gmd-EM-xEi" secondAttribute="bottom" constant="1" id="YMB-QL-QqB"/>
                     <constraint firstItem="655" firstAttribute="centerX" secondItem="x7S-Ww-gLm" secondAttribute="centerX" id="bPe-nc-G8S"/>
-                    <constraint firstAttribute="bottom" secondItem="745" secondAttribute="bottom" constant="16" id="c9W-7d-MXn"/>
+                    <constraint firstAttribute="bottom" secondItem="745" secondAttribute="bottom" constant="13" id="c9W-7d-MXn"/>
                     <constraint firstAttribute="bottom" secondItem="rqX-FA-o3e" secondAttribute="bottom" constant="52" id="drt-dw-JrT"/>
                     <constraint firstItem="536" firstAttribute="leading" secondItem="rqX-FA-o3e" secondAttribute="trailing" constant="32" id="gzW-um-0eE"/>
                     <constraint firstItem="5uI-IQ-e40" firstAttribute="leading" secondItem="372" secondAttribute="leading" constant="12" id="hwa-cU-Pnd"/>
-                    <constraint firstAttribute="bottom" secondItem="839" secondAttribute="bottom" constant="10" id="ibd-gt-Ml2"/>
+                    <constraint firstAttribute="bottom" secondItem="839" secondAttribute="bottom" constant="8" id="ibd-gt-Ml2"/>
                     <constraint firstAttribute="trailing" secondItem="KxO-Jf-gyu" secondAttribute="trailing" constant="-8" id="isR-LB-Ezc"/>
                     <constraint firstItem="rqX-FA-o3e" firstAttribute="top" secondItem="372" secondAttribute="top" constant="151" id="j4C-hj-Nqa"/>
                     <constraint firstItem="gmd-EM-xEi" firstAttribute="firstBaseline" secondItem="eJj-oN-VA2" secondAttribute="firstBaseline" constant="-1" id="jRI-Gh-Q9E"/>
@@ -722,7 +722,7 @@
     <resources>
         <image name="Compare" width="128" height="128"/>
         <image name="CompareAlternate" width="128" height="128"/>
-        <image name="NSActionTemplate" width="20" height="20"/>
+        <image name="NSActionTemplate" width="19" height="19"/>
         <image name="NSColorPanel" width="32" height="32"/>
         <image name="Preferences" width="128" height="128"/>
         <image name="PreferencesAlternate" width="128" height="128"/>

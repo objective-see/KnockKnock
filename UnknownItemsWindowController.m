@@ -102,6 +102,10 @@
             //result
             NSDictionary* result = self.results[@(row)];
             
+            //erorr button
+            NSButton* moreInfo =  (NSButton*)[cell viewWithTag:100];
+            moreInfo.hidden = YES;
+            
             //nothing
             if(!result.count) {
                 
@@ -117,6 +121,9 @@
                 cell.textField.stringValue = @"Failed to Submit";
                 cell.textField.toolTip = [NSString stringWithFormat:@"ERROR: %@", result[VT_ERROR]];
                 
+                //show button
+                moreInfo.hidden = NO;
+               
             }
             //ok
             else
@@ -125,21 +132,29 @@
                 cell.textField.toolTip = @"";
                 cell.textField.stringValue = @"Submitted";
                 
+                //already viewed?
+                // no need to show again
+                if(result[VT_REPORT_VIEWED]) {
+                    break;
+                }
+                
                 //got response?
                 // launch browser to show user
                 if(nil != result[VT_RESULTS_URL])
                 {
+                    //update result to note we've shown report
+                    NSMutableDictionary* updatedResults = [result mutableCopy];
+                    updatedResults[VT_REPORT_VIEWED] = @(YES);
+                    
+                    self.results[@(row)] = updatedResults;
+                    
                     //launch browser to show new report
                     dispatch_async(dispatch_get_main_queue(), ^{
                         
                         //launch browser
                         [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:result[VT_RESULTS_URL]]];
-                        
+                
                     });
-                    
-                    //wait to browser is up and happy
-                    [NSThread sleepForTimeInterval:0.5];
-                    
                 }
             }
              
@@ -158,6 +173,47 @@
     }
     
     return cell;
+}
+
+- (IBAction)showErrorInfo:(id)sender
+{
+    
+    //get the row for this button
+    NSInteger row = [self.tableView rowForView:sender];
+    if (row == -1)
+    {
+        return;
+    }
+
+    //get the result for this row
+    NSDictionary* result = self.results[@(row)];
+    if (!result)
+    {
+        return;
+    }
+    
+    //popover
+    NSPopover *popover = [[NSPopover alloc] init];
+        
+    //view controller
+    NSViewController *viewController = [[NSViewController alloc] init];
+    
+    //set view
+    viewController.view = self.errorPopover;
+    
+    //set text
+    self.errorLabel.stringValue = [NSString stringWithFormat:@"ERROR: %@", result[VT_ERROR]];
+    
+    //init
+    popover.contentViewController = viewController;
+    popover.behavior = NSPopoverBehaviorTransient;
+        
+    //show relative to the button
+    [popover showRelativeToRect:[sender bounds]
+                         ofView:sender
+                  preferredEdge:NSRectEdgeMaxY];
+    return;
+    
 }
 
 //automatically invoked when user checks/unchecks checkbox in row
@@ -267,7 +323,7 @@
         }
         
         //set status
-        self.statusLabel.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submitting '%@'", @"Submitting '%@'"), ((File*)item).name];
+        self.statusLabel.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Submitting '%@'...", @"Submitting '%@'..."), ((File*)item).name];
         
         //inc
         submittedItems++;

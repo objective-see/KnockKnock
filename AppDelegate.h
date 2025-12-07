@@ -44,9 +44,6 @@ extern Filter* itemFilter;
 //welcome view controller
 @property(nonatomic, retain)WelcomeWindowController* welcomeWindowController;
 
-//friends
-@property (weak) IBOutlet NSWindow* friends;
-
 //close button
 @property (weak) IBOutlet NSButton* closeButton;
 

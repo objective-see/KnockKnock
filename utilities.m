@@ -1170,12 +1170,12 @@ BOOL hasFDA(void) {
     NSString *tccPath = [@"~/Library/Application Support/com.apple.TCC/TCC.db" stringByExpandingTildeInPath];
     
     //dbg msg
-    NSLog(@"Checking for 'Full Disk Access'");
+    //NSLog(@"Checking for 'Full Disk Access'");
     
     fileIsReadable = [NSFileManager.defaultManager isReadableFileAtPath:tccPath];
     
     //dbg msg
-    NSLog(@"Result: %d", fileIsReadable);
+    //NSLog(@"Result: %d", fileIsReadable);
 
     return fileIsReadable;
 }

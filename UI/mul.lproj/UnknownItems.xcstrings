@@ -19,6 +19,30 @@
         }
       }
     },
+    "061-1p-frg.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"These items aren’t known to VirusTotal. \\nSubmitting them will upload the file to VirusTotal and open the resulting report in your browser.\"; ObjectID = \"061-1p-frg\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "These items aren’t known to VirusTotal. \nSubmitting them will upload the file to VirusTotal and open the resulting report in your browser."
+          }
+        }
+      }
+    },
+    "bDg-MW-e9L.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Error info:\"; ObjectID = \"bDg-MW-e9L\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Error info:"
+          }
+        }
+      }
+    },
     "G1q-Ag-u0M.title" : {
       "comment" : "Class = \"NSButtonCell\"; title = \"View\"; ObjectID = \"G1q-Ag-u0M\";",
       "extractionState" : "stale",

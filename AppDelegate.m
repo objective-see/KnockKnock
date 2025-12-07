@@ -13,9 +13,12 @@
 //TODO: support delete items
 //TODO: search in UI
 
+/* GLOBALS */
+
+NSString* scanID = nil;
+
 @implementation AppDelegate
 
-@synthesize friends;
 @synthesize plugins;
 @synthesize scanButton;
 @synthesize isConnected;
@@ -34,6 +37,7 @@
 @synthesize categoryTableController;
 @synthesize resultsWindowController;
 @synthesize welcomeWindowController;
+
 
 //exception handler
 // show alert and log error
@@ -124,13 +128,11 @@ void uncaughtExceptionHandler(NSException* exception) {
     //alloc shared item enumerator
     sharedItemEnumerator = [[ItemEnumerator alloc] init];
     
-    //request access
+    //check/request for FDA
     // delay, so UI completes rendering
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC), dispatch_get_main_queue(), ^{
-            
-            //request access
-            [self requestFDA];
-            
+        //request access
+        [self requestFDA];
     });
         
     //check for update
@@ -197,35 +199,6 @@ void uncaughtExceptionHandler(NSException* exception) {
     
     return;
     
-}
-
-//close 'friends' window
--(IBAction)closeFriendsWindow:(id)sender
-{
-    //close to hide
-    [self.friends close];
-
-    return;
-}
-
-//window close handler
--(void)windowWillClose:(NSNotification *)notification {
-    
-    //closing friends window?
-    // request full disk access
-    if(self.friends == notification.object)
-    {
-        //request access
-        // delay ensures (friends) window will close
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (100 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
-            
-            //request access
-            [self requestFDA];
-            
-        });
-    }
-    
-    return;
 }
 
 //automatically close when user closes last window
@@ -419,6 +392,9 @@ void uncaughtExceptionHandler(NSException* exception) {
 // ->also shared enumerator thread (if needed)
 -(void)startScan
 {
+    //scan ID
+    scanID = [[NSUUID UUID] UUIDString];
+    
     //alloc scanner thread
     scannerThread = [[NSThread alloc] initWithTarget:self selector:@selector(scan) object:nil];
     
@@ -800,6 +776,9 @@ void uncaughtExceptionHandler(NSException* exception) {
 // ->ensures various threads are terminated, etc
 -(void)completeScan
 {
+    //reset scan ID
+    scanID = nil;
+    
     //tell enumerator to stop
     [sharedItemEnumerator stop];
     
@@ -1165,7 +1144,6 @@ void uncaughtExceptionHandler(NSException* exception) {
 }
 
 
-
 //show 'save file' popup
 // ->user clicks ok, save results (JSON) to disk
 -(IBAction)saveResults:(id)sender
@@ -1215,7 +1193,7 @@ void uncaughtExceptionHandler(NSException* exception) {
              else
              {
                 //err msg
-                NSLog(@"ERROR: saving output to %@ failed with %@", [panel URL], error);
+                //NSLog(@"ERROR: saving output to %@ failed with %@", panel.URL, error);
                 
                 //init alert
                 alert = [[NSAlert alloc] init];

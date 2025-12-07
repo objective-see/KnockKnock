@@ -18,21 +18,50 @@
 //cmdline flag
 extern BOOL cmdlineMode;
 
-@implementation VirusTotal
+extern NSString* scanID;
 
+@implementation VirusTotal
 
 //ask VT about all files for a given plugin
 // note: always skips Apple binaries, as these won't be malware, and API keys usually rate limited
--(void)checkFiles:(PluginBase*)plugin apiKey:(NSString*)apiKey uiMode:(BOOL)uiMode completion:(void(^)(void))completion {
+-(void)checkFiles:(PluginBase*)plugin apiKey:(NSString*)apiKey uiMode:(BOOL)uiMode completion:(void(^)(void))completion
+{
+    //grab scan id
+    NSString* currentScanID = scanID;
+    
+    //cmdline verbose mode
+    BOOL isVerbose = NO;
+        
+    //make a snapshot
+    // prevents issues if scan was (re)started
+    NSArray* items = nil;
+    @synchronized(plugin.allItems) {
+        items = [plugin.allItems copy];
+    }
     
     //sanity check
-    if(!plugin.allItems.count) {
+    if(!items.count) {
         if(completion) completion();
         return;
     }
     
+    //for error msg
+    if( (!uiMode) &&
+        ([NSProcessInfo.processInfo.arguments containsObject:@"-verbose"]) )
+    {
+        isVerbose = YES;
+    }
+
     //all items in the plugin
-    for(ItemBase* item in plugin.allItems) {
+    for(ItemBase* item in items) {
+        
+        //check if scan was stopped restarted
+        if( uiMode &&
+            ![currentScanID isEqualToString:scanID])
+        {
+            if(completion) completion();
+            return;
+        }
         
         //skip non-file items
         if(![item isKindOfClass:[File class]]) {
@@ -53,6 +82,9 @@ extern BOOL cmdlineMode;
             continue;
         }
         
+        //TODO: remove
+        if(![file.name isEqualToString:@"orbit"]) continue;
+        
         //semaphore for synchronous request
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
         
@@ -68,7 +100,11 @@ extern BOOL cmdlineMode;
         NSURLSessionDataTask* task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             
             if (error) {
-                NSLog(@"VirusTotal ERROR: %@", error.localizedDescription);
+                
+                //err msg
+                if(isVerbose) {
+                    printf("\nERROR (VirusTotal): %s\n", error.localizedDescription.UTF8String);
+                }
                 
                 //signal
                 dispatch_semaphore_signal(sema);
@@ -81,8 +117,11 @@ extern BOOL cmdlineMode;
             //401 is API key issue
             if (httpResponse.statusCode == 401) {
                 
-                NSLog(@"VirusTotal ERROR: API key %@ is not valid", apiKey);
-
+                //err msg
+                if(isVerbose) {
+                    printf("\nERROR (VirusTotal): API key %s issue (not valid?)\n", apiKey.UTF8String);
+                }
+                
                 if(uiMode) {
                     static dispatch_once_t onceToken;
                     dispatch_once(&onceToken, ^{
@@ -104,8 +143,7 @@ extern BOOL cmdlineMode;
             
             //404 is file not found
             if (httpResponse.statusCode == 404) {
-                
-                NSLog(@"%@ is unknown to VirusTotal (hash: %@)", file.name, sha1);
+                //NSLog(@"%@ is unknown to VirusTotal (hash: %@)", file.name, sha1);
                 
                 @synchronized(item.plugin.unknownItems) {
                     [item.plugin.unknownItems addObject:item];
@@ -126,7 +164,11 @@ extern BOOL cmdlineMode;
             
             //all other error(s)
             if (httpResponse.statusCode != 200) {
-                NSLog(@"VirusTotal HTTP error: %ld", (long)httpResponse.statusCode);
+                
+                //err msg
+                if(isVerbose) {
+                    printf("\nERROR (VirusTotal): HTTP %ld\n", (long)httpResponse.statusCode);
+                }
                 
                 //signal
                 dispatch_semaphore_signal(sema);
@@ -137,7 +179,11 @@ extern BOOL cmdlineMode;
             NSError* jsonError = nil;
             NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
             if (jsonError) {
-                NSLog(@"VirusTotal JSON error: %@", jsonError.localizedDescription);
+                
+                //err msg
+                if(isVerbose) {
+                    printf("\nERROR (VirusTotal): invalid JSON %s\n", jsonError.localizedDescription.UTF8String);
+                }
                 
                 //signal
                 dispatch_semaphore_signal(sema);

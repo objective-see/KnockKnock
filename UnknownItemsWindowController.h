@@ -32,6 +32,13 @@
 //status label
 @property (weak) IBOutlet NSTextField *statusLabel;
 
+//error
+@property (strong) IBOutlet NSView *errorPopover;
+
+//error label
+@property (weak) IBOutlet NSTextField *errorLabel;
+
+
 /* METHODS */
 
 //checkbox button handler
