@@ -102,45 +102,47 @@
             //result
             NSDictionary* result = self.results[@(row)];
             
-            //reset/hide text
-            cell.textField.hidden = YES;
-            cell.textField.stringValue = @"";
-            
-            //hide button
-            button = (NSButton*)[cell viewWithTag:1001];
-            if(button) {
-                button.hidden = YES;
+            //nothing
+            if(!result.count) {
+                
+                //set
+                cell.textField.toolTip = @"";
+                cell.textField.stringValue = @"Not Submitted";
             }
             
-            //display non-200 HTTP OK codes
-            if( (nil != result) &&
-                (200 != (long)[(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode]) )
-            {
+            //error
+            else if(result[VT_ERROR]) {
                 
                 //add
-                cell.textField.stringValue = [NSString stringWithFormat:@"Error: %ld", (long)[(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode]];
+                cell.textField.stringValue = @"Failed to Submit";
+                cell.textField.toolTip = [NSString stringWithFormat:@"ERROR: %@", result[VT_ERROR]];
                 
-                //show
-                cell.textField.hidden = NO;
             }
-            
-            //otherwise
-            // show button w/ link VT report
-            else if(nil != result[@"sha256"])
+            //ok
+            else
             {
-                //hide text
-                cell.textField.hidden = YES;
+                //set
+                cell.textField.toolTip = @"";
+                cell.textField.stringValue = @"Submitted";
                 
-                //get button
-                button = (NSButton*)[cell viewWithTag:1001];
-                if(button) {
+                //got response?
+                // launch browser to show user
+                if(nil != result[VT_RESULTS_URL])
+                {
+                    //launch browser to show new report
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        //launch browser
+                        [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:result[VT_RESULTS_URL]]];
+                        
+                    });
                     
-                    //configure
-                    button.target = self;
-                    button.action = @selector(viewReport:);
-                    button.hidden = NO;
+                    //wait to browser is up and happy
+                    [NSThread sleepForTimeInterval:0.5];
+                    
                 }
             }
+             
             break;
         }
            
@@ -156,26 +158,6 @@
     }
     
     return cell;
-}
-
-//invoked when user clicks 'View'
--(IBAction)viewReport:(NSButton*)sender {
-    
-    //get row
-    NSInteger row = [self.tableView rowForView:sender];
-    if (row != -1) {
-         
-        //get result
-        NSDictionary* result = self.results[@(row)];
-        
-        //build report to URL
-        NSURL* report = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.virustotal.com/gui/file/%@", result[@"sha256"]]];
-        
-        //open (in browser)
-        [[NSWorkspace sharedWorkspace] openURL:report];
-    }
-    
-    return;
 }
 
 //automatically invoked when user checks/unchecks checkbox in row
@@ -299,34 +281,39 @@
             //submit to VT
             [vtObj submitFile:((File*)item).path completion:^(NSDictionary *result) {
                 
-                //if(
                 
-                //save results
-                self.results[@(row)] = result;
-                
-                //dec
-                submittedItems--;
-                
-                //reload
-                [self.tableView reloadData];
-                
-                //done?
-                if(0 == submittedItems) {
+                //stop ui & show informational alert
+                // ->executed on main thread
+                dispatch_async(dispatch_get_main_queue(), ^{
                     
-                    //(re)enable
-                    self.submit.enabled = YES;
+                    //save results
+                    self.results[@(row)] = result;
                     
-                    //stop spinner
-                    [self.activityIndicator stopAnimation:nil];
+                    //dec
+                    submittedItems--;
                     
-                    //set status
-                    self.statusLabel.stringValue = NSLocalizedString(@"Submissions complete!", @"Submissions complete!");
-                }
+                    //reload
+                    [self.tableView reloadData];
+                    
+                    //done?
+                    if(0 == submittedItems) {
+                        
+                        //(re)enable
+                        self.submit.enabled = YES;
+                        
+                        //stop spinner
+                        [self.activityIndicator stopAnimation:nil];
+                        
+                        //set status
+                        self.statusLabel.stringValue = NSLocalizedString(@"Submissions complete!", @"Submissions complete!");
+                    }
+                    
+                });
                 
             }];
             
         });
-                
+
     }
     
     return;

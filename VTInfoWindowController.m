@@ -257,7 +257,8 @@
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [vtObj submitFile:self.fileObj.path completion:^(NSDictionary *result) {
-            // Completion already runs on main thread
+            
+            //completion on main thread
             if(!result[VT_ERROR]) {
                 
                 //NSLog(@"response: %@", result);
@@ -316,6 +317,7 @@
                 //show error msg
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
+                    //TODO:
                     //update status msg
                     [self.statusMsg setStringValue:[NSString stringWithFormat:NSLocalizedString(@"failed to submit '%@' to VirusTotal (HTTP response %ld).", @"failed to submit '%@' to VirusTotal (HTTP response %ld)."), self.fileObj.name, [(NSHTTPURLResponse *)result[VT_HTTP_RESPONSE] statusCode]]];
                     

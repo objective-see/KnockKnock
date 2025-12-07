@@ -57,7 +57,7 @@ extern os_log_t logHandle;
     
     //no FDA?
     // next view should be 'request FDA'
-    if(hasFDA()) {
+    if(!hasFDA()) {
         self.nextButton.tag = REQUEST_FDA;
     }
     //otherwise

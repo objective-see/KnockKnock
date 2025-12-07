@@ -215,7 +215,7 @@ extern BOOL cmdlineMode;
         
     }
     
-    // Check file exists
+    //file exists?
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if (![fileManager fileExistsAtPath:filePath]) {
         NSError *error = [NSError errorWithDomain:@"VirusTotal"
@@ -226,7 +226,7 @@ extern BOOL cmdlineMode;
         return;
     }
     
-    // Check file size (32MB limit for regular endpoint)
+    //file size (32MB limit for regular endpoint)?
     NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:filePath error:nil];
     unsigned long long fileSize = [fileAttributes fileSize];
     const unsigned long long maxSize = 32 * 1024 * 1024; // 32MB
@@ -240,7 +240,7 @@ extern BOOL cmdlineMode;
         return;
     }
     
-    // Read file data
+    //read file data
     NSData *fileData = [NSData dataWithContentsOfFile:filePath];
     if (!fileData) {
         NSError *error = [NSError errorWithDomain:@"VirusTotal"
@@ -251,10 +251,10 @@ extern BOOL cmdlineMode;
         return;
     }
     
-    // Build the API URL
+    //build the API URL
     NSURL *url = [NSURL URLWithString:@"https://www.virustotal.com/api/v3/files"];
     
-    // Create multipart form data
+    //create multipart form data
     NSString *boundary = [[NSUUID UUID] UUIDString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
@@ -262,23 +262,23 @@ extern BOOL cmdlineMode;
     [request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary]
    forHTTPHeaderField:@"Content-Type"];
     
-    // Build the body
+    //build the body
     NSMutableData *body = [NSMutableData data];
     NSString *fileName = [filePath lastPathComponent];
     
-    // Add file parameter
+    //add file parameter
     [body appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
     [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file\"; filename=\"%@\"\r\n", fileName] dataUsingEncoding:NSUTF8StringEncoding]];
     [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
     [body appendData:fileData];
     [body appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
     
-    // End boundary
+    //end boundary
     [body appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
     
     [request setHTTPBody:body];
     
-    // Send the request
+    //send the request
     NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
         if (error) {

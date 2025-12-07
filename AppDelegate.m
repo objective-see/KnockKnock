@@ -85,8 +85,7 @@ void uncaughtExceptionHandler(NSException* exception) {
 
     //first time run?
     // show welcome/configuration screens
-    //TOOD: !=
-    if(YES == [defaults boolForKey:NOT_FIRST_TIME])
+    if(![defaults boolForKey:NOT_FIRST_TIME])
     {
         //set key
         [defaults setBool:YES forKey:NOT_FIRST_TIME];
