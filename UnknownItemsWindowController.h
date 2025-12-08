@@ -7,6 +7,12 @@
 
 #import <Cocoa/Cocoa.h>
 
+#define COL_ENABLED 0x0
+#define COL_RESULT  0x1
+#define COL_PATH    0x2
+
+static const unsigned long long MAX_UPLOAD_SIZE = 32 * 1024 * 1024;
+
 @interface UnknownItemsWindowController : NSWindowController <NSTableViewDataSource, NSTableViewDelegate>
 {
     

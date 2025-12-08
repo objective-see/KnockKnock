@@ -33,7 +33,7 @@
         self.name = params[KEY_RESULT_NAME];
         
         //extract/save path
-        self.path = params[KEY_RESULT_PATH];
+        self.path = [[params[KEY_RESULT_PATH] stringByStandardizingPath] stringByResolvingSymlinksInPath];
         
         //for files/extensions
         // ->get attributes

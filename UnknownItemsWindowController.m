@@ -5,10 +5,6 @@
 //  Created by Patrick Wardle on 1/1/25
 //
 
-#define COL_ENABLED 0x0
-#define COL_RESULT 0x1
-#define COL_PATH 0x2
-
 #import "consts.h"
 #import "utilities.h"
 #import "AppDelegate.h"
@@ -37,9 +33,22 @@
     //init
     results = [NSMutableDictionary dictionary];
     selections = [NSMutableDictionary dictionary];
-    
+
+    //set state
+    self.submit.enabled = ![self allUnchecked];
+
     //make first responder
-    [self.window makeFirstResponder:self.submit];
+    if(self.submit.enabled)
+    {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (100 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
+            [self.window makeFirstResponder:self.submit];
+        });
+    }
+    else
+    {
+        [self.window makeFirstResponder:nil];
+    }
+    
     
     return;
 }
@@ -67,6 +76,9 @@
     //check box
     NSButton* button = nil;
     
+    //flag
+    BOOL tooBig = NO;
+    
     //get existing cell
     cell = [self.tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
     
@@ -75,6 +87,9 @@
     
     //get item for row
     file = self.items[row];
+    
+    //too big?
+    tooBig = ([file.attributes fileSize] >= MAX_UPLOAD_SIZE);
     
     //handle column specific logic
     switch(index)
@@ -86,13 +101,26 @@
             button = (NSButton*)[cell viewWithTag:1001];
             if(button) {
                 
-                //set the state
-                NSNumber* savedState = self.selections[@(row)];
-                button.state = savedState ? savedState.integerValue : NSControlStateValueOn;
+                //too big
+                // uncheck and disable
+                if(tooBig) {
+                    button.state = NSControlStateValueOff;
+                    button.enabled = NO;
+                }
+                
+                else
+                {
+                    //set the state
+                    NSNumber* savedState = self.selections[@(row)];
+                    
+                    button.enabled = YES;
+                    button.state = savedState ? savedState.integerValue : NSControlStateValueOn;
 
-                //add target & action
-                button.target = self;
-                button.action = @selector(toggleTest:);
+                    //add target & action
+                    button.target = self;
+                    button.action = @selector(toggleTest:);
+                }
+                
             }
             
             break;
@@ -106,11 +134,18 @@
             NSButton* moreInfo =  (NSButton*)[cell viewWithTag:100];
             moreInfo.hidden = YES;
             
-            //nothing
-            if(!result.count) {
+            //too big
+            // explain can't submit
+            if(tooBig) {
                 
                 //set
-                cell.textField.toolTip = @"";
+                cell.textField.stringValue = @"File size exceeds API limit";
+            }
+            
+            //nothing
+            else if(!result.count) {
+                
+                //set
                 cell.textField.stringValue = @"Not Submitted";
             }
             
@@ -119,7 +154,6 @@
                 
                 //add
                 cell.textField.stringValue = @"Failed to Submit";
-                cell.textField.toolTip = [NSString stringWithFormat:@"ERROR: %@", result[VT_ERROR]];
                 
                 //show button
                 moreInfo.hidden = NO;
@@ -128,8 +162,6 @@
             //ok
             else
             {
-                //set
-                cell.textField.toolTip = @"";
                 cell.textField.stringValue = @"Submitted";
                 
                 //already viewed?
@@ -177,7 +209,6 @@
 
 - (IBAction)showErrorInfo:(id)sender
 {
-    
     //get the row for this button
     NSInteger row = [self.tableView rowForView:sender];
     if (row == -1)
