@@ -28,7 +28,7 @@
     if(self)
     {
         //load known file hashes
-        self.trustedFiles = [self loadWhitelist:WHITE_LISTED_FILES];
+        self.trustedFiles = [self loadExpandedWhitelist:WHITE_LISTED_FILES];
         
         //load known commands
         self.knownCommands = [self loadWhitelist:WHITE_LISTED_COMMANDS];
@@ -42,7 +42,6 @@
     
     return self;
 }
-
 
 //load a (JSON) white list
 // ->file hashes, known commands, etc
@@ -70,6 +69,78 @@
     whiteList = [NSJSONSerialization JSONObjectWithData:whiteListJSON options:kNilOptions error:&error];
     
     return whiteList;
+}
+
+//load known file hashes (expanded for all users)
+-(NSMutableDictionary*)loadExpandedWhitelist:(NSString*)whitelistFile
+{
+    //load base whitelist from JSON
+    NSDictionary *whitelist = [self loadWhitelist:whitelistFile];
+    
+    //expanded whitelist (with user paths)
+    NSMutableDictionary *expandedWhitelist = [NSMutableDictionary dictionary];
+    
+    //get users
+    NSMutableDictionary *users = [NSMutableDictionary dictionary];
+    
+    //root?
+    // can scan all users
+    if(0 == geteuid())
+    {
+        //all users
+        users = allUsers();
+    }
+    //just current user
+    else
+    {
+        //get current/console user
+        NSString *currentUser = getConsoleUser();
+        
+        //get their home directory
+        NSString *userDirectory = NSHomeDirectoryForUser(currentUser);
+        
+        //save
+        if((0 != currentUser.length) &&
+           (0 != userDirectory.length))
+        {
+            //current
+            users[currentUser] = @{USER_NAME:currentUser, USER_DIRECTORY:userDirectory};
+        }
+    }
+    
+    //expand whitelist entries
+    for(NSString *path in whitelist)
+    {
+        NSArray *hashes = whitelist[path];
+        
+        //starts with tilde?
+        // expand for each user
+        if([path hasPrefix:@"~/"])
+        {
+            //expand for each user
+            for(NSString *userID in users)
+            {
+                NSString *homeDirectory = users[userID][USER_DIRECTORY];
+                
+                //replace ~ with user's home directory
+                NSString *expandedPath = [path stringByReplacingOccurrencesOfString:@"~"
+                                                                         withString:homeDirectory
+                                                                            options:NSAnchoredSearch
+                                                                              range:NSMakeRange(0, 1)];
+                
+                //add to expanded whitelist
+                expandedWhitelist[expandedPath] = hashes;
+            }
+        }
+        //not a tilde path
+        else
+        {
+            //add as-is (e.g., /etc/zprofile)
+            expandedWhitelist[path] = hashes;
+        }
+    }
+    
+    return expandedWhitelist;
 }
 
 

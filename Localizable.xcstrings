@@ -114,6 +114,9 @@
         }
       }
     },
+    "Commands executed at shell launch" : {
+      "comment" : "Commands executed at shell launch"
+    },
     "current user's cron jobs" : {
       "comment" : "current user's cron jobs",
       "localizations" : {

@@ -13,6 +13,7 @@
 #import "utilities.h"
 #import "InfoWindowController.h"
 
+#define CLOSE_BUTTON 100
 
 @implementation InfoWindowController
 
@@ -33,6 +34,9 @@
         //make white
         self.window.backgroundColor = NSColor.whiteColor;
     }
+    
+    //set first responder to button
+    [self.window makeFirstResponder:[self.window.contentView viewWithTag:CLOSE_BUTTON]];
     
     return;
 }
@@ -59,6 +63,7 @@
     
         //save item
         self.windowController.itemObj = selectedItem;
+    
     }
         
     return self;

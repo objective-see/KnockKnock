@@ -457,7 +457,7 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="FriendsSophos" id="ZqJ-o4-Joj"/>
                 </imageView>
                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" alphaValue="0.90000000000000002" id="fcd-Wp-myp">
-                    <rect key="frame" x="478" y="102" width="126" height="29"/>
+                    <rect key="frame" x="479" y="102" width="126" height="29"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="FriendsPANW" id="Dio-uY-kZm"/>
                 </imageView>
@@ -505,7 +505,7 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NOF-lL-dnS">
-                    <rect key="frame" x="38" y="276" width="86" height="20"/>
+                    <rect key="frame" x="38" y="256" width="86" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="API Key:" id="7SG-o8-mRZ">
                         <font key="font" size="17" name="Menlo-Bold"/>
@@ -514,7 +514,7 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Msu-yL-eqA">
-                    <rect key="frame" x="133" y="273" width="503" height="24"/>
+                    <rect key="frame" x="133" y="253" width="503" height="24"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Your VirusTotal API Key" drawsBackground="YES" id="Og2-Lo-pbi">
                         <font key="font" size="13" name="Menlo-Regular"/>
@@ -523,7 +523,7 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ucj-y5-V2I">
-                    <rect key="frame" x="39" y="244" width="447" height="21"/>
+                    <rect key="frame" x="39" y="224" width="447" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" selectable="YES" title="Obtain a key (for free!) here:" id="GXa-el-UVP">
                         <font key="font" size="11" name="Menlo-Regular"/>
@@ -532,7 +532,7 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fi7-v7-obV" customClass="HyperlinkTextField">
-                    <rect key="frame" x="249" y="252" width="389" height="13"/>
+                    <rect key="frame" x="249" y="232" width="389" height="13"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="https://docs.virustotal.com/docs/please-give-me-an-api-key" id="6xX-Qx-lt6">
                         <font key="font" size="11" name="Menlo-Regular"/>
@@ -541,17 +541,19 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="445" translatesAutoresizingMaskIntoConstraints="NO" id="uQb-VS-DuG">
-                    <rect key="frame" x="38" y="334" width="639" height="28"/>
+                    <rect key="frame" x="38" y="305" width="639" height="57"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="7ox-4I-TfC">
                         <font key="font" size="12" name="Menlo-Regular"/>
-                        <string key="title">Check persistent items with VirusTotal’s threat database to identify known malware. You can add an API key now or anytime later in KnockKnock’s Settings.</string>
+                        <string key="title">Check persistent items with VirusTotal’s threat database to identify known malware. You can add an API key now or anytime later in KnockKnock’s Settings.
+
+(Only file hashes are checked with VirusTotal, no files are uploaded automatically).</string>
                         <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GdO-mh-Ufm">
-                    <rect key="frame" x="40" y="183" width="22" height="44"/>
+                    <rect key="frame" x="40" y="163" width="22" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" inset="2" id="5gm-6I-Af8">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -559,7 +561,7 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     </buttonCell>
                 </button>
                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="445" translatesAutoresizingMaskIntoConstraints="NO" id="0O9-FJ-fB9">
-                    <rect key="frame" x="63" y="173" width="647" height="18"/>
+                    <rect key="frame" x="63" y="153" width="647" height="18"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Enable this option to prevent the app from querying VirusTotal for known malware." id="TDp-uQ-UJx">
                         <font key="font" size="12" name="Menlo-Regular"/>
@@ -568,7 +570,7 @@ KnockKnock checks “who’s there” by scanning all persistent software to rev
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W2v-5l-YaL">
-                    <rect key="frame" x="63" y="186" width="399" height="28"/>
+                    <rect key="frame" x="63" y="166" width="399" height="28"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Disable VirusTotal Integration " id="9lZ-zf-ok2">
                         <font key="font" size="17" name="Menlo-Bold"/>

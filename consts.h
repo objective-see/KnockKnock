@@ -13,7 +13,7 @@
 #define NOT_FIRST_TIME @"notFirstTime"
 
 //supported plugins
-static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"BTM", @"CronJobs", @"DirectoryServicesPlugins", @"DockTiles", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"QuicklookPlugins", @"SpotlightImporters", @"StartupScripts", @"SystemExtensions"};
+static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"BrowserExtensions", @"BTM", @"CronJobs", @"DirectoryServicesPlugins", @"DockTiles", @"EventRules", @"Extensions", @"Kexts", @"LaunchItems", @"DylibInserts", @"DylibProxies", @"LoginItems", @"LogInOutHooks", @"PeriodicScripts", @"QuicklookPlugins", @"SpotlightImporters", @"StartupScripts", @"ShellConfigs", @"SystemExtensions"};
 
 //status msg
 #define SCAN_MSG_STARTED @"Scanning Started"
