@@ -33,23 +33,18 @@
     //init
     results = [NSMutableDictionary dictionary];
     selections = [NSMutableDictionary dictionary];
-
-    //set state
-    self.submit.enabled = ![self allUnchecked];
-
-    //make first responder
-    if(self.submit.enabled)
-    {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (100 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
+    
+    //reload table
+    [self.tableView reloadData];
+    
+    //check button state AFTER cells are created
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.submit.enabled = [self anyChecked];
+        if(self.submit.isEnabled) {
             [self.window makeFirstResponder:self.submit];
-        });
-    }
-    else
-    {
-        [self.window makeFirstResponder:nil];
-    }
-    
-    
+        }
+    });
+
     return;
 }
 
@@ -248,7 +243,7 @@
 }
 
 //automatically invoked when user checks/unchecks checkbox in row
-// enable/disable command state, plus handle some other button logic
+// save state and also enable/disable submit button state
 -(IBAction)toggleTest:(NSButton*)sender
 {
     NSInteger row = [self.tableView rowForView:sender];
@@ -256,24 +251,17 @@
         self.selections[@(row)] = @(sender.state);
     }
     
-    //(re)enable submit button
-    if(NSOnState == ((NSButton*)(sender)).state)
-    {
-        self.submit.enabled = YES;
-    }
-    //nothing selected?
-    // disable submit button
-    else
-    {
-        //disable
-        self.submit.enabled = ![self allUnchecked];
+    //set state
+    self.submit.enabled = [self anyChecked];
+    if(self.submit.isEnabled) {
+        [self.window makeFirstResponder:self.submit];
     }
     
     return;
 }
 
-//checks if all items are unchecked
--(BOOL)allUnchecked {
+//any checked?
+-(BOOL)anyChecked {
     
     NSButton* button = nil;
     NSTableCellView* cell = nil;
@@ -284,13 +272,14 @@
         if(cell) {
             button = [cell viewWithTag:1001];
             if (button && (NSOnState == button.state)) {
-                return NO;
+                return YES;
             }
         }
     }
     
-    return YES;
+    return NO;
 }
+
 
 //submit items to VT
 -(IBAction)submit:(id)sender
