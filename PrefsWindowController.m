@@ -14,7 +14,6 @@
 @implementation PrefsWindowController
 
 @synthesize okButton;
-@synthesize saveOutput;
 @synthesize disableVTQueries;
 @synthesize showTrustedItems;
 @synthesize disableUpdateCheck;
@@ -50,40 +49,40 @@
     if(YES == self.showTrustedItems)
     {
         //set
-        self.showTrustedItemsBtn.state = STATE_ENABLED;
+        self.showTrustedItemsBtn.state = NSControlStateValueOn;
     }
     
     //TODO: add start at load
+    
+    //check if 'show trusted items' button should be selected
+    if(YES == self.startAtLogin)
+    {
+        //set
+        self.startAtLoginBtn.state = NSControlStateValueOn;
+    }
     
     //check if 'disable update check' button should be selected
     if(YES == self.disableUpdateCheck)
     {
         //set
-        self.disableUpdateCheckBtn.state = STATE_ENABLED;
+        self.disableUpdateCheckBtn.state = NSControlStateValueOn;
     }
 
     //check if 'disable vt queries' button should be selected
     if(YES == self.disableVTQueries)
     {
         //set
-        self.disableVTQueriesBtn.state = STATE_ENABLED;
-    }
-    
-    //check if 'save output' button should be selected
-    if(YES == self.saveOutput)
-    {
-        //set
-        self.saveOutputBtn.state = STATE_ENABLED;
+        self.disableVTQueriesBtn.state = NSControlStateValueOn;
     }
     
     //VT API key
     if(0 != self.vtAPIKey.length) {
-        
+
+        //set
         self.apiTextField.stringValue = self.vtAPIKey;
     }
     
-    
-    
+
     return;
 }
 
@@ -173,17 +172,17 @@
     //init
     defaults = [NSUserDefaults standardUserDefaults];
         
-    //save hiding OS components flag
+    //grab 'include macOS/known items'
     self.showTrustedItems = self.showTrustedItemsBtn.state;
     
-    //save current state of 'disable update checks'
+    //grab 'start at login' state
+    self.startAtLogin = self.startAtLoginBtn.state;
+    
+    //grab 'disable update checks' state
     self.disableUpdateCheck = self.disableUpdateCheckBtn.state;
     
-    //save disabling VT flag
+    //grab: disable VT state
     self.disableVTQueries = self.disableVTQueriesBtn.state;
-    
-    //save save output flag
-    self.saveOutput = self.saveOutputBtn.state;
     
     //grab API key
     self.vtAPIKey = self.apiTextField.stringValue;

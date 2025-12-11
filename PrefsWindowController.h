@@ -25,17 +25,17 @@
 
 //buttons
 
-//button for filtering out OS componets
+//button: filtering out OS componets
 @property (weak) IBOutlet NSButton* showTrustedItemsBtn;
 
-//button disabling update check
-@property (weak) IBOutlet NSButton *disableUpdateCheckBtn;
+//button: start at login
+@property (weak) IBOutlet NSButton* startAtLoginBtn;
 
-//button for disabling talking to VT
+//button: disable update check
+@property (weak) IBOutlet NSButton* disableUpdateCheckBtn;
+
+//button: disable VT checks (hash)
 @property (weak) IBOutlet NSButton* disableVTQueriesBtn;
-
-//button for saving output
-@property (weak) IBOutlet NSButton* saveOutputBtn;
 
 //button for ok/close
 @property (weak) IBOutlet NSButton *okButton;
@@ -55,13 +55,13 @@
 //disable talking to VT
 @property BOOL disableVTQueries;
 
-//save results (at end of scan)
-@property BOOL saveOutput;
-
+//VT API key
 @property (weak) IBOutlet NSTextField* apiTextField;
 
+//how to get a VT key
 @property (strong) IBOutlet NSView* getAPIHelp;
 
+//link (how to get a VT key)
 @property (weak) IBOutlet HyperlinkTextField* getAPILink;
 
 /* METHODS */

@@ -1,6 +1,18 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "7e0-cR-939.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Start at login (+perform scan).\"; ObjectID = \"7e0-cR-939\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Start at login (+perform scan)."
+          }
+        }
+      }
+    },
     "CMD-Kc-WiI.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"API Key:\"; ObjectID = \"CMD-Kc-WiI\";",
       "extractionState" : "extracted_with_value",

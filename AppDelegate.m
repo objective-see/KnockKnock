@@ -92,13 +92,17 @@ void uncaughtExceptionHandler(NSException* exception) {
     else
     {
         //started via login item?
-        NSAppleEventDescriptor* event = NSAppleEventManager.sharedAppleEventManager.currentAppleEvent;
-        if (event) {
-            NSAppleEventDescriptor* descriptor = [event paramDescriptorForKeyword:keyAELaunchedAsLogInItem];
-            if (descriptor && [descriptor booleanValue]) {
-                startScan = YES;
+        NSAppleEventDescriptor *event =
+                NSAppleEventManager.sharedAppleEventManager.currentAppleEvent;
+            
+            if (event && event.eventID == kAEOpenApplication) {
+                NSAppleEventDescriptor *prop =
+                    [event paramDescriptorForKeyword:keyAEPropData];
+                
+                if (prop && prop.enumCodeValue == keyAELaunchedAsLogInItem) {
+                    startScan = YES;
+                }
             }
-        }
         
         //init
         [self initializeForScan:startScan];

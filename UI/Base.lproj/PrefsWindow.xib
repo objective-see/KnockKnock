@@ -15,6 +15,7 @@
                 <outlet property="getAPILink" destination="Jd6-fc-ZcX" id="8os-j9-kOf"/>
                 <outlet property="okButton" destination="HZZ-Es-mpy" id="GKU-Jc-ENB"/>
                 <outlet property="showTrustedItemsBtn" destination="4xV-kQ-iaT" id="aEg-d4-Orl"/>
+                <outlet property="startAtLoginBtn" destination="CtF-8L-7w6" id="gNH-bY-m8A"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -28,16 +29,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="565" height="310"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button focusRingType="none" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4xV-kQ-iaT">
-                        <rect key="frame" x="20" y="226" width="379" height="48"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Include macOS/known items." bezelStyle="regularSquare" imagePosition="left" focusRingType="none" inset="2" id="WN8-cQ-8xh">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" size="13" name="Menlo-Regular"/>
-                        </buttonCell>
-                    </button>
                     <button focusRingType="none" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dJU-Ok-N6U">
-                        <rect key="frame" x="20" y="181" width="379" height="48"/>
+                        <rect key="frame" x="20" y="174" width="379" height="24"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Disable automatic update check." bezelStyle="regularSquare" imagePosition="left" focusRingType="none" inset="2" id="idJ-pd-k6U">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -110,6 +103,22 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <button focusRingType="none" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4xV-kQ-iaT">
+                        <rect key="frame" x="20" y="235" width="379" height="24"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Include macOS/known items." bezelStyle="regularSquare" imagePosition="left" focusRingType="none" inset="2" id="WN8-cQ-8xh">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" size="13" name="Menlo-Regular"/>
+                        </buttonCell>
+                    </button>
+                    <button focusRingType="none" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CtF-8L-7w6">
+                        <rect key="frame" x="20" y="204" width="379" height="24"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Start at login (+perform scan)." bezelStyle="regularSquare" imagePosition="left" focusRingType="none" inset="2" id="7e0-cR-939">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" size="13" name="Menlo-Regular"/>
+                        </buttonCell>
+                    </button>
                 </subviews>
             </view>
             <connections>
