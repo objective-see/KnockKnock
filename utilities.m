@@ -1231,3 +1231,103 @@ BOOL isRestricted(const char *path) {
     struct stat sb;
     return (stat(path, &sb) == 0) && (sb.st_flags & SF_RESTRICTED);
 }
+
+
+//for login item enable/disable
+// we use the launch services APIs, since replacements don't always work :(
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+//toggle login item
+// either add (install) or remove (uninstall)
+void toggleLoginItem(NSURL* loginItem, NSControlStateValue state)
+{
+    //login item ref
+    LSSharedFileListRef loginItemsRef = NULL;
+    
+    //login items
+    CFArrayRef loginItems = NULL;
+    
+    //current login item
+    CFURLRef currentLoginItem = NULL;
+    
+    //get reference to login items
+    loginItemsRef = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+    if(!loginItemsRef) {
+        goto bail;
+    }
+    
+    //add (install)
+    if(NSControlStateValueOn == state)
+    {
+        //add
+        LSSharedFileListItemRef itemRef = LSSharedFileListInsertItemURL(loginItemsRef, kLSSharedFileListItemLast, NULL, NULL, (__bridge CFURLRef)(loginItem), NULL, NULL);
+        
+        //release item ref
+        if(NULL != itemRef)
+        {
+            //release
+            CFRelease(itemRef);
+            itemRef = NULL;
+        }
+    }
+    //remove (uninstall)
+    else
+    {
+        //grab existing login items
+        loginItems = LSSharedFileListCopySnapshot(loginItemsRef, nil);
+        
+        //iterate over all login items
+        // look for self, then remove it
+        for(id item in (__bridge NSArray *)loginItems)
+        {
+            //get current login item
+            currentLoginItem = LSSharedFileListItemCopyResolvedURL((__bridge LSSharedFileListItemRef)item, 0, NULL);
+            if(NULL == currentLoginItem)
+            {
+                //skip
+                continue;
+            }
+            
+            //current login item match self?
+            if(YES == [(__bridge NSURL *)currentLoginItem isEqual:loginItem])
+            {
+                //remove
+                LSSharedFileListItemRemove(loginItemsRef, (__bridge LSSharedFileListItemRef)item);
+                
+                //done
+                goto bail;
+            }
+            
+            //release
+            CFRelease(currentLoginItem);
+            currentLoginItem = NULL;
+            
+        }//all login items
+        
+    }//remove/uninstall
+    
+bail:
+    
+    //release login items
+    if(NULL != loginItems) {
+        CFRelease(loginItems);
+        loginItems = NULL;
+    }
+    
+    //release login ref
+    if(NULL != loginItemsRef) {
+        CFRelease(loginItemsRef);
+        loginItemsRef = NULL;
+    }
+    
+    //release url
+    if(NULL != currentLoginItem) {
+        CFRelease(currentLoginItem);
+        currentLoginItem = NULL;
+    }
+    
+    return;
+}
+
+#pragma clang diagnostic pop

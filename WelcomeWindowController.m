@@ -95,9 +95,16 @@ extern os_log_t logHandle;
         //save 'show trusted items'
         [defaults setBool:self.showAppleItems.state forKey:PREF_SHOW_TRUSTED_ITEMS];
         
-        //save 'show trusted items'
-        [defaults setBool:self.disableUpdateCheck.state forKey:PREF_DISABLE_UPDATE_CHECK];
+        //start at login?
+        if(NSControlStateValueOn == self.startAtLogin.state) {
+            toggleLoginItem(NSBundle.mainBundle.bundleURL, NSControlStateValueOn);
+        }
         
+        //save 'start at login'
+        [defaults setBool:self.startAtLogin.state forKey:PREF_START_AT_LOGIN];
+        
+        //save 'update check'
+        [defaults setBool:self.disableUpdateCheck.state forKey:PREF_DISABLE_UPDATE_CHECK];
     }
     
     //leaving vt integration view?
@@ -219,7 +226,7 @@ extern os_log_t logHandle;
             [self.window close];
             
             //done, so show main UI scan window
-            [((AppDelegate*)NSApplication.sharedApplication.delegate) initializeForScan];
+            [((AppDelegate*)NSApplication.sharedApplication.delegate) initializeForScan:NO];
         
             break;
             

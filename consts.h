@@ -29,6 +29,10 @@ static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"Browse
 #define PREF_SHOW_TRUSTED_ITEMS @"showTrustedItems"
 
 //prefs
+// ->start at login
+#define PREF_START_AT_LOGIN @"startAtLogin"
+
+//prefs
 // ->disable VT querires
 #define PREF_DISABLE_VT_QUERIRES @"disableVTQueries"
 

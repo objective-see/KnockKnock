@@ -53,6 +53,8 @@
         self.showTrustedItemsBtn.state = STATE_ENABLED;
     }
     
+    //TODO: add start at load
+    
     //check if 'disable update check' button should be selected
     if(YES == self.disableUpdateCheck)
     {
@@ -90,6 +92,7 @@
 }
 
 
+//TODO: splash screen
 //register default prefs
 // only used if user hasn't set any
 -(void)registerDefaults
@@ -120,6 +123,13 @@
             self.showTrustedItems = [defaults boolForKey:PREF_SHOW_TRUSTED_ITEMS];
         }
         
+        //load 'start at login'
+        if(nil != [defaults objectForKey:PREF_START_AT_LOGIN])
+        {
+            //save
+            self.startAtLogin = [defaults boolForKey:PREF_START_AT_LOGIN];
+        }
+    
         //load 'disable update check'
         if(nil != [defaults objectForKey:PREF_DISABLE_UPDATE_CHECK])
         {
@@ -133,7 +143,6 @@
             //save
             self.disableVTQueries = [defaults boolForKey:PREF_DISABLE_VT_QUERIRES];
         }
-        
     }
     
     //load API key
@@ -181,6 +190,17 @@
     
     //save 'show trusted items'
     [defaults setBool:self.showTrustedItems forKey:PREF_SHOW_TRUSTED_ITEMS];
+    
+    //log item state change?
+    // toggle login item (enable/disable)
+    if(self.startAtLogin != [defaults boolForKey:PREF_START_AT_LOGIN]) {
+        
+        //toggle
+        toggleLoginItem(NSBundle.mainBundle.bundleURL, self.startAtLogin);
+    }
+    
+    //now save 'start at login'
+    [defaults setBool:self.startAtLogin forKey:PREF_START_AT_LOGIN];
     
     //save 'disable update checks'
     [defaults setBool:self.disableUpdateCheck forKey:PREF_DISABLE_UPDATE_CHECK];

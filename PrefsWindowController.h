@@ -43,6 +43,9 @@
 //filter out OS/known items
 @property BOOL showTrustedItems;
 
+//start at login
+@property BOOL startAtLogin;
+
 //no update checks
 @property BOOL disableUpdateCheck;
 

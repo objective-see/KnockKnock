@@ -101,4 +101,8 @@ NSString* loadAPIKeyFromKeychain(void);
 //file protected by SIP?
 BOOL isRestricted(const char *path);
 
+//toggle login item
+// either add (install) or remove (uninstall)
+void toggleLoginItem(NSURL* loginItem, NSControlStateValue state);
+
 #endif

@@ -12,6 +12,7 @@
 //TODO: scan other volumes
 //TODO: support delete items
 //TODO: search in UI
+//TODO: auto-start if persisted
 
 /* GLOBALS */
 
@@ -38,7 +39,6 @@ NSString* scanID = nil;
 @synthesize resultsWindowController;
 @synthesize welcomeWindowController;
 
-
 //exception handler
 // show alert and log error
 void uncaughtExceptionHandler(NSException* exception) {
@@ -62,28 +62,12 @@ void uncaughtExceptionHandler(NSException* exception) {
     return;
 }
 
-/*
-
-//center window
-// also make front
--(void)awakeFromNib
-{
-    //center
-    [self.window center];
-    
-    //make it key window
-    [self.window makeKeyAndOrderFront:self];
-
-    //make window front
-    [NSApp activateIgnoringOtherApps:YES];
-    
-    return;
-}
-*/
-
 //automatically invoked by OS
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+    //flag
+    BOOL startScan = NO;
+    
     //defaults
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
@@ -104,17 +88,27 @@ void uncaughtExceptionHandler(NSException* exception) {
         [[NSRunningApplication currentApplication] activateWithOptions:(NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
     }
     //otherwise just kick off scan initializations
+    // though check if we're started via the login item, which in that case, start scan too
     else
     {
+        //started via login item?
+        NSAppleEventDescriptor* event = NSAppleEventManager.sharedAppleEventManager.currentAppleEvent;
+        if (event) {
+            NSAppleEventDescriptor* descriptor = [event paramDescriptorForKeyword:keyAELaunchedAsLogInItem];
+            if (descriptor && [descriptor booleanValue]) {
+                startScan = YES;
+            }
+        }
+        
         //init
-        [self initializeForScan];
+        [self initializeForScan:startScan];
     }
     
     return;
 }
 
 //init all the thingz for a scan
--(void)initializeForScan
+-(void)initializeForScan:(BOOL)startScan
 {
     //defaults
     NSUserDefaults* defaults = nil;
@@ -197,6 +191,12 @@ void uncaughtExceptionHandler(NSException* exception) {
     //make window front
     [NSApp activateIgnoringOtherApps:YES];
     
+    //started cuz of login item?
+    // then let's start the scan automatically
+    if(YES == startScan) {
+        [self scanButtonHandler:nil];
+    }
+    
     return;
     
 }
@@ -210,8 +210,7 @@ void uncaughtExceptionHandler(NSException* exception) {
 //request full disk access
 -(void)requestFDA
 {
-
-    //request
+    //alert
     __block NSAlert* infoAlert = nil;
 
     if(!hasFDA()) {

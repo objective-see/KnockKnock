@@ -59,6 +59,9 @@
 //show apple items
 @property (weak) IBOutlet NSButton *showAppleItems;
 
+//start at login
+@property (weak) IBOutlet NSButton *startAtLogin;
+
 //disable update check
 @property (weak) IBOutlet NSButton *disableUpdateCheck;
 
