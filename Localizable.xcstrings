@@ -682,6 +682,9 @@
         }
       }
     },
+    "VirusTotal Results: N/A (No API Key)" : {
+      "comment" : "VirusTotal Results: N/A (No API Key)"
+    },
     "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)" : {
       "comment" : "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)",
       "localizations" : {

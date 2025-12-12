@@ -12,7 +12,7 @@
 //TODO: scan other volumes
 //TODO: support delete items
 //TODO: search in UI
-//TODO: auto-start if persisted
+
 
 /* GLOBALS */
 
@@ -940,7 +940,8 @@ void uncaughtExceptionHandler(NSException* exception) {
 
     //when VT integration is enabled
     // add flagged and unknown items
-    if(YES != self.prefsWindowController.disableVTQueries)
+    if( !self.prefsWindowController.disableVTQueries &&
+        self.prefsWindowController.vtAPIKey.length)
     {
         //when network is down
         // ->add msg about not being able to query VT

@@ -52,8 +52,6 @@
         self.showTrustedItemsBtn.state = NSControlStateValueOn;
     }
     
-    //TODO: add start at load
-    
     //check if 'show trusted items' button should be selected
     if(YES == self.startAtLogin)
     {
@@ -91,13 +89,12 @@
 }
 
 
-//TODO: splash screen
 //register default prefs
 // only used if user hasn't set any
 -(void)registerDefaults
 {
     //set defaults
-    [[NSUserDefaults standardUserDefaults] registerDefaults:@{PREF_SHOW_TRUSTED_ITEMS:@NO, PREF_DISABLE_UPDATE_CHECK:@NO, PREF_DISABLE_VT_QUERIRES:@NO}];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:@{PREF_SHOW_TRUSTED_ITEMS:@NO, PREF_START_AT_LOGIN:@NO, PREF_DISABLE_UPDATE_CHECK:@NO, PREF_DISABLE_VT_QUERIRES:@YES}];
     
     return;
 }

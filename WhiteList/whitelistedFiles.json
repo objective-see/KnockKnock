@@ -22,8 +22,8 @@
     "/etc/defaults/periodic.conf":["7beb8971f053949f6f1681a9d5204028", "62842e4978d878da44697ba81eac797c"],
     "/etc/rc.common":["5db454651210bcb920c010f8149d118c", "9c3ea0b6d054087fecd2013d875c336b", "28ce428faefe6168618867f3ff5527f9"],
     "/usr/libexec/tmp_cleaner":["33747b79a29e3462d1799c911854461c"],
-    "/etc/zprofile":["82e0d6b73125cdc9428e1f4a39d2a5a1"],
-    "/etc/zshrc":["8c234b3fb7e4a27f1364df17cb6b22c5"],
+    "/etc/zprofile":["179b0fd32c80f305c2b1ab91432f4557", "82e0d6b73125cdc9428e1f4a39d2a5a1"],
+    "/etc/zshrc":["5c21be339555680489cc7448c92acc18", "8c234b3fb7e4a27f1364df17cb6b22c5"],
     "/etc/bashrc":["7817a5d0c4ebbe0aa5321cf2dd1dcc0b"],
     "/etc/profile":["3a3febb29e55ee975098903a31f8022a"],
     "~/.zprofile":["e37b9b95873a94bf9b5c4566fe3a94c5"]

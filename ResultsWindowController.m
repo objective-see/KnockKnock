@@ -56,11 +56,21 @@
     // disabled? something else?
     else
     {
+        //hide 'unknown items' button
+        self.submitToVT.hidden = YES;
+        
         //disabled
-        if(YES == ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries)
+        if(((AppDelegate*)NSApplication.sharedApplication.delegate).prefsWindowController.disableVTQueries)
         {
             self.vtDetailsLabel.stringValue = NSLocalizedString(@"VirusTotal Results: N/A (Disabled)", @"VirusTotal Results: N/A (Disabled)");
         }
+        
+        //no API key
+        else if(!((AppDelegate*)NSApplication.sharedApplication.delegate).prefsWindowController.vtAPIKey.length)
+        {
+            self.vtDetailsLabel.stringValue = NSLocalizedString(@"VirusTotal Results: N/A (No API Key)", @"VirusTotal Results: N/A (No API Key)");
+        }
+        
         //?
         else
         {

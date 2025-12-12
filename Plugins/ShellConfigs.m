@@ -9,14 +9,13 @@
 #import "ShellConfigs.h"
 
 //plugin name
-#define PLUGIN_NAME @"Shell Config Files"
+#define PLUGIN_NAME @"Shell Configuration Files"
 
 //plugin description
 #define PLUGIN_DESCRIPTION NSLocalizedString(@"Commands executed at shell launch", @"Commands executed at shell launch")
 
 //plugin icon
 #define PLUGIN_ICON @"shellConfigIcon"
-
 
 @implementation ShellConfigs
 
