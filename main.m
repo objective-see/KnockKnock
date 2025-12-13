@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
             (YES == [args containsObject:@"-help"]) )
         {
             //print usage
-            usage();
+            usage(NO);
             
             //done
             goto bail;
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
                 if(vtAPIKey.length == 0)
                 {
                     //usage
-                    usage();
+                    usage(YES);
                     
                     //done
                     goto bail;
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
             if(!hasFDA()) {
                 
                 //err msg
-                printf("ERROR: KnockKnock requires Full Disk Access...\n\n");
+                fprintf(stderr, "ERROR: KnockKnock requires Full Disk Access...\n\n");
              
                 //done
                 goto bail;
@@ -129,19 +129,20 @@ void version(void) {
     return;
 }
 
-//print usage
-void usage(void)
+//usage
+void usage(BOOL error)
 {
-    //usage
-    printf("\nKNOCKNOCK USAGE:\n");
-    printf(" -h or -help        display this usage info\n");
-    printf(" -whosthere         perform command line scan\n");
-    printf(" -version           display current version of\n");
-    printf(" -verbose           display detailed output\n");
-    printf(" -pretty            final output is 'pretty-printed'\n");
-    printf(" -apple             include Apple/System items\n");
-    printf(" -key <API key>     your VirusTotal API key\n");
-    printf(" -skipVT            do not query VirusTotal with item hashes\n\n");
+    FILE* output = error ? stderr : stdout;
+    
+    fprintf(output, "\nKNOCKNOCK USAGE:\n");
+    fprintf(output, " -h or -help        display this usage info\n");
+    fprintf(output, " -whosthere         perform command line scan\n");
+    fprintf(output, " -version           display current version of\n");
+    fprintf(output, " -verbose           display detailed output\n");
+    fprintf(output, " -pretty            final output is 'pretty-printed'\n");
+    fprintf(output, " -apple             include Apple/System items\n");
+    fprintf(output, " -key <API key>     your VirusTotal API key\n");
+    fprintf(output, " -skipVT            do not query VirusTotal with item hashes\n\n");
     
     return;
 }

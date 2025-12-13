@@ -1142,7 +1142,6 @@ void transformProcess(ProcessApplicationTransformState location)
     return;
 }
 
-
 //set line spacing
 void setLineSpacing(NSTextField* textField, CGFloat lineSpacing)
 {
@@ -1162,22 +1161,21 @@ void setLineSpacing(NSTextField* textField, CGFloat lineSpacing)
 }
 
 //full disk access check
-// no API for this, so let's just see if we can read TCC.db
+// no API for this, so let's just see if we can read user's TCC.db
 BOOL hasFDA(void) {
     
-    BOOL fileIsReadable = NO;
+    //get current/console user
+    NSString* currentUser = getConsoleUser();
     
-    NSString *tccPath = [@"~/Library/Application Support/com.apple.TCC/TCC.db" stringByExpandingTildeInPath];
+    //get their home directory
+    NSString* userDirectory = NSHomeDirectoryForUser(currentUser);
     
-    //dbg msg
-    //NSLog(@"Checking for 'Full Disk Access'");
+    //tcc path
+    NSString* tccPath = [NSString stringWithFormat:@"%@/Library/Application Support/com.apple.TCC/TCC.db", userDirectory];
     
-    fileIsReadable = [NSFileManager.defaultManager isReadableFileAtPath:tccPath];
-    
-    //dbg msg
-    //NSLog(@"Result: %d", fileIsReadable);
-
-    return fileIsReadable;
+    //FDA check
+    // is 'protected' file readable
+    return [NSFileManager.defaultManager isReadableFileAtPath:tccPath];
 }
 
 //save (user's) VT API key to keyhain
@@ -1231,7 +1229,6 @@ BOOL isRestricted(const char *path) {
     struct stat sb;
     return (stat(path, &sb) == 0) && (sb.st_flags & SF_RESTRICTED);
 }
-
 
 //for login item enable/disable
 // we use the launch services APIs, since replacements don't always work :(

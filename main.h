@@ -38,7 +38,7 @@ NSString* vtAPIKey = nil;
 /* FUNCTIONS */
 
 //print usage
-void usage(void);
+void usage(BOOL error);
 
 //print version
 void version(void);
