@@ -78,7 +78,9 @@ int main(int argc, char *argv[])
             if(!hasFDA()) {
                 
                 //err msg
-                fprintf(stderr, "ERROR: KnockKnock requires Full Disk Access...\n\n");
+                fprintf(stderr,
+                        "ERROR: KnockKnock (Terminal) requires Full Disk Access.\n"
+                        "Please grant Full Disk Access to your Terminal app (or the app running KnockKnock), then restart KnockKnock and try again.\n\n");
              
                 //done
                 goto bail;
