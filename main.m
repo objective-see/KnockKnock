@@ -75,7 +75,8 @@ int main(int argc, char *argv[])
             }
             
             //need FDA
-            if(!hasFDA()) {
+            if(!hasFDA())
+            {
                 
                 //err msg
                 fprintf(stderr,
@@ -122,9 +123,11 @@ bail:
 void version(void) {
     NSDictionary* info = NSBundle.mainBundle.infoDictionary;
     NSString* version = info[@"CFBundleVersion"];
-    if (version) {
+    if (version)
+    {
         printf("KnockKnock Version: %s\n", version.UTF8String);
-    } else {
+    } else
+    {
         printf("KnockKnock Version: unknown\n");
     }
     

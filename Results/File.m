@@ -380,7 +380,8 @@ bail:
 
     //include VT?
     // append detection
-    if(![NSProcessInfo.processInfo.arguments containsObject:@"-skipVT"])
+    if( [NSProcessInfo.processInfo.arguments containsObject:@"-key"] &&
+        ![NSProcessInfo.processInfo.arguments containsObject:@"-skipVT"] )
     {
         //append VT detection
         json = [json stringByAppendingFormat:@", \"VT detection\": \"%lu/%lu\"", (unsigned long)[self.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[self.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
