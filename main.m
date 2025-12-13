@@ -174,6 +174,10 @@ void cmdlineScan(NSArray* args)
     //flag
     BOOL queryVT = NO;
     
+    //displayed items
+    // e.g. ignore apple/trusted if `-apple` not specified
+    NSUInteger displayedItems = 0;
+    
     //output
     NSMutableString* output = nil;
     
@@ -276,7 +280,6 @@ void cmdlineScan(NSArray* args)
             
             //check all plugin's files
             [virusTotal checkFiles:plugin apiKey:vtAPIKey uiMode:NO completion:NULL];
-            
         }
         
         //append plugin name to output
@@ -293,6 +296,9 @@ void cmdlineScan(NSArray* args)
                 //skip
                 continue;
             }
+            
+            //inc
+            displayedItems++;
             
             //add item
             [output appendFormat:@"{%@},", [item toJSON]];
@@ -330,7 +336,16 @@ void cmdlineScan(NSArray* args)
         
         //msg
         printf("\nScan completed in %02d minutes, %02d seconds\n\n", minutes, seconds);
-        printf("RESULTS:\n %lu persistent items\n %lu (VT) flagged items\n\n", (unsigned long)items, (unsigned long)flaggedItems);
+        
+        //if VT was include
+        if(queryVT) {
+            printf("RESULTS:\n %lu persistent items\n %lu (VT) flagged items\n\n", (unsigned long)displayedItems, (unsigned long)flaggedItems);
+        }
+        //no VT
+        else {
+            printf("RESULTS:\n %lu persistent items\n\n", (unsigned long)displayedItems);
+            
+        }
     }
     
     //pretty print?

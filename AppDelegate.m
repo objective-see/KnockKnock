@@ -1175,7 +1175,7 @@ void uncaughtExceptionHandler(NSException* exception) {
     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
 
     //suggest file name
-    [panel setNameFieldStringValue:[NSString stringWithFormat:@"KnockKnock Results %@.json", [dateFormatter stringFromDate:[NSDate date]]]];
+    [panel setNameFieldStringValue:[NSString stringWithFormat:@"KnockKnock_Results_%@.json", [dateFormatter stringFromDate:[NSDate date]]]];
 
     //show panel
     // ->completion handler will invoked when user clicks 'ok'
