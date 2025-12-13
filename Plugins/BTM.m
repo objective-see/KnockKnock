@@ -96,6 +96,13 @@
                 //params
                 parameters = [NSMutableDictionary dictionary];
                 
+                //ignore items that are disabled
+                if(!([item[KEY_BTM_ITEM_DISPOSITION] longValue] & 0x1))
+                {
+                    //skip
+                    continue;
+                }
+                
                 //ignore any items that have "embeddded item ids"
                 // these seem to be parents, and not the actual items persisted
                 if(nil != item[KEY_BTM_ITEM_EMBEDDED_IDS])
