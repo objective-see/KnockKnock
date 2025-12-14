@@ -36,33 +36,32 @@
     return self;
 }
 
-//convert object to JSON string
+//convert obj to JSON
 -(NSString*)toJSON
 {
-    //json string
-    NSString *json = nil;
+    NSString* json = nil;
+    NSData* jsonData = nil;
+    NSMutableDictionary* dict = [NSMutableDictionary dictionary];
     
-    //name ...escaped
-    NSString* escapedName = nil;
+    dict[@"name"] = self.name ?: @"unknown";
+    dict[@"path"] = self.path ?: @"unknown";
+    dict[@"identifier"] = self.identifier ?: @"unknown";
+    dict[@"details"] = self.details ?: @"unknown";
+    dict[@"browser"] = self.browser ?: @"unknown";
     
-    //details ...escaped
-    NSString* escapedDetails = nil;
+    @try
+    {
+        jsonData = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:NULL];
+        if(jsonData) {
+            json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        }
+    }
+    @catch(NSException* exception)
+    {
+        json = @"{\"error\": \"serialization failed\"}";
+    }
     
-    //escape name
-    escapedName = [self.name stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-
-    //escape details
-    // remove newlines
-    escapedDetails = [[self.details componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@" "];
-    
-    //escape details
-    // replace " with \"
-    escapedDetails = [escapedDetails stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-    
-    //init json
-    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"identifier\": \"%@\", \"details\": \"%@\", \"browser\": \"%@\"", escapedName, self.path, self.identifier, escapedDetails, self.browser];
-    
-    return json;
+    return json ?: @"{\"error\": \"serialization failed\"}";
 }
 
 //description

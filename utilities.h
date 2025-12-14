@@ -58,9 +58,6 @@ NSData* execTask(NSString* binaryPath, NSArray* arguments, int* exitCode);
 //check if computer has network connection
 BOOL isNetworkConnected(void);
 
-//escape \ and "s in a string
-NSString* escapeString(NSString* unescapedString);
-
 //find a constraint (by name) of a view
 NSLayoutConstraint* findConstraint(NSView* view, NSString* constraintName);
 

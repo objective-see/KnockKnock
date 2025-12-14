@@ -28,19 +28,30 @@
     return self;
 }
 
-//convert object to JSON string
+//convert obj to JSON
 -(NSString*)toJSON
 {
-    //json string
-    NSString *json = nil;
+    NSString* json = nil;
+    NSData* jsonData = nil;
+    NSMutableDictionary* dict = [NSMutableDictionary dictionary];
     
-    //init json
-    // ->note: command is escaped to make sure its valid JSON
-    json = [NSString stringWithFormat:@"\"command\": \"%@\", \"file\": \"%@\"", escapeString(self.command), self.path];
+    dict[@"command"] = self.command ?: @"unknown";
+    dict[@"file"] = self.path ?: @"unknown";
     
-    return json;
+    @try
+    {
+        jsonData = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:NULL];
+        if(jsonData) {
+            json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        }
+    }
+    @catch(NSException* exception)
+    {
+        json = @"{\"error\": \"serialization failed\"}";
+    }
+    
+    return json ?: @"{\"error\": \"serialization failed\"}";
 }
-
 
 //description
 -(NSString*)description

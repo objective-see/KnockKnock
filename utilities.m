@@ -723,43 +723,6 @@ bail:
     return isConnected;
 }
 
-//escape \ and "s in a string
-NSString* escapeString(NSString* unescapedString)
-{
-    //return string
-    NSMutableString *escapedString = nil;
-    
-    //char
-    unichar c = 0;
-    
-    //alloc escaped string
-    escapedString = [[NSMutableString alloc] init];
-    
-    //check each char
-    // ->escape as needed
-    for(int i = 0; i < [unescapedString length]; i++) {
-        
-        //grab char
-        c = [unescapedString characterAtIndex:i];
-        
-        //escape chars
-        if( ('\'' == c) ||
-            ('"' == c) )
-        {
-            //escape
-            [escapedString appendFormat:@"\\%c", c];
-        }
-        //no need to escape
-        else
-        {
-            //use as is
-            [escapedString appendFormat:@"%c", c];
-        }
-    }
-    
-    return escapedString;
-}
-
 //find a constraint (by name) of a view
 NSLayoutConstraint* findConstraint(NSView* view, NSString* constraintName)
 {

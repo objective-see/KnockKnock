@@ -43,7 +43,4 @@
 //convert object to JSON string
 -(NSString*)toJSON;
 
-
-
-
 @end

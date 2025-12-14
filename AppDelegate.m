@@ -1263,11 +1263,11 @@ void uncaughtExceptionHandler(NSException* exception) {
         {
         
         //iterate over all items
-        // ->convert to JSON/append to output
+        // convert to JSON/append to output
         for(ItemBase* item in items)
         {
             //add item
-            [json appendFormat:@"{%@},", [item toJSON]];
+            [json appendFormat:@"%@,", [item toJSON]];
             
         }//all plugin items
             
@@ -1468,7 +1468,7 @@ void uncaughtExceptionHandler(NSException* exception) {
             }
         
             //convert to dictionary
-            addedItem = [[NSJSONSerialization JSONObjectWithData:[[NSString stringWithFormat:@"{%@}", [currentItem toJSON]] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil] mutableCopy];
+            addedItem = [[NSJSONSerialization JSONObjectWithData:[[NSString stringWithFormat:@"%@", [currentItem toJSON]] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil] mutableCopy];
             if(nil == addedItem)
             {
                 //skip

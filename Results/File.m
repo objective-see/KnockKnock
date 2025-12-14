@@ -289,111 +289,53 @@ bail:
     return prettyPrint;
 }
 
-//convert object to JSON string
+//convert obj to JSON
 -(NSString*)toJSON
 {
-    //json string
-    NSString *json = nil;
+    NSData* jsonData = nil;
+    NSString* json = nil;
+    NSMutableDictionary* dict = [NSMutableDictionary dictionary];
     
-    //json data
-    // ->for intermediate conversions
-    NSData *jsonData = nil;
-    
-    //plist
-    NSString* filePlist = nil;
+    //basic fields
+    dict[@"name"] = self.name ?: @"unknown";
+    dict[@"path"] = self.path ?: @"unknown";
+    dict[@"plist"] = self.plist ?: @"n/a";
     
     //hashes
-    NSString* fileHashes = nil;
+    dict[@"hashes"] = self.hashes ?: @"unknown";
     
     //signing info
-    NSString* fileSigs = nil;
-        
-    //init file hash to default string
-    // ->used when hashes are nil, or serialization fails
-    fileHashes = @"\"unknown\"";
+    dict[@"signature(s)"] = self.signingInfo ?: @"unknown";
     
-    //init file signature to default string
-    // ->used when signatures are nil, or serialization fails
-    fileSigs = @"\"unknown\"";
-    
-    //convert hashes to JSON
-    if(nil != self.hashes)
-    {
-        //convert hash dictionary
-        // ->wrap since we are serializing JSON
-        @try
-        {
-            //convert
-            jsonData = [NSJSONSerialization dataWithJSONObject:self.hashes options:kNilOptions error:NULL];
-            if(nil != jsonData)
-            {
-                //convert data to string
-                fileHashes = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-            }
-        }
-        //ignore exceptions
-        // ->file hashes will just be 'unknown'
-        @catch(NSException *exception)
-        {
-            ;
-        }
-    }
-    
-    //convert signing dictionary to JSON
-    if(nil != self.signingInfo)
-    {
-        //convert signing dictionary
-        // ->wrap since we are serializing JSON
-        @try
-        {
-            //convert
-            jsonData = [NSJSONSerialization dataWithJSONObject:self.signingInfo options:kNilOptions error:NULL];
-            if(nil != jsonData)
-            {
-                //convert data to string
-                fileSigs = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-            }
-        }
-        //ignore exceptions
-        // ->file sigs will just be 'unknown'
-        @catch(NSException *exception)
-        {
-            ;
-        }
-    }
-    
-    //provide a default string if the file doesn't have a plist
-    if(nil == self.plist)
-    {
-        //set
-        filePlist = @"n/a";
-    }
-    //use plist as is
-    else
-    {
-        //set
-        filePlist = self.plist;
-    }
-    
-    //init json
-    json = [NSString stringWithFormat:@"\"name\": \"%@\", \"path\": \"%@\", \"plist\": \"%@\", \"hashes\": %@, \"signature(s)\": %@", self.name, self.path, filePlist, fileHashes, fileSigs];
-
     //include VT?
-    // append detection
     if( [NSProcessInfo.processInfo.arguments containsObject:@"-key"] &&
         ![NSProcessInfo.processInfo.arguments containsObject:@"-skipVT"] )
     {
-        //append VT detection
-        json = [json stringByAppendingFormat:@", \"VT detection\": \"%lu/%lu\"", (unsigned long)[self.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue], (unsigned long)[self.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
+        dict[@"VT detection"] = [NSString stringWithFormat:@"%lu/%lu",
+            (unsigned long)[self.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue],
+            (unsigned long)[self.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
     }
     
-    return json;
+    //serialize
+    @try
+    {
+        jsonData = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:NULL];
+        if(jsonData) {
+            json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        }
+    }
+    @catch(NSException* exception)
+    {
+        json = @"{\"error\": \"serialization failed\"}";
+    }
+    
+    return json ?: @"{\"error\": \"serialization failed\"}";
 }
 
 //description
 -(NSString*)description
 {
-    return [NSString stringWithFormat:@"name: %@, path: %@, plist: %@, hashes: %@, signature(s): %@, VT detection: %@", self.name, self.path, self.plist, self.hashes, self.signingInfo, self.vtInfo];;
+    return [NSString stringWithFormat:@"name: %@, path: %@, plist: %@, hashes: %@, signature(s): %@, VT detection: %@", self.name, self.path, self.plist, self.hashes, self.signingInfo, self.vtInfo];
 }
 
 

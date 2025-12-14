@@ -278,7 +278,7 @@ void cmdlineScan(NSArray* args)
             if(0 == (unsigned long)plugin.allItems.count)
             {
                 //msg
-                printf(" No %s found\n", plugin.name.UTF8String);
+                printf(" no %s found\n", plugin.name.UTF8String);
             }
             //found items
             else
@@ -324,7 +324,7 @@ void cmdlineScan(NSArray* args)
             displayedItems++;
             
             //add item
-            [output appendFormat:@"{%@},", [item toJSON]];
+            [output appendFormat:@"%@,", [item toJSON]];
         }
         
         //remove last ','
