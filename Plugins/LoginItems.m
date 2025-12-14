@@ -8,6 +8,7 @@
 #import "LoginItems.h"
 
 #import <ServiceManagement/ServiceManagement.h>
+#import <SystemConfiguration/SystemConfiguration.h>
 
 //plugin name
 #define PLUGIN_NAME @"Login Items"
@@ -111,14 +112,39 @@
     //item path
     CFURLRef itemPath = nil;
     
+    //for priv drop/restore
+    uid_t originalUID = geteuid();
+    
+    //running as root?
+    // temporarily drop to console user
+    if(0 == originalUID) {
+        
+        uid_t consoleUID = 0;
+        CFStringRef userName = SCDynamicStoreCopyConsoleUser(NULL, &consoleUID, NULL);
+        if(userName) {
+            CFRelease(userName);
+        }
+        
+        //drop
+        if(consoleUID != 0) {
+            seteuid(consoleUID);
+        }
+    }
+    
     //alloc array
     traditionalItems = [NSMutableArray array];
     
     //create shared file list reference
     sharedListRef = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+    if(!sharedListRef) {
+        goto bail;
+    }
     
     //grab login items
     loginItems = LSSharedFileListCopySnapshot(sharedListRef, &snapshotSeed);
+    if(!loginItems) {
+        goto bail;
+    }
     
     //iterate over all items
     // extracting path for each
@@ -141,12 +167,22 @@
         CFRelease(itemPath);
     }
     
+bail:
+    
+    //free snapshot
+    if(sharedListRef) {
+        CFRelease(sharedListRef);
+    }
+    
     //free array
-    if(NULL != loginItems)
+    if(loginItems)
     {
         //free
         CFRelease(loginItems);
     }
+    
+    //restore privs
+    seteuid(originalUID);
     
     return traditionalItems;
 }
