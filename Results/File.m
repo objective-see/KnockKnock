@@ -14,6 +14,11 @@
 #import "utilities.h"
 #import "AppDelegate.h"
 
+/* GLOBALS */
+
+//cmdline scab
+extern BOOL queryVT;
+
 @implementation File
 
 @synthesize path;
@@ -308,12 +313,11 @@ bail:
     dict[@"signature(s)"] = self.signingInfo ?: @"unknown";
     
     //include VT?
-    if( [NSProcessInfo.processInfo.arguments containsObject:@"-key"] &&
-        ![NSProcessInfo.processInfo.arguments containsObject:@"-skipVT"] )
-    {
+    if(queryVT) {
+    
         dict[@"VT detection"] = [NSString stringWithFormat:@"%lu/%lu",
-            (unsigned long)[self.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue],
-            (unsigned long)[self.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
+                                     (unsigned long)[self.vtInfo[VT_RESULTS_POSITIVES] unsignedIntegerValue],
+                                     (unsigned long)[self.vtInfo[VT_RESULTS_TOTAL] unsignedIntegerValue]];
     }
     
     //serialize

@@ -1,6 +1,18 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "2gz-Tn-4EA.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Enable this option to show persistent macOS and Apple-installed components.\"; ObjectID = \"2gz-Tn-4EA\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enable this option to show persistent macOS and Apple-installed components."
+          }
+        }
+      }
+    },
     "7e0-cR-939.title" : {
       "comment" : "Class = \"NSButtonCell\"; title = \"Start at login (+perform scan).\"; ObjectID = \"7e0-cR-939\";",
       "extractionState" : "extracted_with_value",
@@ -9,6 +21,18 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Start at login (+perform scan)."
+          }
+        }
+      }
+    },
+    "9UV-0a-N9m.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Enable this option so KnockKnock launches and scans at each login.\\n\"; ObjectID = \"9UV-0a-N9m\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enable this option so KnockKnock launches and scans at each login.\n"
           }
         }
       }
@@ -33,6 +57,18 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "VirusTotal Integration:"
+          }
+        }
+      }
+    },
+    "EbR-vz-kge.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Obtain a key (for free!):\"; ObjectID = \"EbR-vz-kge\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Obtain a key (for free!):"
           }
         }
       }
@@ -73,6 +109,18 @@
         }
       }
     },
+    "iA8-I3-D7j.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Enable this option to prevent the app from querying VirusTotal for known malware.\"; ObjectID = \"iA8-I3-D7j\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enable this option to prevent the app from querying VirusTotal for known malware."
+          }
+        }
+      }
+    },
     "idJ-pd-k6U.title" : {
       "comment" : "Class = \"NSButtonCell\"; title = \"Disable automatic update check.\"; ObjectID = \"idJ-pd-k6U\";",
       "extractionState" : "extracted_with_value",
@@ -109,6 +157,18 @@
         }
       }
     },
+    "k8E-oV-fEv.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"https://docs.virustotal.com/docs/please-give-me-an-api-key\"; ObjectID = \"k8E-oV-fEv\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "https://docs.virustotal.com/docs/please-give-me-an-api-key"
+          }
+        }
+      }
+    },
     "Nua-Eb-VTm.title" : {
       "comment" : "Class = \"NSTextFieldCell\"; title = \"Enter your personal VirusTotal API key. \\nYou can learn more about getting such a key (for free!) here:\"; ObjectID = \"Nua-Eb-VTm\";",
       "extractionState" : "extracted_with_value",
@@ -117,6 +177,18 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Enter your personal VirusTotal API key. \nYou can learn more about getting such a key (for free!) here:"
+          }
+        }
+      }
+    },
+    "OWQ-k5-mAX.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Enable this option to prevent the app from checking for updates automatically.\"; ObjectID = \"OWQ-k5-mAX\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enable this option to prevent the app from checking for updates automatically."
           }
         }
       }
@@ -145,14 +217,14 @@
         }
       }
     },
-    "Uce-KH-7DH.title" : {
-      "comment" : "Class = \"NSTextFieldCell\"; title = \"General:\"; ObjectID = \"Uce-KH-7DH\";",
+    "tJm-La-oyS.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"With an API key, checks items against VirusTotal for known malware. \"; ObjectID = \"tJm-La-oyS\";",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "General:"
+            "value" : "With an API key, checks items against VirusTotal for known malware. "
           }
         }
       }

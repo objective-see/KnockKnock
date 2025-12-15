@@ -16,8 +16,6 @@
 /* GLOBALS */
 
 //cmdline flag
-extern BOOL cmdlineMode;
-
 extern NSString* scanID;
 
 @implementation VirusTotal

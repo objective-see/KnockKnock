@@ -80,6 +80,9 @@
         self.apiTextField.stringValue = self.vtAPIKey;
     }
     
+    //make url a hyperlink
+    makeTextViewHyperlink(self.getAPILink, [NSURL URLWithString:@"https://docs.virustotal.com/docs/please-give-me-an-api-key"]);
+    
 
     return;
 }
@@ -229,7 +232,7 @@
     viewController.view = self.getAPIHelp;
     
     //make url a hyperlink
-    makeTextViewHyperlink(self.getAPILink, [NSURL URLWithString:@"https://docs.virustotal.com/docs/please-give-me-an-api-key"]);
+    makeTextViewHyperlink(self.getAPILinkPopover, [NSURL URLWithString:@"https://docs.virustotal.com/docs/please-give-me-an-api-key"]);
     
     //init
     popover.contentViewController = viewController;

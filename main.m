@@ -173,9 +173,6 @@ void cmdlineScan(NSArray* args)
     //flag
     BOOL prettyPrint = NO;
     
-    //flag
-    BOOL queryVT = NO;
-    
     //displayed items
     // e.g. ignore apple/trusted if `-apple` not specified
     NSUInteger displayedItems = 0;

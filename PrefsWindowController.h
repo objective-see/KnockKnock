@@ -63,6 +63,7 @@
 
 //link (how to get a VT key)
 @property (weak) IBOutlet HyperlinkTextField* getAPILink;
+@property (weak) IBOutlet HyperlinkTextField* getAPILinkPopover;
 
 /* METHODS */
 

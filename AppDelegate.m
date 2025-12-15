@@ -16,7 +16,11 @@
 
 /* GLOBALS */
 
+//scan ID
 NSString* scanID = nil;
+
+//query VT
+extern BOOL queryVT;
 
 @implementation AppDelegate
 
@@ -420,12 +424,9 @@ void uncaughtExceptionHandler(NSException* exception) {
 }
 
 //thread function
-// ->runs in the background to execute each plugin
+// runs in the background to execute each plugin
 -(void)scan
 {
-    //query VT?
-    BOOL queryVT = NO;
-    
     //set scan flag
     self.isConnected = isNetworkConnected();
     

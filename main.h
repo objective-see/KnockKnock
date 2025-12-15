@@ -32,8 +32,12 @@ BOOL cmdlineMode = NO;
 //cmdline flag
 BOOL isVerbose = NO;
 
+//query VT?
+BOOL queryVT = NO;
+
 //(VT) API key for cmdline scan
 NSString* vtAPIKey = nil;
+
 
 /* FUNCTIONS */
 
