@@ -3,6 +3,7 @@
 //  KnockKnock
 //
 
+#import "diff.h"
 #import "consts.h"
 #import "Update.h"
 #import "utilities.h"
@@ -1337,233 +1338,58 @@ void uncaughtExceptionHandler(NSException* exception) {
 //compare a past to a current scan
 -(IBAction)compareScans:(id)sender
 {
-    //error
-    NSError* error = nil;
-    
-    //flag
-    BOOL errors = NO;
-    
-    //alert
-    NSAlert* alert = nil;
-    
     //previous scan
     NSString* prevScan = nil;
     NSDictionary* prevScanContents = nil;
-    
-    //added items
-    NSMutableArray* addedItems = nil;
-    
-    //removed items
-    NSMutableArray* removedItems = nil;
+    NSDictionary* currentScanContents = nil;
     
     //diff results
-    NSMutableString* differences = nil;
-    
-    //'browse' panel
-    NSOpenPanel *panel = nil;
-    
-    //init
-    differences = [NSMutableString string];
+    NSString* differences = nil;
     
     //init panel
-    panel = [NSOpenPanel openPanel];
+    NSOpenPanel* panel = [NSOpenPanel openPanel];
     
-    //allow files
+    //configure panel
     panel.canChooseFiles = YES;
-    
-    //disallow directories
     panel.canChooseDirectories = NO;
-    
-    //disable multiple selections
     panel.allowsMultipleSelection = NO;
-    
-    //can open app bundles
+    panel.allowedFileTypes = @[@"json"];
     panel.treatsFilePackagesAsDirectories = YES;
     
     //default to desktop
-    // as this where scans are suggested to be saved
-    panel.directoryURL = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains (NSDesktopDirectory, NSUserDomainMask, YES) firstObject]];
+    panel.directoryURL = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDesktopDirectory, NSUserDomainMask, YES) firstObject]];
     
-    //show panel
-    // but bail on cancel
-    if(NSModalResponseCancel == [panel runModal])
-    {
-        //bail
-        goto bail;
-    }
-    
-    //load previous scan
-    prevScan = [NSString stringWithContentsOfURL:panel.URL encoding:NSUTF8StringEncoding error:&error];
-    if(nil == prevScan)
-    {
-        //set
-        errors = YES;
-        goto bail;
-    }
-    
-    //serialize json
-    prevScanContents = [NSJSONSerialization JSONObjectWithData:[prevScan dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-    if(YES != [prevScanContents isKindOfClass:[NSDictionary class]])
-    {
-        //set
-        errors = YES;
-        goto bail;
-    }
-    
-    //init
-    addedItems = [NSMutableArray array];
-    removedItems = [NSMutableArray array];
-    
-    //compare
-    // for now, only adds / removes
-    for(PluginBase* plugin in self.plugins)
-    {
-        //vars
-        NSArray* prevItems = nil;
-        NSArray* currentItems = nil;
+    //show panel, bail on cancel
+    if([panel runModal] == NSModalResponseOK) {
         
-        NSSet *prevPaths = nil;
-        NSSet *currentPaths = nil;
+        //load previous scan
+        prevScan = [NSString stringWithContentsOfURL:panel.URL encoding:NSUTF8StringEncoding error:nil];
         
-        NSMutableSet *addedPaths = nil;
-        NSMutableSet *removedPaths = nil;
+        //parse previous scan JSON
+        prevScanContents = [NSJSONSerialization JSONObjectWithData:[prevScan dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
         
-        NSMutableDictionary* addedItem = nil;
-        NSMutableDictionary* removedItem = nil;
+        //parse current scan JSON
+        currentScanContents = [NSJSONSerialization JSONObjectWithData:[[self scanToJSON] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
         
-        NSString* key = plugin.name;
-        
-        //trusted items?
-        if(YES == self.prefsWindowController.showTrustedItems)
-        {
-            //set
-            currentItems = plugin.allItems;
-        }
-        //set items
-        // just unknown items
-        else
-        {
-            //set
-            currentItems = plugin.untrustedItems;
-        }
-        
-        prevItems = prevScanContents[key];
-        
-        prevPaths = [NSSet setWithArray:[prevItems valueForKey:@"path"]];
-        currentPaths = [NSSet setWithArray:[currentItems valueForKey:@"path"]];
-
-        addedPaths = [currentPaths mutableCopy];
-        [addedPaths minusSet:prevPaths];
-        
-        removedPaths = [prevPaths mutableCopy];
-        [removedPaths minusSet:currentPaths];
-
-        //save added items
-        for(ItemBase* currentItem in currentItems)
-        {
-            //added?
-            if(YES != [addedPaths containsObject:currentItem.path])
-            {
-                //skip
-                continue;
-            }
-        
-            //convert to dictionary
-            addedItem = [[NSJSONSerialization JSONObjectWithData:[[NSString stringWithFormat:@"%@", [currentItem toJSON]] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil] mutableCopy];
-            if(nil == addedItem)
-            {
-                //skip
-                continue;
-            }
-                
-            //add key
-            addedItem[@"key"] = key;
-                
-            //add
-            [addedItems addObject:addedItem];
-        }
-        
-        //save removed items
-        for(NSDictionary* prevItem in prevItems)
-        {
-            //removed?
-            if(YES != [removedPaths containsObject:prevItem[@"path"]])
-            {
-                //skip
-                continue;
-            }
+        //diff scans
+        differences = diffScans(prevScanContents, currentScanContents);
+        if(differences) {
             
-            //make copy
-            removedItem = [prevItem mutableCopy];
-            removedItem[@"key"] = key;
-                
-            //add
-            [removedItems addObject:removedItem];
+            //show diff window
+            self.diffWindowController = [[DiffWindowController alloc] initWithWindowNibName:@"DiffWindow"];
+            self.diffWindowController.differences = differences;
+            [self.diffWindowController showWindow:self];
+            
         }
-    }
-    
-    //any changes
-    if( (0 == addedItems.count) &&
-        (0 == removedItems.count) )
-    {
-        //no changes
-        differences = [NSLocalizedString(@"No Changes Detected", @"No Changes Detected") mutableCopy];
-    }
-    
-    //any added items?
-    if(0 != addedItems.count)
-    {
-        //msg
-        [differences appendString:NSLocalizedString(@"NEW ITEMS:\r\n", @"NEW ITEMS:\r\n")];
-        
-        //add each item
-        for(NSDictionary* item in addedItems)
-        {
-            //add
-            [differences appendString:[NSString stringWithFormat:@"(%@): %@\r\n", [item[@"key"] substringToIndex:[item[@"key"] length]-1], item.description]];
+        //error
+        else {
+            
+            //show error alert
+            NSAlert* alert = [[NSAlert alloc] init];
+            [alert addButtonWithTitle:@"Ok"];
+            alert.messageText = NSLocalizedString(@"ERROR: Failed to compare scans", @"ERROR: Failed to compare scans");
+            [alert runModal];
         }
-    }
-    
-    //any removed items
-    if(0 != removedItems.count)
-    {
-        //msg
-        [differences appendString:NSLocalizedString(@"REMOVED ITEMS:\r\n", @"REMOVED ITEMS:\r\n")];
-        
-        //add each item
-        for(NSDictionary* item in removedItems)
-        {
-            //add
-            [differences appendString:[NSString stringWithFormat:@"(%@): %@\r\n", [item[@"key"] substringToIndex:[item[@"key"] length]-1], item.description]];
-        }
-    }
-
-    //alloc window controller
-    self.diffWindowController = [[DiffWindowController alloc] initWithWindowNibName:@"DiffWindow"];
-    
-    //set text (differences)
-    self.diffWindowController.differences = differences;
-    
-    //show window
-    [self.diffWindowController showWindow:self];
-    
-bail:
-    
-    //any errors?
-    // show alert
-    if(YES == errors)
-    {
-        //init alert
-        alert = [[NSAlert alloc] init];
-       
-        //ok
-        [alert addButtonWithTitle:@"Ok"];
-        
-        //error msg
-        alert.messageText = NSLocalizedString(@"ERROR: Failed to compare scans", @"ERROR: Failed to compare scans");
-        
-        //show popup
-        [alert runModal];
     }
     
     return;

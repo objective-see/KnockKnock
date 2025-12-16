@@ -119,6 +119,7 @@
 		CDBE491A1B5B25E30031FC22 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDBE49191B5B25E30031FC22 /* SystemConfiguration.framework */; };
 		CDBE491F1B5B46040031FC22 /* logInOutIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDBE491E1B5B46040031FC22 /* logInOutIcon.png */; };
 		CDBFE39A2A49B8BA005A9819 /* MachO.m in Sources */ = {isa = PBXBuildFile; fileRef = CDBFE3972A49B8B9005A9819 /* MachO.m */; };
+		CDC988162EF101A700F5C653 /* diff.m in Sources */ = {isa = PBXBuildFile; fileRef = CDC988152EF101A500F5C653 /* diff.m */; };
 		CDCA2C212A49B71500E8DD57 /* libDumpBTM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDCA2C202A49B71500E8DD57 /* libDumpBTM.a */; };
 		CDD83FD61B50C76F0037124E /* cronIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDD83FD51B50C76F0037124E /* cronIcon.png */; };
 		CDDBC2301B04771100B021E0 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */; };
@@ -335,6 +336,8 @@
 		CDBFE3952A49B8B9005A9819 /* dumpBTM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dumpBTM.h; sourceTree = "<group>"; };
 		CDBFE3972A49B8B9005A9819 /* MachO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MachO.m; sourceTree = "<group>"; };
 		CDBFE3982A49B8B9005A9819 /* MachO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MachO.h; sourceTree = "<group>"; };
+		CDC988142EF1019D00F5C653 /* diff.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = diff.h; sourceTree = "<group>"; };
+		CDC988152EF101A500F5C653 /* diff.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = diff.m; sourceTree = "<group>"; };
 		CDCA2C202A49B71500E8DD57 /* libDumpBTM.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libDumpBTM.a; path = Libraries/BTM/libDumpBTM.a; sourceTree = "<group>"; };
 		CDD83FD51B50C76F0037124E /* cronIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cronIcon.png; path = images/cronIcon.png; sourceTree = SOURCE_ROOT; };
 		CDDBC22F1B04771100B021E0 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
@@ -448,6 +451,8 @@
 				CD585493219FE61D00A438B0 /* Assets.xcassets */,
 				CDA81D481A95B492009790E2 /* consts.h */,
 				CDE241A92C8556A40099F82B /* DiffWindowController.h */,
+				CDC988142EF1019D00F5C653 /* diff.h */,
+				CDC988152EF101A500F5C653 /* diff.m */,
 				CDE241AA2C8556A40099F82B /* DiffWindowController.m */,
 				CD6095501A8329FA00E091CD /* images */,
 				CD6FD7AB2C7AAD87001C59F2 /* MainMenu.xib */,
@@ -873,6 +878,7 @@
 				CDADCFA52EE7833C00C6DBF4 /* LogInOutHooks.m in Sources */,
 				CDADCFA62EE7833C00C6DBF4 /* LoginItems.m in Sources */,
 				CDADCFA72EE7833C00C6DBF4 /* QuicklookPlugins.m in Sources */,
+				CDC988162EF101A700F5C653 /* diff.m in Sources */,
 				CDADCFA82EE7833C00C6DBF4 /* AuthorizationPlugins.m in Sources */,
 				CDADCFA92EE7833C00C6DBF4 /* Kexts.m in Sources */,
 				CDADCFAA2EE7833C00C6DBF4 /* DylibInserts.m in Sources */,
@@ -1135,7 +1141,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4.0.1;
+				CURRENT_PROJECT_VERSION = 4.0.2;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1150,7 +1156,7 @@
 					"$(PROJECT_DIR)/Libraries/BTM",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 4.0.1;
+				MARKETING_VERSION = 4.0.2;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;
@@ -1167,7 +1173,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4.0.1;
+				CURRENT_PROJECT_VERSION = 4.0.2;
 				DEVELOPMENT_TEAM = VBG97UB4TA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1182,7 +1188,7 @@
 					"$(PROJECT_DIR)/Libraries/BTM",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 4.0.1;
+				MARKETING_VERSION = 4.0.2;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.objective-see.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = KnockKnock;

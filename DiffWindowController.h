@@ -13,16 +13,7 @@
 //differences
 @property(nonatomic, retain)NSString* differences;
 
-//(path to) plist
-//@property(nonatomic, retain)NSString* plist;
-
-//signing info
-//@property(nonatomic, retain)NSDictionary* signingInfo;
-
 //plist contents
 @property (unsafe_unretained) IBOutlet NSTextView *contents;
-
-//plist path
-//@property (weak) IBOutlet NSTextField *path;
 
 @end
