@@ -56,7 +56,7 @@
 }
 
 //table delegate method
-// ->return cell for row
+// return cell for row
 -(NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
     //command

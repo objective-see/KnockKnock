@@ -59,7 +59,7 @@
                                                         <button tag="1001" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SKb-o1-3O3">
                                                             <rect key="frame" x="15" y="-4" width="29" height="18"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                            <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="D3n-cB-7oB">
+                                                            <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" inset="2" id="D3n-cB-7oB">
                                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                 <font key="font" metaFont="system"/>
                                                             </buttonCell>
