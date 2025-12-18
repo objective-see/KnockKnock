@@ -20,6 +20,11 @@
 
 #import <AppKit/AppKit.h>
 
+/* GLOBALS */
+
+//should query VT
+extern BOOL queryVT;
+
 @implementation ItemTableController
 
 @synthesize noItemsLabel;
@@ -86,7 +91,7 @@
             self.noItemsLabel.backgroundColor = [NSColor clearColor];
             
             //font
-            self.noItemsLabel.font = [NSFont fontWithName:@"Menlo-Regular" size:13];
+            self.noItemsLabel.font = [NSFont fontWithName:@"Menlo-Regular" size:15];
             
             //center text
             self.noItemsLabel.alignment = NSCenterTextAlignment;
@@ -366,7 +371,7 @@
         
         //configure/show VT info
         // ->only if 'disable' preference not set
-        if(YES != ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries)
+        if(queryVT)
         {
             //set button delegate
             vtButton.delegate = self;

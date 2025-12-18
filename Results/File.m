@@ -16,7 +16,7 @@
 
 /* GLOBALS */
 
-//cmdline scab
+//should query VT
 extern BOOL queryVT;
 
 @implementation File

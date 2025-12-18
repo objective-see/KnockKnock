@@ -12,6 +12,11 @@
 #import "KKRow.h"
 #import "CategoryTableController.h"
 
+/* GLOBALS */
+
+//query VT
+extern BOOL queryVT;
+
 @implementation CategoryTableController
 
 @synthesize selectedRow;
@@ -19,7 +24,6 @@
 @synthesize categoryTableView;
 
 //invoked automatically while nib is loaded
-// ->note: outlets are nil here :/
 -(id)init
 {
     self = [super init];
@@ -82,8 +86,7 @@
         itemsInCategory = plugin.allItems.count;
         
         //check if any item is flagged
-        if( (YES != ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries) &&
-            (0 != plugin.flaggedItems.count) )
+        if(queryVT && plugin.flaggedItems.count)
         {
             //set flag
             hasFlaggedItem = YES;
@@ -97,7 +100,7 @@
         itemsInCategory = plugin.untrustedItems.count;
         
         //check if any item is flagged
-        if(YES != ((AppDelegate*)[[NSApplication sharedApplication] delegate]).prefsWindowController.disableVTQueries)
+        if(queryVT)
         {
             //sync
             @synchronized (plugin.untrustedItems) {
