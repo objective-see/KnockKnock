@@ -57,8 +57,8 @@
         //items sorted
         NSArray* itemsSorted = nil;
         
-        //paths (for dups)
-        NSMutableSet* paths = nil;
+        //avoid dups
+        NSMutableSet* seenItems = [NSMutableSet set];
         
         //parse BTM db
         contents = parseBTM(nil);
@@ -71,9 +71,6 @@
         //init
         items = [NSMutableDictionary dictionary];
     
-        //init
-        paths = [NSMutableSet set];
-        
         //iterate over all items
         // sorted by each user uuid
         for(NSString* uuid in contents[KEY_BTM_ITEMS_BY_USER_ID])
@@ -136,24 +133,27 @@
                     parameters[KEY_RESULT_PLIST] = plist;
                 }
                 
-                //init file obj with params (path, etc)
-                fileObj = [[File alloc] initWithParams:parameters];
-                if(nil == fileObj)
+                //key
+                // path + plist ...what makes item unique
+                NSString* key = (nil != plist) ? [NSString stringWithFormat:@"%@|%@", path, plist] : path;
+                
+                //dup?
+                if([seenItems containsObject:key])
                 {
-                    //error
-                    // skip item
+                    //skip
                     continue;
                 }
                 
-                //new?
-                // save
-                if(YES != [paths containsObject:fileObj.path])
-                {
-                    //save path
-                    [paths addObject:fileObj.path];
+                //seen
+                [seenItems addObject:key];
+    
+                //init file obj with params (path, etc)
+                fileObj = [[File alloc] initWithParams:parameters];
+                if(fileObj) {
                     
                     //save
                     items[item[KEY_BTM_ITEM_UUID]] = fileObj;
+                    
                 }
             }
         }
