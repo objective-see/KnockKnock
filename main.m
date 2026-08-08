@@ -23,6 +23,9 @@ int main(int argc, char *argv[])
         {
             //print usage
             usage(NO);
+
+            //mark as success
+            status = 0;
             
             //done
             goto bail;
@@ -33,6 +36,9 @@ int main(int argc, char *argv[])
         {
             //print usage
             version();
+
+            //mark as success
+            status = 0;
             
             //done
             goto bail;
