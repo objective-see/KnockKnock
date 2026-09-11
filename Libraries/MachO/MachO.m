@@ -16,6 +16,15 @@
 #import <mach-o/swap.h>
 #import <mach-o/loader.h>
 
+//check that [pointer, pointer+size) lies entirely within [base, base+length)
+// note: all header/load command values are attacker-controlled, so every read must be bounded by the file's actual length
+static inline BOOL inBounds(const void* base, NSUInteger length, const void* pointer, NSUInteger size)
+{
+    return ( ((const unsigned char*)pointer >= (const unsigned char*)base) &&
+             (size <= length) &&
+             ((const unsigned char*)pointer <= ((const unsigned char*)base + (length - size))) );
+}
+
 @implementation MachO
 
 @synthesize binaryInfo;
@@ -205,12 +214,28 @@ bail:
     //init start of header
     headerStart = binaryBytes;
     
+    //sanity check
+    // need at least a magic
+    if(YES != inBounds(binaryBytes, self.binaryData.length, headerStart, sizeof(uint32_t)))
+    {
+        //bail
+        goto bail;
+    }
+    
     //handle universal (fat) case
     if( (FAT_MAGIC == *headerStart) ||
         (FAT_CIGAM == *headerStart) )
     {
         //dbg msg
         //NSLog(@"parsing universal binary");
+        
+        //sanity check
+        // need a full fat header (before swapping/reading it)
+        if(YES != inBounds(binaryBytes, self.binaryData.length, headerStart, sizeof(struct fat_header)))
+        {
+            //bail
+            goto bail;
+        }
         
         //swap if needed
         if(FAT_CIGAM == *headerStart)
@@ -231,22 +256,21 @@ bail:
         {
             //get current struct fat_arch *
             // ->base + size of fat_header + size of fat_archs
-            arch = (struct fat_arch*)((unsigned char*)binaryBytes + sizeof(struct fat_header) + i * sizeof(struct fat_arch));
+            arch = (struct fat_arch*)((unsigned char*)binaryBytes + sizeof(struct fat_header) + (uint64_t)i * sizeof(struct fat_arch));
+            
+            //sanity check
+            // ->make sure arch is something 'within' binary (before swapping/reading it)
+            if(YES != inBounds(binaryBytes, self.binaryData.length, arch, sizeof(struct fat_arch)))
+            {
+                //err
+                goto bail;
+            }
             
             //swap if needed
             if(YES == shouldSwap)
             {
                 //swap
                 swap_fat_arch(arch, 0x01, 0);
-            }
-            
-            //sanity check
-            // ->make sure arch is something 'within' binary
-            if( ((unsigned char*)arch < (unsigned char*)binaryBytes) ||
-                ((unsigned char*)(binaryBytes + self.binaryData.length) < (unsigned char*)((unsigned char*)arch + sizeof(struct fat_arch))) )
-            {
-                //err
-                goto bail;
             }
             
             //save into header offset array
@@ -269,7 +293,9 @@ bail:
     for(NSNumber* headerOffset in headerOffsets)
     {
         //skip invalid header offsets
-        if(headerOffset.unsignedIntValue > [self.binaryData length])
+        // (need at least a magic)
+        if( (headerOffset.unsignedIntValue > [self.binaryData length]) ||
+            (YES != inBounds(binaryBytes, self.binaryData.length, binaryBytes + headerOffset.unsignedIntValue, sizeof(uint32_t))) )
         {
             //skip
             continue;
@@ -279,11 +305,15 @@ bail:
         headerStart = binaryBytes + headerOffset.unsignedIntValue;
         
         //classify header
+        // note: each case checks the full header struct is within the file before swapping/reading it
         switch(*headerStart)
         {
             //32bit mach-O
             // ->little-endian version
             case MH_CIGAM:
+                
+                //sanity check
+                if(YES != inBounds(binaryBytes, self.binaryData.length, headerStart, sizeof(struct mach_header))) break;
                 
                 //swap
                 swap_mach_header((struct mach_header*)headerStart, 0);
@@ -307,6 +337,9 @@ bail:
             // ->big-endian version
             case MH_MAGIC:
                 
+                //sanity check
+                if(YES != inBounds(binaryBytes, self.binaryData.length, headerStart, sizeof(struct mach_header))) break;
+                
                 //init header dictionary
                 header = @{
                            KEY_HEADER_OFFSET:headerOffset,
@@ -325,6 +358,9 @@ bail:
             //64-bit mach-O
             // ->little-endian version
             case MH_CIGAM_64:
+                
+                //sanity check
+                if(YES != inBounds(binaryBytes, self.binaryData.length, headerStart, sizeof(struct mach_header_64))) break;
                 
                 //swap
                 swap_mach_header_64((struct mach_header_64*)headerStart, 0);
@@ -347,6 +383,9 @@ bail:
             //64-bit mach-O
             // ->big-endian version
             case MH_MAGIC_64:
+                
+                //sanity check
+                if(YES != inBounds(binaryBytes, self.binaryData.length, headerStart, sizeof(struct mach_header_64))) break;
                 
                 //init header dictionary
                 header = @{
@@ -407,6 +446,13 @@ bail:
     
     //current macho header
     struct mach_header* currentHeader =  NULL;
+    
+    //end of (current header's) load commands
+    // ->bounded by both 'sizeofcmds' and the end of the file
+    const unsigned char* loadCommandsEnd = NULL;
+    
+    //length of binary
+    NSUInteger length = 0;
 
     //grab binary's bytes
     binaryBytes = [self.binaryData bytes];
@@ -415,6 +461,9 @@ bail:
         //bail
         goto bail;
     }
+    
+    //grab length
+    length = self.binaryData.length;
     
     //iterate over all machO headers
     for(NSDictionary* machoHeader in self.binaryInfo[KEY_MACHO_HEADERS])
@@ -426,12 +475,24 @@ bail:
         // ->immediately follows header
         loadCommand = (struct load_command*)(unsigned char*)(binaryBytes + [machoHeader[KEY_HEADER_OFFSET] unsignedIntegerValue] + [machoHeader[KEY_HEADER_SIZE] unsignedIntValue]);
         
+        //compute end of load commands
+        // ->'sizeofcmds' is attacker-controlled, so clamp to end of file
+        loadCommandsEnd = (const unsigned char*)binaryBytes + length;
+        if( (currentHeader->sizeofcmds <= length) &&
+            ((const unsigned char*)loadCommand <= loadCommandsEnd - currentHeader->sizeofcmds) )
+        {
+            //clamp to 'sizeofcmds'
+            loadCommandsEnd = (const unsigned char*)loadCommand + currentHeader->sizeofcmds;
+        }
+        
         //iterate over all load commands
         // ->number of commands is in 'ncmds' member of (current) header struct
         for(uint32_t i = 0; i < currentHeader->ncmds; i++)
         {
             //sanity check load command
-            if((unsigned char*)loadCommand > (unsigned char*)((unsigned char*)currentHeader + [machoHeader[KEY_HEADER_SIZE] unsignedIntegerValue] + currentHeader->sizeofcmds))
+            // ->must have room for (at least) the fixed struct, before reading 'cmd'/'cmdsize'
+            if( ((const unsigned char*)loadCommand < (const unsigned char*)currentHeader) ||
+                ((const unsigned char*)loadCommand > loadCommandsEnd - sizeof(struct load_command)) )
             {
                 //bail
                 goto bail;
@@ -442,29 +503,68 @@ bail:
             {
                 //swap
                 // ->manually swap, cuz don't won't to affect in memory values
-                switch (OSSwapBigToHostInt32(loadCommand->cmd))
+                // note: (only) swap 'cmd'/'cmdsize' first, then the full struct once its size has been validated
+                swap_load_command(loadCommand, 0x0);
+                
+                //validate
+                // ->size must cover the fixed struct, and fit within the load commands
+                if( (loadCommand->cmdsize < sizeof(struct load_command)) ||
+                    (loadCommand->cmdsize > (NSUInteger)(loadCommandsEnd - (const unsigned char*)loadCommand)) )
+                {
+                    //bail
+                    goto bail;
+                }
+                
+                switch(loadCommand->cmd)
                 {
                     case LC_SEGMENT:
                         
-                        //swap
+                        //sanity check
+                        if(loadCommand->cmdsize < sizeof(struct segment_command)) goto bail;
+                        
+                        //swap (rest of) segment
+                        // note: undo the load command swap first, as 'swap_segment_command' swaps the whole struct
+                        swap_load_command(loadCommand, 0x0);
                         swap_segment_command((struct segment_command *)loadCommand, 0x0);
                         break;
                         
                     case LC_SEGMENT_64:
                         
-                        //swap
+                        //sanity check
+                        if(loadCommand->cmdsize < sizeof(struct segment_command_64)) goto bail;
+                        
+                        //swap (rest of) segment
+                        // note: undo the load command swap first, as 'swap_segment_command_64' swaps the whole struct
+                        swap_load_command(loadCommand, 0x0);
                         swap_segment_command_64((struct segment_command_64 *)loadCommand, 0x0);
                         break;
                         
                     default:
                         
-                        //swap
-                        swap_load_command(loadCommand, 0x0);
+                        //already swapped
                         break;
                         
                 }//switch
                 
             }//need to swap
+            
+            //validate (for both byte orders)
+            // ->size must cover the fixed struct, and fit within the load commands
+            if( (loadCommand->cmdsize < sizeof(struct load_command)) ||
+                (loadCommand->cmdsize > (NSUInteger)(loadCommandsEnd - (const unsigned char*)loadCommand)) )
+            {
+                //bail
+                goto bail;
+            }
+            
+            //validate segments
+            // ->(later) code reads segment fields, so size must cover the segment struct
+            if( ((LC_SEGMENT == loadCommand->cmd) && (loadCommand->cmdsize < sizeof(struct segment_command))) ||
+                ((LC_SEGMENT_64 == loadCommand->cmd) && (loadCommand->cmdsize < sizeof(struct segment_command_64))) )
+            {
+                //bail
+                goto bail;
+            }
 
             //save load command
             [machoHeader[KEY_LOAD_COMMANDS] addPointer:loadCommand];
@@ -479,8 +579,9 @@ bail:
                     //extract name
                     path = [self extractPath:loadCommand byteOrder:machoHeader[KEY_HEADER_BYTE_ORDER]];
                     
-                    //save if new
-                    if(YES != [self.binaryInfo[KEY_LC_RPATHS] containsObject:path])
+                    //save if new (and valid)
+                    if( (nil != path) &&
+                        (YES != [self.binaryInfo[KEY_LC_RPATHS] containsObject:path]) )
                     {
                         //save
                         [self.binaryInfo[KEY_LC_RPATHS] addObject:path];
@@ -495,8 +596,9 @@ bail:
                     //extract name
                     path = [self extractPath:loadCommand byteOrder:machoHeader[KEY_HEADER_BYTE_ORDER]];
                     
-                    //save if new
-                    if(YES != [self.binaryInfo[KEY_LC_REEXPORT_DYLIBS] containsObject:path])
+                    //save if new (and valid)
+                    if( (nil != path) &&
+                        (YES != [self.binaryInfo[KEY_LC_REEXPORT_DYLIBS] containsObject:path]) )
                     {
                         //save
                         [self.binaryInfo[KEY_LC_REEXPORT_DYLIBS] addObject:path];
@@ -512,16 +614,18 @@ bail:
                     //extract name
                     path = [self extractPath:loadCommand byteOrder:machoHeader[KEY_HEADER_BYTE_ORDER]];
                     
-                    //save if new dylib
-                    if( (LC_LOAD_DYLIB == loadCommand->cmd) &&
+                    //save if new (and valid) dylib
+                    if( (nil != path) &&
+                        (LC_LOAD_DYLIB == loadCommand->cmd) &&
                         (YES != [self.binaryInfo[KEY_LC_LOAD_DYLIBS] containsObject:path]) )
                     {
                         //save
                         [self.binaryInfo[KEY_LC_LOAD_DYLIBS] addObject:path];
                     }
                     
-                    //save if new weak dylib
-                    else if( (LC_LOAD_WEAK_DYLIB == loadCommand->cmd) &&
+                    //save if new (and valid) weak dylib
+                    else if( (nil != path) &&
+                             (LC_LOAD_WEAK_DYLIB == loadCommand->cmd) &&
                              (YES != [self.binaryInfo[KEY_LC_LOAD_WEAK_DYLIBS] containsObject:path]) )
                     {
                         //save
@@ -696,7 +800,8 @@ bail:
             }
             
             //init segment name length
-            segmentNameLength = MIN(strlen(((struct segment_command *)loadCommand)->segname), sizeof(((struct segment_command *)loadCommand)->segname));
+            // (name may not be NULL-terminated)
+            segmentNameLength = strnlen(((struct segment_command *)loadCommand)->segname, sizeof(((struct segment_command *)loadCommand)->segname));
             
             //sanity check
             if(0 == segmentNameLength)
@@ -746,9 +851,18 @@ bail:
                 segmentSize = ((struct segment_command_64 *)loadCommand)->filesize;
             }
             
+            //sanity check
+            // ->segment must be within the file ('fileoff'/'filesize' are attacker-controlled)
+            if( (segmentOffset > fileData.length) ||
+                (segmentSize > fileData.length - segmentOffset) )
+            {
+                //skip
+                continue;
+            }
+            
             //calc entropy
             // ->does entire segment...
-            segmentEntropy = [self calcEntropy:&fileBytes[segmentOffset] length:segmentSize];
+            segmentEntropy = [self calcEntropy:&fileBytes[segmentOffset] length:(NSUInteger)segmentSize];
             
             //dbg msg
             //NSLog(@"%s's entropy: %f", ((struct segment_command *)loadCommand)->segname, segmentEntropy);
@@ -875,15 +989,26 @@ bail:
             break;
     }
     
+    //sanity check
+    // ->command must be big enough to (at least) hold the fixed struct
+    // note: 'cmdsize' was validated against the file by 'parseLoadCmds'
+    if(loadCommand->cmdsize <= pathOffset)
+    {
+        //bail
+        goto bail;
+    }
+    
     //init pointer to path's bytes
     pathBytes = (char*)loadCommand + pathOffset;
     
     //set path's length
-    // ->min of strlen/value calculated from load command size
-    pathLength = MIN(strlen(pathBytes), (loadCommand->cmdsize - pathOffset));
+    // ->bounded by the load command's size (may not be NULL-terminated)
+    pathLength = strnlen(pathBytes, loadCommand->cmdsize - pathOffset);
     
     //create nstring version of path
     path = [[NSString alloc] initWithBytes:pathBytes length:pathLength encoding:NSUTF8StringEncoding];
+    
+bail:
     
     return path;
 }
