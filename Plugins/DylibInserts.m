@@ -4,7 +4,6 @@
 //
 
 #import "File.h"
-#import "Command.h"
 #import "utilities.h"
 #import "AppDelegate.h"
 #import "DylibInserts.h"
@@ -304,11 +303,11 @@ bail:
 
 //process (the value of) a 'DYLD_INSERT_LIBRARIES' variable
 // ->it's a colon-separated list, so create (and report) an item for each entry
-//   entries that can't be found as files (e.g. '@executable_path/...') are reported as Commands, rather than dropped
+//   entries that can't be found as files (e.g. '@executable_path/...', or missing) are skipped, as they can't be loaded
 -(void)processInsertedDylibs:(id)value plist:(NSString*)plist
 {
     //item
-    ItemBase* item = nil;
+    File* item = nil;
     
     //coerce
     // (untrusted) plist values can be any type
@@ -325,18 +324,8 @@ bail:
         }
         
         //create File object for injected dylib
-        item = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:dylib, KEY_RESULT_PLIST:plist}];
-        
-        //not found (e.g. relative to @executable_path, or on a volume mounted later)?
-        // ->still report it (as a Command), so it isn't silently dropped
-        if(nil == item)
-        {
-            //create Command object
-            item = [[Command alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_COMMAND:[NSString stringWithFormat:@"%@ (file not found)", dylib], KEY_RESULT_PATH:plist}];
-        }
-        
-        //skip items that err'd out for any reason
-        if(nil == item)
+        // ->skip those that err out for any reason (e.g. not found)
+        if(nil == (item = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:dylib, KEY_RESULT_PLIST:plist}]))
         {
             //skip
             continue;

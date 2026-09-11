@@ -4,7 +4,6 @@
 //
 
 #import "File.h"
-#import "Command.h"
 #import "utilities.h"
 #import "AppDelegate.h"
 #import "LaunchItems.h"
@@ -63,10 +62,6 @@
     
     //detected (auto-started) login item
     File* fileObj = nil;
-    
-    //(fallback) Command obj
-    // for items whose binary can't be found
-    Command* commandObj = nil;
 
     //get overriden enabled & disabled items
     [self processOverrides];
@@ -175,22 +170,10 @@
         }
         
         //create File object for launch item
-        fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:launchItemPath, KEY_RESULT_PLIST:launchItemPlist}];
-        
-        //binary not found (or other error)?
-        // ->still report it (as a Command), as launchd may still run it (e.g. via a PATH we don't see, a volume mounted later, etc)
-        if(nil == fileObj)
+        // ->skip those that err out for any reason (e.g. binary not found, as then it can't be run)
+        if(nil == (fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:launchItemPath, KEY_RESULT_PLIST:launchItemPlist}]))
         {
-            //create Command object
-            commandObj = [[Command alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_COMMAND:[NSString stringWithFormat:@"%@ (file not found)", launchItemPath], KEY_RESULT_PATH:launchItemPlist}];
-            if(nil != commandObj)
-            {
-                //process item
-                // ->save and report to UI
-                [super processItem:commandObj];
-            }
-            
-            //next
+            //skip
             continue;
         }
         

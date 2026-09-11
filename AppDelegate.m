@@ -101,8 +101,9 @@ void uncaughtExceptionHandler(NSException* exception) {
         // as root's own defaults have none, so AppKit would render everything light
         adoptConsoleUserAppearance();
         
-        //init & scan
-        [self initializeForScan:YES];
+        //init
+        // note: don't auto-start the scan, user clicks 'Start Scan' as usual
+        [self initializeForScan:NO];
         
         //done
         return;
