@@ -37,9 +37,6 @@
 //plugin icon
 #define PLUGIN_ICON @"dylibIcon"
 
-//(base) directory that has overrides for launch* and apps
-#define OVERRIDES_DIRECTORY @"/private/var/db/launchd.db/"
-
 @implementation DylibInserts
 
 //init
@@ -321,79 +318,30 @@ bail:
 }
 
 //get all disabled launch items
-// ->specified in various overrides.plist files
+// ->from launchd's (live) override database (see 'launchdOverrides')
 -(NSArray*)getDisabledItems
 {
     //disable items
     NSMutableArray* disabledItems = nil;
     
-    //override directories
-    NSArray* overrideDirectories = nil;
-    
-    //override path
-    NSString* overridePath = nil;
-    
-    //overrides user id
-    uid_t overridesUserID = 0;
-    
-    //override contents
-    NSDictionary* overrideContents = nil;
+    //overrides
+    NSDictionary* overrides = nil;
     
     //alloc array
     disabledItems = [NSMutableArray array];
     
-    //get all override directories
-    overrideDirectories = directoryContents(OVERRIDES_DIRECTORY, @"self BEGINSWITH 'com.apple.launchd'");
+    //get overrides
+    // label -> @YES (disabled) / @NO (explicitly enabled)
+    overrides = launchdOverrides();
     
-    //iterate over all directories
-    // ->open/parse 'overrides.plist'
-    for(NSString* overrideDirectory in overrideDirectories)
+    //save disabled ones
+    for(NSString* label in overrides)
     {
-        //init full path
-        overridePath = [NSString stringWithFormat:@"%@%@%@", OVERRIDES_DIRECTORY, overrideDirectory, @"/overrides.plist"];
-        
-        //skip files that don't exist/aren't accessible
-        if(YES != [[NSFileManager defaultManager] fileExistsAtPath:overridePath])
+        //disabled?
+        if(YES == [overrides[label] boolValue])
         {
-            //try resolve
-            overridePath = which(overridePath);
-            if( (nil == overridePath) ||
-                (YES != [[NSFileManager defaultManager] fileExistsAtPath:overridePath]))
-            {
-                //skip
-                continue;
-            }
-        }
-        
-        //extract overrides UID from its directory name
-        // ->e.g. 'com.apple.launchd.peruser.501' -> 501
-        overridesUserID = [[overrideDirectory pathExtension] intValue];
-        
-        //for override UID's over 500
-        // ->ignore unless it matches current users
-        if( (overridesUserID > 500) &&
-            (overridesUserID != getuid()) )
-        {
-            //skip
-            continue;
-        }
-        
-        //load override plist
-        overrideContents = [NSDictionary dictionaryWithContentsOfFile:overridePath];
-        
-        //iterate over all items in override plist file
-        // ->save any that are disabled
-        for(NSString* overrideItem in overrideContents)
-        {
-            //skip enabled items
-            if(YES != [overrideContents[overrideItem][@"Disabled"] boolValue])
-            {
-                //skip
-                continue;
-            }
-            
-            //save disabled item
-            [disabledItems addObject:overrideItem];
+            //add
+            [disabledItems addObject:label];
         }
     }
     

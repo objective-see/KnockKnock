@@ -570,6 +570,90 @@ bail:
     return hashes;
 }
 
+//get launchd's overrides (i.e. 'launchctl enable/disable' state)
+// returns dictionary of label -> @YES (disabled) / @NO (explicitly enabled)
+// note: when root, merges all users' overrides; when a label conflicts across users, 'enabled' wins (so item is reported)
+NSDictionary* launchdOverrides(void)
+{
+    //overrides
+    NSMutableDictionary* overrides = nil;
+    
+    //override files
+    NSMutableArray* overrideFiles = nil;
+    
+    //override file contents
+    NSDictionary* contents = nil;
+    
+    //(current) state
+    NSNumber* state = nil;
+    
+    //alloc
+    overrides = [NSMutableDictionary dictionary];
+    
+    //alloc
+    overrideFiles = [NSMutableArray array];
+    
+    //system domain
+    [overrideFiles addObject:@"disabled.plist"];
+    
+    //root?
+    // add all users' (per-user domain) overrides
+    if(0 == geteuid())
+    {
+        //add each
+        for(NSString* file in directoryContents(LAUNCHD_OVERRIDES_DIRECTORY, @"self BEGINSWITH 'disabled.' AND self ENDSWITH '.plist'"))
+        {
+            //skip system domain (already added)
+            if(YES != [file isEqualToString:@"disabled.plist"])
+            {
+                //add
+                [overrideFiles addObject:file];
+            }
+        }
+    }
+    //not root
+    // just add current user's (per-user domain) overrides
+    else
+    {
+        //add
+        [overrideFiles addObject:[NSString stringWithFormat:@"disabled.%d.plist", geteuid()]];
+    }
+    
+    //process each override file
+    for(NSString* overrideFile in overrideFiles)
+    {
+        //load
+        // note: skips files that don't exist, aren't readable, etc.
+        contents = [NSDictionary dictionaryWithContentsOfFile:[LAUNCHD_OVERRIDES_DIRECTORY stringByAppendingPathComponent:overrideFile]];
+        
+        //process each label
+        for(NSString* label in contents)
+        {
+            //skip non-strings, non-bools
+            if( (YES != [label isKindOfClass:[NSString class]]) ||
+                (YES != [contents[label] isKindOfClass:[NSNumber class]]) )
+            {
+                //skip
+                continue;
+            }
+            
+            //state
+            state = contents[label];
+            
+            //merge
+            // 'enabled' (NO) wins over 'disabled' (YES), so when in doubt, item will be reported
+            if( (nil == overrides[label]) ||
+                (YES != [state boolValue]) )
+            {
+                //save
+                overrides[label] = @([state boolValue]);
+            }
+        }
+    }
+    
+    return overrides;
+}
+
 //coerce an (untrusted) object to a string
 // strings are returned as is, nil stays nil, anything else (arrays, numbers, etc.) becomes its description
 // note: plist/JSON values from user-writable files can be any type, and UI/string APIs throw on non-strings

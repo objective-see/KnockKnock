@@ -17,9 +17,6 @@
 //plugin icon
 #define PLUGIN_ICON @"launchIcon"
 
-//(base) directory that has overrides for launch* and apps
-#define OVERRIDES_DIRECTORY @"/private/var/db/launchd.db/"
-
 @implementation LaunchItems
 
 @synthesize enabledItems;
@@ -189,20 +186,11 @@
 }
 
 //get all overridden enabled/disabled launch items
-// ->specified in various overrides.plist files
+// ->from launchd's (live) override database (see 'launchdOverrides')
 -(void)processOverrides
 {
-    //override directories
-    NSArray* overrideDirectories = nil;
-    
-    //override path
-    NSString* overridePath = nil;
-    
-    //overrides user id
-    uid_t overridesUserID = 0;
-    
-    //override contents
-    NSDictionary* overrideContents = nil;
+    //overrides
+    NSDictionary* overrides = nil;
     
     //alloc enabled items array
     enabledItems = [NSMutableArray array];
@@ -210,70 +198,24 @@
     //alloc disabled items array
     disabledItems = [NSMutableArray array];
     
-    //get all override directories
-    overrideDirectories = directoryContents(OVERRIDES_DIRECTORY, @"self BEGINSWITH 'com.apple.launchd'");
+    //get overrides
+    // label -> @YES (disabled) / @NO (explicitly enabled)
+    overrides = launchdOverrides();
     
-    //iterate over all directories
-    // ->open/parse 'overrides.plist'
-    for(NSString* overrideDirectory in overrideDirectories)
+    //split into disabled/enabled
+    for(NSString* label in overrides)
     {
-        //init full path
-        overridePath = [NSString stringWithFormat:@"%@%@%@", OVERRIDES_DIRECTORY, overrideDirectory, @"/overrides.plist"];
-        
-        //skip files that don't exist/aren't accessible
-        // ->but first try to resolve via 'which()' to get long path
-        if(YES != [[NSFileManager defaultManager] fileExistsAtPath:overridePath])
+        //disabled
+        if(YES == [overrides[label] boolValue])
         {
-            //try resolve
-            overridePath = which(overridePath);
-            if( (nil == overridePath) ||
-                (YES != [[NSFileManager defaultManager] fileExistsAtPath:overridePath]))
-            {
-                //skip
-                continue;
-            }
+            //add
+            [self.disabledItems addObject:label];
         }
-        
-        //extract overrides UID from its directory name
-        // ->e.g. 'com.apple.launchd.peruser.501' -> 501
-        overridesUserID = [[overrideDirectory pathExtension] intValue];
-        
-        //for override UID's over 500
-        // ->ignore unless it matches current users
-        if( (overridesUserID > 500) &&
-            (overridesUserID != getuid()) )
+        //(explicitly) enabled
+        else
         {
-            //skip
-            continue;
-        }
-        
-        //load override plist
-        overrideContents = [NSDictionary dictionaryWithContentsOfFile:overridePath];
-        
-        //iterate over all items in override plist file
-        // ->save any that are disabled
-        for(NSString* overrideItem in overrideContents)
-        {
-            //skip items that don't have 'Disabled' key
-            if(nil == overrideContents[overrideItem][@"Disabled"])
-            {
-                //skip
-                continue;
-            }
-            
-            //add enabled item
-            if(YES == [overrideContents[overrideItem][@"Disabled"] boolValue])
-            {
-                //add
-                [self.enabledItems addObject:overrideItem];
-            }
-            
-            //add disabled item
-            else
-            {
-                //add
-                [self.disabledItems addObject:overrideItem];
-            }
+            //add
+            [self.enabledItems addObject:label];
         }
     }
     
@@ -302,24 +244,21 @@
     //flag for start interval
     BOOL startInterval = NO;
     
-    //skip launch items overriden with 'Disable'
+    //skip launch items disabled via override (i.e. 'launchctl disable')
     if(YES == [self.disabledItems containsObject:plist[@"label"]])
     {
         //bail
         goto bail;
     }
 
-    //skip directly disabled items
-    // ->unless its overridden w/ enabled
+    //skip items disabled in their plist ('Disabled' key)
+    // ->unless explicitly enabled via override (i.e. 'launchctl enable'), as then launchd runs them
     if( (YES == [plist[@"disabled"] isKindOfClass:[NSNumber class]]) &&
-        (YES == [plist[@"disabled"] boolValue]) )
+        (YES == [plist[@"disabled"] boolValue]) &&
+        (YES != [self.enabledItems containsObject:plist[@"label"]]) )
     {
-        //also make sure it's not enabled via an override
-        if(YES != [self.disabledItems containsObject:plist[@"label"]])
-        {
-            //bail
-            goto bail;
-        }
+        //bail
+        goto bail;
     }
     
     //set 'RunAtLoad' flag

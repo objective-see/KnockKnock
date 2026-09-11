@@ -47,6 +47,11 @@ int openRegularFile(NSString* path, off_t maxSize, off_t* size);
 //hash a file
 NSDictionary* hashFile(NSString* filePath);
 
+//get launchd's overrides (i.e. 'launchctl enable/disable' state)
+// returns dictionary of label -> @YES (disabled) / @NO (explicitly enabled)
+// note: when root, merges all users' overrides; when a label conflicts across users, 'enabled' wins (so item is reported)
+NSDictionary* launchdOverrides(void);
+
 //coerce an (untrusted) object to a string
 // strings are returned as is, nil stays nil, anything else (arrays, numbers, etc.) becomes its description
 NSString* stringValue(id object);

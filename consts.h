@@ -110,6 +110,11 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //path for pluginkit
 #define PLUGIN_KIT @"/usr/bin/pluginkit"
 
+//launchd's (live) override database
+// 'disabled.plist' (system domain) and 'disabled.<uid>.plist' (per-user domains)
+// each is a flat dictionary of label -> bool (true: disabled, false: explicitly enabled)
+#define LAUNCHD_OVERRIDES_DIRECTORY @"/private/var/db/com.apple.xpc.launchd"
+
 //dyld_ key for launch items
 #define LAUNCH_ITEM_DYLD_KEY @"EnvironmentVariables"
 

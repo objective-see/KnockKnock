@@ -23,16 +23,17 @@ extern ItemEnumerator* sharedItemEnumerator;
 
 //PROPERTIES
 
-//overridden disabled items
+//items disabled via override (i.e. 'launchctl disable')
 @property(nonatomic, retain)NSMutableArray* disabledItems;
 
-//overridden enabled items
+//items explicitly enabled via override (i.e. 'launchctl enable')
+// note: such items run even if their plist says 'Disabled'
 @property(nonatomic, retain)NSMutableArray* enabledItems;
 
 /* (custom) METHODS */
 
 //get all overridden enabled/disabled launch items
-// ->specified in various overrides.plist files
+// ->from launchd's (live) override database
 -(void)processOverrides;
 
 //checks if an item will be automatically run by the OS
