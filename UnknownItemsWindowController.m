@@ -23,6 +23,9 @@
     //super
     [super windowDidLoad];
     
+    //init (serial) submit queue
+    self.submitQueue = dispatch_queue_create("com.objective-see.knockknock.vtSubmit", DISPATCH_QUEUE_SERIAL);
+    
     //grab last column
     NSTableColumn *lastColumn = self.tableView.tableColumns.lastObject;
 
@@ -349,10 +352,12 @@
         submittedItems++;
         
         //submit in background
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // note: on a serial queue, so submissions are spaced out (VT rate-limits public API keys)
+        //       ...was 'sleep(0.5)' on a concurrent queue, which is 'sleep(0)' and no spacing at all
+        dispatch_async(self.submitQueue, ^{
             
             //nap
-            sleep(0.5);
+            [NSThread sleepForTimeInterval:0.5];
             
             //submit to VT
             [vtObj submitFile:((File*)item).path completion:^(NSDictionary *result) {

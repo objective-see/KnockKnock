@@ -74,9 +74,6 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //is notarized?
 #define KEY_SIGNATURE_IS_NOTARIZED @"notarized"
 
-//OS version yosemite
-#define OS_MINOR_VERSION_YOSEMITE 10
-
 //executable path
 #define EXECUTABLE_PATH @"@executable_path"
 
@@ -126,9 +123,6 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 
 //user (home) directory
 #define USER_DIRECTORY @"userDirectory"
-
-//path to diff
-#define DIFF @"/usr/bin/diff"
 
 //cmdline arg
 // passed to the instance we (re)launch as root, so it can skip the welcome flow, etc
@@ -211,10 +205,6 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //known extension hashes
 #define WHITE_LISTED_EXTENSIONS @"whitelistedExtensions"
 
-//scanner option key
-// ->filter apple signed/known items
-#define KEY_SCANNER_FILTER @"filterItems"
-
 //plugin key
 #define KEY_RESULT_PLUGIN @"plugin"
 
@@ -241,17 +231,8 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 
 /* VIRUS TOTAL */
 
-//user agent
-#define VT_USER_AGENT @"VirusTotal"
-
-//results
-#define VT_RESULTS @"data"
-
 //error
 #define VT_ERROR @"error"
-
-//results response code
-#define VT_RESULTS_RESPONSE @"response_code"
 
 //result url
 #define VT_RESULTS_URL @"permalink"
@@ -259,20 +240,11 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //report was shown
 #define VT_REPORT_VIEWED @"reportViewed"
 
-//result hash
-#define VT_RESULT_HASH @"hash"
-
 //results positives
 #define VT_RESULTS_POSITIVES @"positives"
 
 //results total
 #define VT_RESULTS_TOTAL @"total"
-
-//results scan id
-#define VT_RESULTS_SCANID @"scan_id"
-
-//HTTP response
-#define VT_HTTP_RESPONSE @"http_response"
 
 //support us button tag
 #define BUTTON_SUPPORT_US 100

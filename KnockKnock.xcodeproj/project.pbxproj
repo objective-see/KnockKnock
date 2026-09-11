@@ -94,7 +94,7 @@
 		CDAB98A31AEB413C00C75B4B /* dylibIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDAB98A21AEB413C00C75B4B /* dylibIcon.png */; };
 		CDADCFA02EE7833C00C6DBF4 /* DockTiles.m in Sources */ = {isa = PBXBuildFile; fileRef = CDADCF812EE7833C00C6DBF4 /* DockTiles.m */; };
 		CDADCFA12EE7833C00C6DBF4 /* BTM.m in Sources */ = {isa = PBXBuildFile; fileRef = CDADCF7B2EE7833C00C6DBF4 /* BTM.m */; };
-		CDADCFA22EE7833C00C6DBF4 /* PeriodicScrips.m in Sources */ = {isa = PBXBuildFile; fileRef = CDADCF932EE7833C00C6DBF4 /* PeriodicScrips.m */; };
+		CDADCFA22EE7833C00C6DBF4 /* PeriodicScripts.m in Sources */ = {isa = PBXBuildFile; fileRef = CDADCF932EE7833C00C6DBF4 /* PeriodicScripts.m */; };
 		CDADCFA32EE7833C00C6DBF4 /* ShellConfigs.m in Sources */ = {isa = PBXBuildFile; fileRef = CDADCF992EE7833C00C6DBF4 /* ShellConfigs.m */; };
 		CDADCFA42EE7833C00C6DBF4 /* SystemExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CDADCF9F2EE7833C00C6DBF4 /* SystemExtensions.m */; };
 		CDADCFA52EE7833C00C6DBF4 /* LogInOutHooks.m in Sources */ = {isa = PBXBuildFile; fileRef = CDADCF912EE7833C00C6DBF4 /* LogInOutHooks.m */; };
@@ -313,8 +313,8 @@
 		CDADCF8F2EE7833C00C6DBF4 /* LoginItems.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginItems.m; sourceTree = "<group>"; };
 		CDADCF902EE7833C00C6DBF4 /* LogInOutHooks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LogInOutHooks.h; sourceTree = "<group>"; };
 		CDADCF912EE7833C00C6DBF4 /* LogInOutHooks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LogInOutHooks.m; sourceTree = "<group>"; };
-		CDADCF922EE7833C00C6DBF4 /* PeriodicScrips.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PeriodicScrips.h; sourceTree = "<group>"; };
-		CDADCF932EE7833C00C6DBF4 /* PeriodicScrips.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PeriodicScrips.m; sourceTree = "<group>"; };
+		CDADCF922EE7833C00C6DBF4 /* PeriodicScripts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PeriodicScripts.h; sourceTree = "<group>"; };
+		CDADCF932EE7833C00C6DBF4 /* PeriodicScripts.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PeriodicScripts.m; sourceTree = "<group>"; };
 		CDADCF942EE7833C00C6DBF4 /* PluginBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PluginBase.h; sourceTree = "<group>"; };
 		CDADCF952EE7833C00C6DBF4 /* PluginBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PluginBase.m; sourceTree = "<group>"; };
 		CDADCF962EE7833C00C6DBF4 /* QuicklookPlugins.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QuicklookPlugins.h; sourceTree = "<group>"; };
@@ -617,8 +617,8 @@
 				CDADCF8F2EE7833C00C6DBF4 /* LoginItems.m */,
 				CDADCF902EE7833C00C6DBF4 /* LogInOutHooks.h */,
 				CDADCF912EE7833C00C6DBF4 /* LogInOutHooks.m */,
-				CDADCF922EE7833C00C6DBF4 /* PeriodicScrips.h */,
-				CDADCF932EE7833C00C6DBF4 /* PeriodicScrips.m */,
+				CDADCF922EE7833C00C6DBF4 /* PeriodicScripts.h */,
+				CDADCF932EE7833C00C6DBF4 /* PeriodicScripts.m */,
 				CDADCF942EE7833C00C6DBF4 /* PluginBase.h */,
 				CDADCF952EE7833C00C6DBF4 /* PluginBase.m */,
 				CDADCF962EE7833C00C6DBF4 /* QuicklookPlugins.h */,
@@ -872,7 +872,7 @@
 				CD2F21A421A8A7E300F67A83 /* UpdateWindowController.m in Sources */,
 				CDADCFA02EE7833C00C6DBF4 /* DockTiles.m in Sources */,
 				CDADCFA12EE7833C00C6DBF4 /* BTM.m in Sources */,
-				CDADCFA22EE7833C00C6DBF4 /* PeriodicScrips.m in Sources */,
+				CDADCFA22EE7833C00C6DBF4 /* PeriodicScripts.m in Sources */,
 				CDADCFA32EE7833C00C6DBF4 /* ShellConfigs.m in Sources */,
 				CDADCFA42EE7833C00C6DBF4 /* SystemExtensions.m in Sources */,
 				CDADCFA52EE7833C00C6DBF4 /* LogInOutHooks.m in Sources */,

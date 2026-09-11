@@ -1354,19 +1354,84 @@ BOOL isDarkMode(void)
         goto bail;
     }
     
-    //not dark mode?
-    if(YES != [[[NSUserDefaults standardUserDefaults] stringForKey:@"AppleInterfaceStyle"] isEqualToString:@"Dark"])
+    //ask AppKit what it's actually drawing
+    // note: reading 'AppleInterfaceStyle' from defaults is wrong when running as root (root's defaults, not the user's)
+    if(@available(macOS 10.14, *))
     {
-        //bail
-        goto bail;
+        //app's effective appearance
+        // (in cmdline mode there's no NSApp, but then there's no UI either)
+        if(nil != NSApp)
+        {
+            //dark?
+            darkMode = [[NSApp.effectiveAppearance bestMatchFromAppearancesWithNames:@[NSAppearanceNameAqua, NSAppearanceNameDarkAqua]] isEqualToString:NSAppearanceNameDarkAqua];
+            
+            //done
+            goto bail;
+        }
     }
     
-    //ok, mojave dark mode it is!
-    darkMode = YES;
+    //fallback
+    // (no NSApp, or pre-10.14) check defaults
+    darkMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"AppleInterfaceStyle"] isEqualToString:@"Dark"];
     
 bail:
     
     return darkMode;
+}
+
+//adopt the console user's appearance (light/dark)
+// needed when running as root (e.g. relaunched via admin auth), as root's own defaults have no appearance set
+// ...so AppKit would render everything light, regardless of what the (logged in) user has selected
+void adoptConsoleUserAppearance(void)
+{
+    //console user
+    NSString* consoleUser = nil;
+    
+    //user's interface style
+    CFPropertyListRef style = NULL;
+    
+    //only on 10.14+
+    // (no dark mode before that)
+    if(@available(macOS 10.14, *))
+    {
+        //get console user
+        consoleUser = getConsoleUser();
+        if(0 == consoleUser.length)
+        {
+            //bail
+            goto bail;
+        }
+        
+        //read the console user's (global) 'AppleInterfaceStyle'
+        // note: root can read any user's preferences by specifying the user
+        style = CFPreferencesCopyValue(CFSTR("AppleInterfaceStyle"), kCFPreferencesAnyApplication, (__bridge CFStringRef)consoleUser, kCFPreferencesAnyHost);
+        
+        //dark?
+        if( (NULL != style) &&
+            (CFGetTypeID(style) == CFStringGetTypeID()) &&
+            (YES == [(__bridge NSString*)style isEqualToString:@"Dark"]) )
+        {
+            //set dark
+            NSApp.appearance = [NSAppearance appearanceNamed:NSAppearanceNameDarkAqua];
+        }
+        //light (key absent when light)
+        else
+        {
+            //set light
+            NSApp.appearance = [NSAppearance appearanceNamed:NSAppearanceNameAqua];
+        }
+    }
+    
+bail:
+    
+    //free
+    if(NULL != style)
+    {
+        //free
+        CFRelease(style);
+    }
+    
+    return;
 }
 
 //bring an app to foreground (to get an icon in the dock) or background
@@ -1408,17 +1473,39 @@ void setLineSpacing(NSTextField* textField, CGFloat lineSpacing)
 }
 
 //full disk access check
-// no API for this, so let's just see if we can read user's TCC.db
+// no API for this, so let's just see if we can read a (FDA-protected) TCC.db
+// note: for root, that's the system's; otherwise it's the (effective) user's own
+//       ...previously keyed off the console user, which fails headless (e.g. ssh) or when another user is logged in
 BOOL hasFDA(void) {
     
-    //get current/console user
-    NSString* currentUser = getConsoleUser();
-    
-    //get their home directory
-    NSString* userDirectory = NSHomeDirectoryForUser(currentUser);
-    
     //tcc path
-    NSString* tccPath = [NSString stringWithFormat:@"%@/Library/Application Support/com.apple.TCC/TCC.db", userDirectory];
+    NSString* tccPath = nil;
+    
+    //user's home
+    NSString* userDirectory = nil;
+    
+    //root?
+    // check system's TCC.db
+    if(0 == geteuid())
+    {
+        //init
+        tccPath = @"/Library/Application Support/com.apple.TCC/TCC.db";
+    }
+    //user
+    // check their own TCC.db
+    else
+    {
+        //get (effective) user's home directory
+        userDirectory = NSHomeDirectory();
+        if(0 == userDirectory.length)
+        {
+            //bail
+            return NO;
+        }
+        
+        //init
+        tccPath = [userDirectory stringByAppendingPathComponent:@"Library/Application Support/com.apple.TCC/TCC.db"];
+    }
     
     //FDA check
     // is 'protected' file readable

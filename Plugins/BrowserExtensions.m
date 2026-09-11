@@ -688,6 +688,10 @@ bail:
                 //parse out all extensions
                 for(NSDictionary* extension in extensions)
                 {
+                    //(re)init extension info dictionary
+                    // note: must be per-extension, else 'details'/'path' from a previous extension leak into the next
+                    extensionInfo = [NSMutableDictionary dictionary];
+                    
                     //skip non-dictionaries, or those w/o a (string) id
                     // note: files are user-writable, so values can be any type
                     if( (YES != [extension isKindOfClass:[NSDictionary class]]) ||

@@ -1,5 +1,5 @@
 //
-//  CronJobs.m
+//  LogInOutHooks.m
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 7/18/15.

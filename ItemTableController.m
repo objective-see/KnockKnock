@@ -778,8 +778,9 @@ bail:
     @synchronized (tableItems) {
         
         //sanity check
-        // ->make sure row has item
-        if(tableItems.count < selectedRow)
+        // ->make sure row has item (note: 'rowForView' returns -1 if not found)
+        if( (selectedRow < 0) ||
+            (selectedRow >= tableItems.count) )
         {
             //bail
             goto bail;
@@ -830,8 +831,9 @@ bail:
     @synchronized (tableItems) {
         
         //sanity check
-        // ->make sure row has item
-        if(tableItems.count < selectedRow)
+        // ->make sure row has item (note: 'rowForView' returns -1 if not found)
+        if( (selectedRow < 0) ||
+            (selectedRow >= tableItems.count) )
         {
             //bail
             goto bail;
@@ -865,7 +867,7 @@ bail:
     File* selectedItem = nil;
 
     //row that button was clicked on
-    NSUInteger rowIndex = -1;
+    NSInteger rowIndex = -1;
     
     //get row index
     rowIndex = [self.itemTableView rowForView:button];
@@ -876,15 +878,15 @@ bail:
     @synchronized (tableItems) {
         
         //sanity check
-        // ->make sure row has item
-        if(tableItems.count < rowIndex)
+        // ->make sure row has item (note: 'rowForView' returns -1 if not found)
+        if( (rowIndex < 0) ||
+            (rowIndex >= tableItems.count) )
         {
             //bail
             goto bail;
         }
 
-        //sanity check
-        if(-1 != rowIndex)
+        //extract & show
         {
             //extract selected item
             // ->invoke helper function to get array backing table

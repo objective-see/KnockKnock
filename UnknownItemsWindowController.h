@@ -26,6 +26,10 @@ static const unsigned long long MAX_UPLOAD_SIZE = 32 * 1024 * 1024;
 @property(nonatomic, retain)NSMutableDictionary<NSNumber *, NSDictionary*>*results;
 @property(nonatomic, retain)NSMutableDictionary<NSNumber *, NSNumber *>*selections;
 
+//(serial) queue for VT submissions
+// ->spaces submissions out, as VT rate-limits public API keys
+@property(nonatomic, strong)dispatch_queue_t submitQueue;
+
 //table view
 @property(weak)IBOutlet NSTableView *tableView;
 

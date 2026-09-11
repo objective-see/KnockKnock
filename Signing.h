@@ -1,6 +1,6 @@
 //
 //  File: Signing.h
-//  Project: Proc Info
+//  Project: KnockKnock
 //
 //  Created by: Patrick Wardle
 //  Copyright:  2017 Objective-See

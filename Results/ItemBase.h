@@ -1,5 +1,5 @@
 //
-//  PluginBase.h
+//  ItemBase.h
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 9/25/14.

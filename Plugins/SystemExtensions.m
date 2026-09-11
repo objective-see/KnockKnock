@@ -1,9 +1,9 @@
 //
-//  Extensions.m
+//  SystemExtensions.m
 //  KnockKnock
 //
-//  Notes: view via these via System Preferences->Extensions, or pluginkit -vmA
-//         only for current user, since we utilized 'pluginkit' which is "for current user"
+//  Notes: system extensions (network, endpoint security, drivers) from the system extensions database
+//         view via 'systemextensionsctl list'
 
 #import "File.h"
 #import "utilities.h"

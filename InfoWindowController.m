@@ -135,7 +135,7 @@
         else
         {
             //set
-            [self.plist setStringValue:@"No propertly list"];
+            [self.plist setStringValue:@"No property list"];
         }
         
         //set signing info
@@ -166,7 +166,8 @@
         [self.identifier setStringValue:[NSString stringWithFormat:@"%@", ((Extension*)self.itemObj).identifier]];
         
         //set date
-        [self.date setStringValue:[NSString stringWithFormat:@"%@ (created) / %@ (modified)", ((File*)self.itemObj).attributes.fileCreationDate, ((File*)self.itemObj).attributes.fileModificationDate]];
+        // note: 'attributes' lives on ItemBase, so no (wrong) cast to File needed
+        [self.date setStringValue:[NSString stringWithFormat:@"%@ (created) / %@ (modified)", self.itemObj.attributes.fileCreationDate, self.itemObj.attributes.fileModificationDate]];
         
         //set signing info
         //[self.sign setStringValue:[(File*)self.itemObj formatSigningInfo]];

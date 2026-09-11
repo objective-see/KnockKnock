@@ -154,7 +154,8 @@
         itemRef = (__bridge LSSharedFileListItemRef)item;
         
         //get path
-        if(STATUS_SUCCESS != LSSharedFileListItemResolve(itemRef, 0, &itemPath, NULL))
+        // note: no UI, and no mounting (a login item aliasing a network share would otherwise prompt/mount)
+        if(STATUS_SUCCESS != LSSharedFileListItemResolve(itemRef, kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes, &itemPath, NULL))
         {
             //skip
             continue;
@@ -232,7 +233,8 @@ bail:
         }
         
         //resolve bookmark data into URL
-        url = CFURLCreateByResolvingBookmarkData(kCFAllocatorDefault, bookmark, kCFBookmarkResolutionWithoutUIMask, nil, nil, nil, nil);
+        // note: no UI, and no mounting (a login item aliasing a network share would otherwise prompt/mount)
+        url = CFURLCreateByResolvingBookmarkData(kCFAllocatorDefault, bookmark, kCFBookmarkResolutionWithoutUIMask | kCFBookmarkResolutionWithoutMountingMask, nil, nil, nil, nil);
         
         //now release bookmark
         CFRelease(bookmark);

@@ -11,7 +11,8 @@
 int main(int argc, char *argv[])
 {
     //status
-    int status = -1;
+    // (default to failure; success paths set to 0)
+    int status = EXIT_FAILURE;
     
     NSArray* args = NSProcessInfo.processInfo.arguments;
     
@@ -28,6 +29,9 @@ int main(int argc, char *argv[])
             //print usage
             usage(NO);
             
+            //happy
+            status = EXIT_SUCCESS;
+            
             //done
             goto bail;
         }
@@ -35,8 +39,11 @@ int main(int argc, char *argv[])
         //print version
         if(YES == [args containsObject:@"-version"])
         {
-            //print usage
+            //print version
             version();
+            
+            //happy
+            status = EXIT_SUCCESS;
             
             //done
             goto bail;

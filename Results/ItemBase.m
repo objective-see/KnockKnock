@@ -1,5 +1,5 @@
 //
-//  PluginBase.m
+//  ItemBase.m
 //  KnockKnock
 
 #import "consts.h"

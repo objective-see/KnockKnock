@@ -2,12 +2,12 @@
 //  PeriodicScripts.m
 //  KnockKnock
 //
-//  Notes: Authorization, or Authentication plugins can be used to customize logins,
-//         example app (for testing, etc): http://www.rohos.com/2015/10/installing-rohos-logon-in-mac-os-10-11-el-capitan/
+//  Notes: scripts run by periodic(8) (daily, weekly, monthly)
+//         note: 'periodic' is no longer present on recent versions of macOS
 
 #import "File.h"
 #import "utilities.h"
-#import "PeriodicScrips.h"
+#import "PeriodicScripts.h"
 
 //plugin name
 #define PLUGIN_NAME @"Periodic Scripts"

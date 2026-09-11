@@ -121,6 +121,10 @@ void uncaughtExceptionHandler(NSException* exception) {
     // skip welcome/configuration screens, and kick off scan
     if(YES == relaunched)
     {
+        //adopt console user's appearance (light/dark)
+        // as root's own defaults have none, so AppKit would render everything light
+        adoptConsoleUserAppearance();
+        
         //set key
         // so subsequent (root) runs don't show welcome screens either
         [defaults setBool:YES forKey:NOT_FIRST_TIME];
@@ -647,7 +651,7 @@ bail:
         dispatch_async(dispatch_get_main_queue(), ^{
             
             //update
-            [self.statusText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Awaiting VirusTotal results", @"Awaiting VirusTotal results")]];
+            [self.statusText setStringValue:NSLocalizedString(@"Awaiting VirusTotal results", @"Awaiting VirusTotal results")];
             
         });
         

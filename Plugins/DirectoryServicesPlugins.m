@@ -1,5 +1,5 @@
 //
-//  QuicklookPlugins.m
+//  DirectoryServicesPlugins.m
 //  KnockKnock
 //
 //  Created by Patrick Wardle on 11/09/19.
