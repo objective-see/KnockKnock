@@ -86,7 +86,12 @@ extern BOOL queryVT;
         itemsInCategory = plugin.allItems.count;
         
         //check if any item is flagged
-        if(queryVT && plugin.flaggedItems.count)
+        // (synchronized, as VT (background) thread mutates it)
+        BOOL anyFlagged = NO;
+        @synchronized(plugin.flaggedItems) {
+            anyFlagged = (0 != plugin.flaggedItems.count);
+        }
+        if(queryVT && anyFlagged)
         {
             //set flag
             hasFlaggedItem = YES;
@@ -110,7 +115,12 @@ extern BOOL queryVT;
                 for(ItemBase* item in plugin.untrustedItems)
                 {
                     //check if item it flagged
-                    if(YES == [plugin.flaggedItems containsObject:item])
+                    // (synchronized, as VT (background) thread mutates it)
+                    BOOL flagged = NO;
+                    @synchronized(plugin.flaggedItems) {
+                        flagged = [plugin.flaggedItems containsObject:item];
+                    }
+                    if(YES == flagged)
                     {
                         //set flag
                         hasFlaggedItem = YES;

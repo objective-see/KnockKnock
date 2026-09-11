@@ -80,6 +80,11 @@ NSDictionary* launchdOverrides(void);
 // strings are returned as is, nil stays nil, anything else (arrays, numbers, etc.) becomes its description
 NSString* stringValue(id object);
 
+//coerce an (untrusted) object to a bool
+// numbers (incl. bools) are evaluated; anything else (nil, strings, arrays, null, etc.) is NO
+// note: 'boolValue' on a dictionary/array/NSNull throws, and plist/JSON values from user-writable files can be any type
+BOOL boolValue(id object);
+
 //convert an object (e.g. plist) into something NSJSONSerialization can serialize
 // data/dates/etc. become strings, non-finite numbers & overly nested objects become descriptions
 id makeJSONSafe(id object);
@@ -149,8 +154,8 @@ NSString* loadAPIKeyFromKeychain(void);
 BOOL isRestricted(const char *path);
 
 //toggle login item
-// either add (install) or remove (uninstall)
-void toggleLoginItem(NSURL* loginItem, NSControlStateValue state);
+// either add (install) or remove (uninstall); returns YES on success
+BOOL toggleLoginItem(NSURL* loginItem, NSControlStateValue state);
 
 //build AppleScript that (re)launches an executable (with arguments) as root
 // via 'do shell script ... with administrator privileges'
@@ -159,6 +164,10 @@ NSString* authorizationScript(NSString* executablePath, NSArray<NSString*>* argu
 //load (and delete) the handoff file, if we were launched with one
 // ...contains the user's VT API key, which root can't (reliably) get from the user's keychain
 void loadHandoff(void);
+
+//delete the (pending) handoff file
+// for when the root instance failed to start (so never read/deleted it)
+void cleanupHandoff(void);
 
 //relaunch ourselves as root
 // prompts user to authenticate, and returns pid of new (root) instance, or -1 on error

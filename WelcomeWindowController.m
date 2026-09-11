@@ -93,12 +93,13 @@ extern os_log_t logHandle;
         setPreference(PREF_SHOW_TRUSTED_ITEMS, @(NSControlStateValueOn == self.showAppleItems.state));
         
         //start at login?
+        // (only persist the pref if the login item was actually installed)
         if(NSControlStateValueOn == self.startAtLogin.state) {
-            toggleLoginItem(NSBundle.mainBundle.bundleURL, NSControlStateValueOn);
+            setPreference(PREF_START_AT_LOGIN, @(toggleLoginItem(NSBundle.mainBundle.bundleURL, NSControlStateValueOn)));
         }
-        
-        //save 'start at login'
-        setPreference(PREF_START_AT_LOGIN, @(NSControlStateValueOn == self.startAtLogin.state));
+        else {
+            setPreference(PREF_START_AT_LOGIN, @NO);
+        }
         
         //save 'update check'
         setPreference(PREF_DISABLE_UPDATE_CHECK, @(NSControlStateValueOn == self.disableUpdateCheck.state));
@@ -154,7 +155,7 @@ extern os_log_t logHandle;
                     self.FDAActivityIndicator.hidden = YES;
                     
                     //change fda message
-                    self.FDAMessage.stringValue = @"☑️ Full Disk Access granted!";
+                    self.FDAMessage.stringValue = NSLocalizedString(@"☑️ Full Disk Access granted!", @"☑️ Full Disk Access granted!");
                     
                     //enable 'next' button
                     ((NSButton*)[self.enableFDAView viewWithTag:SHOW_CONFIGURE]).enabled = YES;

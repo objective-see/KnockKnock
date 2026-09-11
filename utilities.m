@@ -10,6 +10,7 @@
 #import "utilities.h"
 
 #import <fcntl.h>
+#import <os/log.h>
 #import <libproc.h>
 #import <sys/stat.h>
 #import <sys/sysctl.h>
@@ -43,16 +44,14 @@ bail:
 }
 
 
-//get name of logged in user
-NSString* getConsoleUser(void)
-{
-    //copy/return user
-    return CFBridgingRelease(SCDynamicStoreCopyConsoleUser(NULL, NULL, NULL));
-}
+//console user (cached)
+// resolved once (on first successful lookup), so it can't drift (fast user switching) or go nil (logout) mid-session
+// ...as root, we key prefs/keychain/login item/etc. off this, so it must stay consistent
+static NSString* consoleUserName = nil;
+static uid_t consoleUserUID = 0;
 
-//get uid of logged in user
-// returns 0 (root) if there's no console user
-uid_t getConsoleUserID(void)
+//resolve (and cache) console user
+static void resolveConsoleUser(void)
 {
     //uid
     uid_t uid = 0;
@@ -60,20 +59,47 @@ uid_t getConsoleUserID(void)
     //user name
     CFStringRef userName = NULL;
     
-    //get console user (& uid)
-    userName = SCDynamicStoreCopyConsoleUser(NULL, &uid, NULL);
-    if(NULL == userName)
+    //sync
+    @synchronized([NSApplication class])
     {
-        //none
-        uid = 0;
-    }
-    else
-    {
-        //free
-        CFRelease(userName);
+        //already resolved?
+        if(nil != consoleUserName)
+        {
+            //done
+            return;
+        }
+        
+        //get console user (& uid)
+        userName = SCDynamicStoreCopyConsoleUser(NULL, &uid, NULL);
+        if(NULL != userName)
+        {
+            //cache
+            consoleUserName = CFBridgingRelease(userName);
+            consoleUserUID = uid;
+        }
     }
     
-    return uid;
+    return;
+}
+
+//get name of logged in user
+// nil if none (e.g. headless)
+NSString* getConsoleUser(void)
+{
+    //resolve
+    resolveConsoleUser();
+    
+    return consoleUserName;
+}
+
+//get uid of logged in user
+// returns 0 (root) if there's no console user
+uid_t getConsoleUserID(void)
+{
+    //resolve
+    resolveConsoleUser();
+    
+    return consoleUserUID;
 }
 
 //get home directory of logged in user
@@ -820,6 +846,14 @@ NSString* stringValue(id object)
 bail:
     
     return string;
+}
+
+//coerce an (untrusted) object to a bool
+// numbers (incl. bools) are evaluated; anything else (nil, strings, arrays, null, etc.) is NO
+// note: 'boolValue' on a dictionary/array/NSNull throws, and plist/JSON values from user-writable files can be any type
+BOOL boolValue(id object)
+{
+    return ( (YES == [object isKindOfClass:[NSNumber class]]) && (YES == [object boolValue]) );
 }
 
 //convert an object (e.g. plist) into something NSJSONSerialization can serialize
@@ -1678,7 +1712,20 @@ BOOL hasFDA(void) {
 
 //(handoff) API key
 // set when launched (as root) with a handoff file
+// note: read from background threads (scan, VT submit), so access is synchronized
 static NSString* handoffAPIKey = nil;
+
+//get handoff key
+static NSString* getHandoffAPIKey(void)
+{
+    @synchronized([NSApplication class]) { return handoffAPIKey; }
+}
+
+//set handoff key
+static void setHandoffAPIKey(NSString* key)
+{
+    @synchronized([NSApplication class]) { handoffAPIKey = key; }
+}
 
 //for keychain access as root
 // we use the (legacy) keychain APIs to target the console user's login keychain
@@ -1735,6 +1782,13 @@ BOOL saveAPIKeyToKeychain(NSString* apiKey)
     //delete old
     SecItemDelete((__bridge CFDictionaryRef)query);
     
+    //no (new) key?
+    // just the delete then, we're done
+    if(0 == apiKeyData.length) {
+        status = errSecSuccess;
+        goto bail;
+    }
+    
     //add new
     [query removeObjectForKey:(__bridge id)kSecMatchSearchList];
     query[(__bridge id)kSecValueData] = apiKeyData;
@@ -1742,10 +1796,17 @@ BOOL saveAPIKeyToKeychain(NSString* apiKey)
         query[(__bridge id)kSecUseKeychain] = (__bridge id)keychain;
     }
     status = SecItemAdd((__bridge CFDictionaryRef)query, NULL);
+    if(errSecSuccess != status) {
+        //log
+        // as root, the (in-memory) handoff copy still works for this session, but the key won't persist
+        os_log_error(OS_LOG_DEFAULT, "KnockKnock: failed to save VT API key to keychain (status: %d, root: %d)", (int)status, (0 == geteuid()));
+    }
+    
+bail:
     
     //root? keep (in-memory) handoff copy in sync, as that's the fallback
     if(0 == geteuid()) {
-        handoffAPIKey = (0 != apiKey.length) ? apiKey : nil;
+        setHandoffAPIKey((0 != apiKey.length) ? apiKey : nil);
     }
     
     if(NULL != keychain) {
@@ -1787,7 +1848,7 @@ NSString* loadAPIKeyFromKeychain(void)
     // use handoff key (from the non-root instance that launched us)
     if( (0 == key.length) &&
         (0 == geteuid()) ) {
-        key = handoffAPIKey;
+        key = getHandoffAPIKey();
     }
     
     if(NULL != keychain) {
@@ -1801,6 +1862,8 @@ NSString* loadAPIKeyFromKeychain(void)
 
 //load (and delete) the handoff file, if we were launched with one
 // ...contains the user's VT API key, which root can't (reliably) get from the user's keychain
+// note: we're root and the path came from argv, so before reading: no symlinks, regular file, single link,
+//       owned by the console user, not group/world readable, and small ...then read via the (validated) fd
 void loadHandoff(void)
 {
     //args
@@ -1812,8 +1875,17 @@ void loadHandoff(void)
     //path
     NSString* path = nil;
     
+    //file descriptor
+    int fd = -1;
+    
+    //file info
+    struct stat fileInfo = {0};
+    
     //contents
-    NSString* contents = nil;
+    NSData* contents = nil;
+    
+    //key
+    NSString* key = nil;
     
     //no handoff?
     if( (NSNotFound == index) ||
@@ -1826,21 +1898,64 @@ void loadHandoff(void)
     //path
     path = arguments[index + 1];
     
+    //open
+    // no following symlinks, non-blocking (so a fifo can't hang us)
+    fd = open(path.fileSystemRepresentation, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC);
+    if(-1 == fd)
+    {
+        //bail
+        goto bail;
+    }
+    
+    //validate (via fd)
+    // regular, single link, owned by console user (when there is one), not group/world accessible, small
+    if( (0 != fstat(fd, &fileInfo)) ||
+        (!S_ISREG(fileInfo.st_mode)) ||
+        (1 != fileInfo.st_nlink) ||
+        ((0 != getConsoleUserID()) && (fileInfo.st_uid != getConsoleUserID())) ||
+        (0 != (fileInfo.st_mode & 077)) ||
+        (fileInfo.st_size > 4096) )
+    {
+        //bail
+        goto bail;
+    }
+    
     //read
-    contents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+    @try
+    {
+        //read
+        contents = [[[NSFileHandle alloc] initWithFileDescriptor:fd closeOnDealloc:NO] readDataOfLength:(NSUInteger)fileInfo.st_size];
+    }
+    @catch(NSException* exception)
+    {
+        //bail
+        goto bail;
+    }
     
-    //delete
-    // (it's got a secret in it)
-    [NSFileManager.defaultManager removeItemAtPath:path error:nil];
-    
-    //save
-    if(0 != contents.length)
+    //convert
+    key = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
+    if(0 != key.length)
     {
         //save
-        handoffAPIKey = contents;
+        setHandoffAPIKey(key);
     }
     
 bail:
+    
+    //close
+    if(-1 != fd)
+    {
+        //close
+        close(fd);
+    }
+    
+    //delete
+    // (it's got a secret in it) note: 'unlink' removes a symlink itself, never its target
+    if(nil != path)
+    {
+        //delete
+        unlink(path.fileSystemRepresentation);
+    }
     
     return;
 }
@@ -1858,8 +1973,11 @@ BOOL isRestricted(const char *path) {
 
 //toggle login item
 // either add (install) or remove (uninstall)
-void toggleLoginItem(NSURL* loginItem, NSControlStateValue state)
+BOOL toggleLoginItem(NSURL* loginItem, NSControlStateValue state)
 {
+    //flag
+    BOOL toggled = NO;
+    
     //login item ref
     LSSharedFileListRef loginItemsRef = NULL;
     
@@ -1877,8 +1995,12 @@ void toggleLoginItem(NSURL* loginItem, NSControlStateValue state)
     if(0 == originalUID) {
         
         uid_t consoleUID = getConsoleUserID();
-        if(consoleUID != 0) {
-            seteuid(consoleUID);
+        if( (consoleUID != 0) &&
+            (0 != seteuid(consoleUID)) ) {
+            
+            //failed to drop
+            // bail, else we'd (un)install the login item for root
+            goto bail;
         }
     }
     
@@ -1897,6 +2019,9 @@ void toggleLoginItem(NSURL* loginItem, NSControlStateValue state)
         //release item ref
         if(NULL != itemRef)
         {
+            //happy
+            toggled = YES;
+            
             //release
             CFRelease(itemRef);
             itemRef = NULL;
@@ -1905,6 +2030,10 @@ void toggleLoginItem(NSURL* loginItem, NSControlStateValue state)
     //remove (uninstall)
     else
     {
+        //happy
+        // (removing is best-effort; no item to remove is also fine)
+        toggled = YES;
+        
         //grab existing login items
         loginItems = LSSharedFileListCopySnapshot(loginItemsRef, nil);
         
@@ -1959,11 +2088,15 @@ bail:
     }
     
     //restore (root) privs
-    if(originalUID != geteuid()) {
-        seteuid(originalUID);
+    // note: can't fail for a process whose real/saved uid is root
+    if( (originalUID != geteuid()) &&
+        (0 != seteuid(originalUID)) ) {
+        
+        //log
+        os_log_error(OS_LOG_DEFAULT, "KnockKnock: failed to restore euid %u (errno: %d)", originalUID, errno);
     }
     
-    return;
+    return toggled;
 }
 
 #pragma clang diagnostic pop
@@ -1999,6 +2132,27 @@ NSString* authorizationScript(NSString* executablePath, NSArray<NSString*>* argu
     return [NSString stringWithFormat:@"do shell script %@ & \" </dev/null >/dev/null 2>&1 & echo $!\" with prompt \"%@\" with administrator privileges", command, escapeForAppleScript(prompt)];
 }
 
+//(pending) handoff file
+// written by us (non-root) for the root instance; deleted by it once read, or by us if it never starts
+static NSString* pendingHandoffPath = nil;
+
+//delete the (pending) handoff file
+// for when the root instance failed to start (so never read/deleted it)
+void cleanupHandoff(void)
+{
+    //delete
+    if(nil != pendingHandoffPath)
+    {
+        //delete
+        [NSFileManager.defaultManager removeItemAtPath:pendingHandoffPath error:nil];
+        
+        //unset
+        pendingHandoffPath = nil;
+    }
+    
+    return;
+}
+
 //relaunch ourselves as root
 // prompts user to authenticate, and returns pid of new (root) instance, or -1 on error
 // note: must be invoked on the main thread (NSAppleScript requirement)
@@ -2013,6 +2167,9 @@ pid_t relaunchAsRoot(NSError** error)
     //script result
     NSAppleEventDescriptor* result = nil;
     
+    //executable (to launch as root)
+    NSString* executable = nil;
+    
     //arguments (for root instance)
     NSMutableArray* arguments = nil;
     
@@ -2022,8 +2179,30 @@ pid_t relaunchAsRoot(NSError** error)
     //handoff file
     NSString* handoffPath = nil;
     
-    //init arguments
-    arguments = [NSMutableArray arrayWithObject:ARG_RELAUNCHED_AS_ROOT];
+    //console user's uid
+    uid_t consoleUID = getConsoleUserID();
+    
+    //launch (as root) *within the console user's launchd/GUI session* via 'launchctl asuser'
+    // otherwise the root instance lands in the system domain, where per-user services (e.g. the pasteboard) can't be reached
+    // ...so copy/paste, etc. would fail; note: 'launchctl asuser' exec's the target, so '$!' is still our (root) instance's pid
+    if(0 != consoleUID)
+    {
+        //launchctl
+        executable = LAUNCHCTL;
+        
+        //asuser <uid> <us> -relaunched
+        arguments = [NSMutableArray arrayWithObjects:@"asuser", [NSString stringWithFormat:@"%u", consoleUID], NSBundle.mainBundle.executablePath, ARG_RELAUNCHED_AS_ROOT, nil];
+    }
+    //no console user (shouldn't happen for a GUI launch)
+    // just launch directly
+    else
+    {
+        //us
+        executable = NSBundle.mainBundle.executablePath;
+        
+        //-relaunched
+        arguments = [NSMutableArray arrayWithObject:ARG_RELAUNCHED_AS_ROOT];
+    }
     
     //got a VT API key?
     // hand it off to the root instance via a (0600) file, as root can't (reliably) read our login keychain
@@ -2039,6 +2218,10 @@ pid_t relaunchAsRoot(NSError** error)
         {
             //add args
             [arguments addObjectsFromArray:@[ARG_HANDOFF, handoffPath]];
+            
+            //save
+            // so it can be cleaned up if root instance never starts
+            pendingHandoffPath = handoffPath;
         }
         else
         {
@@ -2049,18 +2232,17 @@ pid_t relaunchAsRoot(NSError** error)
     
     //execute script
     // blocks while user is prompted to authenticate
-    result = [[[NSAppleScript alloc] initWithSource:authorizationScript(NSBundle.mainBundle.executablePath, arguments, NSLocalizedString(@"KnockKnock needs administrator privileges to scan all persistent items.", @"KnockKnock needs administrator privileges to scan all persistent items."))] executeAndReturnError:&scriptError];
+    result = [[[NSAppleScript alloc] initWithSource:authorizationScript(executable, arguments, NSLocalizedString(@"KnockKnock needs administrator privileges to scan all persistent items.", @"KnockKnock needs administrator privileges to scan all persistent items."))] executeAndReturnError:&scriptError];
     
     //extract pid
     pid = (pid_t)[result.stringValue intValue];
     
     //failed to launch?
     // remove handoff file (as nobody will read/delete it)
-    if( (pid <= 0) &&
-        (nil != handoffPath) )
+    if(pid <= 0)
     {
         //delete
-        [NSFileManager.defaultManager removeItemAtPath:handoffPath error:nil];
+        cleanupHandoff();
     }
     
     //error?

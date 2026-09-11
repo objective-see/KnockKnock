@@ -28,6 +28,12 @@
             "state" : "new",
             "value" : "These items aren’t known to VirusTotal. \nSubmitting them will upload the file to VirusTotal and open the resulting report in your browser."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VirusTotal no conoce estos elementos. \nAl enviarlos, el archivo se subirá a VirusTotal y el informe resultante se abrirá en tu navegador."
+          }
         }
       }
     },
@@ -39,6 +45,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Error info:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Información del error:"
           }
         }
       }
@@ -127,8 +139,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Resultados"
+            "state" : "translated",
+            "value" : "Resultado"
           }
         }
       }

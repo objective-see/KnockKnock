@@ -85,9 +85,6 @@
     //all launch items
     NSArray* launchItems = nil;
     
-    //disable items
-    NSArray* disabledItems = nil;
-    
     //plist data
     NSDictionary* plistContents = nil;
     
@@ -96,9 +93,6 @@
     
     //path to inserted dylib
     NSString* dylibPath = nil;
-
-    //detected (auto-started) login item
-    File* fileObj = nil;
 
     //wait for shared item enumerator to complete enumeration of launch items
     do
@@ -112,9 +106,6 @@
         
     //keep trying until we get em!
     } while(nil == launchItems);
-    
-    //get disabled items
-    disabledItems = [self getDisabledItems];
     
     //iterate over all launch items
     // ->scan/process each
@@ -200,9 +191,6 @@
     //path to inserted dylib
     NSString* dylibPath = nil;
     
-    //detected (auto-started) login item
-    File* fileObj = nil;
-    
     //wait for shared item enumerator to complete enumeration of installed apps
     // ->give up after 5 minutes
     for(NSUInteger i=0; i<(10*60)*5; i++)
@@ -265,8 +253,9 @@
             continue;
         }
         
-        //get path to app's Info.plist
-        appPlist = appBundle.infoDictionary[@"CFBundleInfoPlistURL"];
+        //build path to app's Info.plist
+        // note: not via 'CFBundleInfoPlistURL' from the info dictionary, as that key can be supplied (as any type) by the Info.plist itself
+        appPlist = [appBundle.bundleURL URLByAppendingPathComponent:@"Contents/Info.plist"];
         
         //skip apps that this fails
         if(nil == appPlist)
@@ -337,37 +326,6 @@ bail:
     }
     
     return;
-}
-
-//get all disabled launch items
-// ->from launchd's (live) override database (see 'launchdOverrides')
--(NSArray*)getDisabledItems
-{
-    //disable items
-    NSMutableArray* disabledItems = nil;
-    
-    //overrides
-    NSDictionary* overrides = nil;
-    
-    //alloc array
-    disabledItems = [NSMutableArray array];
-    
-    //get overrides
-    // label -> @YES (disabled) / @NO (explicitly enabled)
-    overrides = launchdOverrides();
-    
-    //save disabled ones
-    for(NSString* label in overrides)
-    {
-        //disabled?
-        if(YES == [overrides[label] boolValue])
-        {
-            //add
-            [disabledItems addObject:label];
-        }
-    }
-    
-    return disabledItems;
 }
 
 @end

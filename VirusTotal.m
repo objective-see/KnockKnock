@@ -80,6 +80,16 @@ extern NSString* scanID;
             continue;
         }
         
+        //retry delay (seconds)
+        // set by the request when rate limited (HTTP 429)
+        __block NSInteger retryDelay = 0;
+        
+        //request (with retries, for rate limiting)
+        for(int attempt = 0; attempt < 4; attempt++) {
+        
+        //reset
+        retryDelay = 0;
+        
         //semaphore for synchronous request
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
         
@@ -101,6 +111,10 @@ extern NSString* scanID;
                     printf("\nERROR (VirusTotal): %s\n", error.localizedDescription.UTF8String);
                 }
                 
+                //mark & notify
+                // so the row resolves (to an error state) rather than staying 'pending' forever
+                [self markError:file uiMode:uiMode];
+                
                 //signal
                 dispatch_semaphore_signal(sema);
                 return;
@@ -112,24 +126,30 @@ extern NSString* scanID;
             //401 is API key issue
             if (httpResponse.statusCode == 401) {
                 
+                //masked key (last 4 chars)
+                // never print/show the full key
+                NSString* maskedKey = (apiKey.length > 4) ? [@"..." stringByAppendingString:[apiKey substringFromIndex:apiKey.length - 4]] : @"...";
+                
                 //err msg
                 if(isVerbose) {
-                    printf("\nERROR (VirusTotal): API key %s issue (not valid?)\n", apiKey.UTF8String);
+                    printf("\nERROR (VirusTotal): API key (%s) rejected (HTTP 401), likely invalid\n", maskedKey.UTF8String);
                 }
                 
                 if(uiMode) {
                     static dispatch_once_t onceToken;
                     dispatch_once(&onceToken, ^{
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            NSAlert* alert = [NSAlert alertWithMessageText:@"ERROR: VirusTotal Responded with HTTP 401"
-                                                    defaultButton:@"OK"
-                                                  alternateButton:nil
-                                                      otherButton:nil
-                                        informativeTextWithFormat:@"%@", [NSString stringWithFormat:@"API key: '%@', likely invalid.", apiKey]];
+                            NSAlert* alert = [[NSAlert alloc] init];
+                            alert.messageText = NSLocalizedString(@"ERROR: VirusTotal responded with HTTP 401", @"ERROR: VirusTotal responded with HTTP 401");
+                            alert.informativeText = [NSString stringWithFormat:NSLocalizedString(@"The API key (ending in '%@') was rejected, and is likely invalid.", @"The API key (ending in '%@') was rejected, and is likely invalid."), maskedKey];
+                            [alert addButtonWithTitle:NSLocalizedString(@"OK", @"OK")];
                             [alert runModal];
                         });
                     });
                 }
+                
+                //mark & notify
+                [self markError:file uiMode:uiMode];
                 
                 //signal
                 dispatch_semaphore_signal(sema);
@@ -157,6 +177,24 @@ extern NSString* scanID;
                 return;
             }
             
+            //429 is rate limited (public keys: 4 lookups/minute)
+            // ->back off (per 'Retry-After', default 15s) and retry, up to a few times
+            if (httpResponse.statusCode == 429) {
+                
+                //retry after
+                NSInteger retryAfter = [httpResponse.allHeaderFields[@"Retry-After"] integerValue];
+                retryDelay = MIN(MAX(retryAfter, 15), 60);
+                
+                //err msg
+                if(isVerbose) {
+                    printf("\nVirusTotal rate limit (HTTP 429), retrying in %lds\n", (long)retryDelay);
+                }
+                
+                //signal
+                dispatch_semaphore_signal(sema);
+                return;
+            }
+            
             //all other error(s)
             if (httpResponse.statusCode != 200) {
                 
@@ -164,6 +202,9 @@ extern NSString* scanID;
                 if(isVerbose) {
                     printf("\nERROR (VirusTotal): HTTP %ld\n", (long)httpResponse.statusCode);
                 }
+                
+                //mark & notify
+                [self markError:file uiMode:uiMode];
                 
                 //signal
                 dispatch_semaphore_signal(sema);
@@ -173,12 +214,15 @@ extern NSString* scanID;
             //parse response (JSON)
             NSError* jsonError = nil;
             NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-            if (jsonError) {
+            if (jsonError || ![json isKindOfClass:[NSDictionary class]]) {
                 
                 //err msg
                 if(isVerbose) {
                     printf("\nERROR (VirusTotal): invalid JSON %s\n", jsonError.localizedDescription.UTF8String);
                 }
+                
+                //mark & notify
+                [self markError:file uiMode:uiMode];
                 
                 //signal
                 dispatch_semaphore_signal(sema);
@@ -231,10 +275,45 @@ extern NSString* scanID;
         
         //wait for this request to finish
         dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        
+        //not rate limited?
+        // done with this item
+        if(0 == retryDelay) {
+            break;
+        }
+        
+        //rate limited, last attempt?
+        // mark as error, so row resolves
+        if(3 == attempt) {
+            [self markError:file uiMode:uiMode];
+            break;
+        }
+        
+        //back off, then retry
+        [NSThread sleepForTimeInterval:retryDelay];
+        
+        }//attempts
     }
     
     //all files done
     if(completion) completion();
+    
+    return;
+}
+
+//mark a file's VT lookup as failed, and notify the UI
+// so its row resolves (shows an error), rather than staying 'pending' forever
+-(void)markError:(File*)file uiMode:(BOOL)uiMode {
+    
+    //mark
+    file.vtInfo = @{VT_ERROR:@YES};
+    
+    //notify UI
+    if(uiMode) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [((AppDelegate*)NSApplication.sharedApplication.delegate) itemProcessed:file];
+        });
+    }
     
     return;
 }
@@ -245,7 +324,7 @@ extern NSString* scanID;
     
     //load key
     NSString* vtAPIKey = loadAPIKeyFromKeychain();
-    if(!vtAPIKey) {
+    if(0 == vtAPIKey.length) {
         
         NSError *error = [NSError errorWithDomain:@"VirusTotal"
                                              code:-1

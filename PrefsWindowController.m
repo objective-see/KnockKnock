@@ -165,7 +165,11 @@
     if(self.startAtLogin != getPreferenceBool(PREF_START_AT_LOGIN)) {
         
         //toggle
-        toggleLoginItem(NSBundle.mainBundle.bundleURL, self.startAtLogin);
+        // on failure (e.g. couldn't drop to console user when root), keep the old pref, so it matches reality
+        if(YES != toggleLoginItem(NSBundle.mainBundle.bundleURL, self.startAtLogin)) {
+            self.startAtLogin = getPreferenceBool(PREF_START_AT_LOGIN);
+            self.startAtLoginBtn.state = self.startAtLogin;
+        }
     }
     
     //now save 'start at login'

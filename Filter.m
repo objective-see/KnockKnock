@@ -63,10 +63,25 @@
     path = [[NSBundle mainBundle] pathForResource:fileName ofType: @"json"];
     
     //load whitelist file data
-    whiteListJSON = [NSData dataWithContentsOfFile:path];
+    // (nil path/data, e.g. missing resource, would make 'JSONObjectWithData' throw)
+    if(nil != path)
+    {
+        //load
+        whiteListJSON = [NSData dataWithContentsOfFile:path];
+    }
+    if(nil == whiteListJSON)
+    {
+        //bail
+        return @{};
+    }
     
     //convert JSON into dictionary
     whiteList = [NSJSONSerialization JSONObjectWithData:whiteListJSON options:kNilOptions error:&error];
+    if(YES != [whiteList isKindOfClass:[NSDictionary class]])
+    {
+        //bail
+        return @{};
+    }
     
     return whiteList;
 }

@@ -74,7 +74,7 @@
         //?
         else
         {
-            self.vtDetailsLabel.stringValue = @"VirusTotal: Error(?)";
+            self.vtDetailsLabel.stringValue = NSLocalizedString(@"VirusTotal: Error(?)", @"VirusTotal: Error(?)");
         }
     }
     

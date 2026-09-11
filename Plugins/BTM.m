@@ -109,8 +109,9 @@
                 }
                 
                 //executable path
+                // (must be a string)
                 path = item[KEY_BTM_ITEM_EXE_PATH];
-                if(nil == path)
+                if(YES != [path isKindOfClass:[NSString class]])
                 {
                     //no path
                     // skip item
@@ -118,7 +119,13 @@
                 }
                 
                 //(optional) plist
+                // (must be a string, else ignored)
                 plist = item[KEY_BTM_ITEM_PLIST_PATH];
+                if(YES != [plist isKindOfClass:[NSString class]])
+                {
+                    //ignore
+                    plist = nil;
+                }
                 
                 //init params w/ self
                 parameters[KEY_RESULT_PLUGIN] = self;

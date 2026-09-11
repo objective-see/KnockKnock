@@ -229,9 +229,14 @@ void uncaughtExceptionHandler(NSException* exception) {
     }
     
     //wait for root instance to start
-    started = waitForApplication(pid, 10.0);
+    // note: generous, as first launch of a quarantined binary can take a while (gatekeeper, xprotect)
+    started = waitForApplication(pid, 30.0);
     if(YES != started)
     {
+        //cleanup
+        // (root instance never read/deleted the handoff)
+        cleanupHandoff();
+        
         //show error
         [self showRelaunchError:[NSString stringWithFormat:NSLocalizedString(@"process (pid: %d) did not start", @"process (pid: %d) did not start"), pid]];
         
@@ -1352,7 +1357,8 @@ bail:
                     if(NULL != user)
                     {
                         //chown
-                        chown(panel.URL.path.fileSystemRepresentation, user->pw_uid, user->pw_gid);
+                        // note: 'lchown', so a symlink swapped in (by user-level malware) between write & chown only gets itself chowned
+                        lchown(panel.URL.path.fileSystemRepresentation, user->pw_uid, user->pw_gid);
                     }
                 }
                  
@@ -1367,7 +1373,7 @@ bail:
                 
                 //init alert
                 alert = [[NSAlert alloc] init];
-                [alert addButtonWithTitle:@"Ok"];
+                [alert addButtonWithTitle:NSLocalizedString(@"OK", @"OK")];
                 
                 //error msg
                 alert.messageText = NSLocalizedString(@"ERROR: failed to save output", @"ERROR: failed to save output");
@@ -1567,7 +1573,7 @@ bail:
             
             //show error alert
             NSAlert* alert = [[NSAlert alloc] init];
-            [alert addButtonWithTitle:@"Ok"];
+            [alert addButtonWithTitle:NSLocalizedString(@"OK", @"OK")];
             alert.messageText = NSLocalizedString(@"ERROR: Failed to compare scans", @"ERROR: Failed to compare scans");
             [alert runModal];
         }

@@ -112,7 +112,10 @@
                     NSNumber* savedState = self.selections[@(row)];
                     
                     button.enabled = YES;
-                    button.state = savedState ? savedState.integerValue : NSControlStateValueOn;
+                    
+                    //default: unchecked (#46)
+                    // note: submitting uploads the file itself to VirusTotal, so it must be an explicit choice
+                    button.state = savedState ? savedState.integerValue : NSControlStateValueOff;
 
                     //add target & action
                     button.target = self;
@@ -137,21 +140,21 @@
             if(tooBig) {
                 
                 //set
-                cell.textField.stringValue = @"File size exceeds API limit";
+                cell.textField.stringValue = NSLocalizedString(@"File size exceeds API limit", @"File size exceeds API limit");
             }
             
             //nothing
             else if(!result.count) {
                 
                 //set
-                cell.textField.stringValue = @"Not Submitted";
+                cell.textField.stringValue = NSLocalizedString(@"Not Submitted", @"Not Submitted");
             }
             
             //error
             else if(result[VT_ERROR]) {
                 
                 //add
-                cell.textField.stringValue = @"Failed to Submit";
+                cell.textField.stringValue = NSLocalizedString(@"Failed to Submit", @"Failed to Submit");
                 
                 //show button
                 moreInfo.hidden = NO;
@@ -160,7 +163,7 @@
             //ok
             else
             {
-                cell.textField.stringValue = @"Submitted";
+                cell.textField.stringValue = NSLocalizedString(@"Submitted", @"Submitted");
                 
                 //already viewed?
                 // no need to show again
@@ -231,7 +234,7 @@
     viewController.view = self.errorPopover;
     
     //set text
-    self.errorLabel.stringValue = [NSString stringWithFormat:@"ERROR: %@", result[VT_ERROR]];
+    self.errorLabel.stringValue = [NSString stringWithFormat:NSLocalizedString(@"ERROR: %@", @"ERROR: %@"), [result[VT_ERROR] isKindOfClass:[NSError class]] ? [result[VT_ERROR] localizedDescription] : result[VT_ERROR]];
     
     //init
     popover.contentViewController = viewController;
@@ -263,20 +266,32 @@
     return;
 }
 
+//is (the checkbox for) an item checked?
+// note: driven by the model ('selections'), not the (recycled) cell views, so off-screen rows count too
+-(BOOL)isChecked:(NSInteger)row {
+    
+    //item
+    File* item = self.items[row];
+    
+    //saved state
+    NSNumber* savedState = self.selections[@(row)];
+    
+    //too big? never
+    if([item.attributes fileSize] >= MAX_UPLOAD_SIZE) {
+        return NO;
+    }
+    
+    //saved state, else default (unchecked)
+    return savedState ? (NSControlStateValueOn == savedState.integerValue) : NO;
+}
+
 //any checked?
 -(BOOL)anyChecked {
     
-    NSButton* button = nil;
-    NSTableCellView* cell = nil;
-    
     //check each/all
-    for (NSInteger row = 0; row < self.tableView.numberOfRows; row++) {
-        cell = [self.tableView viewAtColumn:0 row:row makeIfNecessary:NO];
-        if(cell) {
-            button = [cell viewWithTag:1001];
-            if (button && (NSOnState == button.state)) {
-                return YES;
-            }
+    for (NSInteger row = 0; row < (NSInteger)self.items.count; row++) {
+        if([self isChecked:row]) {
+            return YES;
         }
     }
     
@@ -296,12 +311,6 @@
     //VT object
     VirusTotal* vtObj = nil;
     
-    //button
-    NSButton* button = nil;
-    
-    //cell
-    NSTableCellView* cell = nil;
-    
     //alloc
     vtObj = [[VirusTotal alloc] init];
     
@@ -315,17 +324,11 @@
     [self.activityIndicator startAnimation:nil];
     
     //submit all selected items
-    for(NSInteger row = 0; row < self.tableView.numberOfRows; row++) {
+    // note: driven by the model ('selections'), so off-screen (scrolled away) rows are submitted too
+    for(NSInteger row = 0; row < (NSInteger)self.items.count; row++) {
         
-        //grab cell
-        cell = [self.tableView viewAtColumn:0 row:row makeIfNecessary:NO];
-        if(!cell) {
-            continue;
-        }
-        
-        //get button
-        button = [cell viewWithTag:1001];
-        if (!button || (NSOnState != button.state)) {
+        //skip unchecked
+        if(![self isChecked:row]) {
             continue;
         }
         

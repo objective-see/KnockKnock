@@ -318,10 +318,17 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
                     //update status msg
-                    [self.statusMsg setStringValue:[NSString stringWithFormat:NSLocalizedString(@"ERROR: %@", @"ERROR: %@"), result[VT_ERROR]]];
+                    [self.statusMsg setStringValue:[NSString stringWithFormat:NSLocalizedString(@"ERROR: %@", @"ERROR: %@"), [result[VT_ERROR] isKindOfClass:[NSError class]] ? [result[VT_ERROR] localizedDescription] : result[VT_ERROR]]];
                     
                     //stop activity indicator
                     [self.progressIndicator stopAnimation:nil];
+                    self.progressIndicator.hidden = YES;
+                    
+                    //hide overlay & re-enable buttons
+                    // so user can retry, or close (was dead-ending here)
+                    self.overlayView.hidden = YES;
+                    self.submitButton.enabled = YES;
+                    self.closeButton.enabled = YES;
                     
                 });
             }

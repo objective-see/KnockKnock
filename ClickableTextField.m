@@ -14,7 +14,8 @@
 - (void)resetCursorRects
 {
     //skip if no plist
-    if(YES == [self.stringValue hasPrefix:@"No property list"])
+    // (same localized string the info window sets)
+    if(YES == [self.stringValue hasPrefix:NSLocalizedString(@"No property list", @"No property list")])
     {
         //bail
         goto bail;

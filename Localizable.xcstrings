@@ -12,6 +12,28 @@
         }
       }
     },
+    "%@ (created) / %@ (modified)" : {
+      "comment" : "%@ (created) / %@ (modified)",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ (creado) / %@ (modificado)"
+          }
+        }
+      }
+    },
+    "%llu bytes" : {
+      "comment" : "%llu bytes",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%llu bytes"
+          }
+        }
+      }
+    },
     "'%@' isn't known to VirusTotal" : {
       "comment" : "'%@' isn't known to VirusTotal",
       "localizations" : {
@@ -265,6 +287,17 @@
         }
       }
     },
+    "ERROR: VirusTotal responded with HTTP 401" : {
+      "comment" : "ERROR: VirusTotal responded with HTTP 401",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR: VirusTotal respondió con HTTP 401"
+          }
+        }
+      }
+    },
     "Exception: %@" : {
       "comment" : "Exception: %@",
       "localizations" : {
@@ -298,6 +331,28 @@
         }
       }
     },
+    "Failed to Submit" : {
+      "comment" : "Failed to Submit",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al enviar"
+          }
+        }
+      }
+    },
+    "File size exceeds API limit" : {
+      "comment" : "File size exceeds API limit",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El tamaño del archivo supera el límite de la API"
+          }
+        }
+      }
+    },
     "Found %lu persistent (non-OS) items" : {
       "comment" : "Found %lu persistent (non-OS) items",
       "localizations" : {
@@ -327,6 +382,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "kexts instalados, probablemente cargados en el kernel"
+          }
+        }
+      }
+    },
+    "invalid signature" : {
+      "comment" : "invalid signature",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "firma no válida"
           }
         }
       }
@@ -414,6 +480,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No Hay Cambios Detectados"
+          }
+        }
+      }
+    },
+    "No property list" : {
+      "comment" : "No property list",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin lista de propiedades"
+          }
+        }
+      }
+    },
+    "Not Submitted" : {
+      "comment" : "Not Submitted",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No enviado"
           }
         }
       }
@@ -572,6 +660,17 @@
         }
       }
     },
+    "Submitted" : {
+      "comment" : "Submitted",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviado"
+          }
+        }
+      }
+    },
     "submitted '%@'" : {
       "comment" : "submitted '%@'",
       "localizations" : {
@@ -605,6 +704,17 @@
         }
       }
     },
+    "The API key (ending in '%@') was rejected, and is likely invalid." : {
+      "comment" : "The API key (ending in '%@') was rejected, and is likely invalid.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La clave API (que termina en '%@') fue rechazada y probablemente no es válida."
+          }
+        }
+      }
+    },
     "unknown" : {
       "comment" : "unknown",
       "localizations" : {
@@ -612,6 +722,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "desconocido"
+          }
+        }
+      }
+    },
+    "unknown (status/error: %ld)" : {
+      "comment" : "unknown (status/error: %ld)",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "desconocido (estado/error: %ld)"
+          }
+        }
+      }
+    },
+    "unsigned" : {
+      "comment" : "unsigned",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sin firmar"
           }
         }
       }
@@ -645,6 +777,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "versión: %@"
+          }
+        }
+      }
+    },
+    "Version: %@" : {
+      "comment" : "Version: %@",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión: %@"
+          }
+        }
+      }
+    },
+    "VirusTotal lookup failed" : {
+      "comment" : "VirusTotal lookup failed",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La consulta a VirusTotal falló"
           }
         }
       }
@@ -699,6 +853,17 @@
         }
       }
     },
+    "VirusTotal: Error(?)" : {
+      "comment" : "VirusTotal: Error(?)",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VirusTotal: Error(?)"
+          }
+        }
+      }
+    },
     "VirusTotal: Unable to query VirusTotal (network)" : {
       "comment" : "VirusTotal: Unable to query VirusTotal (network)",
       "localizations" : {
@@ -728,6 +893,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¡Estás actualizado! (v%@)"
+          }
+        }
+      }
+    },
+    "☑️ Full Disk Access granted!" : {
+      "comment" : "☑️ Full Disk Access granted!",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "☑️ ¡Acceso total al disco concedido!"
           }
         }
       }

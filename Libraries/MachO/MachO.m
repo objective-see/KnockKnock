@@ -698,7 +698,8 @@ bail:
             
             //grab flags
             // ->32bit
-            if(sizeof(struct mach_header) == [machoHeader[KEY_HEADER_SIZE] integerValue])
+            // note: struct is selected by the command (not the header), as that's what 'cmdsize' was validated against
+            if(LC_SEGMENT == loadCommand->cmd)
             {
                 //flags
                 segmentFlags = ((struct segment_command *)loadCommand)->flags;
@@ -706,7 +707,7 @@ bail:
             }
             //grab flags
             // ->64bit
-            else if(sizeof(struct mach_header_64) == [machoHeader[KEY_HEADER_SIZE] integerValue])
+            else
             {
                 //flags
                 segmentFlags = ((struct segment_command_64 *)loadCommand)->flags;
@@ -831,7 +832,8 @@ bail:
             
             //32bit
             // ->get offset/size of segment
-            if(sizeof(struct mach_header) == [machoHeader[KEY_HEADER_SIZE] integerValue])
+            // note: struct is selected by the command (not the header), as that's what 'cmdsize' was validated against
+            if(LC_SEGMENT == loadCommand->cmd)
             {
                 //offset
                 segmentOffset = ((struct segment_command *)loadCommand)->fileoff;
@@ -842,7 +844,7 @@ bail:
             }
             //64bit
             // ->get offset/size of segment
-            else if(sizeof(struct mach_header_64) == [machoHeader[KEY_HEADER_SIZE] integerValue])
+            else
             {
                 //offset
                 segmentOffset = ((struct segment_command_64 *)loadCommand)->fileoff;

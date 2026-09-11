@@ -247,8 +247,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Acerca"
+            "state" : "translated",
+            "value" : "Acerca de KnockKnock"
           }
         }
       }
@@ -391,8 +391,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Preferencias"
+            "state" : "translated",
+            "value" : "Ajustes..."
           }
         }
       }

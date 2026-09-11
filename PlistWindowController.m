@@ -30,13 +30,17 @@
     //set font
     self.contents.font = [NSFont fontWithName:@"Menlo" size:13];
     
-    //add plist
-    self.contents.string = [[NSDictionary dictionaryWithContentsOfFile:self.plist] description];
-    if(0 == self.contents.string.length)
+    //load plist
+    // note: nil if unreadable, or not a dictionary at the top level (e.g. an array plist)
+    NSString* plistContents = [[NSDictionary dictionaryWithContentsOfFile:self.plist] description];
+    if(0 == plistContents.length)
     {
         //display error
-        self.contents.string = [NSString stringWithFormat:NSLocalizedString(@"failed to load contents of %@", @"failed to load contents of %@"), self.plist];
+        plistContents = [NSString stringWithFormat:NSLocalizedString(@"failed to load contents of %@", @"failed to load contents of %@"), self.plist];
     }
+    
+    //add plist
+    self.contents.string = plistContents;
 
     return;
 }

@@ -10,6 +10,12 @@
             "state" : "new",
             "value" : "Enable this option to show persistent macOS and Apple-installed components."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa esta opción para mostrar los componentes persistentes de macOS e instalados por Apple."
+          }
         }
       }
     },
@@ -21,6 +27,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Start at login (+perform scan)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar al iniciar sesión (+realizar escaneo)."
           }
         }
       }
@@ -34,6 +46,12 @@
             "state" : "new",
             "value" : "Enable this option so KnockKnock launches and scans at each login.\n"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa esta opción para que KnockKnock se inicie y escanee en cada inicio de sesión.\n"
+          }
         }
       }
     },
@@ -45,6 +63,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "API Key:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave API:"
           }
         }
       }
@@ -58,6 +82,12 @@
             "state" : "new",
             "value" : "VirusTotal Integration:"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Integración con VirusTotal:"
+          }
         }
       }
     },
@@ -69,6 +99,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Obtain a key (for free!):"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtén una clave (¡gratis!):"
           }
         }
       }
@@ -85,8 +121,8 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Configuración"
+            "state" : "translated",
+            "value" : "Configuración de KnockKnock"
           }
         }
       }
@@ -117,6 +153,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Enable this option to prevent the app from querying VirusTotal for known malware."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa esta opción para evitar que la aplicación consulte VirusTotal en busca de malware conocido."
           }
         }
       }
@@ -166,6 +208,12 @@
             "state" : "new",
             "value" : "https://docs.virustotal.com/docs/please-give-me-an-api-key"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://docs.virustotal.com/docs/please-give-me-an-api-key"
+          }
         }
       }
     },
@@ -177,6 +225,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Enter your personal VirusTotal API key. \nYou can learn more about getting such a key (for free!) here:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduce tu clave API personal de VirusTotal. \nPuedes obtener más información sobre cómo conseguir una clave (¡gratis!) aquí:"
           }
         }
       }
@@ -190,6 +244,12 @@
             "state" : "new",
             "value" : "Enable this option to prevent the app from checking for updates automatically."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa esta opción para evitar que la aplicación busque actualizaciones automáticamente."
+          }
         }
       }
     },
@@ -201,6 +261,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Your API Key"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu clave API"
           }
         }
       }
@@ -214,6 +280,12 @@
             "state" : "new",
             "value" : "https://docs.virustotal.com/docs/please-give-me-an-api-key"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://docs.virustotal.com/docs/please-give-me-an-api-key"
+          }
         }
       }
     },
@@ -225,6 +297,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "With an API key, checks items against VirusTotal for known malware. "
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con una clave API, comprueba los elementos en VirusTotal en busca de malware conocido. "
           }
         }
       }

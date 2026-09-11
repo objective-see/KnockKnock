@@ -7,6 +7,8 @@
 #import "utilities.h"
 #import "LoginItems.h"
 
+#import <os/log.h>
+
 #import <ServiceManagement/ServiceManagement.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
@@ -126,8 +128,12 @@
         }
         
         //drop
-        if(consoleUID != 0) {
-            seteuid(consoleUID);
+        // (on failure, just carry on as root; enumeration still works, if less complete)
+        if( (consoleUID != 0) &&
+            (0 != seteuid(consoleUID)) ) {
+            
+            //log
+            os_log_error(OS_LOG_DEFAULT, "KnockKnock: failed to drop euid to %u (errno: %d)", consoleUID, errno);
         }
     }
     
@@ -183,7 +189,12 @@ bail:
     }
     
     //restore privs
-    seteuid(originalUID);
+    if( (originalUID != geteuid()) &&
+        (0 != seteuid(originalUID)) ) {
+        
+        //log
+        os_log_error(OS_LOG_DEFAULT, "KnockKnock: failed to restore euid %u (errno: %d)", originalUID, errno);
+    }
     
     return traditionalItems;
 }

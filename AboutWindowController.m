@@ -41,7 +41,7 @@
     }
     
     //set version sting
-    self.versionLabel.stringValue =  [NSString stringWithFormat:@"Version: %@", getAppVersion()];
+    self.versionLabel.stringValue =  [NSString stringWithFormat:NSLocalizedString(@"Version: %@", @"Version: %@"), getAppVersion()];
     
     //load patrons
     self.patrons.string = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"patrons" ofType:@"txt"] encoding:NSUTF8StringEncoding error:NULL];

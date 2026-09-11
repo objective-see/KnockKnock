@@ -59,7 +59,8 @@
 
     //hide first button when action is 'update'
     // ->don't need update check button ;)
-    if(YES == [self.actionButton.title isEqualToString:@"Update"])
+    // note: compare against the *localized* title, as that's what's passed in
+    if(YES == [self.actionButton.title isEqualToString:NSLocalizedString(@"Update", @"Update")])
     {
         //hide
         self.firstButton.hidden = YES;

@@ -455,6 +455,20 @@ extern BOOL queryVT;
                     [vtButton setEnabled:YES];
                 }
             
+                //lookup failed (network, rate limit, etc)
+                // ->show as such (disabled), so user doesn't mistake it for 'unknown to VT'
+                else if(nil != ((File*)item).vtInfo[VT_ERROR])
+                {
+                    //set title
+                    [vtButton setTitle:@"!"];
+                    
+                    //tooltip
+                    vtButton.toolTip = NSLocalizedString(@"VirusTotal lookup failed", @"VirusTotal lookup failed");
+                    
+                    //disable
+                    vtButton.enabled = NO;
+                }
+                
                 //file is not known
                 // ->reset title to '?'
                 else

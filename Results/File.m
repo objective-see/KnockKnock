@@ -235,7 +235,7 @@ bail:
         case errSecCSUnsigned:
         {
             //set string
-            prettyPrint = [NSMutableString stringWithString:@"unsigned"];
+            prettyPrint = [NSMutableString stringWithString:NSLocalizedString(@"unsigned", @"unsigned")];
             
             //brk
             break;
@@ -245,7 +245,7 @@ bail:
         case errSecCSSignatureFailed:
         {
             //set string
-            prettyPrint = [NSMutableString stringWithString:@"invalid signature"];
+            prettyPrint = [NSMutableString stringWithString:NSLocalizedString(@"invalid signature", @"invalid signature")];
             
             //brk
             break;
@@ -299,7 +299,7 @@ bail:
         default:
             
             //set string
-            prettyPrint = [NSMutableString stringWithFormat:@"unknown (status/error: %ld)", (long)[self.signingInfo[KEY_SIGNATURE_STATUS] integerValue]];
+            prettyPrint = [NSMutableString stringWithFormat:NSLocalizedString(@"unknown (status/error: %ld)", @"unknown (status/error: %ld)"), (long)[self.signingInfo[KEY_SIGNATURE_STATUS] integerValue]];
             
             //brk
             break;

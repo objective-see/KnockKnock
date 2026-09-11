@@ -117,10 +117,10 @@
         }
         
         //set size
-        [self.size setStringValue:[NSString stringWithFormat:@"%llu bytes", ((File*)self.itemObj).attributes.fileSize]];
+        [self.size setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%llu bytes", @"%llu bytes"), ((File*)self.itemObj).attributes.fileSize]];
         
         //set date
-        [self.date setStringValue:[NSString stringWithFormat:@"%@ (created) / %@ (modified)", ((File*)self.itemObj).attributes.fileCreationDate, ((File*)self.itemObj).attributes.fileModificationDate]];
+        [self.date setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%@ (created) / %@ (modified)", @"%@ (created) / %@ (modified)"), ((File*)self.itemObj).attributes.fileCreationDate, ((File*)self.itemObj).attributes.fileModificationDate]];
         
         //set plist
         if(nil != ((File*)self.itemObj).plist)
@@ -135,11 +135,12 @@
         else
         {
             //set
-            [self.plist setStringValue:@"No property list"];
+            [self.plist setStringValue:NSLocalizedString(@"No property list", @"No property list")];
         }
         
         //set signing info
-        [self.sign setStringValue:[(File*)self.itemObj formatSigningInfo]];
+        // (nil for items that weren't hashed/signed, e.g. non-regular or huge files)
+        [self.sign setStringValue:[(File*)self.itemObj formatSigningInfo] ?: NSLocalizedString(@"unknown", @"unknown")];
     }
     
     //handle Extension class
@@ -167,7 +168,7 @@
         
         //set date
         // note: 'attributes' lives on ItemBase, so no (wrong) cast to File needed
-        [self.date setStringValue:[NSString stringWithFormat:@"%@ (created) / %@ (modified)", self.itemObj.attributes.fileCreationDate, self.itemObj.attributes.fileModificationDate]];
+        [self.date setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%@ (created) / %@ (modified)", @"%@ (created) / %@ (modified)"), self.itemObj.attributes.fileCreationDate, self.itemObj.attributes.fileModificationDate]];
         
         //set signing info
         //[self.sign setStringValue:[(File*)self.itemObj formatSigningInfo]];

@@ -460,7 +460,7 @@
             }
             
             //skip disabled ones
-            if(YES != [extension[@"state"] boolValue])
+            if(YES != boolValue(extension[@"state"]))
             {
                 //skip
                 continue;
@@ -468,7 +468,7 @@
             
             //skip extensions that are installed by default
             // ->hope this is ok
-            if(YES == [extension[@"was_installed_by_default"] boolValue])
+            if(YES == boolValue(extension[@"was_installed_by_default"]))
             {
                 //skip
                 continue;
@@ -640,9 +640,6 @@ bail:
         {
             //init extension files array
             extensionFiles = [NSMutableArray array];
-            
-            //init extension info dictionary
-            extensionInfo = [NSMutableDictionary dictionary];
             
             //init path to first extensions (addons.json) file
             extensionsFile = [NSString stringWithFormat:@"%@/%@/addons.json", [users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[FIREFOX_EXTENSION_DIRECTORY substringFromIndex:1]], profile];
@@ -965,14 +962,14 @@ bail:
         
         //skip black-listed ones
         // note: was checking 'extensions' (the settings dict) not 'extension'
-        if(YES == [extension[@"blacklist"] boolValue])
+        if(YES == boolValue(extension[@"blacklist"]))
         {
             //skip
             continue;
         }
         
         //skip disabled ones
-        if(YES != [extension[@"state"] boolValue])
+        if(YES != boolValue(extension[@"state"]))
         {
             //skip
             continue;
@@ -980,7 +977,7 @@ bail:
         
         //skip extensions that are installed by default
         // ->hope this is ok
-        if(YES == [extension[@"was_installed_by_default"] boolValue])
+        if(YES == boolValue(extension[@"was_installed_by_default"]))
         {
             //skip
             continue;

@@ -87,7 +87,14 @@
     }
     
     //extract latest version
-    latestVersion = [[productsVersionDictionary objectForKey:PRODUCT_NAME] objectForKey:@"version"];
+    // note: type-checked at each level, as the (remote) JSON shape isn't guaranteed
+    if( (YES == [productsVersionDictionary isKindOfClass:[NSDictionary class]]) &&
+        (YES == [productsVersionDictionary[PRODUCT_NAME] isKindOfClass:[NSDictionary class]]) &&
+        (YES == [productsVersionDictionary[PRODUCT_NAME][@"version"] isKindOfClass:[NSString class]]) )
+    {
+        //extract
+        latestVersion = productsVersionDictionary[PRODUCT_NAME][@"version"];
+    }
     
 bail:
     
