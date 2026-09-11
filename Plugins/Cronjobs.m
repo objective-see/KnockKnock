@@ -111,8 +111,11 @@ bail:
     //Command obj
     Command* commandObj = nil;
     
-    //convert to (trimmed) string
-    cronJobs = [[[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    //(trimmed) line
+    NSString* line = nil;
+    
+    //convert to string
+    cronJobs = [[NSString alloc] initWithData:output encoding:NSUTF8StringEncoding];
     
     //sanity check
     // ->skip blank results
@@ -125,18 +128,22 @@ bail:
     
     //create Command obj for each
     //  ->and call back up into UI to add
-    for(NSString* cronJob in [cronJobs componentsSeparatedByString:@"\n"])
+    for(NSString* cronJob in [cronJobs componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]])
     {
+        //trim (each) line
+        // ->cron ignores leading whitespace, so must we (else '\t* * * * * evil' would be hidden)
+        line = [cronJob stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
         //skip lines that aren't jobs
         // ->comments, etc
-        if(YES != [self isJob:cronJob])
+        if(YES != [self isJob:line])
         {
             //skip
             continue;
         }
         
         //create Command object for job
-        commandObj = [[Command alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_COMMAND:cronJob, KEY_RESULT_PATH:path}];
+        commandObj = [[Command alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_COMMAND:line, KEY_RESULT_PATH:path}];
         
         //skip Command objects that err'd out for any reason
         if(nil == commandObj)
@@ -155,12 +162,27 @@ bail:
     return;
 }
 
-//determines if a line is really a cronjob
-// ->ignores everything that doesn't start with a digit, '*', or '@'
+//determines if a line is really a cronjob (or an environment assignment)
+// ->jobs start with a digit, '*', or '@'
+// ->environment assignments ('NAME=value') are also reported, as e.g. 'SHELL=/path/to/evil' means every job runs the attacker's binary
 -(BOOL)isJob:(NSString*)possibleJob
 {
     //flag
     BOOL isValidJob = NO;
+    
+    //regex for environment assignments
+    static NSRegularExpression* assignment = nil;
+    
+    //once
+    static dispatch_once_t onceToken = 0;
+    
+    //init regex
+    dispatch_once(&onceToken, ^{
+        
+        //init
+        // 'NAME = value' (cron allows whitespace around '=')
+        assignment = [NSRegularExpression regularExpressionWithPattern:@"^[A-Za-z_][A-Za-z0-9_]*\\s*=" options:0 error:nil];
+    });
     
     //make sure length is decent
     if(0 == possibleJob.length)
@@ -169,23 +191,29 @@ bail:
         goto bail;
     }
     
-    //lines should usually start with a number
-    // ->unless a '*', or '@'
-    if(YES != isnumber([possibleJob characterAtIndex:0]))
+    //job?
+    // ->starts with a number, '*', or '@'
+    if( (YES == isnumber([possibleJob characterAtIndex:0])) ||
+        (YES == [possibleJob hasPrefix:@"*"]) ||
+        (YES == [possibleJob hasPrefix:@"@"]) )
     {
-        //not a number
-        // ->check for '*', or '@'
-        if( (YES != [possibleJob hasPrefix:@"*"]) &&
-            (YES != [possibleJob hasPrefix:@"@"]) )
-        {
-            //bail
-            goto bail;
-        }
+        //happy
+        isValidJob = YES;
+        
+        //done
+        goto bail;
     }
     
-    //happy
-    // ->appears to be a valid job
-    isValidJob = YES;
+    //environment assignment?
+    // ->e.g. 'SHELL=/bin/sh', 'PATH=...'
+    if(0 != [assignment numberOfMatchesInString:possibleJob options:0 range:NSMakeRange(0, possibleJob.length)])
+    {
+        //happy
+        isValidJob = YES;
+        
+        //done
+        goto bail;
+    }
     
 //bail
 bail:

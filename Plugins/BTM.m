@@ -151,6 +151,17 @@
                 fileObj = [[File alloc] initWithParams:parameters];
                 if(fileObj) {
                     
+                    //don't trust 'Apple' binaries persisted by a non-Apple plist
+                    // e.g. /bin/bash launched via an app's Contents/Library/LaunchAgents/evil.plist (SMAppService)
+                    // ...only plists on the (sealed) system volume get to vouch for an Apple binary
+                    if( (YES == fileObj.isTrusted) &&
+                        (nil != plist) &&
+                        (YES != [plist hasPrefix:@"/System/"]) )
+                    {
+                        //don't trust
+                        fileObj.isTrusted = NO;
+                    }
+                    
                     //save
                     items[item[KEY_BTM_ITEM_UUID]] = fileObj;
                     

@@ -1479,7 +1479,7 @@ bail:
 -(IBAction)compareScans:(id)sender
 {
     //previous scan
-    NSString* prevScan = nil;
+    NSData* prevScan = nil;
     NSDictionary* prevScanContents = nil;
     NSDictionary* currentScanContents = nil;
     
@@ -1503,15 +1503,31 @@ bail:
     if([panel runModal] == NSModalResponseOK) {
         
         //load previous scan
-        prevScan = [NSString stringWithContentsOfURL:panel.URL encoding:NSUTF8StringEncoding error:nil];
+        // note: file is untrusted (user-writable), so may be missing, binary, malformed, etc.
+        prevScan = [NSData dataWithContentsOfURL:panel.URL];
         
-        //parse previous scan JSON
-        prevScanContents = [NSJSONSerialization JSONObjectWithData:[prevScan dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-        
-        //parse current scan JSON
-        currentScanContents = [NSJSONSerialization JSONObjectWithData:[[self scanToJSON] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        //parse previous & current scan JSON
+        // wrapped, as 'JSONObjectWithData' throws on nil data
+        @try
+        {
+            //parse previous
+            if(nil != prevScan)
+            {
+                //parse
+                prevScanContents = [NSJSONSerialization JSONObjectWithData:prevScan options:0 error:nil];
+            }
+            
+            //parse current
+            currentScanContents = [NSJSONSerialization JSONObjectWithData:[[self scanToJSON] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        }
+        @catch(NSException* exception)
+        {
+            //reset
+            prevScanContents = nil;
+        }
         
         //diff scans
+        // note: nil (e.g. unparsable or non-dictionary) is handled, returns nil -> error alert
         differences = diffScans(prevScanContents, currentScanContents);
         if(differences) {
             

@@ -4,6 +4,7 @@
 //
 
 #import "File.h"
+#import "Command.h"
 #import "utilities.h"
 #import "AppDelegate.h"
 #import "LaunchItems.h"
@@ -62,6 +63,10 @@
     
     //detected (auto-started) login item
     File* fileObj = nil;
+    
+    //(fallback) Command obj
+    // for items whose binary can't be found
+    Command* commandObj = nil;
 
     //get overriden enabled & disabled items
     [self processOverrides];
@@ -161,17 +166,39 @@
             continue;
         }
         
-        //create File object for launch item
-        // ->skip those that err out for any reason
-        if(nil == (fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:launchItemPath, KEY_RESULT_PLIST:launchItemPlist}]))
+        //relative path (e.g. 'evil')?
+        // ->launchd resolves it via the job's own 'EnvironmentVariables.PATH' (not ours), so try that first
+        if(YES != [launchItemPath hasPrefix:@"/"])
         {
-            //skip
+            //resolve
+            launchItemPath = [self resolveViaJobPath:launchItemPath plist:plistProcessed] ?: launchItemPath;
+        }
+        
+        //create File object for launch item
+        fileObj = [[File alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_PATH:launchItemPath, KEY_RESULT_PLIST:launchItemPlist}];
+        
+        //binary not found (or other error)?
+        // ->still report it (as a Command), as launchd may still run it (e.g. via a PATH we don't see, a volume mounted later, etc)
+        if(nil == fileObj)
+        {
+            //create Command object
+            commandObj = [[Command alloc] initWithParams:@{KEY_RESULT_PLUGIN:self, KEY_RESULT_COMMAND:[NSString stringWithFormat:@"%@ (file not found)", launchItemPath], KEY_RESULT_PATH:launchItemPlist}];
+            if(nil != commandObj)
+            {
+                //process item
+                // ->save and report to UI
+                [super processItem:commandObj];
+            }
+            
+            //next
             continue;
         }
         
-        //don't trust 'Apple' binaries that are persisted as launch items
+        //don't trust 'Apple' binaries persisted by a non-Apple plist
+        // e.g. /bin/bash launched via ~/Library/LaunchAgents/evil.plist (or /var/root/..., etc)
+        // ...only plists on the (sealed) system volume get to vouch for an Apple binary
         if( (YES == fileObj.isTrusted) &&
-            ((YES == [fileObj.plist hasPrefix:@"/Library/"]) || (YES == [fileObj.plist hasPrefix:@"/Users/"])) )
+            (YES != [fileObj.plist hasPrefix:@"/System/"]) )
         {
             //don't trust
             fileObj.isTrusted = NO;
@@ -183,6 +210,67 @@
     }
 
     return;
+}
+
+//resolve a relative program name via the job's own 'EnvironmentVariables.PATH'
+// note: keys of plist are lower-cased (but not those of nested dictionaries)
+-(NSString*)resolveViaJobPath:(NSString*)program plist:(NSDictionary*)plist
+{
+    //resolved path
+    NSString* resolved = nil;
+    
+    //candidate
+    NSString* candidate = nil;
+    
+    //job's environment variables
+    NSDictionary* environment = nil;
+    
+    //job's PATH
+    NSString* path = nil;
+    
+    //grab job's environment
+    environment = plist[@"environmentvariables"];
+    if(YES != [environment isKindOfClass:[NSDictionary class]])
+    {
+        //bail
+        goto bail;
+    }
+    
+    //grab job's PATH
+    path = environment[@"PATH"];
+    if(YES != [path isKindOfClass:[NSString class]])
+    {
+        //bail
+        goto bail;
+    }
+    
+    //check each directory in PATH
+    for(NSString* directory in [path componentsSeparatedByString:@":"])
+    {
+        //skip blanks
+        if(0 == directory.length)
+        {
+            //skip
+            continue;
+        }
+        
+        //build candidate
+        candidate = [directory stringByAppendingPathComponent:program];
+        
+        //exists?
+        if(YES == [[NSFileManager defaultManager] fileExistsAtPath:candidate])
+        {
+            //found
+            resolved = candidate;
+            
+            //done
+            break;
+        }
+    }
+    
+bail:
+    
+    return resolved;
 }
 
 //get all overridden enabled/disabled launch items

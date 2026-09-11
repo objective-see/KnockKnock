@@ -9,17 +9,20 @@
 #include "diff.h"
 
 //generate key for item comparison
+// note: items come from an untrusted (user-writable) file, so every value is type-checked
 NSString* keyForItem(NSDictionary* item)
 {
     //command item? use command + file
-    if([item[@"command"] length] > 0)
+    if( (YES == [item[@"command"] isKindOfClass:[NSString class]]) &&
+        ([item[@"command"] length] > 0) )
     {
         return [NSString stringWithFormat:@"%@|%@",
-            item[@"command"] ?: @"", item[@"file"] ?: @""];
+            item[@"command"], [item[@"file"] isKindOfClass:[NSString class]] ? item[@"file"] : @""];
     }
     
     //default: use path
-    return item[@"path"];
+    // (must be a string, else no key -> item is skipped)
+    return [item[@"path"] isKindOfClass:[NSString class]] ? item[@"path"] : nil;
 }
 
 //check if item changed (compare hashes/signatures)
@@ -42,16 +45,18 @@ BOOL itemChanged(NSDictionary* prevItem, NSDictionary* currentItem)
 }
 
 //format item for display
+// note: '%@' is safe for any type, but 'length' is not, hence the type check
 NSString* formatItem(NSDictionary* item)
 {
     //command item?
-    if([item[@"command"] length] > 0)
+    if( (YES == [item[@"command"] isKindOfClass:[NSString class]]) &&
+        ([item[@"command"] length] > 0) )
     {
-        return [NSString stringWithFormat:@"%@ (%@)", item[@"command"], item[@"file"]];
+        return [NSString stringWithFormat:@"%@ (%@)", item[@"command"], item[@"file"] ?: @"unknown"];
     }
     
     //default: name + path
-    return [NSString stringWithFormat:@"%@ (%@)", item[@"name"] ?: @"unknown", item[@"path"]];
+    return [NSString stringWithFormat:@"%@ (%@)", item[@"name"] ?: @"unknown", item[@"path"] ?: @"unknown"];
 }
 
 //compare two scans, return diff string (nil on error)
@@ -72,13 +77,16 @@ NSString* diffScans(NSDictionary* prevScan, NSDictionary* currentScan)
     
     for(NSString* category in allCategories)
     {
-        NSArray* prevItems = prevScan[category] ?: @[];
-        NSArray* currentItems = currentScan[category] ?: @[];
+        //categories must map to arrays (of dictionaries)
+        // ->anything else (from an untrusted file) is treated as empty
+        NSArray* prevItems = [prevScan[category] isKindOfClass:[NSArray class]] ? prevScan[category] : @[];
+        NSArray* currentItems = [currentScan[category] isKindOfClass:[NSArray class]] ? currentScan[category] : @[];
         
         //build lookups
         NSMutableDictionary* prevLookup = [NSMutableDictionary dictionary];
         for(NSDictionary* item in prevItems)
         {
+            if(![item isKindOfClass:[NSDictionary class]]) continue;
             NSString* key = keyForItem(item);
             if(key) prevLookup[key] = item;
         }
@@ -86,6 +94,7 @@ NSString* diffScans(NSDictionary* prevScan, NSDictionary* currentScan)
         NSMutableDictionary* currentLookup = [NSMutableDictionary dictionary];
         for(NSDictionary* item in currentItems)
         {
+            if(![item isKindOfClass:[NSDictionary class]]) continue;
             NSString* key = keyForItem(item);
             if(key) currentLookup[key] = item;
         }
