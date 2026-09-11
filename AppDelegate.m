@@ -5,6 +5,9 @@
 
 #import "diff.h"
 #import "consts.h"
+
+#import <pwd.h>
+#import <unistd.h>
 #import "Update.h"
 #import "utilities.h"
 #import "PluginBase.h"
@@ -83,29 +86,67 @@ void uncaughtExceptionHandler(NSException* exception) {
 }
 
 //automatically invoked by OS
+// note: order matters when (re)launching as root:
+//       welcome/config (first run) happens in the non-root instance, so prefs & VT key land in the *user's* domain/keychain
+//       ...the root instance then reads those (see 'getPreference', 'loadAPIKeyFromKeychain')
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
-    //flag
-    BOOL launchedAsLoginItem = NO;
-    
-    //flag
-    BOOL relaunched = NO;
-    
-    //defaults
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    
     //relaunched (as root) by ourselves?
-    relaunched = [NSProcessInfo.processInfo.arguments containsObject:ARG_RELAUNCHED_AS_ROOT];
+    if(YES == [NSProcessInfo.processInfo.arguments containsObject:ARG_RELAUNCHED_AS_ROOT])
+    {
+        //load (& delete) handoff (VT API key)
+        loadHandoff();
+        
+        //adopt console user's appearance (light/dark)
+        // as root's own defaults have none, so AppKit would render everything light
+        adoptConsoleUserAppearance();
+        
+        //init & scan
+        [self initializeForScan:YES];
+        
+        //done
+        return;
+    }
     
     //started via login item?
-    launchedAsLoginItem = [self launchedAsLoginItem];
+    self.launchedAsLoginItem = [self wasLaunchedAsLoginItem];
     
+    //first time run?
+    // show welcome/configuration screens (which, when done, invoke 'start')
+    if(YES != getPreferenceBool(NOT_FIRST_TIME))
+    {
+        //set key
+        setPreference(NOT_FIRST_TIME, @YES);
+        
+        //alloc window controller
+        welcomeWindowController = [[WelcomeWindowController alloc] initWithWindowNibName:@"Welcome"];
+    
+        //show window
+        [self.welcomeWindowController showWindow:self];
+        
+        //make front
+        [[NSRunningApplication currentApplication] activateWithOptions:(NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
+        
+        //done
+        return;
+    }
+    
+    //start
+    [self start];
+    
+    return;
+}
+
+//start (normally)
+// relaunches as root if appropriate (GUI launch), otherwise inits for a scan
+// invoked at launch (if not first run), or once the welcome flow completes
+-(void)start
+{
     //launched via Finder (double-click), etc?
-    // i.e. not root, not (re)launched by ourselves, not via login item, and no terminal
+    // i.e. not root, not via login item, and no terminal
     // ...then (re)launch as root, and exit; unless user cancels, in which case just run as is
     if( (0 != geteuid()) &&
-        (YES != relaunched) &&
-        (YES != launchedAsLoginItem) &&
+        (YES != self.launchedAsLoginItem) &&
         (0 == isatty(STDIN_FILENO)) )
     {
         //relaunch
@@ -116,53 +157,17 @@ void uncaughtExceptionHandler(NSException* exception) {
             return;
         }
     }
-
-    //relaunched (as root) by ourselves?
-    // skip welcome/configuration screens, and kick off scan
-    if(YES == relaunched)
-    {
-        //adopt console user's appearance (light/dark)
-        // as root's own defaults have none, so AppKit would render everything light
-        adoptConsoleUserAppearance();
-        
-        //set key
-        // so subsequent (root) runs don't show welcome screens either
-        [defaults setBool:YES forKey:NOT_FIRST_TIME];
-        
-        //init & scan
-        [self initializeForScan:YES];
-    }
     
-    //first time run?
-    // show welcome/configuration screens
-    else if(![defaults boolForKey:NOT_FIRST_TIME])
-    {
-        //set key
-        [defaults setBool:YES forKey:NOT_FIRST_TIME];
-        
-        //alloc window controller
-        welcomeWindowController = [[WelcomeWindowController alloc] initWithWindowNibName:@"Welcome"];
-    
-        //show window
-        [self.welcomeWindowController showWindow:self];
-        
-        //make front
-        [[NSRunningApplication currentApplication] activateWithOptions:(NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
-    }
-    //otherwise just kick off scan initializations
+    //init
     // and if we were started via the login item, start scan too
-    else
-    {
-        //init
-        [self initializeForScan:launchedAsLoginItem];
-    }
+    [self initializeForScan:self.launchedAsLoginItem];
     
     return;
 }
 
 //check if we were started via login item
 // (via the 'launched as login item' property of the launch event)
--(BOOL)launchedAsLoginItem
+-(BOOL)wasLaunchedAsLoginItem
 {
     //flag
     BOOL launchedAsLoginItem = NO;
@@ -245,9 +250,6 @@ bail:
 //init all the thingz for a scan
 -(void)initializeForScan:(BOOL)startScan
 {
-    //defaults
-    NSUserDefaults* defaults = nil;
-    
     //init filter object
     itemFilter = [[Filter alloc] init];
     
@@ -266,7 +268,8 @@ bail:
         
     //check for update
     // unless user has turn off via prefs
-    if(YES != [defaults boolForKey:PREF_DISABLE_UPDATE_CHECK])
+    // note: was reading from a nil 'defaults', so the pref was never honored
+    if(YES != getPreferenceBool(PREF_DISABLE_UPDATE_CHECK))
     {
         //check
         [self check4Update:nil];
@@ -1313,8 +1316,9 @@ bail:
     //create panel
     panel = [NSSavePanel savePanel];
     
-    //default to desktop
-    panel.directoryURL = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains (NSDesktopDirectory, NSUserDomainMask, YES) firstObject]];
+    //default to (console user's) desktop
+    // note: as root, 'NSSearchPathForDirectoriesInDomains' would give /var/root/Desktop
+    panel.directoryURL = [NSURL fileURLWithPath:[getConsoleUserHome() stringByAppendingPathComponent:@"Desktop"]];
     
     //formatter for file name
     NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
@@ -1336,6 +1340,21 @@ bail:
              //save JSON to disk
              if(YES == [output writeToURL:[panel URL] atomically:YES encoding:NSUTF8StringEncoding error:&error])
              {
+                //root?
+                // give file to console user, so they can edit/delete it (else it's root-owned)
+                if( (0 == geteuid()) &&
+                    (0 != getConsoleUserID()) )
+                {
+                    //chown
+                    // group: user's primary group
+                    struct passwd* user = getpwuid(getConsoleUserID());
+                    if(NULL != user)
+                    {
+                        //chown
+                        chown(panel.URL.path.fileSystemRepresentation, user->pw_uid, user->pw_gid);
+                    }
+                }
+                 
                 //activate Finder & select file
                 [NSWorkspace.sharedWorkspace selectFile:panel.URL.path inFileViewerRootedAtPath:@""];
              }
@@ -1500,8 +1519,9 @@ bail:
     panel.allowedFileTypes = @[@"json"];
     panel.treatsFilePackagesAsDirectories = YES;
     
-    //default to desktop
-    panel.directoryURL = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDesktopDirectory, NSUserDomainMask, YES) firstObject]];
+    //default to (console user's) desktop
+    // note: as root, 'NSSearchPathForDirectoriesInDomains' would give /var/root/Desktop
+    panel.directoryURL = [NSURL fileURLWithPath:[getConsoleUserHome() stringByAppendingPathComponent:@"Desktop"]];
     
     //show panel, bail on cancel
     if([panel runModal] == NSModalResponseOK) {

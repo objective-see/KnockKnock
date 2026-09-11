@@ -129,6 +129,15 @@ extern Filter* itemFilter;
 //init all the thingz for a scan
 -(void)initializeForScan:(BOOL)startScan;
 
+//start (normally)
+// relaunches as root if appropriate (GUI launch), otherwise inits for a scan
+// invoked at launch (if not first run), or once the welcome flow completes
+-(void)start;
+
+//flag
+// launched via login item?
+@property BOOL launchedAsLoginItem;
+
 //init tracking areas for buttons
 // ->provide mouse over effects
 -(void)initTrackingAreas;

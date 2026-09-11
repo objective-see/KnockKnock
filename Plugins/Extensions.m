@@ -64,7 +64,8 @@
     extensions = [NSMutableArray array];
     
     //exec 'pluginkit -vmA'
-    taskOutput = execTask(PLUGIN_KIT, @[@"-vmA"], NULL);
+    // (as console user when root, as pluginkit's view is per-user)
+    taskOutput = execTaskAsConsoleUser(PLUGIN_KIT, @[@"-vmA"], NULL);
     if( (nil == taskOutput) ||
         (0 == taskOutput.length) )
     {
@@ -111,7 +112,8 @@
         }
         
         //exec pluginkit
-        taskOutput = execTask(PLUGIN_KIT, @[@"-mi", finderSync, @"-v"], NULL);
+        // (as console user when root, as pluginkit's view is per-user)
+        taskOutput = execTaskAsConsoleUser(PLUGIN_KIT, @[@"-mi", finderSync, @"-v"], NULL);
         if( (nil == taskOutput) ||
             (0 == taskOutput.length) )
         {

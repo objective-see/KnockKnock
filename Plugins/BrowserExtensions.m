@@ -190,7 +190,8 @@
     for(NSString* match in @[@"com.apple.Safari.extension", @"com.apple.Safari.content-blocker"])
     {
         //enumerate via pluginkit
-        taskOutput = execTask(PLUGIN_KIT, @[@"-mAvv", @"-p", match], NULL);
+        // (as console user when root, as pluginkit's view is per-user)
+        taskOutput = execTaskAsConsoleUser(PLUGIN_KIT, @[@"-mAvv", @"-p", match], NULL);
         if(0 != taskOutput.length)
         {
             //parse output
@@ -836,6 +837,54 @@ bail:
 //       so updates to that should go here too?
 -(void)scanExtensionsOpera:(NSString*)browserPath
 {
+    //users
+    NSMutableDictionary* users = [NSMutableDictionary dictionary];
+    
+    //current user
+    NSString* currentUser = nil;
+    
+    //user's home directory
+    NSString* userDirectory = nil;
+    
+    //root?
+    // can scan all users
+    if(0 == geteuid())
+    {
+        //all
+        users = allUsers();
+    }
+    //just current user
+    else
+    {
+        //get current/console user
+        currentUser = getConsoleUser();
+        
+        //get their home directory
+        userDirectory = NSHomeDirectoryForUser(currentUser);
+        
+        //save
+        if( (0 != currentUser.length) &&
+            (0 != userDirectory.length) )
+        {
+            //current
+            users[currentUser] = @{USER_NAME:currentUser, USER_DIRECTORY:userDirectory};
+        }
+    }
+    
+    //scan each user's Opera
+    // note: was expanding '~', which as root is /var/root (so nothing was found)
+    for(NSString* userID in users)
+    {
+        //scan
+        [self scanExtensionsOpera:browserPath baseDirectory:[users[userID][USER_DIRECTORY] stringByAppendingPathComponent:[OPERA_INFO_BASE_DIRECTORY substringFromIndex:1]]];
+    }
+    
+    return;
+}
+
+//scan for Opera extensions (for a given user's Opera directory)
+-(void)scanExtensionsOpera:(NSString*)browserPath baseDirectory:(NSString*)baseDirectory
+{
     //preferences file
     NSString* preferenceFile = nil;
     
@@ -861,7 +910,7 @@ bail:
     Extension* extensionObj = nil;
     
     //build path to preferences
-    preferenceFile = [NSString stringWithFormat:@"%@/Preferences", [OPERA_INFO_BASE_DIRECTORY stringByExpandingTildeInPath]];
+    preferenceFile = [baseDirectory stringByAppendingPathComponent:@"Preferences"];
     
     //make sure preference file exists
     if(YES != [[NSFileManager defaultManager] fileExistsAtPath:preferenceFile])
@@ -959,7 +1008,7 @@ bail:
         else
         {
             //build path
-            path = [NSString stringWithFormat:@"%@/Extensions/%@", [OPERA_INFO_BASE_DIRECTORY stringByExpandingTildeInPath], extension[@"path"]];
+            path = [NSString stringWithFormat:@"%@/Extensions/%@", baseDirectory, extension[@"path"]];
             
             //skip paths that don't exist
             if(YES != [[NSFileManager defaultManager] fileExistsAtPath:path])

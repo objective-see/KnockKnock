@@ -50,6 +50,141 @@ NSString* getConsoleUser(void)
     return CFBridgingRelease(SCDynamicStoreCopyConsoleUser(NULL, NULL, NULL));
 }
 
+//get uid of logged in user
+// returns 0 (root) if there's no console user
+uid_t getConsoleUserID(void)
+{
+    //uid
+    uid_t uid = 0;
+    
+    //user name
+    CFStringRef userName = NULL;
+    
+    //get console user (& uid)
+    userName = SCDynamicStoreCopyConsoleUser(NULL, &uid, NULL);
+    if(NULL == userName)
+    {
+        //none
+        uid = 0;
+    }
+    else
+    {
+        //free
+        CFRelease(userName);
+    }
+    
+    return uid;
+}
+
+//get home directory of logged in user
+// falls back to (our own) home directory
+NSString* getConsoleUserHome(void)
+{
+    //home
+    NSString* home = nil;
+    
+    //console user
+    NSString* consoleUser = getConsoleUser();
+    if(0 != consoleUser.length)
+    {
+        //get home
+        home = NSHomeDirectoryForUser(consoleUser);
+    }
+    
+    //fallback
+    if(0 == home.length)
+    {
+        //ours
+        home = NSHomeDirectory();
+    }
+    
+    return home;
+}
+
+/* PREFERENCES */
+
+//should we use the console user's preferences (vs. our own)?
+// yes, when we're root and there's a (non-root) console user
+static BOOL useConsoleUserPreferences(void)
+{
+    return ( (0 == geteuid()) && (0 != getConsoleUserID()) );
+}
+
+//registered defaults
+NSDictionary* preferenceDefaults(void)
+{
+    return @{PREF_SHOW_TRUSTED_ITEMS:@NO, PREF_START_AT_LOGIN:@NO, PREF_DISABLE_UPDATE_CHECK:@NO, PREF_DISABLE_VT_QUERIRES:@YES};
+}
+
+//get a preference (or its registered default)
+id getPreference(NSString* key)
+{
+    //value
+    id value = nil;
+    
+    //root?
+    // read console user's preferences
+    if(YES == useConsoleUserPreferences())
+    {
+        //read
+        value = CFBridgingRelease(CFPreferencesCopyValue((__bridge CFStringRef)key, (__bridge CFStringRef)NSBundle.mainBundle.bundleIdentifier, (__bridge CFStringRef)getConsoleUser(), kCFPreferencesAnyHost));
+    }
+    //normal
+    else
+    {
+        //read
+        value = [NSUserDefaults.standardUserDefaults objectForKey:key];
+    }
+    
+    //unset?
+    // use registered default
+    if(nil == value)
+    {
+        //default
+        value = preferenceDefaults()[key];
+    }
+    
+    return value;
+}
+
+//get a (bool) preference (or its registered default)
+BOOL getPreferenceBool(NSString* key)
+{
+    //value
+    id value = getPreference(key);
+    
+    //bool (or number)?
+    if(YES == [value isKindOfClass:[NSNumber class]])
+    {
+        return [value boolValue];
+    }
+    
+    return NO;
+}
+
+//set a preference
+void setPreference(NSString* key, id value)
+{
+    //root?
+    // write console user's preferences
+    if(YES == useConsoleUserPreferences())
+    {
+        //write
+        CFPreferencesSetValue((__bridge CFStringRef)key, (__bridge CFPropertyListRef)value, (__bridge CFStringRef)NSBundle.mainBundle.bundleIdentifier, (__bridge CFStringRef)getConsoleUser(), kCFPreferencesAnyHost);
+        
+        //flush
+        CFPreferencesSynchronize((__bridge CFStringRef)NSBundle.mainBundle.bundleIdentifier, (__bridge CFStringRef)getConsoleUser(), kCFPreferencesAnyHost);
+    }
+    //normal
+    else
+    {
+        //write
+        [NSUserDefaults.standardUserDefaults setObject:value forKey:key];
+    }
+    
+    return;
+}
+
 //get all user
 // includes name/home directory
 NSMutableDictionary* allUsers(void)
@@ -937,6 +1072,35 @@ bail:
 }
 
 
+//exec a process (as the console user, when we're root) and grab it's output
+// for per-user tools (e.g. pluginkit), whose output as root would be root's (empty) view
+// note: uses 'launchctl asuser <uid>', which runs the tool in that user's (launchd) context
+NSData* execTaskAsConsoleUser(NSString* binaryPath, NSArray* arguments, int* exitCode)
+{
+    //console user's uid
+    uid_t consoleUID = 0;
+    
+    //not root?
+    // just exec as is
+    if(0 != geteuid())
+    {
+        //exec
+        return execTask(binaryPath, arguments, exitCode);
+    }
+    
+    //root
+    // exec as console user (if there is one)
+    consoleUID = getConsoleUserID();
+    if(0 == consoleUID)
+    {
+        //exec (as root)
+        return execTask(binaryPath, arguments, exitCode);
+    }
+    
+    //exec as console user
+    return execTask(LAUNCHCTL, [@[@"asuser", [NSString stringWithFormat:@"%u", consoleUID], binaryPath] arrayByAddingObjectsFromArray:arguments], exitCode);
+}
+
 //check if computer has network connection
 BOOL isNetworkConnected(void)
 {
@@ -1512,40 +1676,104 @@ BOOL hasFDA(void) {
     return [NSFileManager.defaultManager isReadableFileAtPath:tccPath];
 }
 
+//(handoff) API key
+// set when launched (as root) with a handoff file
+static NSString* handoffAPIKey = nil;
+
+//for keychain access as root
+// we use the (legacy) keychain APIs to target the console user's login keychain
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+//get the console user's login keychain
+// only when we're root; otherwise nil (so default keychain is used)
+static SecKeychainRef consoleUserKeychain(void)
+{
+    //keychain
+    SecKeychainRef keychain = NULL;
+    
+    //path
+    NSString* path = nil;
+    
+    //root, with a console user?
+    if( (0 == geteuid()) &&
+        (0 != getConsoleUserID()) )
+    {
+        //build path
+        path = [getConsoleUserHome() stringByAppendingPathComponent:@"Library/Keychains/login.keychain-db"];
+        
+        //open
+        if(errSecSuccess != SecKeychainOpen(path.fileSystemRepresentation, &keychain))
+        {
+            //reset
+            keychain = NULL;
+        }
+    }
+    
+    return keychain;
+}
+
 //save (user's) VT API key to keyhain
+// note: when root, targets the console user's login keychain (not root's)
 BOOL saveAPIKeyToKeychain(NSString* apiKey)
 {
     OSStatus status = 0;
     NSData *apiKeyData = [apiKey dataUsingEncoding:NSUTF8StringEncoding];
+    SecKeychainRef keychain = consoleUserKeychain();
     
-    NSDictionary *query = @{
+    NSMutableDictionary *query = [@{
         (__bridge id)kSecClass: (__bridge id)kSecClassGenericPassword,
         (__bridge id)kSecAttrService: VT_API_KEYCHAIN_ATTR,
         (__bridge id)kSecAttrAccount: @"api_key",
-        (__bridge id)kSecValueData: apiKeyData
-    };
+    } mutableCopy];
+    
+    //root? target console user's keychain
+    if(NULL != keychain) {
+        query[(__bridge id)kSecMatchSearchList] = @[(__bridge id)keychain];
+    }
     
     //delete old
     SecItemDelete((__bridge CFDictionaryRef)query);
     
     //add new
+    [query removeObjectForKey:(__bridge id)kSecMatchSearchList];
+    query[(__bridge id)kSecValueData] = apiKeyData;
+    if(NULL != keychain) {
+        query[(__bridge id)kSecUseKeychain] = (__bridge id)keychain;
+    }
     status = SecItemAdd((__bridge CFDictionaryRef)query, NULL);
+    
+    //root? keep (in-memory) handoff copy in sync, as that's the fallback
+    if(0 == geteuid()) {
+        handoffAPIKey = (0 != apiKey.length) ? apiKey : nil;
+    }
+    
+    if(NULL != keychain) {
+        CFRelease(keychain);
+    }
     
     return status == errSecSuccess;
 }
 
 //(re)load key from keychain
+// note: when root, targets the console user's login keychain (not root's), falling back to the handoff key
 NSString* loadAPIKeyFromKeychain(void)
 {
     NSString* key = nil;
+    SecKeychainRef keychain = consoleUserKeychain();
     
-    NSDictionary *query = @{
+    NSMutableDictionary *query = [@{
         (__bridge id)kSecClass: (__bridge id)kSecClassGenericPassword,
         (__bridge id)kSecAttrService: VT_API_KEYCHAIN_ATTR,
         (__bridge id)kSecAttrAccount: @"api_key",
         (__bridge id)kSecReturnData: @YES,
         (__bridge id)kSecMatchLimit: (__bridge id)kSecMatchLimitOne
-    };
+    } mutableCopy];
+    
+    //root? target console user's keychain
+    if(NULL != keychain) {
+        query[(__bridge id)kSecMatchSearchList] = @[(__bridge id)keychain];
+    }
     
     CFTypeRef result = NULL;
     OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, &result);
@@ -1555,7 +1783,66 @@ NSString* loadAPIKeyFromKeychain(void)
         key = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }
     
+    //root, and keychain didn't work out?
+    // use handoff key (from the non-root instance that launched us)
+    if( (0 == key.length) &&
+        (0 == geteuid()) ) {
+        key = handoffAPIKey;
+    }
+    
+    if(NULL != keychain) {
+        CFRelease(keychain);
+    }
+    
     return key;
+}
+
+#pragma clang diagnostic pop
+
+//load (and delete) the handoff file, if we were launched with one
+// ...contains the user's VT API key, which root can't (reliably) get from the user's keychain
+void loadHandoff(void)
+{
+    //args
+    NSArray* arguments = NSProcessInfo.processInfo.arguments;
+    
+    //index of '-handoff'
+    NSUInteger index = [arguments indexOfObject:ARG_HANDOFF];
+    
+    //path
+    NSString* path = nil;
+    
+    //contents
+    NSString* contents = nil;
+    
+    //no handoff?
+    if( (NSNotFound == index) ||
+        (index + 1 >= arguments.count) )
+    {
+        //bail
+        goto bail;
+    }
+    
+    //path
+    path = arguments[index + 1];
+    
+    //read
+    contents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+    
+    //delete
+    // (it's got a secret in it)
+    [NSFileManager.defaultManager removeItemAtPath:path error:nil];
+    
+    //save
+    if(0 != contents.length)
+    {
+        //save
+        handoffAPIKey = contents;
+    }
+    
+bail:
+    
+    return;
 }
 
 //file protected by SIP?
@@ -1581,6 +1868,19 @@ void toggleLoginItem(NSURL* loginItem, NSControlStateValue state)
     
     //current login item
     CFURLRef currentLoginItem = NULL;
+    
+    //for priv drop/restore
+    uid_t originalUID = geteuid();
+    
+    //running as root?
+    // temporarily drop to console user, so the login item is (un)installed for them (not root)
+    if(0 == originalUID) {
+        
+        uid_t consoleUID = getConsoleUserID();
+        if(consoleUID != 0) {
+            seteuid(consoleUID);
+        }
+    }
     
     //get reference to login items
     loginItemsRef = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
@@ -1658,6 +1958,11 @@ bail:
         currentLoginItem = NULL;
     }
     
+    //restore (root) privs
+    if(originalUID != geteuid()) {
+        seteuid(originalUID);
+    }
+    
     return;
 }
 
@@ -1670,15 +1975,28 @@ static NSString* escapeForAppleScript(NSString* string)
     return [[string stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
 }
 
-//build AppleScript that (re)launches an executable as root
+//build AppleScript that (re)launches an executable (with arguments) as root
 // via 'do shell script ... with administrator privileges'
-// note: AppleScript's 'quoted form of' handles quoting for the shell
+// note: AppleScript's 'quoted form of' handles quoting (of each argument) for the shell
 //       'with prompt' replaces the default "<app> wants to make changes." text in the auth dialog
-NSString* authorizationScript(NSString* executablePath, NSString* relaunchArgument, NSString* prompt)
+NSString* authorizationScript(NSString* executablePath, NSArray<NSString*>* arguments, NSString* prompt)
 {
+    //command (as AppleScript expression)
+    NSMutableString* command = nil;
+    
+    //start w/ executable
+    command = [NSMutableString stringWithFormat:@"(quoted form of \"%@\")", escapeForAppleScript(executablePath)];
+    
+    //add each argument
+    for(NSString* argument in arguments)
+    {
+        //add
+        [command appendFormat:@" & \" \" & (quoted form of \"%@\")", escapeForAppleScript(argument)];
+    }
+    
     //build script
     // detach (stdin/out/err to /dev/null, background), then echo pid of (root) instance
-    return [NSString stringWithFormat:@"do shell script (quoted form of \"%@\") & \" %@ </dev/null >/dev/null 2>&1 & echo $!\" with prompt \"%@\" with administrator privileges", escapeForAppleScript(executablePath), relaunchArgument, escapeForAppleScript(prompt)];
+    return [NSString stringWithFormat:@"do shell script %@ & \" </dev/null >/dev/null 2>&1 & echo $!\" with prompt \"%@\" with administrator privileges", command, escapeForAppleScript(prompt)];
 }
 
 //relaunch ourselves as root
@@ -1695,12 +2013,55 @@ pid_t relaunchAsRoot(NSError** error)
     //script result
     NSAppleEventDescriptor* result = nil;
     
+    //arguments (for root instance)
+    NSMutableArray* arguments = nil;
+    
+    //(user's) VT API key
+    NSString* apiKey = nil;
+    
+    //handoff file
+    NSString* handoffPath = nil;
+    
+    //init arguments
+    arguments = [NSMutableArray arrayWithObject:ARG_RELAUNCHED_AS_ROOT];
+    
+    //got a VT API key?
+    // hand it off to the root instance via a (0600) file, as root can't (reliably) read our login keychain
+    // note: lives in our (0700) temp dir, so only us (and root) can read it; root instance deletes it once read
+    apiKey = loadAPIKeyFromKeychain();
+    if(0 != apiKey.length)
+    {
+        //init path
+        handoffPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"com.objective-see.knockknock.%@", NSUUID.UUID.UUIDString]];
+        
+        //write (0600)
+        if(YES == [NSFileManager.defaultManager createFileAtPath:handoffPath contents:[apiKey dataUsingEncoding:NSUTF8StringEncoding] attributes:@{NSFilePosixPermissions:@(0600)}])
+        {
+            //add args
+            [arguments addObjectsFromArray:@[ARG_HANDOFF, handoffPath]];
+        }
+        else
+        {
+            //reset
+            handoffPath = nil;
+        }
+    }
+    
     //execute script
     // blocks while user is prompted to authenticate
-    result = [[[NSAppleScript alloc] initWithSource:authorizationScript(NSBundle.mainBundle.executablePath, ARG_RELAUNCHED_AS_ROOT, NSLocalizedString(@"KnockKnock needs administrator privileges to scan all persistent items.", @"KnockKnock needs administrator privileges to scan all persistent items."))] executeAndReturnError:&scriptError];
+    result = [[[NSAppleScript alloc] initWithSource:authorizationScript(NSBundle.mainBundle.executablePath, arguments, NSLocalizedString(@"KnockKnock needs administrator privileges to scan all persistent items.", @"KnockKnock needs administrator privileges to scan all persistent items."))] executeAndReturnError:&scriptError];
     
     //extract pid
     pid = (pid_t)[result.stringValue intValue];
+    
+    //failed to launch?
+    // remove handoff file (as nobody will read/delete it)
+    if( (pid <= 0) &&
+        (nil != handoffPath) )
+    {
+        //delete
+        [NSFileManager.defaultManager removeItemAtPath:handoffPath error:nil];
+    }
     
     //error?
     // script failed (e.g. -128: user cancelled), or no (valid) pid

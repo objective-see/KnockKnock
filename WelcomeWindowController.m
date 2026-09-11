@@ -89,11 +89,8 @@ extern os_log_t logHandle;
     // capture the user's selections
     if( (SHOW_CONFIGURE+1) == ((NSToolbarItem*)sender).tag) {
         
-        //user defaults
-        NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-            
         //save 'show trusted items'
-        [defaults setBool:self.showAppleItems.state forKey:PREF_SHOW_TRUSTED_ITEMS];
+        setPreference(PREF_SHOW_TRUSTED_ITEMS, @(NSControlStateValueOn == self.showAppleItems.state));
         
         //start at login?
         if(NSControlStateValueOn == self.startAtLogin.state) {
@@ -101,21 +98,18 @@ extern os_log_t logHandle;
         }
         
         //save 'start at login'
-        [defaults setBool:self.startAtLogin.state forKey:PREF_START_AT_LOGIN];
+        setPreference(PREF_START_AT_LOGIN, @(NSControlStateValueOn == self.startAtLogin.state));
         
         //save 'update check'
-        [defaults setBool:self.disableUpdateCheck.state forKey:PREF_DISABLE_UPDATE_CHECK];
+        setPreference(PREF_DISABLE_UPDATE_CHECK, @(NSControlStateValueOn == self.disableUpdateCheck.state));
     }
     
     //leaving vt integration view?
     // capture the user's selections
     if( (SHOW_VT_INTEGRATION+1) == ((NSToolbarItem*)sender).tag) {
         
-        //user defaults
-        NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-            
         //save 'disable VT queries'
-        [defaults setBool:self.disableVTQueries.state forKey:PREF_DISABLE_VT_QUERIRES];
+        setPreference(PREF_DISABLE_VT_QUERIRES, @(NSControlStateValueOn == self.disableVTQueries.state));
         
         //save API key to keychain
         if(0 != self.vtAPIKey.stringValue.length) {
@@ -225,8 +219,9 @@ extern os_log_t logHandle;
             //close window
             [self.window close];
             
-            //done, so show main UI scan window
-            [((AppDelegate*)NSApplication.sharedApplication.delegate) initializeForScan:NO];
+            //done, so start
+            // (relaunches as root if appropriate, else shows main UI scan window)
+            [((AppDelegate*)NSApplication.sharedApplication.delegate) start];
         
             break;
             

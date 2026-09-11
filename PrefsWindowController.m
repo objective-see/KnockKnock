@@ -97,52 +97,27 @@
 -(void)registerDefaults
 {
     //set defaults
-    [[NSUserDefaults standardUserDefaults] registerDefaults:@{PREF_SHOW_TRUSTED_ITEMS:@NO, PREF_START_AT_LOGIN:@NO, PREF_DISABLE_UPDATE_CHECK:@NO, PREF_DISABLE_VT_QUERIRES:@YES}];
+    // note: 'getPreference' also applies these (needed when root, as it reads the console user's prefs directly)
+    [[NSUserDefaults standardUserDefaults] registerDefaults:preferenceDefaults()];
     
     return;
 }
 
 //load (persistence) preferences from file system
+// note: via 'getPreference', so when root, these are the console user's (not root's)
 -(void)loadPreferences
 {
-    //user defaults
-    NSUserDefaults* defaults = nil;
+    //load 'show trusted items'
+    self.showTrustedItems = getPreferenceBool(PREF_SHOW_TRUSTED_ITEMS);
     
-    //init
-    defaults = [NSUserDefaults standardUserDefaults];
-
-    //load prefs
-    // ->won't be any until user set some...
-    if(nil != defaults)
-    {
-        //load 'show trusted items'
-        if(nil != [defaults objectForKey:PREF_SHOW_TRUSTED_ITEMS])
-        {
-            //save
-            self.showTrustedItems = [defaults boolForKey:PREF_SHOW_TRUSTED_ITEMS];
-        }
-        
-        //load 'start at login'
-        if(nil != [defaults objectForKey:PREF_START_AT_LOGIN])
-        {
-            //save
-            self.startAtLogin = [defaults boolForKey:PREF_START_AT_LOGIN];
-        }
+    //load 'start at login'
+    self.startAtLogin = getPreferenceBool(PREF_START_AT_LOGIN);
     
-        //load 'disable update check'
-        if(nil != [defaults objectForKey:PREF_DISABLE_UPDATE_CHECK])
-        {
-            //save
-            self.disableUpdateCheck = [defaults boolForKey:PREF_DISABLE_UPDATE_CHECK];
-        }
-        
-        //load 'disable vt queries'
-        if(nil != [defaults objectForKey:PREF_DISABLE_VT_QUERIRES])
-        {
-            //save
-            self.disableVTQueries = [defaults boolForKey:PREF_DISABLE_VT_QUERIRES];
-        }
-    }
+    //load 'disable update check'
+    self.disableUpdateCheck = getPreferenceBool(PREF_DISABLE_UPDATE_CHECK);
+    
+    //load 'disable vt queries'
+    self.disableVTQueries = getPreferenceBool(PREF_DISABLE_VT_QUERIRES);
     
     //load API key
     self.vtAPIKey = loadAPIKeyFromKeychain();
@@ -164,14 +139,9 @@
 }
 
 //save prefs
+// note: via 'setPreference', so when root, these are the console user's (not root's)
 -(void)savePrefs
 {
-    //user defaults
-    NSUserDefaults* defaults = nil;
-    
-    //init
-    defaults = [NSUserDefaults standardUserDefaults];
-        
     //grab 'include macOS/known items'
     self.showTrustedItems = self.showTrustedItemsBtn.state;
     
@@ -188,30 +158,27 @@
     self.vtAPIKey = self.apiTextField.stringValue;
     
     //save 'show trusted items'
-    [defaults setBool:self.showTrustedItems forKey:PREF_SHOW_TRUSTED_ITEMS];
+    setPreference(PREF_SHOW_TRUSTED_ITEMS, @(self.showTrustedItems));
     
     //log item state change?
     // toggle login item (enable/disable)
-    if(self.startAtLogin != [defaults boolForKey:PREF_START_AT_LOGIN]) {
+    if(self.startAtLogin != getPreferenceBool(PREF_START_AT_LOGIN)) {
         
         //toggle
         toggleLoginItem(NSBundle.mainBundle.bundleURL, self.startAtLogin);
     }
     
     //now save 'start at login'
-    [defaults setBool:self.startAtLogin forKey:PREF_START_AT_LOGIN];
+    setPreference(PREF_START_AT_LOGIN, @(self.startAtLogin));
     
     //save 'disable update checks'
-    [defaults setBool:self.disableUpdateCheck forKey:PREF_DISABLE_UPDATE_CHECK];
+    setPreference(PREF_DISABLE_UPDATE_CHECK, @(self.disableUpdateCheck));
     
     //save 'disable vt queries'
-    [defaults setBool:self.disableVTQueries forKey:PREF_DISABLE_VT_QUERIRES];
+    setPreference(PREF_DISABLE_VT_QUERIRES, @(self.disableVTQueries));
     
     //save vt API key
     saveAPIKeyToKeychain(self.apiTextField.stringValue);
-    
-    //flush/save
-    [defaults synchronize];
     
     //call back up into app delegate for filtering/hiding OS components
     [((AppDelegate*)[[NSApplication sharedApplication] delegate]) applyPreferences];

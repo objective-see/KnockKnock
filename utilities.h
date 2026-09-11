@@ -20,6 +20,30 @@ void disableSTDERR(void);
 //get name of logged in user
 NSString* getConsoleUser(void);
 
+//get uid of logged in user
+// returns 0 (root) if there's no console user
+uid_t getConsoleUserID(void);
+
+//get home directory of logged in user
+// falls back to (our own) home directory
+NSString* getConsoleUserHome(void);
+
+/* PREFERENCES */
+// when running as root (e.g. relaunched via admin auth), these read/write the *console user's* preferences
+// (via CFPreferences, which root may do for any user), rather than root's; otherwise they use NSUserDefaults
+
+//registered defaults
+NSDictionary* preferenceDefaults(void);
+
+//get a preference (or its registered default)
+id getPreference(NSString* key);
+
+//get a (bool) preference (or its registered default)
+BOOL getPreferenceBool(NSString* key);
+
+//set a preference
+void setPreference(NSString* key, id value);
+
 //get all users
 NSMutableDictionary* allUsers(void);
 
@@ -73,6 +97,10 @@ NSMutableAttributedString* setStringColor(NSAttributedString* string, NSColor* c
 //exec a process and grab it's output
 NSData* execTask(NSString* binaryPath, NSArray* arguments, int* exitCode);
 
+//exec a process (as the console user, when we're root) and grab it's output
+// for per-user tools (e.g. pluginkit), whose output as root would be root's (empty) view
+NSData* execTaskAsConsoleUser(NSString* binaryPath, NSArray* arguments, int* exitCode);
+
 //check if computer has network connection
 BOOL isNetworkConnected(void);
 
@@ -124,9 +152,13 @@ BOOL isRestricted(const char *path);
 // either add (install) or remove (uninstall)
 void toggleLoginItem(NSURL* loginItem, NSControlStateValue state);
 
-//build AppleScript that (re)launches an executable as root
+//build AppleScript that (re)launches an executable (with arguments) as root
 // via 'do shell script ... with administrator privileges'
-NSString* authorizationScript(NSString* executablePath, NSString* relaunchArgument, NSString* prompt);
+NSString* authorizationScript(NSString* executablePath, NSArray<NSString*>* arguments, NSString* prompt);
+
+//load (and delete) the handoff file, if we were launched with one
+// ...contains the user's VT API key, which root can't (reliably) get from the user's keychain
+void loadHandoff(void);
 
 //relaunch ourselves as root
 // prompts user to authenticate, and returns pid of new (root) instance, or -1 on error
