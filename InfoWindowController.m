@@ -107,7 +107,14 @@
         [self.path setStringValue:self.itemObj.path];
         
         //set hash
-        [self.hashes setStringValue:[NSString stringWithFormat:@"%@ / %@", ((File*)self.itemObj).hashes[KEY_HASH_MD5], ((File*)self.itemObj).hashes[KEY_HASH_SHA1]]];
+        if(nil != ((File*)self.itemObj).hashes)
+        {
+            [self.hashes setStringValue:[NSString stringWithFormat:@"%@ / %@", ((File*)self.itemObj).hashes[KEY_HASH_MD5], ((File*)self.itemObj).hashes[KEY_HASH_SHA1]]];
+        }
+        else
+        {
+            [self.hashes setStringValue:NSLocalizedString(@"unknown", @"unknown")];
+        }
         
         //set size
         [self.size setStringValue:[NSString stringWithFormat:@"%llu bytes", ((File*)self.itemObj).attributes.fileSize]];

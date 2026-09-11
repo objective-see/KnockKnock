@@ -39,6 +39,11 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle);
 // ->return all matches
 NSArray* directoryContents(NSString* directory, NSString* predicate);
 
+//open a regular file for reading
+// returns fd, or -1 if path can't be opened, isn't a regular file (device, fifo, etc), or exceeds max size
+// note: opens w/ O_NONBLOCK (so never blocks on a fifo) and checks via fstat (so no race between check & open)
+int openRegularFile(NSString* path, off_t maxSize, off_t* size);
+
 //hash a file
 NSDictionary* hashFile(NSString* filePath);
 

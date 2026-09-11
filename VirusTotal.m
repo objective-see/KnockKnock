@@ -256,33 +256,29 @@ extern NSString* scanID;
         
     }
     
-    //file exists?
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if (![fileManager fileExistsAtPath:filePath]) {
-        NSError *error = [NSError errorWithDomain:@"VirusTotal"
-                                             code:-2
-                                         userInfo:@{NSLocalizedDescriptionKey: @"File does not exist"}];
-        //return w/ error
-        completion(@{VT_ERROR:error});
-        return;
-    }
-    
-    //file size (32MB limit for regular endpoint)?
-    NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:filePath error:nil];
-    unsigned long long fileSize = [fileAttributes fileSize];
-    const unsigned long long maxSize = 32 * 1024 * 1024; // 32MB
-    
-    if (fileSize > maxSize) {
+    //open file
+    // must be a regular file (no devices, fifos, etc), 32MB or less (limit for regular endpoint)
+    const off_t maxSize = 32 * 1024 * 1024; // 32MB
+    off_t fileSize = 0;
+    int fd = openRegularFile(filePath, maxSize, &fileSize);
+    if (-1 == fd) {
         NSError *error = [NSError errorWithDomain:@"VirusTotal"
                                              code:-3
-                                         userInfo:@{NSLocalizedDescriptionKey: @"Files over 32MB are not supported by VT endpoint"}];
+                                         userInfo:@{NSLocalizedDescriptionKey: @"File must be a regular file, 32MB or less (limit of VT endpoint)"}];
         //return w/ error
         completion(@{VT_ERROR:error});
         return;
     }
     
     //read file data
-    NSData *fileData = [NSData dataWithContentsOfFile:filePath];
+    // just what was stat'd, in case file is growing
+    NSData *fileData = nil;
+    @try {
+        fileData = [[[NSFileHandle alloc] initWithFileDescriptor:fd closeOnDealloc:YES] readDataOfLength:(NSUInteger)fileSize];
+    }
+    @catch (NSException *exception) {
+        fileData = nil;
+    }
     if (!fileData) {
         NSError *error = [NSError errorWithDomain:@"VirusTotal"
                                              code:-4

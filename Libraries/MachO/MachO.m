@@ -7,6 +7,8 @@
 //
 
 #import "MachO.h"
+#import "consts.h"
+#import "utilities.h"
 
 #import <math.h>
 #import <mach-o/fat.h>
@@ -62,14 +64,47 @@
     //ret var
     BOOL wasParsed = NO;
     
+    //file descriptor
+    int fd = -1;
+    
+    //file size
+    off_t size = 0;
+    
+    //file handle
+    NSFileHandle* handle = nil;
+    
     //dbg msg
     //NSLog(@"parsing %@", binaryPath);
     
     //save path
     self.binaryInfo[KEY_BINARY_PATH] = binaryPath;
     
+    //open binary
+    // only regular files (no devices, fifos, etc), and not too big
+    fd = openRegularFile(binaryPath, MAX_FILE_SIZE, &size);
+    if(-1 == fd)
+    {
+        //bail
+        goto bail;
+    }
+    
+    //init handle
+    // will close fd on dealloc
+    handle = [[NSFileHandle alloc] initWithFileDescriptor:fd closeOnDealloc:YES];
+    
     //load binary into memory
-    self.binaryData = [NSData dataWithContentsOfFile:binaryPath];
+    // read (only) what was stat'd, so a growing file can't exceed max size
+    // note: not memory mapped, as truncation (of an attacker-controlled file) would SIGBUS us
+    @try
+    {
+        //read
+        self.binaryData = [handle readDataOfLength:(NSUInteger)size];
+    }
+    @catch(NSException* exception)
+    {
+        //bail
+        goto bail;
+    }
     if( (nil == self.binaryData) ||
         (NULL == [self.binaryData bytes]) )
     {
@@ -630,8 +665,9 @@ bail:
     //segment name length
     NSUInteger segmentNameLength = 0;
     
-    //open/read into file
-    fileData = [NSData dataWithContentsOfFile:self.binaryInfo[KEY_BINARY_PATH]];
+    //use (already loaded) file data
+    // no need to (re)read from disk, which could have been swapped out from under us
+    fileData = self.binaryData;
     if(nil == fileData)
     {
         //bail

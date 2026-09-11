@@ -89,6 +89,10 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //path to LSOF
 #define LSOF @"/usr/sbin/lsof"
 
+//max size of file to hash/parse (1GB)
+// larger files are still reported, just not hashed/parsed
+#define MAX_FILE_SIZE (1024ULL*1024ULL*1024ULL)
+
 //hash keys
 #define KEY_HASH_MD5 @"md5"
 #define KEY_HASH_SHA1 @"sha1"

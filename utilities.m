@@ -9,7 +9,9 @@
 #import "consts.h"
 #import "utilities.h"
 
+#import <fcntl.h>
 #import <libproc.h>
+#import <sys/stat.h>
 #import <sys/sysctl.h>
 #import <Security/Security.h>
 #import <Foundation/Foundation.h>
@@ -331,10 +333,61 @@ bail:
     return matches;
 }
 
+//open a regular file for reading
+// returns fd, or -1 if path can't be opened, isn't a regular file (device, fifo, etc), or exceeds max size
+// note: opens w/ O_NONBLOCK (so never blocks on a fifo) and checks via fstat (so no race between check & open)
+int openRegularFile(NSString* path, off_t maxSize, off_t* size)
+{
+    //file descriptor
+    int fd = -1;
+    
+    //file info
+    struct stat fileInfo = {0};
+    
+    //open
+    // non-blocking, so a fifo, etc. won't hang us
+    fd = open(path.fileSystemRepresentation, O_RDONLY | O_NONBLOCK | O_CLOEXEC);
+    if(-1 == fd)
+    {
+        //bail
+        goto bail;
+    }
+    
+    //stat (via fd, so no race)
+    // then make sure it's a regular file, that isn't too big
+    if( (0 != fstat(fd, &fileInfo)) ||
+        (!S_ISREG(fileInfo.st_mode)) ||
+        (fileInfo.st_size > maxSize) )
+    {
+        //close
+        close(fd);
+        
+        //reset
+        fd = -1;
+        
+        //bail
+        goto bail;
+    }
+    
+    //save size
+    if(NULL != size)
+    {
+        //save
+        *size = fileInfo.st_size;
+    }
+    
+bail:
+    
+    return fd;
+}
+
 //hash a file
 // md5/sha1/sha256
 NSDictionary* hashFile(NSString* itemPath)
 {
+    //file descriptor
+    int fd = -1;
+    
     //file hashes
     NSDictionary* hashes = nil;
     
@@ -432,12 +485,17 @@ NSDictionary* hashFile(NSString* itemPath)
         }
     }
     
-    //open handle to file
-    handle = [NSFileHandle fileHandleForReadingAtPath:path];
-    if(nil == handle)
+    //open file
+    // only regular files (no devices, fifos, etc), and not too big
+    fd = openRegularFile(path, MAX_FILE_SIZE, NULL);
+    if(-1 == fd)
     {
         goto bail;
     }
+    
+    //init handle
+    // will close fd on dealloc/close
+    handle = [[NSFileHandle alloc] initWithFileDescriptor:fd closeOnDealloc:YES];
     
     //init hash contexts
     CC_MD5_Init(&md5Context);

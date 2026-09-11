@@ -14,6 +14,8 @@
 #import "utilities.h"
 #import "AppDelegate.h"
 
+#import <sys/stat.h>
+
 /* GLOBALS */
 
 //should query VT
@@ -43,6 +45,9 @@ extern BOOL queryVT;
     
     //mach-O parser
     MachO* machoParser = nil;
+    
+    //file info
+    struct stat fileInfo = {0};
     
     //super
     // ->saves path, etc
@@ -110,41 +115,51 @@ extern BOOL queryVT;
         //determine name
         self.name = [self determineName];
         
-        //computes hashes
-        self.hashes = hashFile(self.path);
-        
         //grab attributes
         self.attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.path error:nil];
         
-        //extract signing info statically
-        self.signingInfo = extractSigningInfo(0, self.path, flags);
+        //only hash, check signature, and parse regular files (that aren't too big)
+        // devices (e.g. /dev/zero), fifos, huge/sparse files, etc. would hang or exhaust us
+        // ...such items are still reported, just without hashes, signing info, etc.
+        // note: stat() follows symlinks, and is used here (vs. attributes) as those don't
+        if( (0 == stat(self.path.fileSystemRepresentation, &fileInfo)) &&
+            (S_ISREG(fileInfo.st_mode)) &&
+            (fileInfo.st_size <= MAX_FILE_SIZE) )
+        {
+            //computes hashes
+            self.hashes = hashFile(self.path);
+            
+            //extract signing info statically
+            self.signingInfo = extractSigningInfo(0, self.path, flags);
+            
+            //alloc macho parser iVar
+            // ->new instance for each file!
+            machoParser = [[MachO alloc] init];
+            
+            //parse
+            // ->also perform packed/encryption checks
+            if(YES == [machoParser parse:self.path classify:YES])
+            {
+                //unset 'packed' flag for apple signed binaries
+                // as apple doesn't pack binaries, but packer algo has some false positives
+                if(Apple == [self.signingInfo[KEY_SIGNATURE_SIGNER] intValue])
+                {
+                    //unset
+                    machoParser.binaryInfo[KEY_IS_PACKED] = @NO;
+                }
+                
+                //set packed flag
+                self.isPacked = [machoParser.binaryInfo[KEY_IS_PACKED] boolValue];
+                
+                //set encrypted flag
+                self.isEncrypted = [machoParser.binaryInfo[KEY_IS_ENCRYPTED] boolValue];
+            }
+        }
         
         //call into filter object to check if file is known
         // apple-signed or whitelisted (hash or signing id)
+        // note: w/o hashes/signing info (see above), file will be untrusted (so shown)
         self.isTrusted = [itemFilter isTrustedFile:self];
-        
-        //alloc macho parser iVar
-        // ->new instance for each file!
-        machoParser = [[MachO alloc] init];
-        
-        //parse
-        // ->also perform packed/encryption checks
-        if(YES == [machoParser parse:self.path classify:YES])
-        {
-            //unset 'packed' flag for apple signed binaries
-            // as apple doesn't pack binaries, but packer algo has some false positives
-            if(Apple == [self.signingInfo[KEY_SIGNATURE_SIGNER] intValue])
-            {
-                //unset
-                machoParser.binaryInfo[KEY_IS_PACKED] = @NO;
-            }
-            
-            //set packed flag
-            self.isPacked = [machoParser.binaryInfo[KEY_IS_PACKED] boolValue];
-            
-            //set encrypted flag
-            self.isEncrypted = [machoParser.binaryInfo[KEY_IS_ENCRYPTED] boolValue];
-        }
     }
            
 bail:

@@ -605,6 +605,17 @@
         }
       }
     },
+    "unknown" : {
+      "comment" : "unknown",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "desconocido"
+          }
+        }
+      }
+    },
     "Update" : {
       "comment" : "Update",
       "localizations" : {
