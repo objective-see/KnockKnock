@@ -95,8 +95,12 @@ BOOL isBinary(NSString* file);
 id extractFromDictionary(NSDictionary* dictionary, NSString* sensitiveKey);
 
 //check if (full) dark mode
-// meaning, Mojave+ and dark mode enabled
+// meaning, Mojave+ and dark mode enabled (per the app's effective appearance)
 BOOL isDarkMode(void);
+
+//adopt the console user's appearance (light/dark)
+// needed when running as root (e.g. relaunched via admin auth), as root's own defaults have no appearance set
+void adoptConsoleUserAppearance(void);
 
 //bring an app to foreground (to get an icon in the dock) or background
 void transformProcess(ProcessApplicationTransformState location);
