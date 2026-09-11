@@ -71,14 +71,52 @@ void uncaughtExceptionHandler(NSException* exception) {
 -(void)applicationDidFinishLaunching:(NSNotification *)notification
 {
     //flag
-    BOOL startScan = NO;
+    BOOL launchedAsLoginItem = NO;
+    
+    //flag
+    BOOL relaunched = NO;
     
     //defaults
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    
+    //relaunched (as root) by ourselves?
+    relaunched = [NSProcessInfo.processInfo.arguments containsObject:ARG_RELAUNCHED_AS_ROOT];
+    
+    //started via login item?
+    launchedAsLoginItem = [self launchedAsLoginItem];
+    
+    //launched via Finder (double-click), etc?
+    // i.e. not root, not (re)launched by ourselves, not via login item, and no terminal
+    // ...then (re)launch as root, and exit; unless user cancels, in which case just run as is
+    if( (0 != geteuid()) &&
+        (YES != relaunched) &&
+        (YES != launchedAsLoginItem) &&
+        (0 == isatty(STDIN_FILENO)) )
+    {
+        //relaunch
+        // if root instance started, we're done (this instance will terminate)
+        if(YES == [self relaunchAsRootAtStartup])
+        {
+            //done
+            return;
+        }
+    }
 
+    //relaunched (as root) by ourselves?
+    // skip welcome/configuration screens, and kick off scan
+    if(YES == relaunched)
+    {
+        //set key
+        // so subsequent (root) runs don't show welcome screens either
+        [defaults setBool:YES forKey:NOT_FIRST_TIME];
+        
+        //init & scan
+        [self initializeForScan:YES];
+    }
+    
     //first time run?
     // show welcome/configuration screens
-    if(![defaults boolForKey:NOT_FIRST_TIME])
+    else if(![defaults boolForKey:NOT_FIRST_TIME])
     {
         //set key
         [defaults setBool:YES forKey:NOT_FIRST_TIME];
@@ -93,27 +131,96 @@ void uncaughtExceptionHandler(NSException* exception) {
         [[NSRunningApplication currentApplication] activateWithOptions:(NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
     }
     //otherwise just kick off scan initializations
-    // though check if we're started via the login item, which in that case, start scan too
+    // and if we were started via the login item, start scan too
     else
     {
-        //started via login item?
-        NSAppleEventDescriptor *event =
-                NSAppleEventManager.sharedAppleEventManager.currentAppleEvent;
-            
-            if (event && event.eventID == kAEOpenApplication) {
-                NSAppleEventDescriptor *prop =
-                    [event paramDescriptorForKeyword:keyAEPropData];
-                
-                if (prop && prop.enumCodeValue == keyAELaunchedAsLogInItem) {
-                    startScan = YES;
-                }
-            }
-        
         //init
-        [self initializeForScan:startScan];
+        [self initializeForScan:launchedAsLoginItem];
     }
     
     return;
+}
+
+//check if we were started via login item
+// (via the 'launched as login item' property of the launch event)
+-(BOOL)launchedAsLoginItem
+{
+    //flag
+    BOOL launchedAsLoginItem = NO;
+    
+    //launch event
+    NSAppleEventDescriptor* event = nil;
+    
+    //event property
+    NSAppleEventDescriptor* property = nil;
+    
+    //get (current) event
+    event = NSAppleEventManager.sharedAppleEventManager.currentAppleEvent;
+    if( (nil != event) &&
+        (kAEOpenApplication == event.eventID) )
+    {
+        //get property
+        property = [event paramDescriptorForKeyword:keyAEPropData];
+        if( (nil != property) &&
+            (keyAELaunchedAsLogInItem == property.enumCodeValue) )
+        {
+            //set flag
+            launchedAsLoginItem = YES;
+        }
+    }
+    
+    return launchedAsLoginItem;
+}
+
+//at startup (when launched via Finder, etc.)
+// authenticates user & relaunches app as root; returns YES if root instance started
+// note: blocks (main thread) while waiting for root instance to start, but nothing is on screen yet
+-(BOOL)relaunchAsRootAtStartup
+{
+    //flag
+    BOOL started = NO;
+    
+    //error
+    NSError* error = nil;
+    
+    //pid of root instance
+    pid_t pid = -1;
+    
+    //relaunch
+    // prompts user to authenticate as an admin
+    pid = relaunchAsRoot(&error);
+    if(-1 == pid)
+    {
+        //show error
+        // unless user just cancelled
+        if(userCanceledErr != error.code)
+        {
+            //show
+            [self showRelaunchError:error.localizedDescription];
+        }
+        
+        //bail
+        goto bail;
+    }
+    
+    //wait for root instance to start
+    started = waitForApplication(pid, 10.0);
+    if(YES != started)
+    {
+        //show error
+        [self showRelaunchError:[NSString stringWithFormat:NSLocalizedString(@"process (pid: %d) did not start", @"process (pid: %d) did not start"), pid]];
+        
+        //bail
+        goto bail;
+    }
+    
+    //root instance started
+    // exit this (non-root) instance
+    [NSApp terminate:nil];
+    
+bail:
+    
+    return started;
 }
 
 //init all the thingz for a scan
@@ -174,6 +281,14 @@ void uncaughtExceptionHandler(NSException* exception) {
 
     //set version info
     [self.versionString setStringValue:[NSString stringWithFormat:NSLocalizedString(@"version: %@", @"version: %@"), getAppVersion()]];
+    
+    //running as root?
+    // indicate this in the window's title
+    if(0 == geteuid())
+    {
+        //update title
+        self.window.title = [NSString stringWithFormat:@"%@ (%@)", self.window.title, NSLocalizedString(@"root", @"root")];
+    }
     
     //init tracking areas
     [self initTrackingAreas];
@@ -1414,6 +1529,33 @@ void uncaughtExceptionHandler(NSException* exception) {
     }
 
     return bEnabled;
+}
+
+//show alert that relaunch (as root) failed
+-(void)showRelaunchError:(NSString*)details
+{
+    //alert
+    NSAlert* alert = nil;
+    
+    //init alert
+    alert = [[NSAlert alloc] init];
+    
+    //set style
+    alert.alertStyle = NSAlertStyleWarning;
+    
+    //set msg
+    alert.messageText = NSLocalizedString(@"ERROR:\nFailed to (re)launch KnockKnock as root", @"Failed to (re)launch KnockKnock as root");
+    
+    //set details
+    alert.informativeText = [NSString stringWithFormat:NSLocalizedString(@"Details: %@", @"Details: %@"), details];
+    
+    //ok button
+    [alert addButtonWithTitle:NSLocalizedString(@"OK", @"OK")];
+    
+    //show
+    [alert runModal];
+    
+    return;
 }
 
 //call into Update obj

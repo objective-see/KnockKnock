@@ -166,6 +166,10 @@ extern Filter* itemFilter;
 //button handler for when settings icon (gear) is clicked
 -(IBAction)showPreferences:(id)sender;
 
+//at startup (when launched via Finder, etc.)
+// authenticates user & relaunches app as root; returns YES if root instance started
+-(BOOL)relaunchAsRootAtStartup;
+
 
 //button handler for logo
 -(IBAction)logoButtonHandler:(id)sender;

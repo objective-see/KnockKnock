@@ -121,6 +121,10 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 //path to diff
 #define DIFF @"/usr/bin/diff"
 
+//cmdline arg
+// passed to the instance we (re)launch as root, so it can skip the welcome flow, etc
+#define ARG_RELAUNCHED_AS_ROOT @"-relaunched"
+
 //menu
 
 //tag for prefs menu item

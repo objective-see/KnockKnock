@@ -1291,3 +1291,96 @@ bail:
 }
 
 #pragma clang diagnostic pop
+
+//escape a string for use in an AppleScript string literal
+// only backslashes and double quotes need escaping
+static NSString* escapeForAppleScript(NSString* string)
+{
+    return [[string stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"] stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+}
+
+//build AppleScript that (re)launches an executable as root
+// via 'do shell script ... with administrator privileges'
+// note: AppleScript's 'quoted form of' handles quoting for the shell
+//       'with prompt' replaces the default "<app> wants to make changes." text in the auth dialog
+NSString* authorizationScript(NSString* executablePath, NSString* relaunchArgument, NSString* prompt)
+{
+    //build script
+    // detach (stdin/out/err to /dev/null, background), then echo pid of (root) instance
+    return [NSString stringWithFormat:@"do shell script (quoted form of \"%@\") & \" %@ </dev/null >/dev/null 2>&1 & echo $!\" with prompt \"%@\" with administrator privileges", escapeForAppleScript(executablePath), relaunchArgument, escapeForAppleScript(prompt)];
+}
+
+//relaunch ourselves as root
+// prompts user to authenticate, and returns pid of new (root) instance, or -1 on error
+// note: must be invoked on the main thread (NSAppleScript requirement)
+pid_t relaunchAsRoot(NSError** error)
+{
+    //pid of root instance
+    pid_t pid = -1;
+    
+    //script error
+    NSDictionary* scriptError = nil;
+    
+    //script result
+    NSAppleEventDescriptor* result = nil;
+    
+    //execute script
+    // blocks while user is prompted to authenticate
+    result = [[[NSAppleScript alloc] initWithSource:authorizationScript(NSBundle.mainBundle.executablePath, ARG_RELAUNCHED_AS_ROOT, NSLocalizedString(@"KnockKnock needs administrator privileges to scan all persistent items.", @"KnockKnock needs administrator privileges to scan all persistent items."))] executeAndReturnError:&scriptError];
+    
+    //extract pid
+    pid = (pid_t)[result.stringValue intValue];
+    
+    //error?
+    // script failed (e.g. -128: user cancelled), or no (valid) pid
+    if( (pid <= 0) &&
+        (NULL != error) )
+    {
+        //init error
+        // preserve AppleScript's error number
+        *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:[scriptError[NSAppleScriptErrorNumber] integerValue] userInfo:@{NSLocalizedDescriptionKey:scriptError[NSAppleScriptErrorMessage] ?: @"unexpected result"}];
+    }
+    
+    return (pid > 0) ? pid : -1;
+}
+
+//wait for an instance of this app (via pid) to start
+// returns YES if it started within timeout, NO otherwise
+BOOL waitForApplication(pid_t pid, NSTimeInterval timeout)
+{
+    //flag
+    BOOL started = NO;
+    
+    //deadline
+    NSDate* deadline = [NSDate dateWithTimeIntervalSinceNow:timeout];
+    
+    //wait until started, or timeout
+    while(YES != started)
+    {
+        //look for instance (via pid)
+        for(NSRunningApplication* application in [NSRunningApplication runningApplicationsWithBundleIdentifier:NSBundle.mainBundle.bundleIdentifier])
+        {
+            //match?
+            if(pid == application.processIdentifier)
+            {
+                //set flag
+                started = YES;
+                
+                //done
+                break;
+            }
+        }
+        
+        //timeout?
+        if(NSOrderedDescending == [NSDate.date compare:deadline])
+        {
+            //bail
+            break;
+        }
+        
+        //nap
+        [NSThread sleepForTimeInterval:0.25];
+    }
+    
+    return started;
+}

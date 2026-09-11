@@ -199,6 +199,17 @@
         }
       }
     },
+    "ERROR:\nFailed to (re)launch KnockKnock as root" : {
+      "comment" : "Failed to (re)launch KnockKnock as root",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ERROR:\nNo se pudo (re)iniciar KnockKnock como root"
+          }
+        }
+      }
+    },
     "ERROR:\nfailed to open %@" : {
       "comment" : "ERROR:\nfailed to open %@",
       "localizations" : {
@@ -342,6 +353,17 @@
         }
       }
     },
+    "KnockKnock needs administrator privileges to scan all persistent items." : {
+      "comment" : "KnockKnock needs administrator privileges to scan all persistent items.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KnockKnock necesita privilegios de administrador para escanear todos los elementos persistentes."
+          }
+        }
+      }
+    },
     "KnockKnock needs Full Disk Access to perform a complete system scan.\n\nClick 'Open' to open %@ and grant access." : {
       "localizations" : {
         "es" : {
@@ -396,6 +418,17 @@
         }
       }
     },
+    "OK" : {
+      "comment" : "OK",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
     "Open" : {
       "comment" : "Open",
       "localizations" : {
@@ -414,6 +447,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "plugins que amplían/personalizan el SO"
+          }
+        }
+      }
+    },
+    "process (pid: %d) did not start" : {
+      "comment" : "process (pid: %d) did not start",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "el proceso (pid: %d) no se inició"
           }
         }
       }
@@ -447,6 +491,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "paquetes de quickLook registrados"
+          }
+        }
+      }
+    },
+    "root" : {
+      "comment" : "root",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "root"
           }
         }
       }

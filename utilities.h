@@ -102,4 +102,16 @@ BOOL isRestricted(const char *path);
 // either add (install) or remove (uninstall)
 void toggleLoginItem(NSURL* loginItem, NSControlStateValue state);
 
+//build AppleScript that (re)launches an executable as root
+// via 'do shell script ... with administrator privileges'
+NSString* authorizationScript(NSString* executablePath, NSString* relaunchArgument, NSString* prompt);
+
+//relaunch ourselves as root
+// prompts user to authenticate, and returns pid of new (root) instance, or -1 on error
+pid_t relaunchAsRoot(NSError** error);
+
+//wait for an instance of this app (via pid) to start
+// returns YES if it started within timeout, NO otherwise
+BOOL waitForApplication(pid_t pid, NSTimeInterval timeout);
+
 #endif
