@@ -569,6 +569,114 @@ bail:
     return hashes;
 }
 
+//convert an object (e.g. plist) into something NSJSONSerialization can serialize
+// data/dates/etc. become strings, non-finite numbers & overly nested objects become descriptions
+static id makeJSONSafeAtDepth(id object, NSUInteger depth)
+{
+    //safe object
+    id safe = nil;
+    
+    //max nesting
+    // deeper than this? just use description
+    #define MAX_JSON_DEPTH 32
+    
+    //nil?
+    if(nil == object)
+    {
+        //null
+        safe = [NSNull null];
+    }
+    
+    //too deep?
+    else if(depth > MAX_JSON_DEPTH)
+    {
+        //description
+        safe = [object description];
+    }
+    
+    //string, null
+    // fine as is
+    else if( (YES == [object isKindOfClass:[NSString class]]) ||
+             (YES == [object isKindOfClass:[NSNull class]]) )
+    {
+        //as is
+        safe = object;
+    }
+    
+    //number
+    // fine, unless not finite (JSON has no NaN/Inf)
+    else if(YES == [object isKindOfClass:[NSNumber class]])
+    {
+        //finite?
+        if(YES == isfinite([object doubleValue]))
+        {
+            //as is
+            safe = object;
+        }
+        else
+        {
+            //description
+            safe = [object description];
+        }
+    }
+    
+    //dictionary
+    // (recursively) sanitize keys and values
+    else if(YES == [object isKindOfClass:[NSDictionary class]])
+    {
+        //init
+        safe = [NSMutableDictionary dictionary];
+        
+        //sanitize each
+        // keys must be strings
+        for(id key in object)
+        {
+            //add
+            safe[[key isKindOfClass:[NSString class]] ? key : [key description]] = makeJSONSafeAtDepth(object[key], depth+1);
+        }
+    }
+    
+    //array/set
+    // (recursively) sanitize each
+    else if( (YES == [object isKindOfClass:[NSArray class]]) ||
+             (YES == [object isKindOfClass:[NSSet class]]) )
+    {
+        //init
+        safe = [NSMutableArray array];
+        
+        //sanitize each
+        for(id item in object)
+        {
+            //add
+            [safe addObject:makeJSONSafeAtDepth(item, depth+1)];
+        }
+    }
+    
+    //data
+    // base64 encode
+    else if(YES == [object isKindOfClass:[NSData class]])
+    {
+        //encode
+        safe = [object base64EncodedStringWithOptions:0];
+    }
+    
+    //anything else (dates, etc)
+    // use description
+    else
+    {
+        //description
+        safe = [object description];
+    }
+    
+    return safe;
+}
+
+//convert an object (e.g. plist) into something NSJSONSerialization can serialize
+id makeJSONSafe(id object)
+{
+    return makeJSONSafeAtDepth(object, 0);
+}
+
 //get app's version
 // ->extracted from Info.plist
 NSString* getAppVersion(void)

@@ -47,6 +47,10 @@ int openRegularFile(NSString* path, off_t maxSize, off_t* size);
 //hash a file
 NSDictionary* hashFile(NSString* filePath);
 
+//convert an object (e.g. plist) into something NSJSONSerialization can serialize
+// data/dates/etc. become strings, non-finite numbers & overly nested objects become descriptions
+id makeJSONSafe(id object);
+
 //get app's version
 // ->extracted from Info.plist
 NSString* getAppVersion(void);

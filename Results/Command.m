@@ -31,26 +31,14 @@
 //convert obj to JSON
 -(NSString*)toJSON
 {
-    NSString* json = nil;
-    NSData* jsonData = nil;
     NSMutableDictionary* dict = [NSMutableDictionary dictionary];
     
     dict[@"command"] = self.command ?: @"unknown";
     dict[@"file"] = self.path ?: @"unknown";
     
-    @try
-    {
-        jsonData = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:NULL];
-        if(jsonData) {
-            json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        }
-    }
-    @catch(NSException* exception)
-    {
-        json = @"{\"error\": \"serialization failed\"}";
-    }
-    
-    return json ?: @"{\"error\": \"serialization failed\"}";
+    //serialize
+    // sanitizes, and never drops name/path
+    return [self serializeToJSON:dict];
 }
 
 //description

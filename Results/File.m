@@ -312,8 +312,6 @@ bail:
 //convert obj to JSON
 -(NSString*)toJSON
 {
-    NSData* jsonData = nil;
-    NSString* json = nil;
     NSMutableDictionary* dict = [NSMutableDictionary dictionary];
     
     //basic fields
@@ -336,19 +334,8 @@ bail:
     }
     
     //serialize
-    @try
-    {
-        jsonData = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:NULL];
-        if(jsonData) {
-            json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        }
-    }
-    @catch(NSException* exception)
-    {
-        json = @"{\"error\": \"serialization failed\"}";
-    }
-    
-    return json ?: @"{\"error\": \"serialization failed\"}";
+    // sanitizes (e.g. entitlements), and never drops name/path
+    return [self serializeToJSON:dict];
 }
 
 //description

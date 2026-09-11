@@ -43,4 +43,8 @@
 //convert object to JSON string
 -(NSString*)toJSON;
 
+//serialize a dictionary to a JSON string
+// sanitizes values first, and on any failure, still emits name/path (so item never vanishes from output)
+-(NSString*)serializeToJSON:(NSDictionary*)dictionary;
+
 @end
