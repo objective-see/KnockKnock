@@ -224,25 +224,30 @@
 
 //checks if an item will be automatically run by the OS
 // note: all keys are lower-case, as we've converted them this way...
+// note: launchd has many triggers (see launchd.plist(5)); an item is considered auto-run if *any* are present
+//       as when in doubt, we'd rather report an item than let malware pick a trigger we ignore
 -(BOOL)isAutoRun:(NSDictionary*)plist
 {
     //flag
     BOOL isAutoRun = NO;
     
-    //flag for 'RunAtLoad'
-    // ->default to -1 for not found
-    NSInteger runAtLoad = -1;
+    //triggers (keys) whose (mere) presence means launchd will run the item
+    // 'StartInterval'/'StartCalendarInterval': periodically
+    // 'WatchPaths'/'QueueDirectories': on file system changes
+    // 'LaunchEvents': on system events (e.g. IOKit matching, notifications)
+    // 'Sockets': on (network) connections
+    // 'MachServices': on (mach) messages from clients (e.g. privileged helpers)
+    static NSArray* triggers = nil;
     
-    //flag for 'KeepAlive'
-    // ->default to -1 for not found
-    NSInteger keepAlive = -1;
+    //once
+    static dispatch_once_t onceToken = 0;
     
-    //flag for 'OnDemand'
-    // ->default to -1 for not found
-    NSInteger onDemand = -1;
-    
-    //flag for start interval
-    BOOL startInterval = NO;
+    //init triggers
+    dispatch_once(&onceToken, ^{
+        
+        //init
+        triggers = @[@"startinterval", @"startcalendarinterval", @"watchpaths", @"queuedirectories", @"launchevents", @"sockets", @"machservices"];
+    });
     
     //skip launch items disabled via override (i.e. 'launchctl disable')
     if(YES == [self.disabledItems containsObject:plist[@"label"]])
@@ -261,61 +266,70 @@
         goto bail;
     }
     
-    //set 'RunAtLoad' flag
-    if(YES == [plist[@"runatload"] isKindOfClass:[NSNumber class]])
-    {
-        //set
-        runAtLoad = [plist[@"runatload"] boolValue];
-    }
-    
-    //set 'KeepAlive' flag
-    if(YES == [plist[@"keepalive"] isKindOfClass:[NSNumber class]])
-    {
-        //set
-        keepAlive = [plist[@"keepalive"] boolValue];
-    }
-    
-    //set 'OnDemand' flag
-    if(YES == [plist[@"ondemand"] isKindOfClass:[NSNumber class]])
-    {
-        //set
-        onDemand = [plist[@"ondemand"] boolValue];
-    }
-    
-    //set 'StartInterval' flag
-    // ->check both and 'StartInterval' and 'StartCalendarInterval'
-    if( (nil != plist[@"startinterval"]) ||
-        (nil != plist[@"startcalendarinterval"]) )
-                 
-    {
-        //set
-        startInterval = YES;
-    }
-
-    //CHECK 0x1: 'RunAtLoad' / 'KeepAlive'
-    // ->either of these set to ok, means auto run!
-    if( (YES == runAtLoad) ||
-        (YES == keepAlive) )
+    //CHECK 0x1: 'RunAtLoad'
+    // ->set to true, means auto run!
+    if( (YES == [plist[@"runatload"] isKindOfClass:[NSNumber class]]) &&
+        (YES == [plist[@"runatload"] boolValue]) )
     {
         //auto
         isAutoRun = YES;
+        
+        //done
+        goto bail;
     }
     
-    //CHECK 0x2: 'StartInterval' / 'StartCalendarInterval'
-    // ->either set, means will auto run (at some point)
-    else if(YES == startInterval)
+    //CHECK 0x2: 'KeepAlive'
+    // ->set to true, or a dictionary of conditions (e.g. 'PathState', 'SuccessfulExit', 'Crashed'), means auto run!
+    if( ((YES == [plist[@"keepalive"] isKindOfClass:[NSNumber class]]) && (YES == [plist[@"keepalive"] boolValue])) ||
+        (YES == [plist[@"keepalive"] isKindOfClass:[NSDictionary class]]) )
     {
         //auto
         isAutoRun = YES;
+        
+        //done
+        goto bail;
     }
     
-    //when neither 'RunAtLoad' and 'KeepAlive' not found
-    // ->check if 'OnDemand' is set to false (e.g. HackingTeam)
-    else if( ((-1 == runAtLoad) && (-1 == keepAlive)) &&
-             (NO == onDemand) )
+    //CHECK 0x3: 'StartOnMount'
+    // ->set to true, means auto run (when a volume is mounted)
+    if( (YES == [plist[@"startonmount"] isKindOfClass:[NSNumber class]]) &&
+        (YES == [plist[@"startonmount"] boolValue]) )
     {
         //auto
         isAutoRun = YES;
+        
+        //done
+        goto bail;
+    }
+    
+    //CHECK 0x4: other triggers
+    // ->any present, means will auto run (at some point)
+    for(NSString* trigger in triggers)
+    {
+        //present?
+        if(nil != plist[trigger])
+        {
+            //auto
+            isAutoRun = YES;
+            
+            //done
+            goto bail;
+        }
+    }
+    
+    //CHECK 0x5: legacy 'OnDemand'
+    // ->set to false, means auto run (e.g. HackingTeam)
+    // note: only if neither 'RunAtLoad' nor 'KeepAlive' were specified (as those take precedence)
+    if( (nil == plist[@"runatload"]) &&
+        (nil == plist[@"keepalive"]) &&
+        (YES == [plist[@"ondemand"] isKindOfClass:[NSNumber class]]) &&
+        (NO == [plist[@"ondemand"] boolValue]) )
+    {
+        //auto
+        isAutoRun = YES;
+        
+        //done
+        goto bail;
     }
     
 //bail
