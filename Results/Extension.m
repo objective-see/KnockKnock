@@ -8,6 +8,7 @@
 
 #import "consts.h"
 #import "Extension.h"
+#import "utilities.h"
 #import "AppDelegate.h"
 
 @implementation Extension
@@ -20,13 +21,14 @@
     if(nil != self)
     {
         //extract/save id
-        self.identifier = params[KEY_EXTENSION_ID];
+        // coerced, as (untrusted) JSON values can be any type
+        self.identifier = stringValue(params[KEY_EXTENSION_ID]);
         
         //extract/save description
-        self.details = params[KEY_EXTENSION_DETAILS];
+        self.details = stringValue(params[KEY_EXTENSION_DETAILS]);
         
-        //extract/save description
-        self.browser = params[KEY_EXTENSION_BROWSER];
+        //extract/save browser
+        self.browser = stringValue(params[KEY_EXTENSION_BROWSER]);
         
         //call into filter object to check if file is known
         // ->signed or whitelisted

@@ -239,7 +239,7 @@ extern BOOL queryVT;
         }
         
         //set text to command
-        [itemCell.textField setStringValue:((Command*)item).command];
+        [itemCell.textField setStringValue:((Command*)item).command ?: @""];
         
         //set detailed text
         // ->always item's path
@@ -294,7 +294,7 @@ extern BOOL queryVT;
     
     //set main text
     // ->name
-    itemCell.textField.attributedStringValue = [[NSMutableAttributedString alloc] initWithString:item.name];
+    itemCell.textField.attributedStringValue = [[NSMutableAttributedString alloc] initWithString:item.name ?: @""];
         
     //only have to add tracking area once
     // ->add it the first time

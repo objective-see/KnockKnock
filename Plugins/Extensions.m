@@ -92,7 +92,7 @@
     //load finder syncs from plist
     finderSyncs = [NSDictionary dictionaryWithContentsOfFile:[userDirectory stringByAppendingPathComponent:[FINDER_SYNCS substringFromIndex:1]]];
     if( (nil == finderSyncs) ||
-        (nil == finderSyncs[@"displayOrder"]) )
+        (YES != [finderSyncs[@"displayOrder"] isKindOfClass:[NSArray class]]) )
     {
         //bail
         goto bail;
@@ -102,6 +102,14 @@
     // exec 'pluginkit -mi <bundle> -v' to get info
     for(NSString* finderSync in finderSyncs[@"displayOrder"])
     {
+        //skip non-strings
+        // (plist is user-writable)
+        if(YES != [finderSync isKindOfClass:[NSString class]])
+        {
+            //skip
+            continue;
+        }
+        
         //exec pluginkit
         taskOutput = execTask(PLUGIN_KIT, @[@"-mi", finderSync, @"-v"], NULL);
         if( (nil == taskOutput) ||

@@ -22,7 +22,8 @@
     if(nil != self)
     {
         //save command
-        self.command = params[KEY_RESULT_COMMAND];
+        // coerced, as (untrusted) plist/JSON values can be any type
+        self.command = stringValue(params[KEY_RESULT_COMMAND]);
     }
     
     return self;

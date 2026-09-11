@@ -155,8 +155,10 @@
             }
         }
         
-        //skip any that don't have a path
-        if(nil == launchItemPath)
+        //skip any that don't have a (string) path
+        // note: a non-string (e.g. number/dict in 'ProgramArguments') isn't a path launchd would run either
+        if( (nil == launchItemPath) ||
+            (YES != [launchItemPath isKindOfClass:[NSString class]]) )
         {
             //skip
             continue;

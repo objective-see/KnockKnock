@@ -31,7 +31,20 @@
         self.plugin = params[KEY_RESULT_PLUGIN];
     
         //extract/save name
-        self.name = params[KEY_RESULT_NAME];
+        // coerced, as (untrusted) plist/JSON values can be any type
+        self.name = stringValue(params[KEY_RESULT_NAME]);
+        
+        //path must be a string (if specified)
+        // anything else (e.g. array from malformed plist) isn't a path, so bail
+        if( (nil != params[KEY_RESULT_PATH]) &&
+            (YES != [params[KEY_RESULT_PATH] isKindOfClass:[NSString class]]) )
+        {
+            //unset
+            self = nil;
+            
+            //bail
+            goto bail;
+        }
         
         //extract/save path
         self.path = [[params[KEY_RESULT_PATH] stringByStandardizingPath] stringByResolvingSymlinksInPath];
@@ -45,6 +58,8 @@
             self.attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.path error:nil];
         }
     }
+    
+bail:
     
     return self;
 }

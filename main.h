@@ -41,6 +41,10 @@ NSString* vtAPIKey = nil;
 
 /* FUNCTIONS */
 
+//uncaught exception handler
+// (implemented in AppDelegate.m)
+void uncaughtExceptionHandler(NSException* exception);
+
 //print usage
 void usage(BOOL error);
 

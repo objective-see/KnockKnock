@@ -15,6 +15,10 @@ int main(int argc, char *argv[])
     
     NSArray* args = NSProcessInfo.processInfo.arguments;
     
+    //install exception handler
+    // logs (and in UI mode, alerts) on any uncaught exception
+    NSSetUncaughtExceptionHandler(uncaughtExceptionHandler);
+    
     @autoreleasepool
     {
         //handle '-h' or '-help'
@@ -260,7 +264,17 @@ void cmdlineScan(NSArray* args)
         }
         
         //scan
-        [plugin scan];
+        // wrapped, so a malformed (attacker-controlled) input that throws in one plugin doesn't abort the whole scan
+        @try
+        {
+            //scan
+            [plugin scan];
+        }
+        @catch(NSException* exception)
+        {
+            //err msg
+            fprintf(stderr, "ERROR: plugin '%s' threw an exception (%s), results may be incomplete\n", plugin.name.UTF8String, exception.description.UTF8String);
+        }
         
         //add up
         items += plugin.allItems.count;

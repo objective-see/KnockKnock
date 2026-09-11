@@ -61,13 +61,24 @@
     database = [NSDictionary dictionaryWithContentsOfFile:SYSTEM_EXTENSION_DATABASE];
     
     //parse extensions
-    for(NSDictionary* extension in database[@"extensions"])
+    // (only dictionaries, from an array)
+    if(YES == [database[@"extensions"] isKindOfClass:[NSArray class]])
     {
-        //not active
-        if(YES != [extension[@"state"] isEqualToString:@"activated_enabled"]) continue;
-        
-        //save path
-        [extensions addObject:extension[@"originPath"]];
+        for(NSDictionary* extension in database[@"extensions"])
+        {
+            //skip non-dictionaries
+            if(YES != [extension isKindOfClass:[NSDictionary class]]) continue;
+            
+            //not active
+            if( (YES != [extension[@"state"] isKindOfClass:[NSString class]]) ||
+                (YES != [extension[@"state"] isEqualToString:@"activated_enabled"]) ) continue;
+            
+            //skip those w/o a (string) path
+            if(YES != [extension[@"originPath"] isKindOfClass:[NSString class]]) continue;
+            
+            //save path
+            [extensions addObject:extension[@"originPath"]];
+        }
     }
 
     return extensions;

@@ -84,10 +84,21 @@
     [rulesDirectories addObject:DEFAULT_EMOND_RULES];
     
     //add any additional
-    for(NSString* additionalRuleDir in additionalRuleDirs)
+    // (only strings, from an array)
+    if(YES == [additionalRuleDirs isKindOfClass:[NSArray class]])
     {
-        //add
-        [rulesDirectories addObject:additionalRuleDir];
+        for(NSString* additionalRuleDir in additionalRuleDirs)
+        {
+            //skip non-strings
+            if(YES != [additionalRuleDir isKindOfClass:[NSString class]])
+            {
+                //skip
+                continue;
+            }
+            
+            //add
+            [rulesDirectories addObject:additionalRuleDir];
+        }
     }
     
     //process each rule directory
@@ -149,6 +160,13 @@
     //process all rules
     for(NSDictionary* rule in rules)
     {
+        //skip non-dictionaries
+        if(YES != [rule isKindOfClass:[NSDictionary class]])
+        {
+            //skip
+            continue;
+        }
+        
         actions = rule[@"actions"];
         if( (nil == actions) ||
             (YES != [actions isKindOfClass:[NSArray class]]) )
@@ -160,7 +178,8 @@
         //process all actions
         for(NSDictionary* action in actions)
         {
-            if(nil == action[@"command"])
+            if( (YES != [action isKindOfClass:[NSDictionary class]]) ||
+                (nil == action[@"command"]) )
             {
                 //skip
                 continue;

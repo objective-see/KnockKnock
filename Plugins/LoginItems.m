@@ -259,11 +259,12 @@ bail:
         
         //use name from app bundle
         // otherwise from 'NSURLNameKey'
-        name = [NSBundle bundleWithPath:path].infoDictionary[@"CFBundleName"];
+        // note: coerced, as (untrusted) plist values can be any type
+        name = stringValue([NSBundle bundleWithPath:path].infoDictionary[@"CFBundleName"]);
         if(0 == name.length)
         {
             //extract name
-            name = loginItem[@"Name"];
+            name = stringValue(loginItem[@"Name"]);
         }
         
         //sanity check
@@ -341,15 +342,22 @@ bail:
         }
         
         //extract path
+        // must be a string
         path = properties[@"_NSURLPathKey"];
+        if(YES != [path isKindOfClass:[NSString class]])
+        {
+            //skip
+            continue;
+        }
         
         //use name from app bundle
         // otherwise from 'NSURLNameKey'
-        name = [NSBundle bundleWithPath:path].infoDictionary[@"CFBundleName"];
+        // note: coerced, as (untrusted) plist values can be any type
+        name = stringValue([NSBundle bundleWithPath:path].infoDictionary[@"CFBundleName"]);
         if(0 == name.length)
         {
             //extract name
-            name = properties[@"NSURLNameKey"];
+            name = stringValue(properties[@"NSURLNameKey"]);
         }
         
         //skip any issues

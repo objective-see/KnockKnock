@@ -257,7 +257,8 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle)
     if(nil != bundle)
     {
         //get file
-        iconFile = bundle.infoDictionary[@"CFBundleIconFile"];
+        // coerce, as (untrusted) Info.plist values can be any type
+        iconFile = stringValue(bundle.infoDictionary[@"CFBundleIconFile"]);
         
         //get path extension
         iconExtension = [iconFile pathExtension];
@@ -567,6 +568,39 @@ bail:
     }
     
     return hashes;
+}
+
+//coerce an (untrusted) object to a string
+// strings are returned as is, nil stays nil, anything else (arrays, numbers, etc.) becomes its description
+// note: plist/JSON values from user-writable files can be any type, and UI/string APIs throw on non-strings
+NSString* stringValue(id object)
+{
+    //string
+    NSString* string = nil;
+    
+    //nil?
+    if(nil == object)
+    {
+        //bail
+        goto bail;
+    }
+    
+    //string?
+    if(YES == [object isKindOfClass:[NSString class]])
+    {
+        //as is
+        string = object;
+    }
+    //anything else
+    else
+    {
+        //description
+        string = [object description];
+    }
+    
+bail:
+    
+    return string;
 }
 
 //convert an object (e.g. plist) into something NSJSONSerialization can serialize

@@ -89,6 +89,10 @@ bail:
     //File or Command Obj
     ItemBase* item = nil;
     
+    //coerce payload to string
+    // com.apple.loginwindow.plist is user-writable, so value can be any type
+    payload = stringValue(payload);
+    
     //hook payload will usually will be a file
     if(YES == [[NSFileManager defaultManager] fileExistsAtPath:payload])
     {

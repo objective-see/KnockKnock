@@ -47,6 +47,10 @@ int openRegularFile(NSString* path, off_t maxSize, off_t* size);
 //hash a file
 NSDictionary* hashFile(NSString* filePath);
 
+//coerce an (untrusted) object to a string
+// strings are returned as is, nil stays nil, anything else (arrays, numbers, etc.) becomes its description
+NSString* stringValue(id object);
+
 //convert an object (e.g. plist) into something NSJSONSerialization can serialize
 // data/dates/etc. become strings, non-finite numbers & overly nested objects become descriptions
 id makeJSONSafe(id object);

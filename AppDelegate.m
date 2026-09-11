@@ -23,6 +23,9 @@ NSString* scanID = nil;
 //query VT
 extern BOOL queryVT;
 
+//cmdline mode
+extern BOOL cmdlineMode;
+
 @implementation AppDelegate
 
 @synthesize plugins;
@@ -45,21 +48,33 @@ extern BOOL queryVT;
 @synthesize welcomeWindowController;
 
 //exception handler
-// show alert and log error
+// log error, and (in UI mode) show alert
 void uncaughtExceptionHandler(NSException* exception) {
     
     //alert
     NSAlert* alert = nil;
     
-    //alloc/init alert
-    alert = [NSAlert alertWithMessageText:NSLocalizedString(@"ERROR:\nKnockKnock Encountered a Fatal Error", @"KnockKnock Encountered a Fatal Error") defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"Exception: %@",@"Exception: %@"), exception];
-    
-    //show it
-    [alert runModal];
-    
     //log
     os_log_error(OS_LOG_DEFAULT, "KnockKnock crash: %{public}@", exception);
     os_log_error(OS_LOG_DEFAULT, "KnockKnock crash (stack trace): %{public}@", [exception callStackSymbols]);
+    
+    //cmdline mode?
+    // just print error
+    if(YES == cmdlineMode)
+    {
+        //err msg
+        fprintf(stderr, "ERROR: KnockKnock encountered a fatal error: %s\n", exception.description.UTF8String);
+    }
+    //UI mode
+    // show alert
+    else
+    {
+        //alloc/init alert
+        alert = [NSAlert alertWithMessageText:NSLocalizedString(@"ERROR:\nKnockKnock Encountered a Fatal Error", @"KnockKnock Encountered a Fatal Error") defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"Exception: %@",@"Exception: %@"), exception];
+        
+        //show it
+        [alert runModal];
+    }
     
     //bye
     exit(EXIT_FAILURE);
@@ -590,7 +605,17 @@ bail:
             
         //scan
         // will invoke callback as items are found
-        [plugin scan];
+        // wrapped, so a malformed (attacker-controlled) input that throws in one plugin doesn't abort the whole scan
+        @try
+        {
+            //scan
+            [plugin scan];
+        }
+        @catch(NSException* exception)
+        {
+            //log
+            os_log_error(OS_LOG_DEFAULT, "KnockKnock: plugin '%{public}@' threw an exception (%{public}@), results may be incomplete", plugin.name, exception);
+        }
             
         //should query VT?
         // if so, do it in background

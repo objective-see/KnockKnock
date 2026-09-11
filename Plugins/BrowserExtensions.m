@@ -429,7 +429,19 @@
         }
         
         //extract extensions
+        // note: prefs are user-writable, so check types at each level
+        if( (YES != [preferences isKindOfClass:[NSDictionary class]]) ||
+            (YES != [preferences[@"extensions"] isKindOfClass:[NSDictionary class]]) )
+        {
+            //skip
+            continue;
+        }
         extensions = preferences[@"extensions"][@"settings"];
+        if(YES != [extensions isKindOfClass:[NSDictionary class]])
+        {
+            //skip
+            continue;
+        }
         
         //iterate over all extensions
         // ->skip disabled ones, etc
@@ -440,6 +452,11 @@
             
             //extract current extension
             extension = extensions[key];
+            if(YES != [extension isKindOfClass:[NSDictionary class]])
+            {
+                //skip
+                continue;
+            }
             
             //skip disabled ones
             if(YES != [extension[@"state"] boolValue])
@@ -456,8 +473,8 @@
                 continue;
             }
             
-            //skip extensions w/o paths
-            if(nil == extension[@"path"])
+            //skip extensions w/o (string) paths
+            if(YES != [extension[@"path"] isKindOfClass:[NSString class]])
             {
                 //skip
                 continue;
@@ -496,7 +513,8 @@
             manifest = extension[@"manifest"];
             
             //skip blank names
-            if(nil == manifest[@"name"])
+            if( (YES != [manifest isKindOfClass:[NSDictionary class]]) ||
+                (nil == manifest[@"name"]) )
             {
                 //skip
                 continue;
@@ -660,9 +678,25 @@ bail:
                     continue;
                 }
                 
+                //extensions must be an array
+                if(YES != [extensions isKindOfClass:[NSArray class]])
+                {
+                    //next
+                    continue;
+                }
+                
                 //parse out all extensions
                 for(NSDictionary* extension in extensions)
                 {
+                    //skip non-dictionaries, or those w/o a (string) id
+                    // note: files are user-writable, so values can be any type
+                    if( (YES != [extension isKindOfClass:[NSDictionary class]]) ||
+                        (YES != [extension[@"id"] isKindOfClass:[NSString class]]) )
+                    {
+                        //skip
+                        continue;
+                    }
+                    
                     //ignore dups
                     if(YES == [extensionIDs containsObject:extension[@"id"]])
                     {
@@ -735,8 +769,8 @@ bail:
                         //extract default locale
                         defaultLocale = extension[@"defaultLocale"];
                         
-                        //skip nil defaultLocales
-                        if(nil == defaultLocale)
+                        //skip nil (or non-dictionary) defaultLocales
+                        if(YES != [defaultLocale isKindOfClass:[NSDictionary class]])
                         {
                             //skip
                             continue;
@@ -847,7 +881,19 @@ bail:
     }
     
     //extract extensions
+    // note: prefs are user-writable, so check types at each level
+    if( (YES != [preferences isKindOfClass:[NSDictionary class]]) ||
+        (YES != [preferences[@"extensions"] isKindOfClass:[NSDictionary class]]) )
+    {
+        //bail
+        goto bail;
+    }
     extensions = preferences[@"extensions"][@"settings"];
+    if(YES != [extensions isKindOfClass:[NSDictionary class]])
+    {
+        //bail
+        goto bail;
+    }
     
     //iterate over all extensions
     // ->skip disabled ones, etc
@@ -858,9 +904,15 @@ bail:
         
         //extract current extension
         extension = extensions[key];
+        if(YES != [extension isKindOfClass:[NSDictionary class]])
+        {
+            //skip
+            continue;
+        }
         
         //skip black-listed ones
-        if(YES == [extensions[@"blacklist"] boolValue])
+        // note: was checking 'extensions' (the settings dict) not 'extension'
+        if(YES == [extension[@"blacklist"] boolValue])
         {
             //skip
             continue;
@@ -881,8 +933,8 @@ bail:
             continue;
         }
         
-        //skip extensions w/o paths
-        if(nil == extension[@"path"])
+        //skip extensions w/o (string) paths
+        if(YES != [extension[@"path"] isKindOfClass:[NSString class]])
         {
             //skip
             continue;
@@ -921,7 +973,8 @@ bail:
         manifest = extension[@"manifest"];
         
         //skip blank names
-        if(nil == manifest[@"name"])
+        if( (YES != [manifest isKindOfClass:[NSDictionary class]]) ||
+            (nil == manifest[@"name"]) )
         {
             //skip
             continue;

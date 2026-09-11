@@ -186,16 +186,17 @@ bail:
         (nil != self.bundle.infoDictionary) )
     {
         //default to 'CFBundleName'
+        // coerced, as (untrusted) Info.plist values can be any type
         if(nil != [self.bundle.infoDictionary objectForKey:@"CFBundleName"])
         {
             //set
-            fileName = [self.bundle.infoDictionary objectForKey:@"CFBundleName"];
+            fileName = stringValue([self.bundle.infoDictionary objectForKey:@"CFBundleName"]);
         }
         //otherwise use 'CFBundleDisplayName'
         else if(nil != [self.bundle.infoDictionary objectForKey:@"CFBundleDisplayName"])
         {
             //set
-            fileName = [self.bundle.infoDictionary objectForKey:@"CFBundleDisplayName"];
+            fileName = stringValue([self.bundle.infoDictionary objectForKey:@"CFBundleDisplayName"]);
         }
     }
     

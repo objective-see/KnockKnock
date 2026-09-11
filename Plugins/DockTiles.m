@@ -104,7 +104,8 @@
         //grab dock tile plugin path from 'NSDockTilePlugIn'
         // note: this path is relative (within) application's bundle
         relativePath = appBundle.infoDictionary[INFO_PLIST_DOCK_TILE_KEY];
-        if(nil == relativePath)
+        if( (nil == relativePath) ||
+            (YES != [relativePath isKindOfClass:[NSString class]]) )
         {
             //skip
             continue;
