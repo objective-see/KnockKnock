@@ -161,14 +161,6 @@ BOOL toggleLoginItem(NSURL* loginItem, NSControlStateValue state);
 // via 'do shell script ... with administrator privileges'
 NSString* authorizationScript(NSString* executablePath, NSArray<NSString*>* arguments, NSString* prompt);
 
-//load (and delete) the handoff file, if we were launched with one
-// ...contains the user's VT API key, which root can't (reliably) get from the user's keychain
-void loadHandoff(void);
-
-//delete the (pending) handoff file
-// for when the root instance failed to start (so never read/deleted it)
-void cleanupHandoff(void);
-
 //relaunch ourselves as root
 // prompts user to authenticate, and returns pid of new (root) instance, or -1 on error
 pid_t relaunchAsRoot(NSError** error);

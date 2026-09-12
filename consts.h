@@ -128,11 +128,6 @@ enum Signer{None, Apple, AppStore, DevID, AdHoc};
 // passed to the instance we (re)launch as root, so it can skip the welcome flow, etc
 #define ARG_RELAUNCHED_AS_ROOT @"-relaunched"
 
-//cmdline arg
-// path to (0600) file with the user's VT API key, handed to the instance we (re)launch as root
-// ...as root can't (reliably) read the user's login keychain
-#define ARG_HANDOFF @"-handoff"
-
 //path to launchctl
 #define LAUNCHCTL @"/bin/launchctl"
 

@@ -94,9 +94,6 @@ void uncaughtExceptionHandler(NSException* exception) {
     //relaunched (as root) by ourselves?
     if(YES == [NSProcessInfo.processInfo.arguments containsObject:ARG_RELAUNCHED_AS_ROOT])
     {
-        //load (& delete) handoff (VT API key)
-        loadHandoff();
-        
         //adopt console user's appearance (light/dark)
         // as root's own defaults have none, so AppKit would render everything light
         adoptConsoleUserAppearance();
@@ -233,10 +230,6 @@ void uncaughtExceptionHandler(NSException* exception) {
     started = waitForApplication(pid, 30.0);
     if(YES != started)
     {
-        //cleanup
-        // (root instance never read/deleted the handoff)
-        cleanupHandoff();
-        
         //show error
         [self showRelaunchError:[NSString stringWithFormat:NSLocalizedString(@"process (pid: %d) did not start", @"process (pid: %d) did not start"), pid]];
         

@@ -1710,23 +1710,6 @@ BOOL hasFDA(void) {
     return [NSFileManager.defaultManager isReadableFileAtPath:tccPath];
 }
 
-//(handoff) API key
-// set when launched (as root) with a handoff file
-// note: read from background threads (scan, VT submit), so access is synchronized
-static NSString* handoffAPIKey = nil;
-
-//get handoff key
-static NSString* getHandoffAPIKey(void)
-{
-    @synchronized([NSApplication class]) { return handoffAPIKey; }
-}
-
-//set handoff key
-static void setHandoffAPIKey(NSString* key)
-{
-    @synchronized([NSApplication class]) { handoffAPIKey = key; }
-}
-
 //for keychain access as root
 // we use the (legacy) keychain APIs to target the console user's login keychain
 #pragma clang diagnostic push
@@ -1798,16 +1781,10 @@ BOOL saveAPIKeyToKeychain(NSString* apiKey)
     status = SecItemAdd((__bridge CFDictionaryRef)query, NULL);
     if(errSecSuccess != status) {
         //log
-        // as root, the (in-memory) handoff copy still works for this session, but the key won't persist
         os_log_error(OS_LOG_DEFAULT, "KnockKnock: failed to save VT API key to keychain (status: %d, root: %d)", (int)status, (0 == geteuid()));
     }
     
 bail:
-    
-    //root? keep (in-memory) handoff copy in sync, as that's the fallback
-    if(0 == geteuid()) {
-        setHandoffAPIKey((0 != apiKey.length) ? apiKey : nil);
-    }
     
     if(NULL != keychain) {
         CFRelease(keychain);
@@ -1817,7 +1794,7 @@ bail:
 }
 
 //(re)load key from keychain
-// note: when root, targets the console user's login keychain (not root's), falling back to the handoff key
+// note: when root, targets the console user's login keychain (not root's)
 NSString* loadAPIKeyFromKeychain(void)
 {
     NSString* key = nil;
@@ -1844,13 +1821,6 @@ NSString* loadAPIKeyFromKeychain(void)
         key = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }
     
-    //root, and keychain didn't work out?
-    // use handoff key (from the non-root instance that launched us)
-    if( (0 == key.length) &&
-        (0 == geteuid()) ) {
-        key = getHandoffAPIKey();
-    }
-    
     if(NULL != keychain) {
         CFRelease(keychain);
     }
@@ -1859,106 +1829,6 @@ NSString* loadAPIKeyFromKeychain(void)
 }
 
 #pragma clang diagnostic pop
-
-//load (and delete) the handoff file, if we were launched with one
-// ...contains the user's VT API key, which root can't (reliably) get from the user's keychain
-// note: we're root and the path came from argv, so before reading: no symlinks, regular file, single link,
-//       owned by the console user, not group/world readable, and small ...then read via the (validated) fd
-void loadHandoff(void)
-{
-    //args
-    NSArray* arguments = NSProcessInfo.processInfo.arguments;
-    
-    //index of '-handoff'
-    NSUInteger index = [arguments indexOfObject:ARG_HANDOFF];
-    
-    //path
-    NSString* path = nil;
-    
-    //file descriptor
-    int fd = -1;
-    
-    //file info
-    struct stat fileInfo = {0};
-    
-    //contents
-    NSData* contents = nil;
-    
-    //key
-    NSString* key = nil;
-    
-    //no handoff?
-    if( (NSNotFound == index) ||
-        (index + 1 >= arguments.count) )
-    {
-        //bail
-        goto bail;
-    }
-    
-    //path
-    path = arguments[index + 1];
-    
-    //open
-    // no following symlinks, non-blocking (so a fifo can't hang us)
-    fd = open(path.fileSystemRepresentation, O_RDONLY | O_NOFOLLOW | O_NONBLOCK | O_CLOEXEC);
-    if(-1 == fd)
-    {
-        //bail
-        goto bail;
-    }
-    
-    //validate (via fd)
-    // regular, single link, owned by console user (when there is one), not group/world accessible, small
-    if( (0 != fstat(fd, &fileInfo)) ||
-        (!S_ISREG(fileInfo.st_mode)) ||
-        (1 != fileInfo.st_nlink) ||
-        ((0 != getConsoleUserID()) && (fileInfo.st_uid != getConsoleUserID())) ||
-        (0 != (fileInfo.st_mode & 077)) ||
-        (fileInfo.st_size > 4096) )
-    {
-        //bail
-        goto bail;
-    }
-    
-    //read
-    @try
-    {
-        //read
-        contents = [[[NSFileHandle alloc] initWithFileDescriptor:fd closeOnDealloc:NO] readDataOfLength:(NSUInteger)fileInfo.st_size];
-    }
-    @catch(NSException* exception)
-    {
-        //bail
-        goto bail;
-    }
-    
-    //convert
-    key = [[NSString alloc] initWithData:contents encoding:NSUTF8StringEncoding];
-    if(0 != key.length)
-    {
-        //save
-        setHandoffAPIKey(key);
-    }
-    
-bail:
-    
-    //close
-    if(-1 != fd)
-    {
-        //close
-        close(fd);
-    }
-    
-    //delete
-    // (it's got a secret in it) note: 'unlink' removes a symlink itself, never its target
-    if(nil != path)
-    {
-        //delete
-        unlink(path.fileSystemRepresentation);
-    }
-    
-    return;
-}
 
 //file protected by SIP?
 BOOL isRestricted(const char *path) {
@@ -2132,27 +2002,6 @@ NSString* authorizationScript(NSString* executablePath, NSArray<NSString*>* argu
     return [NSString stringWithFormat:@"do shell script %@ & \" </dev/null >/dev/null 2>&1 & echo $!\" with prompt \"%@\" with administrator privileges", command, escapeForAppleScript(prompt)];
 }
 
-//(pending) handoff file
-// written by us (non-root) for the root instance; deleted by it once read, or by us if it never starts
-static NSString* pendingHandoffPath = nil;
-
-//delete the (pending) handoff file
-// for when the root instance failed to start (so never read/deleted it)
-void cleanupHandoff(void)
-{
-    //delete
-    if(nil != pendingHandoffPath)
-    {
-        //delete
-        [NSFileManager.defaultManager removeItemAtPath:pendingHandoffPath error:nil];
-        
-        //unset
-        pendingHandoffPath = nil;
-    }
-    
-    return;
-}
-
 //relaunch ourselves as root
 // prompts user to authenticate, and returns pid of new (root) instance, or -1 on error
 // note: must be invoked on the main thread (NSAppleScript requirement)
@@ -2172,12 +2021,6 @@ pid_t relaunchAsRoot(NSError** error)
     
     //arguments (for root instance)
     NSMutableArray* arguments = nil;
-    
-    //(user's) VT API key
-    NSString* apiKey = nil;
-    
-    //handoff file
-    NSString* handoffPath = nil;
     
     //console user's uid
     uid_t consoleUID = getConsoleUserID();
@@ -2204,46 +2047,12 @@ pid_t relaunchAsRoot(NSError** error)
         arguments = [NSMutableArray arrayWithObject:ARG_RELAUNCHED_AS_ROOT];
     }
     
-    //got a VT API key?
-    // hand it off to the root instance via a (0600) file, as root can't (reliably) read our login keychain
-    // note: lives in our (0700) temp dir, so only us (and root) can read it; root instance deletes it once read
-    apiKey = loadAPIKeyFromKeychain();
-    if(0 != apiKey.length)
-    {
-        //init path
-        handoffPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"com.objective-see.knockknock.%@", NSUUID.UUID.UUIDString]];
-        
-        //write (0600)
-        if(YES == [NSFileManager.defaultManager createFileAtPath:handoffPath contents:[apiKey dataUsingEncoding:NSUTF8StringEncoding] attributes:@{NSFilePosixPermissions:@(0600)}])
-        {
-            //add args
-            [arguments addObjectsFromArray:@[ARG_HANDOFF, handoffPath]];
-            
-            //save
-            // so it can be cleaned up if root instance never starts
-            pendingHandoffPath = handoffPath;
-        }
-        else
-        {
-            //reset
-            handoffPath = nil;
-        }
-    }
-    
     //execute script
     // blocks while user is prompted to authenticate
     result = [[[NSAppleScript alloc] initWithSource:authorizationScript(executable, arguments, NSLocalizedString(@"KnockKnock needs administrator privileges to scan all persistent items.", @"KnockKnock needs administrator privileges to scan all persistent items."))] executeAndReturnError:&scriptError];
     
     //extract pid
     pid = (pid_t)[result.stringValue intValue];
-    
-    //failed to launch?
-    // remove handoff file (as nobody will read/delete it)
-    if(pid <= 0)
-    {
-        //delete
-        cleanupHandoff();
-    }
     
     //error?
     // script failed (e.g. -128: user cancelled), or no (valid) pid
