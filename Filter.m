@@ -195,9 +195,41 @@
         goto bail;
     }
     
-    //finally, then check if its signed by apple
+    //signature must be valid to be trusted (via signer)
+    // note: 'extractSigningInfo' only sets a signer once the signature validates, but be explicit
+    //       (and an ad-hoc signature, while 'valid', vouches for nothing, so is never trusted)
+    if( (YES != [file.signingInfo[KEY_SIGNATURE_STATUS] isKindOfClass:[NSNumber class]]) ||
+        (errSecSuccess != [file.signingInfo[KEY_SIGNATURE_STATUS] intValue]) ||
+        (AdHoc == [file.signingInfo[KEY_SIGNATURE_SIGNER] intValue]) )
+    {
+        //untrusted
+        goto bail;
+    }
+    
+    //check if its signed by apple
     // note: apple-signed files are always trusted
-    isTrusted = (Apple == [file.signingInfo[KEY_SIGNATURE_SIGNER] intValue]);
+    if(Apple == [file.signingInfo[KEY_SIGNATURE_SIGNER] intValue])
+    {
+        //trusted
+        isTrusted = YES;
+        
+        //bail
+        goto bail;
+    }
+    
+    //also trust apple's own app store apps (e.g. Pages, Xcode)
+    // these are signed by 'Apple Mac OS Application Signing' (like any app store app), but with a 'com.apple.' identifier
+    // ...which app store connect reserves for apple, so third parties can't ship an app store app with such an identifier
+    if( (AppStore == [file.signingInfo[KEY_SIGNATURE_SIGNER] intValue]) &&
+        (YES == [file.signingInfo[KEY_SIGNATURE_IDENTIFIER] isKindOfClass:[NSString class]]) &&
+        (YES == [file.signingInfo[KEY_SIGNATURE_IDENTIFIER] hasPrefix:@"com.apple."]) )
+    {
+        //trusted
+        isTrusted = YES;
+        
+        //bail
+        goto bail;
+    }
     
 bail:
     

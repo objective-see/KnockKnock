@@ -11,6 +11,7 @@
 
 #import <fcntl.h>
 #import <os/log.h>
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import <libproc.h>
 #import <sys/stat.h>
 #import <sys/sysctl.h>
@@ -444,8 +445,26 @@ NSImage* getIconForBinary(NSString* binary, NSBundle* bundle)
     if( (nil == bundle) ||
         (nil == icon) )
     {
-        //extract icon
-        icon = [[NSWorkspace sharedWorkspace] iconForFile:binary];
+        //mach-O (executable)?
+        // use the generic executable icon, as 'iconForFile' picks by file *name*
+        // ...so e.g. 'com.foo.extension' would get a (blank) document icon, not the 'exec' one
+        if(YES == isBinary(binary))
+        {
+            //via content type
+            if(@available(macOS 11.0, *))
+            {
+                //get
+                icon = [[NSWorkspace sharedWorkspace] iconForContentType:UTTypeUnixExecutable];
+            }
+        }
+        
+        //(still) no icon?
+        // get via file
+        if(nil == icon)
+        {
+            //extract icon
+            icon = [[NSWorkspace sharedWorkspace] iconForFile:binary];
+        }
         
         //'iconForFileType' returns small icons
         //  so set size to 64 @2x
