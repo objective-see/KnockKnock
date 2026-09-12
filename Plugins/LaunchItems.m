@@ -8,6 +8,8 @@
 #import "AppDelegate.h"
 #import "LaunchItems.h"
 
+#import <pwd.h>
+
 //plugin name
 #define PLUGIN_NAME @"Launch Items"
 
@@ -19,8 +21,8 @@
 
 @implementation LaunchItems
 
-@synthesize enabledItems;
-@synthesize disabledItems;
+@synthesize overrides;
+@synthesize userHomes;
 
 
 //init
@@ -106,7 +108,7 @@
         }
         
         //skip non-auto run items
-        if(YES != [self isAutoRun:plistProcessed])
+        if(YES != [self isAutoRun:plistProcessed plist:launchItemPlist])
         {
             //skip
             continue;
@@ -260,47 +262,177 @@ bail:
 // ->from launchd's (live) override database (see 'launchdOverrides')
 -(void)processOverrides
 {
-    //overrides
-    NSDictionary* overrides = nil;
+    //users
+    NSDictionary* users = nil;
     
-    //alloc enabled items array
-    enabledItems = [NSMutableArray array];
+    //home -> uid
+    NSMutableDictionary* homes = nil;
     
-    //alloc disabled items array
-    disabledItems = [NSMutableArray array];
+    //user
+    struct passwd* user = NULL;
     
-    //get overrides
-    // label -> @YES (disabled) / @NO (explicitly enabled)
-    overrides = launchdOverrides();
+    //get overrides (per domain)
+    self.overrides = launchdOverrides();
     
-    //split into disabled/enabled
-    for(NSString* label in overrides)
+    //alloc
+    homes = [NSMutableDictionary dictionary];
+    
+    //map each user's home directory to their uid
+    // so a per-user launch agent plist (~user/Library/LaunchAgents) can be matched to its domain
+    users = allUsers();
+    for(NSString* userID in users)
     {
-        //disabled
-        if(YES == [overrides[label] boolValue])
+        //lookup uid
+        user = getpwnam([users[userID][USER_NAME] UTF8String]);
+        if(NULL == user)
         {
-            //add
-            [self.disabledItems addObject:label];
+            //skip
+            continue;
         }
-        //(explicitly) enabled
-        else
+        
+        //save
+        homes[[users[userID][USER_DIRECTORY] stringByStandardizingPath]] = [NSString stringWithFormat:@"%u", user->pw_uid];
+    }
+    
+    //save
+    self.userHomes = homes;
+    
+    return;
+}
+
+//get the override for a launch item, in the domain(s) it loads into
+// returns @YES (disabled), @NO (explicitly enabled), or nil (no override)
+// note: launch daemons load into the system domain, a user's own agents into that user's domain,
+//       and global agents (/Library/LaunchAgents, etc) into *every* user's domain, so:
+//       explicitly enabled in any applicable domain -> enabled (it runs for someone)
+//       disabled in all applicable domains -> disabled (else it still runs for someone)
+-(NSNumber*)overrideForLabel:(NSString*)label plist:(NSString*)plist
+{
+    //override
+    NSNumber* override = nil;
+    
+    //applicable domains
+    NSMutableArray* domains = nil;
+    
+    //(standardized) plist path
+    NSString* path = [plist stringByStandardizingPath];
+    
+    //flag
+    BOOL disabledInAll = YES;
+    
+    //sanity check
+    if( (YES != [label isKindOfClass:[NSString class]]) ||
+        (0 == self.overrides.count) )
+    {
+        //bail
+        goto bail;
+    }
+    
+    //alloc
+    domains = [NSMutableArray array];
+    
+    //launch daemon?
+    // system domain
+    if( (YES == [path hasPrefix:@"/System/Library/LaunchDaemons/"]) ||
+        (YES == [path hasPrefix:@"/Library/LaunchDaemons/"]) )
+    {
+        //system
+        [domains addObject:LAUNCHD_DOMAIN_SYSTEM];
+    }
+    //launch agent
+    else
+    {
+        //user's own agent?
+        // that user's domain
+        for(NSString* home in self.userHomes)
         {
-            //add
-            [self.enabledItems addObject:label];
+            //match?
+            if(YES == [path hasPrefix:[home stringByAppendingString:@"/"]])
+            {
+                //add
+                [domains addObject:self.userHomes[home]];
+                
+                //done
+                break;
+            }
+        }
+        
+        //global agent (or unknown location)?
+        // every user domain we know of
+        if(0 == domains.count)
+        {
+            //add each (non-system) domain
+            for(NSString* domain in self.overrides)
+            {
+                //skip system
+                if(YES != [domain isEqualToString:LAUNCHD_DOMAIN_SYSTEM])
+                {
+                    //add
+                    [domains addObject:domain];
+                }
+            }
         }
     }
     
-    return;
+    //no applicable domains (with overrides)?
+    // no override
+    if(0 == domains.count)
+    {
+        //bail
+        goto bail;
+    }
+    
+    //check each applicable domain
+    for(NSString* domain in domains)
+    {
+        //override (in this domain)
+        NSNumber* state = self.overrides[domain][label];
+        
+        //explicitly enabled?
+        // runs (for someone), so enabled
+        if( (nil != state) &&
+            (YES != [state boolValue]) )
+        {
+            //enabled
+            override = @NO;
+            
+            //done
+            goto bail;
+        }
+        
+        //not disabled here?
+        // still runs (for someone)
+        if( (nil == state) ||
+            (YES != [state boolValue]) )
+        {
+            //not disabled in all
+            disabledInAll = NO;
+        }
+    }
+    
+    //disabled in all applicable domains?
+    if(YES == disabledInAll)
+    {
+        //disabled
+        override = @YES;
+    }
+    
+bail:
+    
+    return override;
 }
 
 //checks if an item will be automatically run by the OS
 // note: all keys are lower-case, as we've converted them this way...
 // note: launchd has many triggers (see launchd.plist(5)); an item is considered auto-run if *any* are present
 //       as when in doubt, we'd rather report an item than let malware pick a trigger we ignore
--(BOOL)isAutoRun:(NSDictionary*)plist
+-(BOOL)isAutoRun:(NSDictionary*)plist plist:(NSString*)plistPath
 {
     //flag
     BOOL isAutoRun = NO;
+    
+    //override (for item's domain)
+    NSNumber* override = nil;
     
     //triggers (keys) whose (mere) presence means launchd will run the item
     // 'StartInterval'/'StartCalendarInterval': periodically
@@ -320,8 +452,12 @@ bail:
         triggers = @[@"startinterval", @"startcalendarinterval", @"watchpaths", @"queuedirectories", @"launchevents", @"sockets", @"machservices"];
     });
     
+    //get override (i.e. 'launchctl enable/disable' state) for the domain(s) this item loads into
+    override = [self overrideForLabel:plist[@"label"] plist:plistPath];
+    
     //skip launch items disabled via override (i.e. 'launchctl disable')
-    if(YES == [self.disabledItems containsObject:plist[@"label"]])
+    if( (nil != override) &&
+        (YES == [override boolValue]) )
     {
         //bail
         goto bail;
@@ -331,7 +467,7 @@ bail:
     // ->unless explicitly enabled via override (i.e. 'launchctl enable'), as then launchd runs them
     if( (YES == [plist[@"disabled"] isKindOfClass:[NSNumber class]]) &&
         (YES == [plist[@"disabled"] boolValue]) &&
-        (YES != [self.enabledItems containsObject:plist[@"label"]]) )
+        (YES != ((nil != override) && (YES != [override boolValue]))) )
     {
         //bail
         goto bail;

@@ -755,7 +755,7 @@ bail:
 // note: when root, merges all users' overrides; when a label conflicts across users, 'enabled' wins (so item is reported)
 NSDictionary* launchdOverrides(void)
 {
-    //overrides
+    //overrides (per domain)
     NSMutableDictionary* overrides = nil;
     
     //override files
@@ -764,8 +764,11 @@ NSDictionary* launchdOverrides(void)
     //override file contents
     NSDictionary* contents = nil;
     
-    //(current) state
-    NSNumber* state = nil;
+    //domain
+    NSString* domain = nil;
+    
+    //domain's overrides
+    NSMutableDictionary* domainOverrides = nil;
     
     //alloc
     overrides = [NSMutableDictionary dictionary];
@@ -805,6 +808,33 @@ NSDictionary* launchdOverrides(void)
         //load
         // note: skips files that don't exist, aren't readable, etc.
         contents = [NSDictionary dictionaryWithContentsOfFile:[LAUNCHD_OVERRIDES_DIRECTORY stringByAppendingPathComponent:overrideFile]];
+        if(0 == contents.count)
+        {
+            //skip
+            continue;
+        }
+        
+        //domain
+        // 'disabled.plist' -> system, 'disabled.<uid>.plist' -> <uid>
+        if(YES == [overrideFile isEqualToString:@"disabled.plist"])
+        {
+            //system
+            domain = LAUNCHD_DOMAIN_SYSTEM;
+        }
+        else
+        {
+            //uid
+            domain = [[overrideFile stringByDeletingPathExtension] pathExtension];
+            if( (0 == domain.length) ||
+                (0 == [domain integerValue] && YES != [domain isEqualToString:@"0"]) )
+            {
+                //skip
+                continue;
+            }
+        }
+        
+        //alloc
+        domainOverrides = [NSMutableDictionary dictionary];
         
         //process each label
         for(NSString* label in contents)
@@ -817,18 +847,12 @@ NSDictionary* launchdOverrides(void)
                 continue;
             }
             
-            //state
-            state = contents[label];
-            
-            //merge
-            // 'enabled' (NO) wins over 'disabled' (YES), so when in doubt, item will be reported
-            if( (nil == overrides[label]) ||
-                (YES != [state boolValue]) )
-            {
-                //save
-                overrides[label] = @([state boolValue]);
-            }
+            //save
+            domainOverrides[label] = @([contents[label] boolValue]);
         }
+        
+        //save
+        overrides[domain] = domainOverrides;
     }
     
     return overrides;

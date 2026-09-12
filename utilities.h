@@ -71,10 +71,13 @@ int openRegularFile(NSString* path, off_t maxSize, off_t* size);
 //hash a file
 NSDictionary* hashFile(NSString* filePath);
 
-//get launchd's overrides (i.e. 'launchctl enable/disable' state)
-// returns dictionary of label -> @YES (disabled) / @NO (explicitly enabled)
-// note: when root, merges all users' overrides; when a label conflicts across users, 'enabled' wins (so item is reported)
+//get launchd's overrides (i.e. 'launchctl enable/disable' state), per domain
+// returns dictionary of domain -> (label -> @YES (disabled) / @NO (explicitly enabled))
+// ...where domain is "system" (disabled.plist) or a uid string (disabled.<uid>.plist); when root, all users' domains are included
 NSDictionary* launchdOverrides(void);
+
+//launchd's system domain (key into 'launchdOverrides')
+#define LAUNCHD_DOMAIN_SYSTEM @"system"
 
 //coerce an (untrusted) object to a string
 // strings are returned as is, nil stays nil, anything else (arrays, numbers, etc.) becomes its description

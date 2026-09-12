@@ -170,7 +170,8 @@
                     }
                     
                     //save
-                    items[item[KEY_BTM_ITEM_UUID]] = fileObj;
+                    // (keyed by uuid, if it's a string; else by path/plist key)
+                    items[[item[KEY_BTM_ITEM_UUID] isKindOfClass:[NSString class]] ? item[KEY_BTM_ITEM_UUID] : key] = fileObj;
                     
                 }
             }

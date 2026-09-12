@@ -23,12 +23,13 @@ extern ItemEnumerator* sharedItemEnumerator;
 
 //PROPERTIES
 
-//items disabled via override (i.e. 'launchctl disable')
-@property(nonatomic, retain)NSMutableArray* disabledItems;
+//launchd overrides (i.e. 'launchctl enable/disable' state), per domain
+// domain ("system" or uid) -> (label -> @YES (disabled) / @NO (explicitly enabled))
+@property(nonatomic, retain)NSDictionary* overrides;
 
-//items explicitly enabled via override (i.e. 'launchctl enable')
-// note: such items run even if their plist says 'Disabled'
-@property(nonatomic, retain)NSMutableArray* enabledItems;
+//users' home directories -> uid
+// to map a (per-user) launch agent plist to its launchd domain
+@property(nonatomic, retain)NSDictionary* userHomes;
 
 /* (custom) METHODS */
 
@@ -36,7 +37,11 @@ extern ItemEnumerator* sharedItemEnumerator;
 // ->from launchd's (live) override database
 -(void)processOverrides;
 
+//get the override for a launch item, in the domain(s) it loads into
+// returns @YES (disabled), @NO (explicitly enabled), or nil (no override)
+-(NSNumber*)overrideForLabel:(NSString*)label plist:(NSString*)plist;
+
 //checks if an item will be automatically run by the OS
--(BOOL)isAutoRun:(NSDictionary*)plistContents;
+-(BOOL)isAutoRun:(NSDictionary*)plistContents plist:(NSString*)plist;
 
 @end
