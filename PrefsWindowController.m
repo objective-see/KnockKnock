@@ -73,6 +73,13 @@
         self.disableVTQueriesBtn.state = NSControlStateValueOn;
     }
     
+    //check if 'always run as root' button should be selected
+    if(YES == self.alwaysRoot)
+    {
+        //set
+        self.alwaysRootBtn.state = NSControlStateValueOn;
+    }
+    
     //VT API key
     if(0 != self.vtAPIKey.length) {
 
@@ -119,6 +126,9 @@
     //load 'disable vt queries'
     self.disableVTQueries = getPreferenceBool(PREF_DISABLE_VT_QUERIRES);
     
+    //load 'always run as root'
+    self.alwaysRoot = getPreferenceBool(PREF_ALWAYS_RUN_AS_ROOT);
+    
     //load API key
     self.vtAPIKey = loadAPIKeyFromKeychain();
     
@@ -154,6 +164,9 @@
     //grab: disable VT state
     self.disableVTQueries = self.disableVTQueriesBtn.state;
     
+    //grab: always run as root
+    self.alwaysRoot = self.alwaysRootBtn.state;
+    
     //grab API key
     self.vtAPIKey = self.apiTextField.stringValue;
     
@@ -180,6 +193,9 @@
     
     //save 'disable vt queries'
     setPreference(PREF_DISABLE_VT_QUERIRES, @(self.disableVTQueries));
+    
+    //save 'always run as root'
+    setPreference(PREF_ALWAYS_RUN_AS_ROOT, @(self.alwaysRoot));
     
     //save vt API key
     saveAPIKeyToKeychain(self.apiTextField.stringValue);

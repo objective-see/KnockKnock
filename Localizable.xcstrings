@@ -594,6 +594,17 @@
         }
       }
     },
+    "Remember my choice" : {
+      "comment" : "Remember my choice",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recordar mi elección"
+          }
+        }
+      }
+    },
     "root" : {
       "comment" : "root",
       "localizations" : {
@@ -601,6 +612,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "root"
+          }
+        }
+      }
+    },
+    "Run KnockKnock as root?" : {
+      "comment" : "Run KnockKnock as root?",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Ejecutar KnockKnock como root?"
           }
         }
       }
@@ -726,6 +748,28 @@
         }
       }
     },
+    "The public API's daily limit (500 lookups) has been reached, so the remaining items were not checked." : {
+      "comment" : "The public API's daily limit (500 lookups) has been reached, so the remaining items were not checked.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se ha alcanzado el límite diario de la API pública (500 consultas), por lo que los elementos restantes no se comprobaron."
+          }
+        }
+      }
+    },
+    "This allows KnockKnock to perform a full system scan." : {
+      "comment" : "This allows KnockKnock to perform a full system scan.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto permite a KnockKnock realizar un escaneo completo del sistema."
+          }
+        }
+      }
+    },
     "unknown" : {
       "comment" : "unknown",
       "localizations" : {
@@ -803,6 +847,17 @@
         }
       }
     },
+    "VirusTotal daily limit reached" : {
+      "comment" : "VirusTotal daily limit reached",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Límite diario de VirusTotal alcanzado"
+          }
+        }
+      }
+    },
     "VirusTotal lookup failed" : {
       "comment" : "VirusTotal lookup failed",
       "localizations" : {
@@ -864,6 +919,17 @@
         }
       }
     },
+    "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)\r\n %lu error(s)" : {
+      "comment" : "VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)\r\n %lu error(s)",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VirusTotal:\r\n %lu elemento(s) marcado(s)\r\n %lu elemento(s) desconocido(s)\r\n %lu error(es)"
+          }
+        }
+      }
+    },
     "VirusTotal: Error(?)" : {
       "comment" : "VirusTotal: Error(?)",
       "localizations" : {
@@ -871,6 +937,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "VirusTotal: Error(?)"
+          }
+        }
+      }
+    },
+    "VirusTotal: Query Failed" : {
+      "comment" : "VirusTotal: Query Failed",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VirusTotal: Consulta fallida"
           }
         }
       }

@@ -147,12 +147,24 @@ void uncaughtExceptionHandler(NSException* exception) {
         (YES != self.launchedAsLoginItem) &&
         (0 == isatty(STDIN_FILENO)) )
     {
-        //relaunch
-        // if root instance started, we're done (this instance will terminate)
-        if(YES == [self relaunchAsRootAtStartup])
+        //ask user (unless they've said 'always')
+        // then (if they said yes) relaunch; if root instance started, we're done (this instance will terminate)
+        if( (YES == getPreferenceBool(PREF_ALWAYS_RUN_AS_ROOT)) ||
+            (YES == [self promptToRunAsRoot]) )
         {
-            //done
-            return;
+            //relaunch
+            if(YES == [self relaunchAsRootAtStartup])
+            {
+                //done
+                return;
+            }
+        }
+        //user declined
+        // note it, so UI can note we're running w/ normal privileges
+        else
+        {
+            //set flag
+            self.relaunchCancelled = YES;
         }
     }
     
@@ -192,6 +204,54 @@ void uncaughtExceptionHandler(NSException* exception) {
     }
     
     return launchedAsLoginItem;
+}
+
+//ask user if they'd like to run as root
+// shown (before main window) on GUI launches; returns YES if they would
+-(BOOL)promptToRunAsRoot
+{
+    //alert
+    NSAlert* alert = nil;
+    
+    //user's answer
+    BOOL runAsRoot = NO;
+    
+    //init alert
+    alert = [[NSAlert alloc] init];
+    
+    //set msg
+    alert.messageText = NSLocalizedString(@"Run KnockKnock as root?", @"Run KnockKnock as root?");
+    
+    //set details
+    alert.informativeText = NSLocalizedString(@"This allows KnockKnock to perform a full system scan.", @"This allows KnockKnock to perform a full system scan.");
+    
+    //'yes' button (default)
+    [alert addButtonWithTitle:NSLocalizedString(@"Yes", @"Yes")];
+    
+    //'no' button
+    [alert addButtonWithTitle:NSLocalizedString(@"No", @"No")];
+    
+    //'remember my choice' checkbox
+    alert.showsSuppressionButton = YES;
+    alert.suppressionButton.title = NSLocalizedString(@"Remember my choice", @"Remember my choice");
+    
+    //make sure we're in front
+    [NSApp activateIgnoringOtherApps:YES];
+    
+    //show
+    runAsRoot = (NSAlertFirstButtonReturn == [alert runModal]);
+    
+    //remember?
+    // note: only a 'yes' is remembered (a remembered 'no' would silently downgrade every future scan)
+    //       ...can be turned off via the settings window
+    if( (YES == runAsRoot) &&
+        (NSControlStateValueOn == alert.suppressionButton.state) )
+    {
+        //save
+        setPreference(PREF_ALWAYS_RUN_AS_ROOT, @YES);
+    }
+    
+    return runAsRoot;
 }
 
 //at startup (when launched via Finder, etc.)
@@ -594,6 +654,9 @@ bail:
     //skip VT scanning if
     // not connected, user disabled queries, or no API key
     queryVT = (vtAPIKey.length) && self.isConnected && (!self.prefsWindowController.disableVTQueries);
+    
+    //reset (per scan) rate limit flag
+    self.virusTotalObj.rateLimited = NO;
     
     //create dispatch group for VT queries
     dispatch_group_t vtGroup = dispatch_group_create();
@@ -1038,6 +1101,12 @@ bail:
     //unknown items
     NSMutableArray* unknownItems = nil;
     
+    //VT lookup errors
+    NSUInteger vtErrors = 0;
+    
+    //VT lookups (attempted)
+    NSUInteger vtLookups = 0;
+    
     //init
     unknownItems = [NSMutableArray array];
     
@@ -1045,6 +1114,32 @@ bail:
     // sum up their item counts and flag items count
     for(PluginBase* plugin in self.plugins)
     {
+        //count VT lookups & errors
+        // (over the items being displayed)
+        NSArray* displayed = (YES == self.prefsWindowController.showTrustedItems) ? plugin.allItems : plugin.untrustedItems;
+        @synchronized(displayed) {
+            for(ItemBase* item in displayed)
+            {
+                //only files w/ (attempted) lookups
+                if( (YES != [item isKindOfClass:[File class]]) ||
+                    (nil == ((File*)item).vtInfo) )
+                {
+                    //skip
+                    continue;
+                }
+                
+                //inc
+                vtLookups++;
+                
+                //error?
+                if(nil != ((File*)item).vtInfo[VT_ERROR])
+                {
+                    //inc
+                    vtErrors++;
+                }
+            }
+        }
+
         //when showing all (including OS) findings
         if(YES == self.prefsWindowController.showTrustedItems)
         {
@@ -1124,7 +1219,27 @@ bail:
         else
         {
             //add flagged items
-            vtDetails = [NSString stringWithFormat:NSLocalizedString(@"VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)", @"VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)"), flaggedItems, unknownItems.count];
+            //all lookups failed?
+            // (e.g. invalid API key, rate limited) note it, rather than showing (misleading) zero counts
+            if( (0 != vtLookups) &&
+                (vtErrors == vtLookups) )
+            {
+                //set
+                vtDetails = NSLocalizedString(@"VirusTotal: Query Failed", @"VirusTotal: Query Failed");
+            }
+            //some failed?
+            // include error count
+            else if(0 != vtErrors)
+            {
+                //set
+                vtDetails = [NSString stringWithFormat:NSLocalizedString(@"VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)\r\n %lu error(s)", @"VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)\r\n %lu error(s)"), flaggedItems, unknownItems.count, vtErrors];
+            }
+            //all good
+            else
+            {
+                //set
+                vtDetails = [NSString stringWithFormat:NSLocalizedString(@"VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)", @"VirusTotal:\r\n %lu flagged item(s)\r\n %lu unknown item(s)"), flaggedItems, unknownItems.count];
+            }
         }
     }
     

@@ -37,6 +37,12 @@
 //button: disable VT checks (hash)
 @property (weak) IBOutlet NSButton* disableVTQueriesBtn;
 
+//always run as root button
+@property (weak) IBOutlet NSButton* alwaysRootBtn;
+
+//always run as root
+@property BOOL alwaysRoot;
+
 //button for ok/close
 @property (weak) IBOutlet NSButton *okButton;
 

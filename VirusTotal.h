@@ -14,6 +14,11 @@
     
 }
 
+//rate limit (quota) exhausted?
+// set once retries are exhausted; remaining lookups are then skipped (as they'd all fail, slowly)
+// note: reset by the app delegate at the start of each scan
+@property BOOL rateLimited;
+
 /* METHODS */
 
 //check (all plugin's) files

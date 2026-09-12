@@ -253,6 +253,42 @@
         }
       }
     },
+    "rAr-Kk-Ce1.title" : {
+      "comment" : "Class = \"NSButtonCell\"; title = \"Always run as root (don't ask).\"; ObjectID = \"rAr-Kk-Ce1\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Always run as root (don't ask)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecutar siempre como root (no preguntar)."
+          }
+        }
+      }
+    },
+    "rAr-Kk-Dd1.title" : {
+      "comment" : "Class = \"NSTextFieldCell\"; title = \"Enable this option to skip the prompt, and always request root privileges at launch.\"; ObjectID = \"rAr-Kk-Dd1\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enable this option to skip the prompt, and always request root privileges at launch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa esta opción para omitir la pregunta y solicitar siempre privilegios de root al iniciar."
+          }
+        }
+      }
+    },
     "rp9-45-S3R.placeholderString" : {
       "comment" : "Class = \"NSTextFieldCell\"; placeholderString = \"Your API Key\"; ObjectID = \"rp9-45-S3R\";",
       "extractionState" : "extracted_with_value",

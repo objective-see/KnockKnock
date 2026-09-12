@@ -37,6 +37,15 @@
     
     //add plist
     self.contents.string = self.differences;//[[NSDictionary dictionaryWithContentsOfFile:self.plist] description];
+    
+    //make 'close' button first responder
+    // (else the text view grabs focus)
+    // note: after a (short) delay, as calling this directly (before the window is on screen) sometimes doesn't stick
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (100 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
+        
+        //set first responder
+        [self.window makeFirstResponder:self.closeButton];
+    });
     /*
     if(0 == self.contents.string.length)
     {
@@ -45,6 +54,16 @@
     }
     */
 
+    return;
+}
+
+//window became key
+// (re)make 'close' button first responder
+-(void)windowDidBecomeKey:(NSNotification *)notification
+{
+    //make first responder
+    [self.window makeFirstResponder:self.closeButton];
+    
     return;
 }
 

@@ -179,6 +179,10 @@ extern Filter* itemFilter;
 //button handler for when settings icon (gear) is clicked
 -(IBAction)showPreferences:(id)sender;
 
+//ask user if they'd like to run as root
+// shown (before main window) on GUI launches; returns YES if they would
+-(BOOL)promptToRunAsRoot;
+
 //at startup (when launched via Finder, etc.)
 // authenticates user & relaunches app as root; returns YES if root instance started
 -(BOOL)relaunchAsRootAtStartup;

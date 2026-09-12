@@ -8,6 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="DiffWindowController">
             <connections>
+                <outlet property="closeButton" destination="nfP-Hy-J7L" id="rAr-Kk-Cb1"/>
                 <outlet property="contents" destination="daX-TQ-je3" id="F0R-Ld-scT"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="Azh-JA-hrI"/>
             </connections>

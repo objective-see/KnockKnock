@@ -16,4 +16,7 @@
 //plist contents
 @property (unsafe_unretained) IBOutlet NSTextView *contents;
 
+//close button
+@property (weak) IBOutlet NSButton *closeButton;
+
 @end

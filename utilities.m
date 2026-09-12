@@ -140,7 +140,7 @@ static BOOL useConsoleUserPreferences(void)
 //registered defaults
 NSDictionary* preferenceDefaults(void)
 {
-    return @{PREF_SHOW_TRUSTED_ITEMS:@NO, PREF_START_AT_LOGIN:@NO, PREF_DISABLE_UPDATE_CHECK:@NO, PREF_DISABLE_VT_QUERIRES:@YES};
+    return @{PREF_SHOW_TRUSTED_ITEMS:@NO, PREF_START_AT_LOGIN:@NO, PREF_DISABLE_UPDATE_CHECK:@NO, PREF_DISABLE_VT_QUERIRES:@YES, PREF_ALWAYS_RUN_AS_ROOT:@NO};
 }
 
 //get a preference (or its registered default)

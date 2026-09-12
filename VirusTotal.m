@@ -69,6 +69,13 @@ extern NSString* scanID;
         //typecast
         File* file = (File*)item;
         
+        //rate limit (quota) exhausted?
+        // don't bother (each would burn through the full retry cycle), just mark as error
+        if(YES == self.rateLimited) {
+            [self markError:file uiMode:uiMode];
+            continue;
+        }
+        
         //skip apple binaries
         if(Apple == [file.signingInfo[KEY_SIGNATURE_SIGNER] intValue]) {
             continue;
@@ -283,14 +290,46 @@ extern NSString* scanID;
         }
         
         //rate limited, last attempt?
-        // mark as error, so row resolves
+        // mark as error (so row resolves), and set flag so remaining lookups are skipped
         if(3 == attempt) {
+            
+            //mark
             [self markError:file uiMode:uiMode];
+            
+            //set flag
+            self.rateLimited = YES;
+            
+            //err msg
+            if(isVerbose) {
+                printf("\nERROR (VirusTotal): rate limit / quota exhausted, skipping remaining lookups\n");
+            }
+            
+            //alert (once)
+            if(uiMode) {
+                static dispatch_once_t onceToken;
+                dispatch_once(&onceToken, ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSAlert* alert = [[NSAlert alloc] init];
+                        alert.messageText = NSLocalizedString(@"VirusTotal daily limit reached", @"VirusTotal daily limit reached");
+                        alert.informativeText = NSLocalizedString(@"The public API's daily limit (500 lookups) has been reached, so the remaining items were not checked.", @"The public API's daily limit (500 lookups) has been reached, so the remaining items were not checked.");
+                        [alert addButtonWithTitle:NSLocalizedString(@"OK", @"OK")];
+                        [alert runModal];
+                    });
+                });
+            }
+            
             break;
         }
         
         //back off, then retry
         [NSThread sleepForTimeInterval:retryDelay];
+        
+        //another (plugin's) lookup exhausted the quota while we slept?
+        // no point retrying, mark as error & move on (so the 'awaiting results' phase ends promptly)
+        if(YES == self.rateLimited) {
+            [self markError:file uiMode:uiMode];
+            break;
+        }
         
         }//attempts
     }

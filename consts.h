@@ -41,6 +41,10 @@ static NSString * const SUPPORTED_PLUGINS[] = {@"AuthorizationPlugins", @"Browse
 // ->no updates
 #define PREF_DISABLE_UPDATE_CHECK @"noUpdateCheck"
 
+//prefs
+// ->always run as root (skip prompt)
+#define PREF_ALWAYS_RUN_AS_ROOT @"alwaysRunAsRoot"
+
 //disabled state
 #define STATE_DISABLED 0
 
