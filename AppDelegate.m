@@ -213,9 +213,16 @@ void uncaughtExceptionHandler(NSException* exception) {
     pid = relaunchAsRoot(&error);
     if(-1 == pid)
     {
-        //show error
-        // unless user just cancelled
-        if(userCanceledErr != error.code)
+        //user cancelled?
+        // set flag, so UI can note we're running w/ normal privileges
+        if(userCanceledErr == error.code)
+        {
+            //set flag
+            self.relaunchCancelled = YES;
+        }
+        //other error
+        // show it
+        else
         {
             //show
             [self showRelaunchError:error.localizedDescription];
@@ -293,6 +300,20 @@ bail:
     //hide status msg
     // ->when user clicks scan, will show up..
     [self.statusText setStringValue:@""];
+    
+    //user declined to run as root?
+    // note this, as scan (of other users' items, root-only files, etc.) will be incomplete
+    if(YES == self.relaunchCancelled)
+    {
+        //set msg
+        [self.statusText setStringValue:NSLocalizedString(@"Not running as root, scan may be incomplete", @"Not running as root, scan may be incomplete")];
+        
+        //no spinner (yet), so align to edge
+        self.statusTextConstraint.constant = 10;
+        
+        //show
+        self.statusText.hidden = NO;
+    }
     
     //hide progress indicator
     self.progressIndicator.hidden = YES;

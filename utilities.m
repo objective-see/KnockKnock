@@ -2068,7 +2068,7 @@ pid_t relaunchAsRoot(NSError** error)
     
     //execute script
     // blocks while user is prompted to authenticate
-    result = [[[NSAppleScript alloc] initWithSource:authorizationScript(executable, arguments, NSLocalizedString(@"KnockKnock needs administrator privileges to scan all persistent items.", @"KnockKnock needs administrator privileges to scan all persistent items."))] executeAndReturnError:&scriptError];
+    result = [[[NSAppleScript alloc] initWithSource:authorizationScript(executable, arguments, NSLocalizedString(@"Administrator privileges are needed to scan all persistent items.", @"Administrator privileges are needed to scan all persistent items."))] executeAndReturnError:&scriptError];
     
     //extract pid
     pid = (pid_t)[result.stringValue intValue];

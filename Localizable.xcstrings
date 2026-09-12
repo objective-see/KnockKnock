@@ -78,6 +78,17 @@
         }
       }
     },
+    "Administrator privileges are needed to scan all persistent items." : {
+      "comment" : "Administrator privileges are needed to scan all persistent items.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se necesitan privilegios de administrador para escanear todos los elementos persistentes."
+          }
+        }
+      }
+    },
     "Awaiting VirusTotal results" : {
       "comment" : "Awaiting VirusTotal results",
       "localizations" : {
@@ -419,17 +430,6 @@
         }
       }
     },
-    "KnockKnock needs administrator privileges to scan all persistent items." : {
-      "comment" : "KnockKnock needs administrator privileges to scan all persistent items.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "KnockKnock necesita privilegios de administrador para escanear todos los elementos persistentes."
-          }
-        }
-      }
-    },
     "KnockKnock needs Full Disk Access to perform a complete system scan.\n\nClick 'Open' to open %@ and grant access." : {
       "localizations" : {
         "es" : {
@@ -491,6 +491,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sin lista de propiedades"
+          }
+        }
+      }
+    },
+    "Not running as root, scan may be incomplete" : {
+      "comment" : "Not running as root, scan may be incomplete",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin root, el escaneo puede estar incompleto"
           }
         }
       }

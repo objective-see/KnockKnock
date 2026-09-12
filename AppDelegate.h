@@ -138,6 +138,10 @@ extern Filter* itemFilter;
 // launched via login item?
 @property BOOL launchedAsLoginItem;
 
+//flag
+// user cancelled the (relaunch as root) auth prompt, so we're running w/ normal privileges
+@property BOOL relaunchCancelled;
+
 //init tracking areas for buttons
 // ->provide mouse over effects
 -(void)initTrackingAreas;
