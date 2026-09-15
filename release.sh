@@ -47,7 +47,8 @@ APP_PATH="$ARCHIVE_PATH/Products/Applications/$SCHEME.app"
 # --- preflight ------------------------------------------------------------
 
 log "checking signing identity"
-security find-identity -v -p codesigning | grep -q "$SIGNING_IDENTITY" \
+IDENTITIES="$(security find-identity -v -p codesigning)"
+grep -q "$SIGNING_IDENTITY" <<< "$IDENTITIES" \
     || fail "signing identity $SIGNING_IDENTITY not found in keychain"
 
 log "checking notarytool profile '$KEYCHAIN_PROFILE'"
@@ -92,9 +93,11 @@ lipo -info "$APP_PATH/Contents/MacOS/$SCHEME"
 
 log "verifying signature"
 codesign --verify --deep --strict --verbose=2 "$APP_PATH"
-codesign -dvv "$APP_PATH" 2>&1 | grep -q "TeamIdentifier=$TEAM_ID" \
+# note: capture output first; 'cmd | grep -q' trips pipefail via SIGPIPE
+SIG_INFO="$(codesign -dvv "$APP_PATH" 2>&1)"
+grep -q "TeamIdentifier=$TEAM_ID" <<< "$SIG_INFO" \
     || fail "app is not signed by team $TEAM_ID"
-codesign -dvv "$APP_PATH" 2>&1 | grep -q "flags=.*runtime" \
+grep -q "flags=.*runtime" <<< "$SIG_INFO" \
     || fail "hardened runtime not enabled"
 
 # --- notarize -------------------------------------------------------------
@@ -121,8 +124,9 @@ xcrun stapler staple "$APP_PATH"
 xcrun stapler validate "$APP_PATH"
 
 log "verifying with Gatekeeper"
-spctl -a -vv -t exec "$APP_PATH" 2>&1 | grep -q "source=Notarized Developer ID" \
-    || fail "Gatekeeper does not report app as notarized"
+SPCTL_INFO="$(spctl -a -vv -t exec "$APP_PATH" 2>&1 || true)"
+grep -q "source=Notarized Developer ID" <<< "$SPCTL_INFO" \
+    || fail "Gatekeeper does not report app as notarized: $SPCTL_INFO"
 
 log "packaging final zip"
 mkdir -p "$OUTPUT_DIR"
