@@ -1714,43 +1714,72 @@ void setLineSpacing(NSTextField* textField, CGFloat lineSpacing)
 }
 
 //full disk access check
-// no API for this, so let's just see if we can read a (FDA-protected) TCC.db
-// note: for root, that's the system's; otherwise it's the (effective) user's own
-//       ...previously keyed off the console user, which fails headless (e.g. ssh) or when another user is logged in
+// no API for this, so let's just see if we can open a (FDA-protected) TCC.db
+// note: probes the system's TCC.db first (always exists, world-readable w/ FDA, even for non-root)
+//       then the user's own TCC.db, which no longer exists on macOS 27+ (so it's only a fallback)
+//       ...decided by errno: EPERM/EACCES means denied, ENOENT means 'no verdict', so try next
 BOOL hasFDA(void) {
     
-    //tcc path
-    NSString* tccPath = nil;
+    //flag
+    BOOL hasAccess = NO;
+    
+    //candidates
+    NSMutableArray* candidates = nil;
     
     //user's home
     NSString* userDirectory = nil;
     
-    //root?
-    // check system's TCC.db
-    if(0 == geteuid())
-    {
-        //init
-        tccPath = @"/Library/Application Support/com.apple.TCC/TCC.db";
-    }
-    //user
-    // check their own TCC.db
-    else
+    //file descriptor
+    int fd = -1;
+    
+    //init candidates
+    // system's TCC.db is first
+    candidates = [NSMutableArray arrayWithObject:@"/Library/Application Support/com.apple.TCC/TCC.db"];
+    
+    //not root?
+    // add the user's own TCC.db (as a fallback)
+    if(0 != geteuid())
     {
         //get (effective) user's home directory
         userDirectory = NSHomeDirectory();
-        if(0 == userDirectory.length)
+        if(0 != userDirectory.length)
         {
-            //bail
-            return NO;
+            //add
+            [candidates addObject:[userDirectory stringByAppendingPathComponent:@"Library/Application Support/com.apple.TCC/TCC.db"]];
         }
-        
-        //init
-        tccPath = [userDirectory stringByAppendingPathComponent:@"Library/Application Support/com.apple.TCC/TCC.db"];
     }
     
-    //FDA check
-    // is 'protected' file readable
-    return [NSFileManager.defaultManager isReadableFileAtPath:tccPath];
+    //probe each candidate
+    for(NSString* candidate in candidates)
+    {
+        //try open
+        fd = open(candidate.fileSystemRepresentation, O_RDONLY | O_CLOEXEC);
+        if(-1 != fd)
+        {
+            //close
+            close(fd);
+            
+            //has access
+            hasAccess = YES;
+            
+            //done
+            break;
+        }
+        
+        //denied?
+        // TCC says no...so we're done
+        if( (EPERM == errno) ||
+            (EACCES == errno) )
+        {
+            //bail
+            break;
+        }
+        
+        //any other error (e.g. ENOENT)
+        // no verdict, try next candidate
+    }
+    
+    return hasAccess;
 }
 
 //for keychain access as root
