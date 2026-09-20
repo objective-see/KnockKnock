@@ -46,6 +46,33 @@
 // ->contains preferences, extensions,e tc
 #define OPERA_INFO_BASE_DIRECTORY @"~/Library/Application Support/com.operasoftware.Opera/"
 
+static BOOL isExtensionEnabled(NSDictionary* extension)
+{
+    if(YES == [extension[@"state"] isKindOfClass:[NSNumber class]])
+    {
+        return [extension[@"state"] boolValue];
+    }
+    if(YES == [extension[@"disable_reasons"] isKindOfClass:[NSArray class]])
+    {
+        return (0 == [extension[@"disable_reasons"] count]);
+    }
+    if(YES == [extension[@"disable_reasons"] isKindOfClass:[NSNumber class]])
+    {
+        return (0 == [extension[@"disable_reasons"] integerValue]);
+    }
+    return YES;
+}
+
+static NSDictionary* loadManifest(NSString* path)
+{
+    NSData* data = [NSData dataWithContentsOfFile:[path stringByAppendingPathComponent:@"manifest.json"]];
+    if(nil == data)
+    {
+        return nil;
+    }
+    return [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:NULL];
+}
+
 @implementation BrowserExtensions
 
 //init
@@ -187,7 +214,7 @@
     
     //exec pluginkit for each type
     // then invoke helper to parse/create extension objects
-    for(NSString* match in @[@"com.apple.Safari.extension", @"com.apple.Safari.content-blocker"])
+    for(NSString* match in @[@"com.apple.Safari.extension", @"com.apple.Safari.content-blocker", @"com.apple.Safari.web-extension"])
     {
         //enumerate via pluginkit
         // (as console user when root, as pluginkit's view is per-user)
@@ -460,7 +487,7 @@
             }
             
             //skip disabled ones
-            if(YES != boolValue(extension[@"state"]))
+            if(YES != isExtensionEnabled(extension))
             {
                 //skip
                 continue;
@@ -512,6 +539,10 @@
             //extract manifest
             // ->contains name, etc
             manifest = extension[@"manifest"];
+            if(YES != [manifest isKindOfClass:[NSDictionary class]])
+            {
+                manifest = loadManifest(path);
+            }
             
             //skip blank names
             if( (YES != [manifest isKindOfClass:[NSDictionary class]]) ||
@@ -969,7 +1000,7 @@ bail:
         }
         
         //skip disabled ones
-        if(YES != boolValue(extension[@"state"]))
+        if(YES != isExtensionEnabled(extension))
         {
             //skip
             continue;
@@ -1021,6 +1052,10 @@ bail:
         //extract manifest
         // ->contains name, etc
         manifest = extension[@"manifest"];
+        if(YES != [manifest isKindOfClass:[NSDictionary class]])
+        {
+            manifest = loadManifest(path);
+        }
         
         //skip blank names
         if( (YES != [manifest isKindOfClass:[NSDictionary class]]) ||
