@@ -28,6 +28,9 @@ int main(int argc, char *argv[])
         {
             //print usage
             usage(NO);
+
+            //mark as success
+            status = 0;
             
             //happy
             status = EXIT_SUCCESS;
@@ -41,6 +44,9 @@ int main(int argc, char *argv[])
         {
             //print version
             version();
+
+            //mark as success
+            status = 0;
             
             //happy
             status = EXIT_SUCCESS;
