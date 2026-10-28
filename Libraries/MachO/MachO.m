@@ -70,6 +70,11 @@ static inline BOOL inBounds(const void* base, NSUInteger length, const void* poi
 // ->extract all required/interesting stuff
 -(BOOL)parse:(NSString*)binaryPath classify:(BOOL)shouldClassify
 {
+    //drain temporary buffers and ARC's interior-pointer retains after each parse
+    // binaryData stays owned by the parser, keeping saved load-command pointers valid
+    @autoreleasepool
+    {
+
     //ret var
     BOOL wasParsed = NO;
     
@@ -171,6 +176,7 @@ static inline BOOL inBounds(const void* base, NSUInteger length, const void* poi
 bail:
     
     return wasParsed;
+    }//pool
 }
 
 //parse all machO headers

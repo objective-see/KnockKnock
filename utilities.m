@@ -585,10 +585,6 @@ NSDictionary* hashFile(NSString* itemPath)
     // might be app's binary
     NSString* path = nil;
     
-    //file's contents
-    // per chunk (to handle big files)
-    NSData* chunk = nil;
-    
     //md5 context
     CC_MD5_CTX md5Context = {0};
     
@@ -687,25 +683,30 @@ NSDictionary* hashFile(NSString* itemPath)
     // in chunks, to handle large files
     while(YES)
     {
-        //wrap
-        // 'readDataOfLength' can throw
-        @try
+        //release each chunk (including ARC's interior-pointer retains) before the next read
+        @autoreleasepool
         {
-            //read in chunk
-            chunk = [handle readDataOfLength:1024*1024];
-            if(chunk.length == 0) break;
+            NSData* chunk = nil;
+
+            //wrap
+            // 'readDataOfLength' can throw
+            @try
+            {
+                //read in chunk
+                chunk = [handle readDataOfLength:1024*1024];
+                if(chunk.length == 0) break;
+            }
+            @catch(NSException* exception)
+            {
+                //bail
+                goto bail;
+            }
+
+            //hash updates
+            CC_MD5_Update(&md5Context, (const void *)chunk.bytes, (CC_LONG)chunk.length);
+            CC_SHA1_Update(&sha1Context, (const void *)chunk.bytes, (CC_LONG)chunk.length);
+            CC_SHA256_Update(&sha256Context, (const void *)chunk.bytes, (CC_LONG)chunk.length);
         }
-        @catch(NSException* exception)
-        {
-            //bail
-            goto bail;
-        }
-        
-        //hash updates
-        CC_MD5_Update(&md5Context, (const void *)chunk.bytes, (CC_LONG)chunk.length);
-        CC_SHA1_Update(&sha1Context, (const void *)chunk.bytes, (CC_LONG)chunk.length);
-        CC_SHA256_Update(&sha256Context, (const void *)chunk.bytes, (CC_LONG)chunk.length);
-        
     }
     
     //finalize hashes
